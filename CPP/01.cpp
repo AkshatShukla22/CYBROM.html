@@ -1,11 +1,17 @@
 #include<iostream>
-#include<limits>
+// #include<limits>
 using namespace std;
 
 int main(){
-    //data types
-    int a = 10; // integer
-    cout<<sizeof(bool);
-    cout<<&a;
-    cout<<numeric_limits<float>::max();
+
+    int a = 5;
+    int b = 2;
+    int c;
+    cin>>c;
+    // cout<<"enter number";
+    // int b;
+    // cin>>b;
+
+    (c == 1)? cout<< a*b : ( c == 2) ? cout<<a/b : cout<<"invalid";
+
 }
