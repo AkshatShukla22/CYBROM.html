@@ -1,0 +1,31 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+h1{
+    font-size: 40px;
+    color: rgb(152, 4, 251);
+    text-align: center;
+    letter-spacing: 3px;
+    word-spacing: 30px;
+    margin: 30px auto;
+    text-decoration: line-through;
+    border: 4px solid rgb(7, 7, 7);
+    border-radius: 100%;
+    width: 30%;
+    background-color: red;
+}
+p{
+    font-size: 30px;
+    word-spacing: 10px;
+    text-align: center;
+    margin: auto;
+    height: fit-content;
+    width: 60%;
+    border: 2px solid pink;
+    border-radius: 10px;
+}
+p:hover{
+    color: #fefefe;
+    background-color: black;
+}
