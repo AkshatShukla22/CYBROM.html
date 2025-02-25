@@ -1,0 +1,168 @@
+/* index.css */
+
+*{
+    margin: 0;
+    padding: 0;
+    /* overflow: hidden; */
+    box-sizing: border-box;
+}
+
+body{
+    background-color: #09152b;
+}
+
+nav{
+    background-color: #09152b;
+    display: flex;
+    justify-content: space-around;
+    height: 9vh;
+    align-items: center;
+    padding: 0 3vh;
+    z-index: 10;
+    position: sticky;
+    top: 0px;
+}
+
+nav a {
+    text-decoration: none;
+    color: white;
+    margin: 0 1.5vw;
+    font-size: 3.5vh;
+    width: 6vh;
+    height: 6vh;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+}
+
+nav a:hover{
+    color: #76d5fe;
+}
+
+nav a:active {
+    background-color: white;
+    color: #09152b;
+}
+
+#icon {
+    font-size: 6vh;
+    color: #76d5fe;
+    background-color: #09152b;
+    width: 10vh;
+    height: 6vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+}
+
+#srch {
+    display: flex;
+    align-items: center;
+}
+
+#srch input {
+    border: 1px solid rgba(0, 0, 0, 0.45);
+    border-radius: 50px;
+    width: 17vw;
+    height: 4vh;
+    font-size: 2vh;
+    padding: 0 3vh;
+}
+
+#srch button {
+    background-color: #09152b;
+    color: white;
+    margin-left: 1vw;
+    border: 0;
+    font-size: 3vh;
+    padding: 0.5vh 1vh;
+}
+
+
+.banner{
+    width: 100%;
+    height: 91vh;
+    background-image: url(./pj01-assets/banner.jpeg);
+    background-size: cover;
+    background-repeat: no-repeat;
+    z-index: 1;
+}
+
+.filtr{
+    width: 100%;
+    height: 91vh;
+    background-color: rgba(0, 0, 0, 0.459);
+    z-index: 2;
+    font-size: 8vh;
+    color: white;
+    word-spacing: 1vh;
+}
+
+.filtr div{
+    height: 100vh;
+    width: 50%;
+    text-align: center;
+    padding-left: 1vw;
+    padding-top: 50vh;
+    z-index: 6;
+}
+
+.filtr p{
+    margin-bottom: 2vh;
+}
+
+.word{
+    color: #76d5fe;
+}
+
+footer{
+    color: white;
+    font-weight: 400;
+}
+
+footer a{
+    font-weight: 200;
+    font-size: 2vh;
+    display: block;
+    text-align: center;
+    justify-content: center;
+    margin-top: 2vh;
+    text-decoration: none;
+    color: #76d5fe;
+}
+
+footer a:hover{
+    text-decoration: underline;
+    color: white;
+}
+
+.ftr-0{
+    display: flex;
+    width: 100%;
+    height: 30vh;
+    text-decoration: none;
+    background-color: #09152b;
+}
+
+.ft-1{
+    width: 40%;
+    height: 30vh;
+    background-color: aquamarine;
+}
+
+.ft-2{
+    padding: 4vh;
+    width: 20%;
+    height: 30vh;
+    display: block;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.ft-3{
+    width: 100%;
+    height: 10vh;
+}
