@@ -149,7 +149,10 @@ footer a:hover{
 .ft-1{
     width: 40%;
     height: 30vh;
-    background-color: aquamarine;
+}
+
+.ft-1 div{
+    font-size: 10vh;
 }
 
 .ft-2{
@@ -160,6 +163,10 @@ footer a:hover{
     flex-direction: column;
     align-items: center;
     text-align: center;
+}
+
+#ft-2-3 a{
+    font-size: 3vh;
 }
 
 .ft-3{
