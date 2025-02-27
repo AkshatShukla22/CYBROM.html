@@ -2,10 +2,29 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    scrollbar-width: thin;
+    scrollbar-color: #09152b #063977;
 }
 
 body{
-    background-color: #09152b;
+    background-color: #063977;
+}
+
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #063977;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #09152b;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #0c1d3d;
 }
 
 nav{
@@ -188,6 +207,7 @@ footer a:hover{
 .ft-3{
     width: 100%;
     height: 10vh;
+    background-color: #09152b;
     text-align: center;
     padding-top: 3vh;
     font-size: 2vh;

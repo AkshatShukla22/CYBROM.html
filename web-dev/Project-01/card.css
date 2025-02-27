@@ -16,13 +16,13 @@ hr{
 }
 
 .nrsg{
-    width: 100;
-    height: 200vh;
+    width: 100%;
+    height: 80vh;
     background-color: #063977;
     text-align: center;
     font-size: 6vh;
     color: #fff;
-    padding: 4vh 25vh;
+    padding: 4vh 5vw;
     white-space: 2vh;
 }
 
@@ -36,13 +36,14 @@ hr{
 .crd-dv{
     display: flex;
     justify-content: space-evenly;
+    width: 100%;
 }
 
 .card{
       cursor: pointer;
       position: relative;
-      width: 20%;
-      height: 50vh;
+      width: 15%;
+      height: 40vh;
       border-radius: 10px;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
       transition: transform 0.5s ease, box-shadow 0.5s ease;
@@ -51,7 +52,7 @@ hr{
 }
 
 .card:hover {
-    transform: scale(1.18);
+    transform: scale(1.3);
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
 }
 
