@@ -1,0 +1,32 @@
+*{
+    margin: 0px;
+    padding: 0px;
+}
+
+.newly-updated{
+    overflow: x ;
+    display: flex;
+    justify-content: center;
+    margin-top: 5vh;
+}
+
+#newly-updated-dv{
+    height: 50vh;
+    width: 85%;
+    background-color: black;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+#newly-updated-dv a{
+    height: 30vh;
+    width: 20vw;
+    background-color: brown;
+    margin: 0px 0.5vh;
+}
+
+#newly-updated-dv img{
+    height: 20vh;
+    width: 15vw;
+}
