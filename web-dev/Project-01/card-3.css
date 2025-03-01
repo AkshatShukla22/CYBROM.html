@@ -5,7 +5,7 @@
 }
 
 .newly-updated {
-    width: 85%;
+    width: 100%;
     overflow-x: auto;
     display: flex;
     justify-content: center;
@@ -13,7 +13,9 @@
 }
 
 #newly-updated-dv {
-    width: 84%;
+    border-left: 5px solid #09152b;
+    border-right: 5px solid #09152b;
+    width: 90%;
     height: 50vh;
     box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.632);
     overflow-x: auto;
@@ -21,12 +23,8 @@
     align-items: center;
     justify-content: flex-start;
     scroll-snap-type: x mandatory;
-    padding: 0 10px;
+    padding: 10px 10px;
 }
-
-/* #newly-updated-dv:first-child{
-    background-color: aqua;
-} */
 
 #newly-updated-dv a {
     height: 30vh;

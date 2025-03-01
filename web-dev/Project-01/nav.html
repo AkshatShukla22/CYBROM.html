@@ -1,0 +1,152 @@
+<!-- Index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Document</title>
+  <link rel="stylesheet" href="index.css">
+  <link rel="stylesheet" href="card.css">
+  <link rel="stylesheet" href="card-2.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<style>
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    scrollbar-width: thin;
+    scrollbar-color: #09152b #063977;
+    cursor: auto;
+}
+
+body{
+    background-color: #063977;
+}
+
+nav{
+    background-color: #09152b;
+    display: flex;
+    justify-content: space-between;  
+    height: 10vh;
+    align-items: center;
+    padding: 0 5vh;
+    z-index: 10;
+    position: sticky;
+    top: 0px;
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.5);
+}
+
+nav .nav {
+    margin-left: 15vw;
+    display: flex;
+    justify-content: center;
+    flex: 1;
+}
+
+nav a {
+    text-decoration: none;
+    color: white;
+    margin: 0 1.5vw;
+    font-size: 3.5vh;
+    width: 6vh;
+    height: 6vh;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+}
+
+nav a.active {
+    background-color: white;
+    color: #09152b;
+    animation: bounce 1s ease-in-out infinite;
+}
+
+nav a:hover{
+    color: #76d5fe;
+    transition: 0.25s;
+}
+
+#icon {
+    font-size: 6vh;
+    color: #76d5fe;
+    background-color: #09152b;
+    width: 10vh;
+    height: 6vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+}
+
+#srch {
+    display: flex;
+    align-items: center;
+}
+
+#srch input {
+    border: 1px solid rgba(0, 0, 0, 0.45);
+    border-radius: 50px;
+    width: 17vw;
+    height: 4vh;
+    font-size: 2vh;
+    padding: 0 3vh;
+    transition: border 0.3s, outline 0.3s;
+}
+
+#srch input:focus,
+#srch input:active {
+    border: none;
+    outline: none;
+}
+
+#srch button {
+    background-color: #09152b;
+    color: white;
+    margin-left: 1vw;
+    border: 0;
+    font-size: 3vh;
+    padding: 0.5vh 1vh;
+}
+
+#srch button:hover{
+    color: #76d5fe;
+    transition: 0.25s;
+}
+
+@keyframes bounce {
+    0% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-5px);
+    }
+    100% {
+        transform: translateY(-0px);
+    }
+}
+
+</style>
+<body>
+  <header>
+    <nav>
+      <div id="icon">
+        <i class="fa-solid fa-gamepad"></i>
+      </div>
+  
+      <div class="nav">
+        <a href="." class="active"><i class="fa-solid fa-house"></i></a>
+        <a href=""><i class="fa-solid fa-cart-shopping"></i></a>
+        <a href=""><i class="fa-solid fa-newspaper"></i></a>
+        <a href=""><i class="fa-solid fa-headset"></i></a>
+      </div>
+  
+      <div id="srch">
+        <input type="search" placeholder="Search Games ">
+        <button class="srch-btn"><i class="fa-solid fa-magnifying-glass"></i></button>
+      </div>
+    </nav>
+  </header>
+</body>
+</html>
