@@ -28,7 +28,7 @@
 
 #newly-updated-dv a {
     height: 30vh;
-    width: 200px;
+    width: 17vw;
     background-color: brown;
     margin: 0 10px;
     display: flex;
@@ -40,16 +40,26 @@
 
 .card-3{
     transition: transform 0.5s ease;
+    overflow: hidden;
 }
 
 .card-3:hover{
     transform: translateY(-40px);
 }
 
+.card-3 a{
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
 #newly-updated-dv img {
     height: 100%x;
     width: 100%;
     object-fit: cover;
+    transition: transform 1s ease;
+}
+#newly-updated-dv img:hover {
+    transform: scale(1.5);
 }
 
 #newly-updated-dv::-webkit-scrollbar {

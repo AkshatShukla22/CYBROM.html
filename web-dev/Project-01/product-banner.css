@@ -1,0 +1,88 @@
+/* Universal reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.prodict-banner {
+    height: 80vh;
+    width: 80%;
+    margin: 15vh auto;
+    background-color: aqua;
+}
+
+/* Banner container (flex for easy positioning) */
+.prodict-banner .product-banner-dv {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+/* Image container */
+.prodict-banner .product-banner-dv .product-banner-dv1 {
+    min-height: 80vh;
+    min-width: 70%;
+    overflow: hidden;
+    position: relative;
+}
+
+.prodict-banner .product-banner-dv .product-banner-dv1 img {
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+/* Text section */
+.prodict-banner .product-banner-dv .product-banner-dv2 {
+    padding: 4vh 2vh;
+    min-height: 80vh;
+    min-width: 30%;
+    color: white;
+    background-color: #09152b;
+}
+
+/* Image wrapper inside the text section */
+.prodict-banner .product-banner-dv .product-banner-dv2 .product-banner-dv2-img-dv {
+    font-size: 4vh;
+    min-width: 30vw;
+    min-height: 70vh;
+    margin-top: 10vh; /* Removed redundant div styling */
+}
+
+.prodict-banner .product-banner-dv .product-banner-dv2 .product-banner-dv2-img-dv p {
+    height: 13vh;
+}
+
+/* Image inside the wrapper */
+.prodict-banner .product-banner-dv .product-banner-dv2 .product-banner-dv2-img-dv img {
+    height: 14vh;
+    width: 10vw;
+    margin: 0.75vh;
+}
+
+/* Text styling for the label */
+.prodict-banner .product-banner-dv .product-banner-dv2 .product-banner-dv2-img-dv p span {
+    font-size: 2vh;
+    color: white;
+    padding: 0.5vh;
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 5px;
+}
+
+/* Pricing section */
+.prodict-banner .product-banner-dv .product-banner-dv2 .product-banner-dv2-prc-dv {
+    width: 20vw;
+    min-height: 10vh;
+    font-size: 3vh;
+    display: flex;
+    justify-content: space-between;
+    padding-top: 5vh;
+}
+
+.prodict-banner .product-banner-dv .product-banner-dv2 .product-banner-dv2-prc-dv .available-platform {
+    color: gray;
+}
