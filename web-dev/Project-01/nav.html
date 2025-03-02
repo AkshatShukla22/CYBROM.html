@@ -1,150 +1,163 @@
-<!-- Index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Document</title>
-  <link rel="stylesheet" href="index.css">
-  <link rel="stylesheet" href="card.css">
-  <link rel="stylesheet" href="card-2.css">
+  <title>Toggle Search Bar</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-</head>
-<style>
-*{
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    scrollbar-width: thin;
-    scrollbar-color: #09152b #063977;
-    cursor: auto;
-}
+  
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-body{
-    background-color: #063977;
-}
+    body {
+      background-color: #063977;
+    }
 
-nav{
-    background-color: #09152b;
-    display: flex;
-    justify-content: space-between;  
-    height: 10vh;
-    align-items: center;
-    padding: 0 5vh;
-    z-index: 10;
-    position: sticky;
-    top: 0px;
-    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.5);
-}
+    nav {
+      background-color: #09152b;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 5vh;
+      height: 10vh;
+      position: sticky;
+      top: 0;
+      box-shadow: 0 8px 12px rgba(0, 0, 0, 0.5);
+    }
 
-nav .nav {
-    margin-left: 15vw;
-    display: flex;
-    justify-content: center;
-    flex: 1;
-}
+    #icon {
+      font-size: 6vh;
+      color: #76d5fe;
+      background-color: #09152b;
+      width: 10vh;
+      height: 6vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 50%;
+    }
 
-nav a {
-    text-decoration: none;
-    color: white;
-    margin: 0 1.5vw;
-    font-size: 3.5vh;
-    width: 6vh;
-    height: 6vh;
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: 50%;
-}
+    .nav {
+      display: flex;
+      margin-left: 10vw;
+      justify-content: center;
+      flex: 1;
+    }
 
-nav a.active {
-    background-color: white;
-    color: #09152b;
-    animation: bounce 1s ease-in-out infinite;
-}
+    .nav a {
+      text-decoration: none;
+      color: white;
+      margin: 0 1.5vw;
+      font-size: 3.5vh;
+      width: 6vh;
+      height: 6vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 50%;
+      transition: color 0.25s;
+    }
 
-nav a:hover{
-    color: #76d5fe;
-    transition: 0.25s;
-}
+    .nav a.active {
+      background-color: white;
+      color: #09152b;
+      animation: bounce 1s ease-in-out infinite;
+    }
 
-#icon {
-    font-size: 6vh;
-    color: #76d5fe;
-    background-color: #09152b;
-    width: 10vh;
-    height: 6vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: 50%;
-}
+    .nav a:hover {
+      color: #76d5fe;
+    }
 
-#srch {
-    display: flex;
-    align-items: center;
-}
+    #srch {
+      min-width: 18vw;
+      display: flex;
+      align-items: center;
+      position: relative;
+    }
 
-#srch input {
-    border: 1px solid rgba(0, 0, 0, 0.45);
-    border-radius: 50px;
-    width: 17vw;
-    height: 4vh;
-    font-size: 2vh;
-    padding: 0 3vh;
-    transition: border 0.3s, outline 0.3s;
-}
+    #toggleSearch {
+      display: none;
+    }
 
-#srch input:focus,
-#srch input:active {
-    border: none;
-    outline: none;
-}
+    #srch input {
+      width: 0;
+      height: 5vh;
+      font-size: 2vh;
+      background-color: white;
+      border: 1px solid rgba(0, 0, 0, 0.45);
+      border-radius: 50px;
+      padding: 0;
+      opacity: 0;
+      outline: none;
+      transition: width 0.3s ease, padding 0.3s ease, opacity 0.3s;
+    }
 
-#srch button {
-    background-color: #09152b;
-    color: white;
-    margin-left: 1vw;
-    border: 0;
-    font-size: 3vh;
-    padding: 0.5vh 1vh;
-}
+    #toggleSearch:checked ~ #srch input {
+      width: 15vw;
+      padding: 0 1vw;
+      opacity: 1;
+    }
 
-#srch button:hover{
-    color: #76d5fe;
-    transition: 0.25s;
-}
+    #toggleSearch:checked ~ #srch label {
+      position: absolute;
+      left: 70%;
+      background-color: #76d5fe;
+    }
 
-@keyframes bounce {
-    0% {
+    #toggleSearch:checked ~ #srch label:hover {
+      color: white;
+    }
+
+    #srch label {
+      background-color: white;
+      color: #09152b;
+      border-radius: 50px;
+      height: 5vh;
+      width: 2.5vw;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3vh;
+      cursor: pointer;
+      transition: color 0.25s;
+    }
+
+    #srch label:hover {
+      color: #76d5fe;
+    }
+
+    @keyframes bounce {
+      0%, 100% {
         transform: translateY(0);
-    }
-    50% {
+      }
+      50% {
         transform: translateY(-5px);
+      }
     }
-    100% {
-        transform: translateY(-0px);
-    }
-}
-
-</style>
+  </style>
+</head>
 <body>
   <header>
     <nav>
       <div id="icon">
         <i class="fa-solid fa-gamepad"></i>
       </div>
-  
+
       <div class="nav">
         <a href="." class="active"><i class="fa-solid fa-house"></i></a>
-        <a href=""><i class="fa-solid fa-cart-shopping"></i></a>
-        <a href=""><i class="fa-solid fa-newspaper"></i></a>
-        <a href=""><i class="fa-solid fa-headset"></i></a>
+        <a href="#"><i class="fa-solid fa-cart-shopping"></i></a>
+        <a href="#"><i class="fa-solid fa-newspaper"></i></a>
+        <a href="#"><i class="fa-solid fa-headset"></i></a>
       </div>
-  
+
+      <input type="checkbox" id="toggleSearch">
       <div id="srch">
-        <input type="search" placeholder="Search Games ">
-        <button class="srch-btn"><i class="fa-solid fa-magnifying-glass"></i></button>
+        <input type="search" placeholder="Search Games">
+        <label for="toggleSearch"><i class="fa-solid fa-magnifying-glass"></i></label>
       </div>
     </nav>
   </header>
