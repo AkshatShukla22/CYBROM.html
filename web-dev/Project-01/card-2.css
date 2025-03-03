@@ -7,6 +7,8 @@
     height: 22vh;
     margin: 2.5vh auto;
     padding: 1vh;
+    border: 0px solid black;
+    border-radius: 7px;
     transition: transform 0.5s ease;
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
     display: flex;
@@ -58,6 +60,8 @@
     padding: 5px 5px;
     background-color: #4c6b22;
     color: #BEEE11;
+    border: 0px solid black;
+    border-radius: 7px;
 }
 
 .rcmd .price {

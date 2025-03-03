@@ -6,10 +6,22 @@
 }
 
 .prodict-banner {
+    display: flex;
+    overflow-x: scroll;
+    overflow-y: hidden;
+    gap: 2vh;
+    gap: 2vh;;
     height: 80vh;
-    width: 80%;
+    width: 80vw;
     margin: 15vh auto;
-    background-color: aqua;
+    background-color: black;
+    /* -ms-overflow-style: none;
+    scrollbar-width: none; */
+    scroll-snap-type: x mandatory;
+}
+
+.prodict-banner::-webkit-scrollbar {
+    display: none;
 }
 
 /* Banner container (flex for easy positioning) */
@@ -17,20 +29,21 @@
     display: flex;
     align-items: center;
     justify-content: flex-end;
+    scroll-snap-align: start;
 }
 
 /* Image container */
 .prodict-banner .product-banner-dv .product-banner-dv1 {
     min-height: 80vh;
-    min-width: 70%;
+    min-width: 56.5vw;
     overflow: hidden;
     position: relative;
 }
 
 .prodict-banner .product-banner-dv .product-banner-dv1 img {
     object-fit: cover;
-    width: 100%;
-    height: 100%;
+    width: 60vw;
+    height: 80vh;
     position: absolute;
     top: 0;
     left: 0;
@@ -40,7 +53,7 @@
 .prodict-banner .product-banner-dv .product-banner-dv2 {
     padding: 4vh 2vh;
     min-height: 80vh;
-    min-width: 30%;
+    min-width: 23.7vw;
     color: white;
     background-color: #09152b;
 }
