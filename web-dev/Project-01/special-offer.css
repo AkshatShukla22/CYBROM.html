@@ -31,6 +31,7 @@
     height: 100%;
     display: flex;
     flex-direction: column;
+    margin-right: 1vw;
 }
 
 .special-offer .spo-div .big-spo-div-1 {
@@ -83,27 +84,37 @@
     position: absolute;
 }
 
+/* For small offers (3 child divs, each containing 2 items vertically) */
 .special-offer .small-spo {
     width: 66.67%;
     height: 100%;
+    display: flex;
+    flex-direction: row; /* Align child divs horizontally */
+    justify-content: space-between; /* Space out the 3 divs */
+    align-items: stretch; /* Stretch the height of each small-spo-div equally */
 }
 
 .special-offer .small-spo-div {
+    width: 32%; /* Each small-spo-div takes up 1/3 of the container */
     display: flex;
-    margin-bottom: 2vh;
-    height: 48%;
+    flex-direction: column; /* Stack the items inside each div vertically */
+    margin-bottom: 0; /* Remove margin between small-spo-divs */
+    height: 100%; /* Ensure each small-spo-div takes up full height */
 }
 
 .special-offer .small-spo-div a {
-    display: block;
-    margin-left: 1vw;
-    width: 32%;
-    overflow: hidden;
+    display: flex;
+    flex-direction: column; /* Stack image and price vertically */
+    width: 100%;
+    height: 100%; /* Make sure each <a> tag takes up full height */
+    box-sizing: border-box; /* Ensure padding and border are included in the size */
     box-shadow: 4px 8px 20px rgba(0, 0, 0, 0.5);
+    align-items: stretch; /* Stretch the content inside */
+    overflow: hidden;
 }
 
 .special-offer .small-spo-div a .small-spo-div-img {
-    height: 80%;
+    height: 75%; /* Fixed height for image */
     width: 100%;
     position: relative;
 }
@@ -120,7 +131,7 @@
 }
 
 .special-offer .small-spo-div a .small-spo-div-prc {
-    height: 20%;
+    height: 25%; /* Fixed height for price section */
     width: 100%;
     display: flex;
     align-items: center;
@@ -128,21 +139,21 @@
     background-color: #09152b;
 }
 
-.special-offer .spo-div .small-spo-discount {
-    font-size: 3vh;
+.special-offer .small-spo-div .small-spo-discount {
+    font-size: 2vh;
     color: #BEEE11;
     background-color: #4c6b22;
     padding: 5px;
 }
 
-.special-offer .spo-div .small-spo-price {
+.special-offer .small-spo-div .small-spo-price {
     font-size: 2.5vh;
     padding: 10px 5px;
     color: #fff;
     position: relative;
 }
 
-.special-offer .spo-div .small-spo-price .small-spo-previous-prc {
+.special-offer .small-spo-div .small-spo-price .small-spo-previous-prc {
     font-size: 1.5vh;
     top: -5px;
     left: 15px;
@@ -150,3 +161,18 @@
     text-decoration: line-through;
     position: absolute;
 }
+
+/* Ensure all <a> tags have the same size */
+.special-offer .small-spo-div a {
+    height: 250px; /* Set a fixed height for each card */
+    width: 100%;  /* Ensure the width is consistent */
+    box-sizing: border-box; /* Include padding/border in size */
+}
+
+/* Ensure all cards align with the same height */
+.special-offer .small-spo-div {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
