@@ -1,3 +1,5 @@
+/* card-3.css */
+
 * {
     margin: 0;
     padding: 0;
@@ -53,7 +55,7 @@
 }
 
 #newly-updated-dv img {
-    height: 100%x;
+    height: 100%;
     width: 100%;
     object-fit: cover;
     transition: transform 1s ease;
