@@ -1,110 +1,118 @@
-*{
-    margin: 0px;
-    padding: 0px;
+* {
+    margin: 0;
+    padding: 0;
     box-sizing: border-box;
 }
 
-.login-page{
+.login-page {
     width: 100%;
     height: 100vh;
-    /* background-color: blue; */
     display: flex;
     align-items: center;
     justify-content: center;
     position: relative;
 }
 
-.login-page video{
-    height: 100%;
+.login-page .login-page-dv {
+    position: relative;
     width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.login-page .login-page-dv video {
     position: absolute;
+    width: 100%;
+    height: 100%;
     object-fit: cover;
 }
 
-.login-page .login-form h1{
-    /* margin-bottom: 5vh; */
-    font-size: 5vh;
+.login-page .login-form {
+    width: 30%;
+    height: 70%;
+    backdrop-filter: blur(8px);
+    border: 1px solid snow;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 4vh;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    z-index: 1;
+}
+
+.login-page .login-form h1 {
     position: absolute;
-    top: 0vh;
+    top: 1vh;
+    font-size: 5vh;
     color: #fff;
     text-decoration: underline;
 }
 
-.login-page .login-form a{
+.login-page .login-form a {
     text-decoration: none;
     color: #fff;
     font-size: 2vh;
 }
 
-.login-page .login-form{
-    width: 30%;
-    height: 60%;
-    backdrop-filter: blur(8px);
-    
-    border-radius: 10px;
-    display: flex;
-    flex-direction: column;
-    gap: 4vh;
-    padding: 5vh;
-    justify-content: center;
-    align-items: center;
-    position: relative;
-    z-index: 5;
-}
-
 .login-page .login-form input {
     width: 20vw;
     height: 5vh;
-    background-color: rgba(0, 0, 0, 0);
-    border: none; /* Removes all borders */
-    border-bottom: 2px solid white; /* Adds only bottom border */
-    border-radius: 0; /* Removes rounded corners */
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid white;
     font-size: 3vh;
     color: #fff;
-    padding: 0vh 2vw;
-    outline: none; /* Removes default focus outline */
+    padding: 0 2vw;
+    outline: none;
 }
 
-.login-page .login-form input::placeholder{
+.login-page .login-form input::placeholder {
     color: #fff;
     font-size: 2vh;
     opacity: 0.8;
 }
 
-.login-page .login-form div{
+.login-page .login-form div {
     width: 20vw;
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
 
-.login-page .login-form div label{
+.login-page .login-form div label {
     color: #fff;
     font-size: 2vh;
 }
 
-.login-page .login-form div #remember-me{
+.login-page .login-form div #remember-me {
     height: 2vh;
     width: 2vw;
 }
 
-.login-page .login-form #login-btn{
+.login-page .login-form div #remember-me:checked{
+    accent-color: #09152b;
+}
+
+.login-page .login-form #login-btn {
     height: 5vh;
     width: 15vw;
     font-size: 3vh;
     background-color: rgba(0, 0, 0, 0.5);
-    border: 0px solid black;
+    border: none;
     border-radius: 10px;
     transition: transform 0.5s ease;
-
 }
 
-.login-page .login-form #login-btn:hover{
+.login-page .login-form #login-btn:hover {
     background-color: #09152b;
     transform: scale(1.2);
 }
 
-.login-page .login-form #login-btn a{
-text-decoration: none;
-color: #fff;
+.login-page .login-form #login-btn a {
+    text-decoration: none;
+    color: #fff;
 }
