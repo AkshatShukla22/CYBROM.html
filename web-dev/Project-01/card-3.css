@@ -6,15 +6,15 @@
     box-sizing: border-box;
 }
 
-.newly-updated {
+.recomended {
     width: 100%;
     overflow-x: auto;
     display: flex;
     justify-content: center;
-    margin: 5vh auto;
+    margin: 15vh auto;
 }
 
-#newly-updated-dv {
+.recomended-dv {
     border-left: 5px solid #09152b;
     border-right: 5px solid #09152b;
     width: 90%;
@@ -28,7 +28,7 @@
     padding: 10px 10px;
 }
 
-#newly-updated-dv a {
+.recomended-dv a {
     height: 30vh;
     width: 17vw;
     background-color: brown;
@@ -54,21 +54,22 @@
     overflow: hidden;
 }
 
-#newly-updated-dv img {
+.recomended-dv img {
     height: 100%;
     width: 100%;
     object-fit: cover;
     transition: transform 1s ease;
 }
-#newly-updated-dv img:hover {
+
+.recomended-dv img:hover {
     transform: scale(1.5);
 }
 
-#newly-updated-dv::-webkit-scrollbar {
+.recomended-dv::-webkit-scrollbar {
     display: none; 
 }
 
-#newly-updated-dv {
+.recomended-dv {
     -ms-overflow-style: none;
     scrollbar-width: none;
 }

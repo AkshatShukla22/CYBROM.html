@@ -1,4 +1,4 @@
-/* product-banner.css */
+/* product banner */
 * {
     margin: 0;
     padding: 0;
@@ -6,17 +6,15 @@
 }
 
 .prodict-banner {
+    box-sizing: border-box;
     display: flex;
     overflow-x: scroll;
-    overflow-y: hidden;
+    overflow-y: hidden; /* Prevent vertical overflow */
     gap: 2vh;
-    gap: 2vh;;
     height: 80vh;
     width: 80vw;
     margin: 15vh auto;
     background-color: black;
-    /* -ms-overflow-style: none;
-    scrollbar-width: none; */
     scroll-snap-type: x mandatory;
 }
 
@@ -42,18 +40,21 @@
 
 .prodict-banner .product-banner-dv .product-banner-dv1 img {
     object-fit: cover;
-    width: 60vw;
-    height: 80vh;
+    width: 100%;
+    height: 100%;
     position: absolute;
     top: 0;
     left: 0;
 }
 
+
 /* Text section */
 .prodict-banner .product-banner-dv .product-banner-dv2 {
+    box-sizing: border-box;
     padding: 4vh 2vh;
-    min-height: 80vh;
-    min-width: 23.7vw;
+    max-height: 80vh;
+    overflow: hidden; /* Prevent content overflow */
+    max-width: 23.7vw;
     color: white;
     background-color: #09152b;
 }
@@ -62,8 +63,7 @@
 .prodict-banner .product-banner-dv .product-banner-dv2 .product-banner-dv2-img-dv {
     font-size: 4vh;
     min-width: 30vw;
-    min-height: 70vh;
-    margin-top: 10vh; /* Removed redundant div styling */
+    min-height: 63vh;
 }
 
 .prodict-banner .product-banner-dv .product-banner-dv2 .product-banner-dv2-img-dv p {
