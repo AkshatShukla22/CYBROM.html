@@ -33,14 +33,49 @@ int main(){
     //     cout<<"28 days";
     // }
     
-    if(a%2 != 0){
-        cout<<"31 Days";
+    // if(a%2 != 0){
+    //     cout<<"31 Days";
+    // }
+    // else if(a==2) {
+    //     cout<<"28 days";
+    // }
+    // else{
+    //     cout<<"30 days";
+    // }
+
+    // if(a<18){
+    //     cout<<"u can not vote";
+    // }
+    // else{
+    //     cout<<"u can vote";
+    // }
+
+    // if(a%2 == 0){
+    //     cout<<"even";
+    // }
+    // else{
+    //     cout<<"odd";
+    // }
+
+    if(a==0){
+        cout<<"Sunday";
     }
-    else if(a==2) {
-        cout<<"28 days";
+    else if(a==1){
+        cout<<"Monday";
+    }
+    else if(a==2){
+        cout<<"Tuesday";
+    }
+    else if(a==3){
+        cout<<"wednesday";
+    }
+    else if(a==4){
+        cout<<"Thursday";
+    }
+    else if(a==5){
+        cout<<"Friday";
     }
     else{
-        cout<<"30 days";
+        cout<<"Saturday";
     }
-    
 }

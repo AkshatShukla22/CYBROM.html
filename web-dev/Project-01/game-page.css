@@ -1,0 +1,81 @@
+*{
+    margin: 0px;
+    padding: 0px;
+    box-sizing: border-box;
+}
+
+.game-page{
+    margin-top: 15vh;
+    width: 100%;
+    height: 200vh;
+}
+
+.game-page .game-page-sec1{
+    margin: 0px auto;
+    display: flex;
+    justify-content: space-between;
+    width: 75%;
+}
+
+.game-page .game-assets{
+    width: 70%;
+    height: 70vh;
+    background-color: blue;
+}
+
+.game-page .game-assets .game-trailer{
+    width: 100%;
+    height: 75%;
+    background-color: red;
+    position: relative;
+}
+
+.game-page .game-assets .game-trailer video{
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    object-fit: cover;
+}
+
+.game-page .game-assets .game-trailer .game-img{
+    width: 100%;
+    height: 25%;
+    background-color: blue;
+}
+
+.game-page .about-game{
+    width: 25%;
+    height: 70vh;
+    margin: 0px auto;
+    background-color: aqua;
+}
+
+.game-page .about-game .games-poster{
+    width: 100%;
+    height: 35%;
+    position: relative;
+}
+
+.game-page .about-game .games-poster img{
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    object-fit: cover;
+}
+
+.game-page .about-game .game-discription{
+    font-size: 2vh;
+    padding: 2vh;
+    color: white;
+}
+
+.game-page .about-game .game-discription .game-dta .highlited-dta span{
+    display: flex;
+    font-size: 2vh;
+    color: grey;
+    gap: 1vw;
+}
+
+.game-page .about-game .game-discription .game-dta .highlited-dta span .highlited-txt{
+    color: #76d5fe;
+}
