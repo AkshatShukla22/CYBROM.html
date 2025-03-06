@@ -5,28 +5,45 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="./login.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&family=Press+Start+2P&display=swap" rel="stylesheet">
 </head>
 <body>
     <section class="login-page">
+        <video src="./pj01-assets/snowy-cabin-red-dead-redemption-2-moewalls-com.mp4" preload="auto" loop muted autoplay></video>
         <div class="login-page-dv">
-            <video src="./pj01-assets/snowy-cabin-red-dead-redemption-2-moewalls-com.mp4" preload="auto" loop muted autoplay></video>
-            <div class="login-form">
+            <!-- Toggle Switch -->
+            <input type="checkbox" id="switch-signup" class="switch" name="switch">
+            
+            <div class="login-form login-frm">
                 <h1>Login</h1>
-                <input type="text" id="" placeholder="Email/User name">
-                <input type="password" id="" placeholder="Password">
+                <input type="text" placeholder="Email/User name">
+                <input type="password" placeholder="Password">
                 <div>
                     <span>
                         <input type="checkbox" id="remember-me" checked> 
                         <label for="remember-me">Remember me</label>
                     </span>
-                    <a href="">Forget password</a>
+                    <a href="#">Forget password</a>
                 </div>
                 <button id="login-btn"><a href="./index.html">Login</a></button>
-                <a href="">Dont have a account? Sign up</a>
+                <label for="switch-signup">Don't have an account? Sign up</label>
             </div>
-
-            
+        
+            <div class="login-form signup-form">
+                <h1>Sign up</h1>
+                <input type="text" placeholder="Email">
+                <input type="text" placeholder="User name">
+                <input type="password" placeholder="Choose Password">
+                <input type="password" placeholder="Conform Password">
+                <button id="login-btn"><a href="">Sign Up</a></button>
+                <label for="switch-signup">Already have an account? Login</label>
+            </div>
         </div>
+        
     </section>
 </body>
 </html>

@@ -11,8 +11,19 @@
     align-items: center;
     justify-content: center;
     position: relative;
+    overflow: hidden;
+    font-family: "Orbitron", sans-serif;
 }
 
+/* Background Video */
+.login-page video {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Main Container */
 .login-page .login-page-dv {
     position: relative;
     width: 100%;
@@ -20,15 +31,10 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    overflow: hidden;
 }
 
-.login-page .login-page-dv video {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
+/* Common Form Styling */
 .login-page .login-form {
     width: 30%;
     height: 70%;
@@ -40,24 +46,32 @@
     gap: 4vh;
     justify-content: center;
     align-items: center;
-    position: relative;
+    position: absolute;
     z-index: 1;
 }
 
+/* Form Titles */
 .login-page .login-form h1 {
     position: absolute;
-    top: 1vh;
-    font-size: 5vh;
+    top: 2vh;
+    font-size: 4vh;
     color: #fff;
     text-decoration: underline;
+    /* letter-spacing: 0.4vw;
+    word-spacing: 0.2vw; */
+    font-family: "Press Start 2P", system-ui;
+    font-weight: 200;
+    font-style: normal;
 }
 
+/* Links */
 .login-page .login-form a {
     text-decoration: none;
     color: #fff;
     font-size: 2vh;
 }
 
+/* Input Fields */
 .login-page .login-form input {
     width: 20vw;
     height: 5vh;
@@ -74,8 +88,10 @@
     color: #fff;
     font-size: 2vh;
     opacity: 0.8;
+    font-family: "Orbitron", sans-serif;
 }
 
+/* Remember Me and Forgot Password */
 .login-page .login-form div {
     width: 20vw;
     display: flex;
@@ -93,10 +109,11 @@
     width: 2vw;
 }
 
-.login-page .login-form div #remember-me:checked{
+.login-page .login-form div #remember-me:checked {
     accent-color: #09152b;
 }
 
+/* Login Button */
 .login-page .login-form #login-btn {
     height: 5vh;
     width: 15vw;
@@ -105,6 +122,7 @@
     border: none;
     border-radius: 10px;
     transition: transform 0.5s ease;
+    display: block;
 }
 
 .login-page .login-form #login-btn:hover {
@@ -115,4 +133,47 @@
 .login-page .login-form #login-btn a {
     text-decoration: none;
     color: #fff;
+}
+
+/* Hide Checkbox */
+.login-page .login-page-dv .switch {
+    display: none;
+}
+
+/* Label for Switching Forms */
+.login-page .login-form label {
+    color: #fff;
+    font-size: 2vh;
+    cursor: pointer;
+}
+
+/* === Form Animation === */
+
+/* Login Form (default visible) */
+.login-frm {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(0);
+    transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out, visibility 0.5s;
+}
+
+/* Signup Form (default hidden) */
+.signup-form {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateX(35vw);
+    transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out, visibility 0.5s;
+}
+
+/* When Checkbox is Checked (Show Signup, Hide Login) */
+.switch:checked ~ .signup-form {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(0);
+}
+
+.switch:checked ~ .login-frm {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateX(-35vw);
 }
