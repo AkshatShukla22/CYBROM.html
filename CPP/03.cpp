@@ -57,25 +57,52 @@ int main(){
     //     cout<<"odd";
     // }
 
-    if(a==0){
-        cout<<"Sunday";
-    }
-    else if(a==1){
-        cout<<"Monday";
-    }
-    else if(a==2){
-        cout<<"Tuesday";
-    }
-    else if(a==3){
-        cout<<"wednesday";
-    }
-    else if(a==4){
-        cout<<"Thursday";
-    }
-    else if(a==5){
-        cout<<"Friday";
-    }
-    else{
-        cout<<"Saturday";
-    }
+    // if(a==0){
+    //     cout<<"Sunday";
+    // }
+    // else if(a==1){
+    //     cout<<"Monday";
+    // }
+    // else if(a==2){
+    //     cout<<"Tuesday";
+    // }
+    // else if(a==3){
+    //     cout<<"wednesday";
+    // }
+    // else if(a==4){
+    //     cout<<"Thursday";
+    // }
+    // else if(a==5){
+    //     cout<<"Friday";
+    // }
+    // else{
+    //     cout<<"Saturday";
+    // }
+
+    // if(a>=60){
+    //     if(a>=90){
+    //         cout<<"A+ ";
+    //     }
+    //     else if(a>=80){
+    //         cout<<"A ";
+    //     }
+    //     else if(a>=70){
+    //         cout<<"A- ";
+    //     }
+    //     else{
+    //         cout<<"B";
+    //     }
+    //     cout<<"1st divison";
+    // }
+    // else if (a<60 && a>=33)
+    // {
+    //     cout<<"2nd divison";
+
+    // }
+
+    // else{
+    //     cout<<"Fail";
+
+    // }
+    
 }
