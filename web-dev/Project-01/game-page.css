@@ -186,3 +186,50 @@
 .other-section table tr:not(:first-child) td:first-child {
     color: #76d5fe;
 }
+
+.buy-game{
+    height: 40vh;
+    width: 80%;
+    display: flex;
+    /* flex-direction: column; */
+    justify-content: center;
+    margin: 15vh auto;
+    gap: 5vw;
+}
+
+.buy-game .edition{
+    height: 100%;
+    width: 60%;
+    padding: 1vh;
+}
+
+.buy-game .more-tags{
+    height: 100%;
+    width: 40%;
+    padding: 1vh;
+    background-color: aqua;
+}
+
+.buy-game .edition .more-game-of-compony {
+    position: relative;
+}
+
+.buy-game .edition .more-game-of-compony div{
+    border-radius: 10px;
+    height: 8vh;
+    width: 100%;
+    color: white;
+    font-size: 3vh;
+    padding: 1vh 2vw;
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    transition: transform 0.3s ease;
+    position: absolute;
+}
+
+.buy-game .edition .more-game-of-compony:hover div{
+    transform: scale(1.2);
+
+}
+
