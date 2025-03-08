@@ -54,10 +54,25 @@
     object-fit: cover;
 }
 
-.game-page .game-assets .game-trailer .game-img{
+.game-page .game-assets .game-img{
+    margin-top: 2vh;
     width: 100%;
     height: 25%;
-    background-color: blue;
+    display: flex;
+    gap: 0.5vw;
+}
+
+.game-page .game-assets .game-img div{
+    width: 24%;
+    height: 100%;
+    position: relative;
+}
+
+.game-page .game-assets .game-img div img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
 }
 
 .game-page .about-game{
@@ -117,6 +132,57 @@
 }
 
 .other-section{
-    height: 100vh;
+    height: 40vh;
+    width: 80%;
+    display: flex;
+    justify-content: center;
+    margin: 5vh auto;
+    margin-top: 10vh;
+    gap: 5vw;
+}
+
+.other-section .other-data-1{
+    height: 100%;
+    width: 60%;
+    padding: 1vh;
+}
+
+.other-section .other-data-1 #sys_req_heading{
+    color: white;
+    border-bottom: 1px solid white;
+    margin: 2vh 0px;
+    text-align: center;
+}
+
+.other-section .other-data-1 .req{
     width: 100%;
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.other-section .other-data-2{
+    height: 100%;
+    width: 40%;
+    background-color: #09152b;
+    font-size: 3vh;
+    padding: 2vh;
+    display: flex;
+}
+
+.other-section .other-data-2 div{
+    height: 100%;
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3vh;
+}
+
+.other-section{
+    color: #acb2b8;
+}
+
+.other-section table tr:not(:first-child) td:first-child {
+    color: #76d5fe;
 }
