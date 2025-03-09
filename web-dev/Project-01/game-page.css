@@ -152,7 +152,7 @@
 
 /* Other Sections */
 .other-section {
-    height: 40vh;
+    height: 50vh;
     width: 80%;
     display: flex;
     justify-content: center;
@@ -165,7 +165,6 @@
 .other-section .other-data-1 {
     height: 100%;
     width: 60%;
-    padding: 1vh;
 }
 
 .other-section .other-data-1 #sys_req_heading {
@@ -184,6 +183,11 @@
     width: 100%;
     display: flex;
     justify-content: space-evenly;
+    font-size: 2.5vh;
+}
+
+.other-section .other-data-1 .req div{
+    width: 50%;
 }
 
 .other-section .other-data-2 {
@@ -256,11 +260,37 @@
 }
 
 /* More Tags Section (Kept Intact) */
-.buy-game .more-tags {
+.buy-game .about-game-info {
     height: 100%;
     width: 40%;
-    padding: 1vh;
-    background-color: aqua;
+    padding: 2vh;
+    background-color: #09152b;
+    color: #fff;
+    font-size: 3vh;
+    text-align: center;
+    transition: transform 0.5s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2vh;
+}
+
+.buy-game .about-game-info .tags{
+    width: 60%;
+    height: 20%;
+    display: inline-block;
+    padding: 0px 2vw;
+    border-bottom: 1px solid white;
+    /* background-color: #76d5fe; */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-radius: 5px;
+}
+
+.buy-game .about-game-info .tags:hover{
+    background-image: linear-gradient(to right, #09152b,#76d5fe,#76d5fe,#76d5fe,#09152b);
+    /* background-image: linear-gradient(to right, red ,blue); */
 }
 
 .buy-game .edition .buy-dv{
@@ -295,7 +325,11 @@
     padding: 0.25vw;
     border-radius: 5px;
     cursor: pointer;
+}
 
+.buy-game .edition .buy-dv .price-add-to-cart .add-to-cart:hover{
+    color: rgb(209, 205, 205);
+    background-color: #638f25;
 }
 
 .buy-game .edition .buy-dv .discount{
