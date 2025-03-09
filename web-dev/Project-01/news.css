@@ -1,0 +1,78 @@
+*{
+    margin: 0px;
+    padding: 0px;
+    box-sizing: border-box;
+}
+
+.news{
+    height: 100vh;
+    width: 80%;
+    margin: 15vh auto;
+    background-color: white;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.news input[type="radio"]{
+    display: none;
+}
+
+.news label{
+    background-color: blue;
+    height: 5vh;
+    text-align: center;
+    padding: 1vh;
+    margin: 0px  2vw 0px 0px;
+}
+
+.news .news-dv{
+    width: 100%;
+    height: 20vh;
+    background-color: aqua;
+    order: 1;
+    display: none;
+}
+
+.news input[type="radio"]:checked + label + .news-dv{
+    display: block;
+}
+
+.news input[type="radio"]:checked + label{
+    background-color: white;
+}
+
+details {
+    border: 1px solid #ccc;
+    padding: 10px;
+    background: #f9f9f9;
+    width: 100%;
+    max-width: 600px;
+    overflow: hidden;
+    transition: max-height 0.5s ease-in-out, padding 0.3s ease-in-out;
+    max-height: 2.5em; /* Enough to show summary only */
+}
+
+details[open] {
+    max-height: 300px; /* Adjust as needed */
+    padding-bottom: 10px;
+}
+
+
+summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+summary::after {
+    content: "▼"; /* Down arrow */
+    transition: transform 0.3s ease-in-out;
+}
+
+details[open] summary::after {
+    transform: rotate(180deg); /* Flips arrow up when open */
+}
+
+

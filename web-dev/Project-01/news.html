@@ -1,0 +1,94 @@
+<!--  news.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Document</title>
+  <link rel="stylesheet" href="index.css">
+  <link rel="stylesheet" href="news.css">
+  <!-- <link rel="stylesheet" href="card.css">
+  <link rel="stylesheet" href="card-2.css"> -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body>
+  <header>
+    <nav>
+      <div id="icon">
+        <i class="fa-solid fa-gamepad"></i>
+      </div>
+  
+      <div class="nav">
+        <a href="." class="active"><i class="fa-solid fa-house"></i></a>
+        <a href="./product.html"><i class="fa-solid fa-cart-shopping"></i></a>
+        <a href=""><i class="fa-solid fa-newspaper"></i></a>
+        <a href=""><i class="fa-solid fa-headset"></i></a>
+      </div>
+  
+      <input type="checkbox" id="toggleSearch">
+      <div id="srch">
+        <input type="search" placeholder="Search Games">
+        <label for="toggleSearch"><i class="fa-solid fa-magnifying-glass"></i></label>
+      </div>
+    </nav>
+  </header>
+
+  <section class="news">
+    <input type="radio" id="elden-ring-news" name="my-news" checked="checked">
+    <label for="elden-ring-news">Elden Ring</label>
+    <div class="news-dv">
+        <details>
+            <summary>Elden Ring</summary>
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Non perferendis labore assumenda earum porro, error ab nemo nisi possimus maiores illum deserunt recusandae nam harum nobis. Sint expedita culpa rem.</p>
+        </details>
+    </div>
+
+    <input type="radio" id="cod" name="my-news" >
+    <label for="cod">Call of Duty</label>
+    <div class="news-dv">
+        <h1>COD</h1>
+        <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quo fugit possimus at rem odit quae enim dolor et minus. Itaque quia delectus, facere voluptas labore repellat at amet necessitatibus quo!</p>
+    </div>
+
+    <input type="radio" id="gta" name="my-news" >
+    <label for="gta">Grand Theft Auto</label>
+    <div class="news-dv">
+        <h1>GTA</h1>
+        <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quo fugit possimus at rem odit quae enim dolor et minus. Itaque quia delectus, facere voluptas labore repellat at amet necessitatibus quo!</p>
+    </div>
+
+  </section>
+
+  <footer>
+    <div class="ftr-0">
+      <div class="ft-1">
+        <div>
+          <i class="fa-solid fa-gamepad"></i>
+        </div>
+        Level sabke niklenge <br> par niklenge ussi ke jo tikka rahega
+      </div>
+      <div class="ft-2">
+        Explore :
+        <a href="">Home</a>
+        <a href="">Products</a>
+        <a href="">News</a>
+        <a href="">Customer Support</a>
+      </div>
+      <div class="ft-2" id="ft-2-3">
+        Follow:
+        <a href=""><i class="fa-brands fa-instagram"></i></a>
+        <a href=""><i class="fa-brands fa-twitter"></i></a>
+        <a href=""><i class="fa-brands fa-facebook"></i></a>
+      </div>
+      <div class="ft-2">
+        legal:
+        <a href="">Terms</a>
+        <a href="">Privacy</a>
+      </div>
+    </div>
+    <div class="ft-3">
+      Copyright &copy 2025 Akshat Shukla. All Rights Reserved.
+    </div>
+  </footer>
+</body>
+</html>
