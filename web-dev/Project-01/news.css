@@ -1,3 +1,5 @@
+/* news.css */
+
 *{
     margin: 0px;
     padding: 0px;
@@ -8,7 +10,9 @@
     height: 100vh;
     width: 80%;
     margin: 15vh auto;
-    background-color: white;
+    /* background: linear-gradient(to bottom right, #007BFF, rgba(0, 123, 255, 0)); Electric Blue to transparent     */
+    /* background-color: white; */
+    box-shadow: 0px 0px 5px rgb(39, 37, 37);
     display: flex;
     flex-wrap: wrap;
 }
@@ -18,17 +22,20 @@
 }
 
 .news label{
-    background-color: blue;
+    background-color: #09152b;
+    color: white;
     height: 5vh;
+    font-size: 3vh;
     text-align: center;
-    padding: 1vh;
-    margin: 0px  2vw 0px 0px;
+    padding: 1vh 2vw;
+    margin: 0px  1vw 0px 0px;
+    transition: background-color 0.3s ease, transform 0.3s ease; 
 }
 
 .news .news-dv{
     width: 100%;
-    height: 20vh;
-    background-color: aqua;
+    height: 100%;
+    /* background-color: aqua; */
     order: 1;
     display: none;
 }
@@ -38,23 +45,36 @@
 }
 
 .news input[type="radio"]:checked + label{
-    background-color: white;
+    background-color: #063977;
+    transform: scale(1.05);
 }
 
 details {
-    border: 1px solid #ccc;
-    padding: 10px;
-    background: #f9f9f9;
+    color: white;
+    font-size: 3vh;
+    background-image: linear-gradient(to bottom right, #09152b, #09152b13);
     width: 100%;
-    max-width: 600px;
     overflow: hidden;
-    transition: max-height 0.5s ease-in-out, padding 0.3s ease-in-out;
-    max-height: 2.5em; /* Enough to show summary only */
+    margin-top: 2vh;
+    transition: height 0.5s ease-in-out, padding 0.3s ease-in-out;
+    height: 15vh; /* Enough to show summary only */
+}
+
+details .dtl{
+    padding: 3vh 3vw;
+    display: flex;
+    justify-content: space-between;
+    gap: 2vw;
+}
+
+details .dtl img{
+    height: 25vh;
+    width: 25vw;
 }
 
 details[open] {
-    max-height: 300px; /* Adjust as needed */
-    padding-bottom: 10px;
+    height: 65vh; /* Adjust as needed */
+    /* padding-bottom: 10px; */
 }
 
 
@@ -64,6 +84,14 @@ summary {
     align-items: center;
     cursor: pointer;
     font-weight: bold;
+    color: grey;
+    font-size: 4vh;
+    padding: 2vh 4vw;
+}
+
+summary img{
+    height: 10vh;
+    width: 10vw;
 }
 
 summary::after {
