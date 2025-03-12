@@ -244,16 +244,16 @@ int main(){
     // }
 
     // Q5
-    int d;
-    if(b>5 && c>=4){
-       d =(a/100)*20;
-       cout<<"you got 20% bonus, which is: "<<d;
-    }
-    else if((b<=5 && b>=3) && c>=3){
-        d = (a/100)*10;
-        cout<<"you got 10% bonus, which is: "<<d;
-     }
-    else{
-        cout<<"no bonus, work hard";
-    }
+    // int d;
+    // if(b>5 && c>=4){
+    //    d =(a/100)*20;
+    //    cout<<"you got 20% bonus, which is: "<<d;
+    // }
+    // else if((b<=5 && b>=3) && c>=3){
+    //     d = (a/100)*10;
+    //     cout<<"you got 10% bonus, which is: "<<d;
+    //  }
+    // else{
+    //     cout<<"no bonus, work hard";
+    // }
 }
