@@ -67,12 +67,12 @@ details {
 
 /* When DETAILS is open, let it expand dynamically */
 details[open] {
-    max-height: 10000px; /* Remove the max-height limitation */
+    max-height: 100000px; /* Remove the max-height limitation */
 }
 
 /* Detail Content Styling */
 details .dtl {
-    padding: 3vh 3vw;
+    padding: 15vh 3vw;
     display: flex;
     justify-content: space-between;
     gap: 2vw;
@@ -93,14 +93,18 @@ summary {
     color: grey;
     font-size: 4vh;
     padding: 2vh 4vw;
+    position: relative;
 }
 
 summary img {
-    height: 10vh;
-    width: 12vw;
+    height: 100%;
+    width: 20%;
     padding: 0px 1vw;
-    object-fit: cover;
+    /* object-fit: cover; */
     border-radius: 10px;
+    position: absolute;
+    top: 0px;
+    right: 100px;
 }
 
 /* Arrow Animation */
