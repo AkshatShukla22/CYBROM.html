@@ -25,6 +25,7 @@ int main(){
     // cout<<a;
 
     // do while
+
     // do
     // {
     //     a=a*c;
@@ -32,19 +33,25 @@ int main(){
     // } while (c<=b);
     // cout<<a;
 
+    // Q1. Find 'a' is a prime number or not.
+    // int a;
+    // int b=2;
+    // cin>>a;
+    // int c=1;
     // while(b<a){
     //     if(a%b==0){
     //         c++;
     //     }
     //     b++;
     // }
-    // if(c>2){
+    // if(c>1){
     //     cout<<"not a prime no.";
     // }
     // else{
     //     cout<<"prime no.";
     // }
 
+    // Q2. Find factor's of a.
     // int a;
     // cin>>a;
     // int b = 1;
@@ -57,6 +64,7 @@ int main(){
 
     // for loop
 
+    // Q2. Find Sum of all previous numbers using for loop.
     // int a;
     // cin>>a;
     // int sum=0;
@@ -65,6 +73,7 @@ int main(){
     // }
     // cout<<sum;
 
+// Q4. Find 'a' is a prime number or not using for loop.
 //  int a;
 //  cin>>a;
 //  int c=1;
@@ -80,6 +89,7 @@ int main(){
 //     cout<<"prime no.";
 //  }
 
+// Q5. Find factor's of a using for loop.
 // int a;
 // cin>>a;
 // for(int i=1; i<=a; i++){
