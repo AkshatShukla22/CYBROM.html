@@ -18,8 +18,7 @@
 /* Form Container */
 .support .support-dv {
     background-color: #09152b; /* Background color */
-    width: 90%; /* Width of the form container */
-    max-width: 500px; /* Maximum width of the form container */
+    width: 30%; /* Width of the form container */ /* Maximum width of the form container */
     padding: 2vh; /* Padding inside the container */
     border-radius: 10px; /* Rounded corners */
     box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1); /* Box shadow for depth */
@@ -54,7 +53,7 @@
 .support .support-dv form {
     display: flex;
     flex-direction: column;
-    gap: 2vh; /* Spacing between form elements */
+    gap: 4vh; /* Spacing between form elements */
     font-size: 2vh; /* Font size based on viewport height */
 }
 
@@ -62,7 +61,7 @@
 .support .support-dv form .select-section {
     display: flex;
     flex-direction: column;
-    gap: 2vh; /* Spacing between select elements */
+    gap: 3vh; /* Spacing between select elements */
 }
 
 /* Label Styling */
@@ -187,7 +186,7 @@
     }
 
     .support .support-dv {
-        width: 95%; /* Adjust width */
+        width: 30%; /* Adjust width */
         padding: 2vh;
     }
 
@@ -205,6 +204,44 @@
     .support .support-dv form button {
         font-size: 1.8vh;
         padding: 1.2vh;
+    }
+
+    .support .support-dv form input[type="checkbox"] {
+        width: 1.6vw;
+        height: 1.6vw;
+    }
+
+    .support .support-dv form input[type="checkbox"]::before {
+        width: 0.4vw;
+        height: 0.8vw;
+    }
+}
+
+@media (max-width: 468px) {
+    .support {
+        height: auto; /* Adjust height */
+    }
+
+    .support .support-dv {
+        width: 30%; /* Adjust width */
+        padding: 2vh;
+    }
+
+    .support .support-dv h2 {
+        font-size: 2.5vh; /* Reduce font size */
+    }
+
+    .support .support-dv form {
+        font-size: 1.5vh; /* Reduce font size */
+    }
+
+    .support .support-dv form input,
+    .support .support-dv form select,
+    .support .support-dv form textarea,
+    .support .support-dv form button {
+        font-size: 1vh;
+        padding: 1.2vh;
+        border-radius: 5px;
     }
 
     .support .support-dv form input[type="checkbox"] {

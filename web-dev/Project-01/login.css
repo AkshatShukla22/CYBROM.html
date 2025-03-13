@@ -1,12 +1,14 @@
+/* Reset Default Styles */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
+/* === Login Page Styling === */
 .login-page {
-    width: 100%;
-    height: 100vh;
+    width: 100vw; /* Full width of the viewport */
+    height: 100vh; /* Full height of the viewport */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -20,7 +22,7 @@
     position: absolute;
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: cover; /* Maintain video aspect ratio */
 }
 
 /* Main Container */
@@ -31,19 +33,19 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    overflow: hidden;
 }
 
-/* Common Form Styling */
+/* === Common Form Styling === */
 .login-page .login-form {
-    width: 30%;
-    height: 70%;
-    backdrop-filter: blur(8px);
+    width: 60vh; /* Fixed width */
+    min-height: 70vh; /* Minimum height */
+    backdrop-filter: blur(8px); /* Blur effect */
     border: 1px solid snow;
-    border-radius: 20px;
+    border-radius: 4%; /* Rounded corners */
     display: flex;
     flex-direction: column;
-    gap: 4vh;
+    padding: 4vh 1vw;
+    gap: 5vh;
     justify-content: center;
     align-items: center;
     position: absolute;
@@ -52,16 +54,13 @@
 
 /* Form Titles */
 .login-page .login-form h1 {
-    position: absolute;
-    top: 2vh;
-    font-size: 4vh;
+    font-size: 3vh;
     color: #fff;
     text-decoration: underline;
-    /* letter-spacing: 0.4vw;
-    word-spacing: 0.2vw; */
     font-family: "Press Start 2P", system-ui;
-    font-weight: 200;
-    font-style: normal;
+    font-weight: 400;
+    position: absolute;
+    top: 4vh;
 }
 
 /* Links */
@@ -73,77 +72,81 @@
 
 /* Input Fields */
 .login-page .login-form input {
-    width: 20vw;
-    height: 5vh;
+    width: 80%; /* Relative width */
+    height: 4vh;
     background: transparent;
     border: none;
     border-bottom: 1px solid white;
-    font-size: 3vh;
+    font-size: 2vh;
     color: #fff;
-    padding: 0 2vw;
+    padding: 0 1vw;
     outline: none;
 }
 
+/* Placeholder Styling */
 .login-page .login-form input::placeholder {
     color: #fff;
-    font-size: 2vh;
     opacity: 0.8;
-    font-family: "Orbitron", sans-serif;
+    font-size: 2vh;
 }
 
-/* Remember Me and Forgot Password */
+/* === Remember Me and Forgot Password Section === */
 .login-page .login-form div {
-    width: 20vw;
+    width: 80%;
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
 
+/* Label Styling */
 .login-page .login-form div label {
     color: #fff;
     font-size: 2vh;
 }
 
+/* Checkbox Styling */
 .login-page .login-form div #remember-me {
     height: 2vh;
-    width: 2vw;
+    width: 2vh;
 }
 
+/* Checkbox Custom Color When Checked */
 .login-page .login-form div #remember-me:checked {
     accent-color: #09152b;
 }
 
-/* Login Button */
+/* === Login Button === */
 .login-page .login-form #login-btn {
     height: 5vh;
-    width: 15vw;
-    font-size: 3vh;
+    width: 80%;
+    font-size: 2vh;
     background-color: rgba(0, 0, 0, 0.5);
     border: none;
     border-radius: 10px;
-    transition: transform 0.5s ease;
-    display: block;
+    transition: transform 0.3s ease;
 }
 
+/* Hover Effect for Button */
 .login-page .login-form #login-btn:hover {
     background-color: #09152b;
-    transform: scale(1.2);
+    transform: scale(1.05); /* Slight scale effect */
 }
 
+/* Remove Default Underline for Link Inside Button */
 .login-page .login-form #login-btn a {
     text-decoration: none;
     color: #fff;
 }
 
-/* Hide Checkbox */
+/* === Hide Checkbox for Switching Forms === */
 .login-page .login-page-dv .switch {
     display: none;
 }
 
-/* Label for Switching Forms */
+/* Switch Label Styling */
 .login-page .login-form label {
     color: #fff;
-    font-size: 2vh;
+    font-size: 1.5vh;
     cursor: pointer;
 }
 
@@ -154,15 +157,15 @@
     opacity: 1;
     visibility: visible;
     transform: translateX(0);
-    transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out, visibility 0.5s;
+    transition: transform 0.5s ease, opacity 0.5s ease, visibility 0.5s;
 }
 
 /* Signup Form (default hidden) */
 .signup-form {
     opacity: 0;
     visibility: hidden;
-    transform: translateX(35vw);
-    transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out, visibility 0.5s;
+    transform: translateX(120%);
+    transition: transform 0.5s ease, opacity 0.5s ease, visibility 0.5s;
 }
 
 /* When Checkbox is Checked (Show Signup, Hide Login) */
@@ -175,5 +178,61 @@
 .switch:checked ~ .login-frm {
     opacity: 0;
     visibility: hidden;
-    transform: translateX(-35vw);
+    transform: translateX(-120%);
+}
+
+/* === Media Queries === */
+
+/* For Screens Smaller than 768px */
+@media (max-width: 768px) {
+    .login-page .login-form {
+        width: 60vh; /* Keep width constant */
+        min-height: 70vh;
+    }
+
+    .login-page .login-form h1 {
+        font-size: 3vh;
+        margin-top: -1.5vh;
+    }
+
+    .login-page .login-form input {
+        font-size: 2vh;
+        height: 3.5vh;
+    }
+
+    .login-page .login-form div label {
+        font-size: 2vh;
+    }
+
+    .login-page .login-form #login-btn {
+        font-size: 2vh;
+        height: 4vh;
+    }
+}
+
+/* For Screens Smaller than 480px */
+@media (max-width: 480px) {
+    .login-page .login-form {
+        width: 60vh; /* Keep width constant */
+        min-height: 70vh;
+    }
+
+    .login-page .login-form h1 {
+        font-size: 3vh;
+        margin-top: -1vh;
+    }
+
+    .login-page .login-form input {
+        font-size: 2vh;
+        height: 3vh;
+    }
+
+    .login-page .login-form div label {
+        font-size: 2vh;
+    }
+
+    .login-page .login-form #login-btn {
+        font-size: 2vh;
+        height: 3.5vh;
+    }
 }

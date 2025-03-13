@@ -5,7 +5,6 @@
     box-sizing: border-box;
 }
 
-/* News Section Styling */
 .news {
     height: auto;
     width: 80%;
@@ -15,12 +14,11 @@
     flex-wrap: wrap;
 }
 
-/* Hide Radio Buttons */
 .news input[type="radio"] {
     display: none;
 }
 
-/* Tab Buttons Styling */
+/* Tab Button Styling */
 .news label {
     background-color: #09152b;
     color: white;
@@ -28,32 +26,31 @@
     font-size: 3vh;
     text-align: center;
     padding: 1vh 2vw;
-    margin: 0px 1vw 0px 0px;
+    margin-right: 1vw;
     transition: background-color 0.3s ease, transform 0.3s ease;
     cursor: pointer;
 }
 
+/* Target next sibling label when radio is checked */
 .news input[type="radio"]:checked + label {
     background-color: #063977;
     transform: scale(1.05);
 }
 
-/* News Content Container */
-.news .news-dv {
-    width: 100%;
-    overflow: hidden; /* Prevent content overflow */
-    order: 1;
-    height: 0; /* Initially collapsed */
-    transition: height 0.5s ease-in-out, padding 0.3s ease-in-out;
-}
-
-/* Show Active Tab Content */
+/* Target next sibling content container when radio is checked */
 .news input[type="radio"]:checked + label + .news-dv {
-    height: auto; /* Let it grow based on content */
+    height: auto;
     padding: 2vh 2vw;
 }
 
-/* DETAILS STYLING */
+.news .news-dv {
+    width: 100%;
+    overflow: hidden;
+    height: 0;
+    order: 1;
+    transition: height 0.5s ease-in-out, padding 0.3s ease-in-out;
+}
+
 details {
     color: white;
     font-size: 3vh;
@@ -62,15 +59,14 @@ details {
     overflow: hidden;
     margin-top: 2vh;
     transition: max-height 0.5s ease-in-out;
-    max-height: 15vh; /* Enough to show summary only */
+    max-height: 15vh;
 }
 
-/* When DETAILS is open, let it expand dynamically */
+/* Remove height limitation when details is opened */
 details[open] {
-    max-height: 100000px; /* Remove the max-height limitation */
+    max-height: 100000px;
 }
 
-/* Detail Content Styling */
 details .dtl {
     padding: 15vh 3vw;
     display: flex;
@@ -81,9 +77,9 @@ details .dtl {
 details .dtl img {
     height: 25vh;
     width: 25vw;
+    object-fit: cover;
 }
 
-/* Summary Styling */
 summary {
     display: flex;
     justify-content: space-between;
@@ -96,23 +92,24 @@ summary {
     position: relative;
 }
 
+/* Position the image inside summary */
 summary img {
     height: 100%;
     width: 20%;
     padding: 0px 1vw;
-    /* object-fit: cover; */
     border-radius: 10px;
     position: absolute;
-    top: 0px;
+    top: 0;
     right: 100px;
 }
 
-/* Arrow Animation */
+/* Add arrow icon after summary */
 summary::after {
-    content: "▼"; /* Down arrow */
+    content: "▼";
     transition: transform 0.3s ease-in-out;
 }
 
+/* Flip arrow when details is opened */
 details[open] summary::after {
-    transform: rotate(180deg); /* Flip arrow up when open */
+    transform: rotate(180deg);
 }

@@ -1,27 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Metadata and Page Setup -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+
+    <!-- External CSS File -->
     <link rel="stylesheet" href="./login.css">
+    
+    <!-- Preconnecting to Google Fonts for faster loading -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <!-- Font Styles -->
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&family=Press+Start+2P&display=swap" rel="stylesheet">
 </head>
 <body>
+    <!-- Login Page Section -->
     <section class="login-page">
+        <!-- Background Video -->
         <video src="./pj01-assets/snowy-cabin-red-dead-redemption-2-moewalls-com.mp4" preload="auto" loop muted autoplay></video>
+        
         <div class="login-page-dv">
-            <!-- Toggle Switch -->
+            <!-- Toggle Switch for Switching Between Login and Signup -->
             <input type="checkbox" id="switch-signup" class="switch" name="switch">
             
+            <!-- Login Form -->
             <div class="login-form login-frm">
                 <h1>Login</h1>
+                
+                <!-- Email/Username Input -->
                 <input type="text" placeholder="Email/User name">
+                
+                <!-- Password Input -->
                 <input type="password" placeholder="Password">
+                
+                <!-- Remember Me and Forgot Password Section -->
                 <div>
                     <span>
                         <input type="checkbox" id="remember-me" checked> 
@@ -29,21 +44,37 @@
                     </span>
                     <a href="#">Forget password</a>
                 </div>
+                
+                <!-- Login Button -->
                 <button id="login-btn"><a href="./index.html">Login</a></button>
+                
+                <!-- Switch to Signup Label -->
                 <label for="switch-signup">Don't have an account? Sign up</label>
             </div>
         
+            <!-- Signup Form -->
             <div class="login-form signup-form">
                 <h1>Sign up</h1>
+                
+                <!-- Email Input -->
                 <input type="text" placeholder="Email">
+                
+                <!-- Username Input -->
                 <input type="text" placeholder="User name">
+                
+                <!-- Password Input -->
                 <input type="password" placeholder="Choose Password">
+                
+                <!-- Confirm Password Input -->
                 <input type="password" placeholder="Conform Password">
+                
+                <!-- Signup Button -->
                 <button id="login-btn"><a href="">Sign Up</a></button>
+                
+                <!-- Switch to Login Label -->
                 <label for="switch-signup">Already have an account? Login</label>
             </div>
         </div>
-        
     </section>
 </body>
 </html>

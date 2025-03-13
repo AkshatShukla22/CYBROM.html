@@ -44,6 +44,7 @@
     justify-content: space-between;
     padding-top: 15vh;
     width: 60%;
+    max-height: 100%;
     gap: 0.5vw;
     z-index: 7;
 }
@@ -207,6 +208,14 @@
     align-items: center;
     justify-content: center;
     gap: 3vh;
+}
+
+.other-section .other-data-2 div img{
+    height: 10vh;
+}
+
+.other-section .other-data-2 div span img{
+    height: 4vh;
 }
 
 /* Buy Game Section */
