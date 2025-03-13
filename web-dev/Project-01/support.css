@@ -1,148 +1,219 @@
-/* Reset Default Styles */
+/* support.css */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: Arial, sans-serif;
 }
 
 /* Support Section Styling */
 .support {
-    margin-top: 10vh;
-    width: 100%;
-    min-height: 90vh;
+    margin: 15vh 0; /* Vertical margin for spacing */
+    width: 100%; /* Full width */
+    min-height: 45vh; /* Minimum height for the section */
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
+/* Form Container */
 .support .support-dv {
-    background-color: #09152b;
-    height: auto;
-    width: 90%;
-    max-width: 600px;
-    padding: 3vh;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    color: white;
+    background-color: #09152b; /* Background color */
+    width: 90%; /* Width of the form container */
+    max-width: 500px; /* Maximum width of the form container */
+    padding: 2vh; /* Padding inside the container */
+    border-radius: 10px; /* Rounded corners */
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1); /* Box shadow for depth */
+    color: white; /* Text color */
+    opacity: 0; /* Initial opacity for animation */
+    transform: translateY(15px); /* Initial position for animation */
+    animation: fadeIn 0.5s ease-in-out forwards; /* Fade-in animation */
+}
+
+/* Fade-In Animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Heading Styling */
+.support .support-dv h2 {
+    font-size: 4vh; /* Font size based on viewport height */
+    color: #76d5fe; /* Text color */
+    text-align: center; /* Center alignment */
+    margin-bottom: 1.5vh; /* Spacing below heading */
+    white-space: normal; /* Allow text wrapping */
 }
 
 /* Form Styling */
 .support .support-dv form {
     display: flex;
     flex-direction: column;
-    gap: 5vh; /* Same gap for all elements */
-    font-size: 16px;
-    color: white;
+    gap: 2vh; /* Spacing between form elements */
+    font-size: 2vh; /* Font size based on viewport height */
 }
 
-/* Labels */
+/* Select Section */
+.support .support-dv form .select-section {
+    display: flex;
+    flex-direction: column;
+    gap: 2vh; /* Spacing between select elements */
+}
+
+/* Label Styling */
 .support .support-dv form label {
-    font-weight: 500;
-    color: white;
-    margin-bottom: 12px; /* Consistent spacing below labels */
+    font-size: 2vh; /* Font size */
+    font-weight: 500; /* Medium font weight */
+    color: white; /* Text color */
+    margin-bottom: 6px; /* Spacing below label */
 }
 
-/* Inputs and Textarea */
+/* Inputs and Textarea Styling */
 .support .support-dv form input[type="text"],
 .support .support-dv form select,
 .support .support-dv form textarea,
 .support .support-dv form input[type="file"] {
-    width: 100%;
-    padding: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    border-radius: 8px;
-    outline: none;
-    font-size: 14px;
-    background-color: rgba(255, 255, 255, 0.1); /* Slightly transparent white */
-    color: white;
-    transition: border 0.3s ease, background-color 0.3s ease;
+    width: 100%; /* Full width */
+    padding: 1.5vh; /* Padding inside input elements */
+    border: 1px solid rgba(255, 255, 255, 0.3); /* Border color */
+    border-radius: 6px; /* Rounded corners */
+    outline: none; /* Remove outline */
+    font-size: 2vh; /* Font size */
+    background-color: rgba(255, 255, 255, 0.1); /* Background color */
+    color: white; /* Text color */
+    transition: border 0.3s ease, background-color 0.3s ease; /* Transition effects */
 }
 
-/* Focus Effect */
-.support .support-dv form input[type="text"]:focus,
+/* Glow Effect on Focus */
+.support .support-dv form input:focus,
 .support .support-dv form select:focus,
 .support .support-dv form textarea:focus {
-    border-color: #4285f4;
-    background-color: rgba(255, 255, 255, 0.2);
+    border-color: #4285f4; /* Border color on focus */
+    background-color: rgba(255, 255, 255, 0.2); /* Background color on focus */
+    box-shadow: 0 0 8px #4285f4; /* Glow effect */
 }
 
-/* Space between select tags */
-.support .support-dv form select + select {
-    margin-top: 3vh;
+/* Option Styling */
+.support .support-dv form select option {
+    background-color: #09152b; /* Background color */
+    color: white; /* Text color */
 }
 
 /* Checkbox Styling */
 .support .support-dv form input[type="checkbox"] {
-    appearance: none;
-    width: 16px;
-    height: 16px;
-    border: 2px solid rgba(255, 255, 255, 0.3);
-    border-radius: 4px;
-    background-color: transparent;
-    display: inline-block;
+    appearance: none; /* Remove default checkbox style */
+    width: 1vw; /* Width based on viewport width */
+    height: 1vw; /* Height based on viewport width */
+    border: 0.2vh solid rgba(255, 255, 255, 0.3); /* Border color */
+    border-radius: 4px; /* Rounded corners */
+    background-color: transparent; /* Transparent background */
+    cursor: pointer; /* Pointer cursor */
     position: relative;
-    cursor: pointer;
     transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
+/* Checked Checkbox Styling */
 .support .support-dv form input[type="checkbox"]:checked {
-    background-color: #09152b;
-    border-color: #4285f4;
+    background-color: #09152b; /* Background color */
+    border-color: rgba(255, 255, 255, 0.3); /* Border color */
+    animation: check-bounce 0.3s ease; /* Bounce animation */
 }
 
+/* Checkbox Bounce Animation */
+@keyframes check-bounce {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.5);
+    }
+}
+
+/* Checkmark Styling */
 .support .support-dv form input[type="checkbox"]::before {
     content: '';
     position: absolute;
-    top: 2px;
-    left: 4px;
-    width: 4px;
-    height: 8px;
-    border: solid white;
-    border-width: 0 2px 2px 0;
-    transform: rotate(45deg);
-    opacity: 0;
+    top: 50%; 
+    left: 50%; 
+    width: 5px; /* Width of the checkmark */
+    height: 15px; /* Height of the checkmark */
+    border: solid white; /* Border color */
+    border-width: 0 0.2vw 0.2vw 0; /* Thickness of the checkmark */
+    transform: translate(-50%, -50%) rotate(45deg); /* Positioning and rotation */
+    opacity: 0; /* Initially hidden */
     transition: opacity 0.2s ease;
 }
 
 .support .support-dv form input[type="checkbox"]:checked::before {
-    opacity: 1;
+    opacity: 1; /* Show checkmark when checked */
 }
 
-/* File Upload Styling */
-.support .support-dv form input[type="file"] {
-    background-color: rgba(255, 255, 255, 0.1);
-    cursor: pointer;
+/* File Upload Glow Effect */
+.support .support-dv form input[type="file"]:hover {
+    border-color: #76d5fe; /* Border color on hover */
+    box-shadow: 0 0 12px #76d5fe; /* Glow effect on hover */
 }
 
 /* Button Styling */
 .support .support-dv form button {
-    padding: 12px;
-    background-color: rgba(0, 0, 0, 0.2); /* Slightly transparent black */
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-size: 16px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    padding: 1.5vh; /* Padding inside the button */
+    background-color: rgba(0, 0, 0, 0.2); /* Background color */
+    color: white; /* Text color */
+    border: none; /* Remove border */
+    border-radius: 6px; /* Rounded corners */
+    font-size: 2vh; /* Font size */
+    font-weight: bold; /* Bold text */
+    cursor: pointer; /* Pointer cursor */
+    transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
 }
 
 /* Button Hover Effect */
 .support .support-dv form button:hover {
-    background-color: #ffffff;
-    color: #09152b;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    background-color: #ffffff; /* Background color on hover */
+    color: #09152b; /* Text color on hover */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); /* Shadow on hover */
+    transform: scale(1.05); /* Scale effect */
 }
 
-/* Responsive Design */
+/* Mobile-Friendly Adjustments */
 @media (max-width: 768px) {
+    .support {
+        height: auto; /* Adjust height */
+    }
+
     .support .support-dv {
-        width: 95%;
+        width: 95%; /* Adjust width */
         padding: 2vh;
     }
-    
+
+    .support .support-dv h2 {
+        font-size: 2.5vh; /* Reduce font size */
+    }
+
     .support .support-dv form {
-        font-size: 14px;
+        font-size: 1.8vh; /* Reduce font size */
+    }
+
+    .support .support-dv form input,
+    .support .support-dv form select,
+    .support .support-dv form textarea,
+    .support .support-dv form button {
+        font-size: 1.8vh;
+        padding: 1.2vh;
+    }
+
+    .support .support-dv form input[type="checkbox"] {
+        width: 1.6vw;
+        height: 1.6vw;
+    }
+
+    .support .support-dv form input[type="checkbox"]::before {
+        width: 0.4vw;
+        height: 0.8vw;
     }
 }
