@@ -38,7 +38,6 @@ int main(){
     //     }
     //     b++;
     // }
-    
     // if(c>2){
     //     cout<<"not a prime no.";
     // }
