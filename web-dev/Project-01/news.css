@@ -113,3 +113,10 @@ summary::after {
 details[open] summary::after {
     transform: rotate(180deg);
 }
+
+
+@media (max-width: 400) {
+    summary{
+        font-size: 2vh;
+    }
+}

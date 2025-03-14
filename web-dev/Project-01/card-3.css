@@ -73,3 +73,34 @@
     -ms-overflow-style: none;
     scrollbar-width: none;
 }
+
+
+@media (max-width: 500px) {
+    
+    .recomended-dv {
+        height: 30vh;
+        padding: 7px;
+    }
+
+    .recomended-dv a {
+        height: 22vh;
+        width: 19vw;
+        margin: 0 7px;
+    }
+
+}
+
+@media (max-width: 300px) {
+    
+    .recomended-dv {
+        height: 25vh;
+        padding: 5px;
+    }
+
+    .recomended-dv a {
+        height: 15vh;
+        width: 18vw;
+        margin: 0 5px;
+    }
+
+}

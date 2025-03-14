@@ -97,3 +97,72 @@
     flex-direction: column;
     justify-content: space-evenly;
 }
+
+
+@media (max-width: 700px) {
+
+    .nrsg-2 {
+        height: 210vh;
+    }
+
+    .rcmd{
+        height: 17vh;
+    }
+
+    .rcmd div {
+        font-size: 2vh;
+    }
+
+    .rcmd img {
+        width: 17vw;
+        height: 15vh;
+    }
+
+    .rcmd .dta-div .dta {
+        font-size: 2vh;
+    }
+
+    .rcmd .disc {
+        font-size: 2vh;
+        padding: 3px 3px;
+        border-radius: 3px;
+    }
+
+    .rcmd .price .disc-price {
+        font-size: 1.5vh;
+    }
+}
+
+@media (max-width: 400px) {
+
+    .nrsg-2 {
+        height: 180vh;
+    }
+
+    .rcmd{
+        height: 14vh;
+    }
+
+    .rcmd div {
+        font-size: 1.5vh;
+    }
+
+    .rcmd img {
+        width: 17vw;
+        height: 12vh;
+    }
+
+    .rcmd .dta-div .dta {
+        font-size: 1.5vh;
+    }
+
+    .rcmd .disc {
+        font-size: 1.5vh;
+        padding: 3px 3px;
+        border-radius: 3px;
+    }
+
+    .rcmd .price .disc-price {
+        font-size: 1vh;
+    }
+}

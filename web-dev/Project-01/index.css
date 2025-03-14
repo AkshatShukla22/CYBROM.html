@@ -269,6 +269,8 @@ footer a:hover{
 .nav a{
     font-size: 3vh;
     margin: 0px 1vw;
+    height: 4vh;
+    width: 4vh;
 }
 
 #srch input {
@@ -279,7 +281,7 @@ footer a:hover{
 
 #srch label {
     height: 3vh;
-    width: 4vw;
+    width: 3vw;
     font-size: 2vh;
     padding: 1vh 1vw;
 }
