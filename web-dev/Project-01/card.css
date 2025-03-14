@@ -123,3 +123,30 @@ hr{
     color: rgb(241, 157, 47);
     font-size: 2vh;
 }
+
+@media (max-width: 768px) {
+
+    .card{
+        height: 30vh;
+        border-radius: 5px;
+    }
+
+    .nrsg{
+        height: 60vh;
+    }
+
+    .card .overlay a{
+        font-size: 1vh;
+    }
+}
+
+@media (max-width: 420px) {
+
+    .card{
+        height: 22vh;
+    }
+
+    .nrsg{
+        height: 50vh;
+    }
+}

@@ -254,3 +254,63 @@ footer a:hover{
     padding-top: 3vh;
     font-size: 2vh;
 }
+
+
+@media (max-width: 768px) {
+
+#icon {
+    font-size: 4vh;
+}
+
+.nav{
+    margin-left: 5vw;
+}
+
+.nav a{
+    font-size: 3vh;
+    margin: 0px 1vw;
+}
+
+#srch input {
+    width: 0;
+    height: 3vh;
+    font-size: 1h;
+}
+
+#srch label {
+    height: 3vh;
+    width: 4vw;
+    font-size: 2vh;
+    padding: 1vh 1vw;
+}
+
+.banner{
+    background-position: 80% 50%;
+    height: 80vh;
+}
+
+.banner .filtr div{
+    font-size: 5vh;
+    width: 55%;
+}
+
+footer{
+    font-size: 2vh;
+}
+
+footer a{
+    font-size: 1.5vh;
+}
+
+.ft-1 div{
+    font-size: 7vh;
+}
+
+.ft-1{
+    font-size: 3vh;
+}
+
+#ft-2-3 a{
+    font-size: 2vh;
+}
+}
