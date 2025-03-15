@@ -117,12 +117,15 @@
 .game-page .about-game .game-discription {
     font-size: 2vh;
     height: 75%;
-    padding: 2vh 0.5vw;
+    padding: 2vh 0vw;
     color: white;
 }
 
 .game-page .about-game .game-discription .game-dta {
     margin: 2vh 0px;
+    display: flex;
+    flex-direction: column;
+    gap: 2vh;
 }
 
 .game-page .about-game .game-discription .game-dta .highlited-dta span {
@@ -290,7 +293,6 @@
     display: inline-block;
     padding: 0px 2vw;
     border-bottom: 1px solid white;
-    /* background-color: #76d5fe; */
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -349,4 +351,110 @@
     background-color: black;
     padding: 0.5vw;
     color: grey;
+}
+
+@media (max-width: 800px) {
+    
+    .game-page .game-page-sec1 {
+        width: 75%;
+    }
+
+    .other-section .other-data-1 .req {
+        font-size: 2.3vh;
+    }
+
+    .buy-game .edition .more-game-of-compony {
+        border-radius: 7px;
+    }
+    
+
+    .buy-game .edition .more-game-of-compony div {
+        font-size: 2.5vh;
+    }
+
+}
+
+
+@media (max-width: 700px) {
+
+    .other-section .other-data-1 .req {
+        font-size: 2vh;
+    }
+
+    .other-section .other-data-2 {
+        font-size: 2vh;
+    }
+
+    .other-section .other-data-2 div img{
+        height: 7vh;
+    }
+
+    .other-section .other-data-2 div span img {
+        height: 3vh;
+    }
+
+}
+
+@media (max-width: 600px) {
+    
+    .game-page {
+        height: 75vh;
+    }
+
+    .game-page .game-assets {
+        height: 60vh;
+    }
+
+    .game-page .about-game {
+        height: 60vh;
+    }
+
+    .game-page .about-game .game-discription .game-dta {
+        gap: 1.5vh;
+    }
+
+    .game-page .about-game .game-discription .game-dta .highlited-dta span {
+        font-size: 1.5vh;
+    }
+
+    .game-page .about-game .game-discription .game-tags {
+        font-size: 1.5vh;
+    }
+
+    .game-page .about-game .game-tags span {
+        font-size: 1.5vh;
+        border-radius: 2px;
+        padding: 2px;
+        margin: 0.25vh 1px;
+    }
+
+    .buy-game .about-game-info {
+        padding: 1.5vh;
+        font-size: 2vh;
+        gap: 1.5vh;
+    }
+
+    .buy-game .about-game-info .tags{
+        border-radius: 3px;
+    }
+
+    .buy-game .edition .more-game-of-compony div {
+        font-size: 2vh;
+    }
+
+    .buy-game .edition .buy-dv{
+        height: 10vh;
+        border-radius: 4px;
+        font-size: 2vh;
+        padding: 1.5vh 3vw;
+    }
+
+    .buy-game .edition .buy-dv .price-add-to-cart .add-to-cart{
+        border-radius: 3px;
+    }
+
+    .buy-game .edition .buy-dv .discount{
+        font-size: 2.5vh;
+    }
+
 }
