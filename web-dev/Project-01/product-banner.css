@@ -9,8 +9,8 @@
     box-sizing: border-box;
     display: flex;
     overflow-x: scroll;
-    overflow-y: hidden; /* Prevent vertical overflow */
-    gap: 2vh;
+    overflow-y: hidden;
+    gap: 1VW;
     height: 80vh;
     width: 80vw;
     margin: 15vh auto;
@@ -32,7 +32,7 @@
 
 /* Image container */
 .prodict-banner .product-banner-dv .product-banner-dv1 {
-    min-height: 80vh;
+    min-height: 100%;
     min-width: 56.5vw;
     overflow: hidden;
     position: relative;
@@ -52,7 +52,7 @@
 .prodict-banner .product-banner-dv .product-banner-dv2 {
     box-sizing: border-box;
     padding: 4vh 2vh;
-    max-height: 80vh;
+    max-height: 100%;
     overflow: hidden; /* Prevent content overflow */
     max-width: 23.7vw;
     color: white;
@@ -74,7 +74,7 @@
 .prodict-banner .product-banner-dv .product-banner-dv2 .product-banner-dv2-img-dv img {
     height: 14vh;
     width: 10vw;
-    margin: 0.75vh;
+    margin: 1vh 1VW 0px 0px;
 }
 
 /* Text styling for the label */
@@ -98,4 +98,97 @@
 
 .prodict-banner .product-banner-dv .product-banner-dv2 .product-banner-dv2-prc-dv .available-platform {
     color: gray;
+}
+
+
+@media (max-width: 700px) {
+    
+    .prodict-banner {
+        height: 70vh;
+        width: 80vw;
+    }
+
+    .prodict-banner .product-banner-dv .product-banner-dv2 .product-banner-dv2-img-dv {
+        font-size: 3vh;
+        min-height: 58vh;
+    }
+
+    .prodict-banner .product-banner-dv .product-banner-dv2 .product-banner-dv2-img-dv img {
+        height: 10vh;
+        width: 10vw;
+        margin: 1vh 1VW 0px 0px;
+    }
+    
+
+    .prodict-banner .product-banner-dv .product-banner-dv2 .product-banner-dv2-prc-dv {
+        min-height: 8vh;
+        padding-top: 0vh;
+    }
+
+}
+
+@media (max-width: 500px) {
+    
+    .prodict-banner {
+        height: 50vh;
+    }
+
+    .prodict-banner .product-banner-dv .product-banner-dv2 .product-banner-dv2-img-dv {
+        font-size: 2vh;
+        min-height: 40vh;
+    }
+
+    .prodict-banner .product-banner-dv .product-banner-dv2 .product-banner-dv2-img-dv p {
+        height: 7vh;
+    }
+
+    .prodict-banner .product-banner-dv .product-banner-dv2 .product-banner-dv2-img-dv img {
+        height: 7vh;
+        width: 9.5vw;
+        margin: 1vh 1VW 0px 0px;
+    }
+    
+
+    .prodict-banner .product-banner-dv .product-banner-dv2 .product-banner-dv2-prc-dv {
+        min-height: 8vh;
+        padding-top: 0vh;
+    }
+
+    .prodict-banner .product-banner-dv .product-banner-dv2 .product-banner-dv2-prc-dv {
+        font-size: 2vh;
+    }
+
+}
+
+@media (max-width: 500px) {
+    
+    .prodict-banner {
+        height: 40vh;
+    }
+
+    .prodict-banner .product-banner-dv .product-banner-dv2 .product-banner-dv2-img-dv {
+        font-size: 2vh;
+        min-height: 40vh;
+    }
+
+    .prodict-banner .product-banner-dv .product-banner-dv2 .product-banner-dv2-img-dv p {
+        height: 7vh;
+    }
+
+    .prodict-banner .product-banner-dv .product-banner-dv2 .product-banner-dv2-img-dv img {
+        height: 7vh;
+        width: 9.5vw;
+        margin: 1vh 1VW 0px 0px;
+    }
+    
+
+    .prodict-banner .product-banner-dv .product-banner-dv2 .product-banner-dv2-prc-dv {
+        min-height: 8vh;
+        padding-top: 0vh;
+    }
+
+    .prodict-banner .product-banner-dv .product-banner-dv2 .product-banner-dv2-prc-dv {
+        font-size: 2vh;
+    }
+
 }
