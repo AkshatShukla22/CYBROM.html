@@ -160,7 +160,7 @@
 
 }
 
-@media (max-width: 500px) {
+@media (max-width: 400px) {
     
     .prodict-banner {
         height: 40vh;
@@ -168,15 +168,19 @@
 
     .prodict-banner .product-banner-dv .product-banner-dv2 .product-banner-dv2-img-dv {
         font-size: 2vh;
-        min-height: 40vh;
+        min-height: 30vh;
     }
 
     .prodict-banner .product-banner-dv .product-banner-dv2 .product-banner-dv2-img-dv p {
-        height: 7vh;
+        height: 5vh;
+    }
+
+    .product-banner-dv2-img-dv p span {
+        font-size: 1vh;
     }
 
     .prodict-banner .product-banner-dv .product-banner-dv2 .product-banner-dv2-img-dv img {
-        height: 7vh;
+        height: 6vh;
         width: 9.5vw;
         margin: 1vh 1VW 0px 0px;
     }
