@@ -11,7 +11,7 @@
     overflow-x: auto;
     display: flex;
     justify-content: center;
-    margin: 15vh auto;
+    margin: 10vh auto;
 }
 
 .recomended-dv {
@@ -31,7 +31,8 @@
 .recomended-dv a {
     height: 30vh;
     width: 17vw;
-    background-color: brown;
+    background-color: #09152b;
+    box-shadow: 5px 10px 20px #09152b;
     margin: 0 10px;
     display: flex;
     align-items: center;
