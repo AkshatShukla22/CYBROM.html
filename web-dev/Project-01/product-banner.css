@@ -13,6 +13,7 @@
     gap: 1VW;
     height: 80vh;
     width: 80vw;
+    box-shadow: 5px 10px 20px #09152b;
     margin: 15vh auto;
     background-color: black;
     scroll-snap-type: x mandatory;
@@ -75,6 +76,11 @@
     height: 14vh;
     width: 10vw;
     margin: 1vh 1VW 0px 0px;
+    transition: transform 0.5s ease-in-out;
+}
+
+.prodict-banner .product-banner-dv .product-banner-dv2 .product-banner-dv2-img-dv img:hover {
+    transform: scale(1.2);
 }
 
 /* Text styling for the label */
