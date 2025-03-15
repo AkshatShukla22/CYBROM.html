@@ -457,4 +457,98 @@
         font-size: 2.5vh;
     }
 
+    .other-section {
+        height: 45vh;
+    }
+
+    .other-section .other-data-1 .req {
+        font-size: 1.7vh;
+    }
+
+}
+
+@media (max-width: 400px) {
+    
+    .game-page {
+        height: 65vh;
+    }
+
+    .game-page .game-assets {
+        height: 50vh;
+    }
+
+    .game-page .about-game {
+        height: 50vh;
+    }
+
+    .game-page .about-game .game-discription {
+        font-size: 1.5vh;    }
+
+    .game-page .about-game .game-discription .game-dta {
+        gap: 1vh;
+    }
+
+    .game-page .about-game .game-discription .game-dta .highlited-dta span {
+        font-size: 1vh;
+    }
+
+    .game-page .about-game .game-discription .game-tags {
+        font-size: 1vh;
+    }
+
+    .game-page .about-game .game-tags span {
+        font-size: 1vh;
+        border-radius: 1px;
+        padding: 2px;
+        margin: 0.25vh 1px;
+    }
+
+    .buy-game .about-game-info {
+        padding: 1vh;
+        font-size: 1.5vh;
+    }
+
+    .buy-game .about-game-info .tags{
+        border-radius: 2px;
+    }
+
+    .buy-game .edition .more-game-of-compony div {
+        font-size: 1.5vh;
+    }
+
+    .buy-game .edition .buy-dv{
+        height: 10vh;
+        border-radius: 4px;
+        font-size: 2vh;
+        padding: 1.5vh 3vw;
+    }
+
+    .buy-game .edition .buy-dv .price-add-to-cart .add-to-cart{
+        border-radius: 2px;
+    }
+
+    .buy-game .edition .buy-dv .discount{
+        font-size: 2.4vh;
+    }
+
+    .other-section .other-data-1 .req {
+        font-size: 1.5vh;
+    }
+
+    .buy-game{
+        height: 35vh;
+    }
+
+    .other-section {
+        height: 35vh;
+    }
+
+    .other-section .other-data-2 {
+        font-size: 1.5vh;
+    }
+
+    .other-section .other-data-2 div img{
+        height: 5vh;
+    }
+
 }
