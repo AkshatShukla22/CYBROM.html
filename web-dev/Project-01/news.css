@@ -60,6 +60,8 @@ details {
     margin-top: 2vh;
     transition: max-height 0.5s ease-in-out;
     max-height: 15vh;
+    font-family: "Poppins", sans-serif;
+    font-weight: 300;
 }
 
 /* Remove height limitation when details is opened */
@@ -90,6 +92,8 @@ summary {
     font-size: 4vh;
     padding: 2vh 4vw;
     position: relative;
+    font-family: "Poppins", sans-serif;
+    font-weight: 600;
 }
 
 /* Position the image inside summary */

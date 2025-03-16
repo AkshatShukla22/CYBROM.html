@@ -115,10 +115,12 @@
 }
 
 .game-page .about-game .game-discription {
-    font-size: 2vh;
+    font-size: 1.8vh;
     height: 75%;
     padding: 2vh 0vw;
     color: white;
+    font-family: "Poppins", sans-serif;
+    font-weight: 200;
 }
 
 .game-page .about-game .game-discription .game-dta {
@@ -130,7 +132,7 @@
 
 .game-page .about-game .game-discription .game-dta .highlited-dta span {
     display: flex;
-    font-size: 2vh;
+    font-size: 1.5vh;
     color: gray;
     gap: 1vw;
 }
@@ -140,13 +142,13 @@
 }
 
 .game-page .about-game .game-discription .game-tags {
-    font-size: 2vh;
+    font-size: 1.5vh;
     color: gray;
 }
 
 .game-page .about-game .game-tags span {
     display: inline-block;
-    font-size: 2vh;
+    font-size: 1.5vh;
     background-color: #76d5fe;
     border-radius: 5px;
     padding: 4px;
@@ -164,6 +166,7 @@
     margin-top: 10vh;
     gap: 5vw;
     color: #acb2b8;
+    margin-bottom: 20vh;
 }
 
 .other-section .other-data-1 {
@@ -410,15 +413,16 @@
     }
 
     .game-page .about-game .game-discription .game-dta {
-        gap: 1.5vh;
+        gap: 1.1vh;
     }
 
     .game-page .about-game .game-discription .game-dta .highlited-dta span {
-        font-size: 1.5vh;
+        font-size: 1.1vh;
     }
 
     .game-page .about-game .game-discription .game-tags {
-        font-size: 1.5vh;
+        font-size: 1.1vh;
+        padding: 1px;
     }
 
     .game-page .about-game .game-tags span {
@@ -482,7 +486,7 @@
     }
 
     .game-page .about-game .game-discription {
-        font-size: 1.5vh;    }
+        font-size: 1.1vh;    }
 
     .game-page .about-game .game-discription .game-dta {
         gap: 1vh;
@@ -494,6 +498,7 @@
 
     .game-page .about-game .game-discription .game-tags {
         font-size: 1vh;
+        padding: 0.5px;
     }
 
     .game-page .about-game .game-tags span {

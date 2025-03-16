@@ -13,6 +13,8 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    font-family: "Poppins", sans-serif;
+    font-weight: 400;
 }
 
 /* Form Container */
@@ -53,7 +55,7 @@
 .support .support-dv form {
     display: flex;
     flex-direction: column;
-    gap: 4vh; /* Spacing between form elements */
+    gap: 3vh; /* Spacing between form elements */
     font-size: 2vh; /* Font size based on viewport height */
 }
 

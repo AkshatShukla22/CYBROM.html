@@ -1,5 +1,7 @@
 /* index.css */
 
+@import url('https://fonts.googleapis.com/css2?family=Audiowide&family=Bebas+Neue&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
 * {
     margin: 0;
     padding: 0;
@@ -167,6 +169,9 @@ nav {
     background-color: rgba(0, 0, 0, 0.459);
     z-index: 2;
     font-size: 8vh;
+    font-family: "Audiowide", sans-serif;
+    font-weight: 400;
+    font-style: normal;
     color: white;
     word-spacing: 1vh;
 }
@@ -190,11 +195,13 @@ nav {
 
 footer{
     color: white;
-    font-weight: 400;
+    font-weight: 600;
+    font-family: "Poppins", sans-serif;
+    font-weight: 300;
 }
 
 footer a{
-    font-weight: 200;
+    font-weight: 400;
     font-size: 2vh;
     display: block;
     text-align: center;
@@ -202,6 +209,8 @@ footer a{
     margin-top: 2vh;
     text-decoration: none;
     color: #76d5fe;
+    font-family: "Poppins", sans-serif;
+    font-weight: 300;
 }
 
 footer a:hover{
@@ -222,14 +231,14 @@ footer a:hover{
     height: 30vh;
     margin: auto;
     padding: 5vh 4vw 0px 6vw;
-    font-size: 3vh;
+    font-size: 2.5vh;
 }
 
 .ft-1 div{
     color: #76d5fe;
-    font-size: 10vh;
+    font-size: 8vh;
     display: block;
-    margin-bottom: 2vh;
+    margin-bottom: 1vh;
 }
 
 .ft-2{
@@ -297,7 +306,7 @@ footer a:hover{
 }
 
 footer{
-    font-size: 2vh;
+    font-size: 1.8vh;
 }
 
 footer a{
@@ -305,14 +314,75 @@ footer a{
 }
 
 .ft-1 div{
-    font-size: 7vh;
+    font-size: 6vh;
 }
 
 .ft-1{
-    font-size: 3vh;
+    font-size: 2vh;
 }
 
 #ft-2-3 a{
     font-size: 2vh;
 }
 }
+
+@media (max-width: 400px) {
+
+    #icon {
+        font-size: 4vh;
+    }
+    
+    .nav{
+        margin-left: 5vw;
+    }
+    
+    .nav a{
+        font-size: 3vh;
+        margin: 0px 1vw;
+        height: 4vh;
+        width: 4vh;
+    }
+    
+    #srch input {
+        width: 0;
+        height: 3vh;
+        font-size: 1h;
+    }
+    
+    #srch label {
+        height: 3vh;
+        width: 3vw;
+        font-size: 2vh;
+        padding: 1vh 1vw;
+    }
+    
+    .banner{
+        background-position: 80% 50%;
+        height: 80vh;
+    }
+    
+    .banner .filtr div{
+        font-size: 4vh;
+        width: 55%;
+    }
+    
+    footer{
+        font-size: 1.5vh;
+    }
+    
+    footer a{
+        font-size: 1.3vh;
+    }
+    
+    .ft-1 div{
+        font-size: 5vh;
+    }
+    
+    .ft-1{
+        font-size: 1.5vh;
+    }
+    
+    #ft-2-3 a{
+        font-size: 1.5vh;
+    }
+    }

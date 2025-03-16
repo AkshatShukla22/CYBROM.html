@@ -20,6 +20,10 @@
 
 .special-offer h1{
     margin-bottom: 5vh;
+    font-family: "Bebas Neue", sans-serif;
+    font-weight: 400;
+    letter-spacing: 0.25vw;
+    word-spacing: 1vw;
 }
 
 .special-offer .spo-div {
