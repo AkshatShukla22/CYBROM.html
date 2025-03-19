@@ -1,14 +1,14 @@
-/* Reset Default Styles */
+ /*login.css */ 
+ 
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-/* === Login Page Styling === */
 .login-page {
-    width: 100vw; /* Full width of the viewport */
-    height: 100vh; /* Full height of the viewport */
+    width: 100vw;
+    height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -17,15 +17,13 @@
     font-family: "Orbitron", sans-serif;
 }
 
-/* Background Video */
 .login-page video {
     position: absolute;
     width: 100%;
     height: 100%;
-    object-fit: cover; /* Maintain video aspect ratio */
+    object-fit: cover;
 }
 
-/* Main Container */
 .login-page .login-page-dv {
     position: relative;
     width: 100%;
@@ -35,13 +33,12 @@
     justify-content: center;
 }
 
-/* === Common Form Styling === */
 .login-page .login-form {
-    width: 60vh; /* Fixed width */
-    min-height: 70vh; /* Minimum height */
-    backdrop-filter: blur(8px); /* Blur effect */
+    width: 60vh;
+    min-height: 70vh; 
+    backdrop-filter: blur(8px);
     border: 1px solid snow;
-    border-radius: 4%; /* Rounded corners */
+    border-radius: 4%;
     display: flex;
     flex-direction: column;
     padding: 4vh 1vw;
@@ -52,7 +49,6 @@
     z-index: 1;
 }
 
-/* Form Titles */
 .login-page .login-form h1 {
     font-size: 3vh;
     color: #fff;
@@ -63,16 +59,14 @@
     top: 4vh;
 }
 
-/* Links */
 .login-page .login-form a {
     text-decoration: none;
     color: #fff;
     font-size: 2vh;
 }
 
-/* Input Fields */
 .login-page .login-form input {
-    width: 80%; /* Relative width */
+    width: 80%; 
     height: 4vh;
     background: transparent;
     border: none;
@@ -83,14 +77,12 @@
     outline: none;
 }
 
-/* Placeholder Styling */
 .login-page .login-form input::placeholder {
     color: #fff;
     opacity: 0.8;
     font-size: 2vh;
 }
 
-/* === Remember Me and Forgot Password Section === */
 .login-page .login-form div {
     width: 80%;
     display: flex;
@@ -98,24 +90,20 @@
     justify-content: space-between;
 }
 
-/* Label Styling */
 .login-page .login-form div label {
     color: #fff;
     font-size: 2vh;
 }
 
-/* Checkbox Styling */
 .login-page .login-form div #remember-me {
     height: 2vh;
     width: 2vh;
 }
 
-/* Checkbox Custom Color When Checked */
 .login-page .login-form div #remember-me:checked {
     accent-color: #09152b;
 }
 
-/* === Login Button === */
 .login-page .login-form #login-btn {
     height: 5vh;
     width: 80%;
@@ -126,33 +114,26 @@
     transition: transform 0.3s ease;
 }
 
-/* Hover Effect for Button */
 .login-page .login-form #login-btn:hover {
     background-color: #09152b;
-    transform: scale(1.05); /* Slight scale effect */
+    transform: scale(1.05);
 }
 
-/* Remove Default Underline for Link Inside Button */
 .login-page .login-form #login-btn a {
     text-decoration: none;
     color: #fff;
 }
 
-/* === Hide Checkbox for Switching Forms === */
 .login-page .login-page-dv .switch {
     display: none;
 }
 
-/* Switch Label Styling */
 .login-page .login-form label {
     color: #fff;
     font-size: 1.5vh;
     cursor: pointer;
 }
 
-/* === Form Animation === */
-
-/* Login Form (default visible) */
 .login-frm {
     opacity: 1;
     visibility: visible;
@@ -160,7 +141,6 @@
     transition: transform 0.5s ease, opacity 0.5s ease, visibility 0.5s;
 }
 
-/* Signup Form (default hidden) */
 .signup-form {
     opacity: 0;
     visibility: hidden;
@@ -168,7 +148,6 @@
     transition: transform 0.5s ease, opacity 0.5s ease, visibility 0.5s;
 }
 
-/* When Checkbox is Checked (Show Signup, Hide Login) */
 .switch:checked ~ .signup-form {
     opacity: 1;
     visibility: visible;
@@ -181,12 +160,9 @@
     transform: translateX(-120%);
 }
 
-/* === Media Queries === */
-
-/* For Screens Smaller than 768px */
 @media (max-width: 768px) {
     .login-page .login-form {
-        width: 60vh; /* Keep width constant */
+        width: 60vh;
         min-height: 70vh;
     }
 
@@ -210,10 +186,9 @@
     }
 }
 
-/* For Screens Smaller than 480px */
 @media (max-width: 480px) {
     .login-page .login-form {
-        width: 60vh; /* Keep width constant */
+        width: 60vh;
         min-height: 70vh;
     }
 

@@ -1,4 +1,5 @@
-/* product banner */
+/* product-banner.css */
+
 * {
     margin: 0;
     padding: 0;
@@ -23,7 +24,6 @@
     display: none;
 }
 
-/* Banner container (flex for easy positioning) */
 .prodict-banner .product-banner-dv {
     display: flex;
     align-items: center;
@@ -31,7 +31,6 @@
     scroll-snap-align: start;
 }
 
-/* Image container */
 .prodict-banner .product-banner-dv .product-banner-dv1 {
     min-height: 100%;
     min-width: 56.5vw;
@@ -49,18 +48,16 @@
 }
 
 
-/* Text section */
 .prodict-banner .product-banner-dv .product-banner-dv2 {
     box-sizing: border-box;
     padding: 4vh 2vh;
     max-height: 100%;
-    overflow: hidden; /* Prevent content overflow */
+    overflow: hidden;
     max-width: 23.7vw;
     color: white;
     background-color: #09152b;
 }
 
-/* Image wrapper inside the text section */
 .prodict-banner .product-banner-dv .product-banner-dv2 .product-banner-dv2-img-dv {
     font-size: 4vh;
     min-width: 30vw;
