@@ -87,7 +87,7 @@
             display: flex;
             align-items: center;
             position: relative;
-            margin-right: auto; /* Push search to left side */
+            margin-right: auto;
         }
 
         #toggleSearch {
@@ -108,8 +108,8 @@
         }
 
         #toggleSearch:checked + label + input {
-            width: 18vw; /* Adjusted width */
-            padding: 0 1vw;
+            width: 18vw; 
+            padding: 0 3vw;
             opacity: 1;
         }
 
@@ -200,8 +200,12 @@
             }
 
             #srch {
-                margin-left: 0;
-                margin-right: auto;
+                position: absolute;
+                right: 10vw;
+            }
+
+            #srch label{
+                width: 4vw;
             }
 
             .menu-toggle {
