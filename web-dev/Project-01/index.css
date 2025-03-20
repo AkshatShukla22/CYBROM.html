@@ -489,9 +489,3 @@ footer a{
         }
 
 }
-
-@media (max-width: 100px) {
-    .nav a{
-        color: red;
-    }
-}
