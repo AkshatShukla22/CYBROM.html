@@ -139,22 +139,21 @@ int main(){
 // while(i<=a);
 // cout<<sum;
 
-int a;
-cin>>a;
-int b = 1;
-for(int i = 2; i<a; i++){
-    if(a%i==0){
-        b++;
-        cout<<i<<"\n";
-    }
-}
+// int a;
+// cin>>a;
+// int b = 1;
+// for(int i = 2; i<a; i++){
+//     if(a%i==0){
+//         b++;
+//         cout<<i<<"\n";
+//     }
+// }
 
-if(b>1){
-    cout<<a<<" is not a prime no.";
-}
-else{
-    cout<<a<<" is a prime no.";
-}
-
+// if(b>1){
+//     cout<<a<<" is not a prime no.";
+// }
+// else{
+//     cout<<a<<" is a prime no.";
+// }
 
 }

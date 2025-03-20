@@ -1,15 +1,10 @@
-nt a;
-//     cin>>a;
-//     int c=1;
-     
-//  for(int b=2; b<a; b++){
-//     if(a%b==0){
-//         c++;
-//     }
-//  }
-//  if(c>1){
-//     cout<<"not a prime no.";
-//  }
-//  else{
-//     cout<<"prime no.";
-//  }
+int a;
+cin>>a;
+int c;
+for(int i = 0; i<=a; i){
+    if(a!=0){
+        c=a%10;
+        cout<<c<<"\n";
+        a=a/10;
+    }
+}
