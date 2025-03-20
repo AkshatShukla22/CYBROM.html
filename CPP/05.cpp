@@ -97,4 +97,23 @@ int main(){
 //         cout<<i<<" ";
 //     }
 // }
+
+int a;
+// int b;
+cout<<"Enter Number - ";
+cin>>a;
+int i = 0;
+for(i; i<=a; i++){
+    cout<<i<<"\n";
+}
+
+// while(i<=a){
+//     cout<<i<<"\n";
+//     i++;
+// }
+
+// do{
+//     cout<<i<<"\n";
+//     i++;
+// }while(i<=a);
 }

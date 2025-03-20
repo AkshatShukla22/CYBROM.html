@@ -113,8 +113,37 @@ details[open] summary::after {
 }
 
 
-@media (max-width: 400) {
+@media (max-width: 400px) {
     summary{
         font-size: 2vh;
     }
+}
+
+@media (max-width: 300px) {
+    
+    .news label {
+        height: 4vh;
+        font-size: 2vh;
+        padding: 0.5vh 2vw;
+        margin-right: 1vw;
+    }
+
+    summary{
+        font-size: 1.8vh;
+    }
+
+    details .dtl img {
+        height: 20vh;
+        width: 25vw;
+        object-fit: cover;
+    }
+
+    details {
+        font-size: 1.5vh;
+    }
+
+    details .dtl {
+        padding: 5vh 3vw;
+    }
+
 }
