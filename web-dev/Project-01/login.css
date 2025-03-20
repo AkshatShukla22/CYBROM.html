@@ -162,7 +162,7 @@
 
 @media (max-width: 768px) {
     .login-page .login-form {
-        width: 60vh;
+        width: 60vw;
         min-height: 70vh;
     }
 
@@ -188,7 +188,7 @@
 
 @media (max-width: 480px) {
     .login-page .login-form {
-        width: 60vh;
+        width: 60vw;
         min-height: 70vh;
     }
 
@@ -209,5 +209,37 @@
     .login-page .login-form #login-btn {
         font-size: 2vh;
         height: 3.5vh;
+    }
+}
+
+@media (max-width: 200px) {
+    .login-page .login-form {
+        width: 70vw;
+        min-height: 60vh;
+        padding: 0px;
+    }
+
+    .login-page .login-form h1 {
+        font-size: 2.5vh;
+        margin-top: -1vh;
+    }
+
+    .login-page .login-form input {
+        font-size: 1.5vh;
+        height: 3vh;
+    }
+
+    .login-page .login-form div label {
+        font-size: 1.5vh;
+    }
+
+    .login-page .login-form a {
+        font-size: 1.3vh;
+    }
+
+    .login-page .login-form #login-btn {
+        font-size: 1.5vh;
+        height: 2.7vh;
+        border-radius: 3px;
     }
 }

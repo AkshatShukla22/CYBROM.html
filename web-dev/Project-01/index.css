@@ -351,7 +351,7 @@ footer a{
     
     #srch label {
         height: 3vh;
-        width: 3vw;
+        width: 6vw;
         font-size: 2vh;
         padding: 1vh 1vw;
     }
@@ -386,3 +386,106 @@ footer a{
         font-size: 1.5vh;
     }
     }
+
+    @media (max-width: 200px) {
+
+        #icon {
+            font-size: 3vh;
+            width: 5vw;
+        }
+
+        nav{
+            padding: 0px;
+            height: 7vh;
+            padding: 0px 4vw;
+        }
+        
+        .nav{
+            margin-left: 20vw;
+        }
+        
+        .nav a{
+            font-size: 2vh;
+            margin: 0px 0.5vw;
+            height: 3vh;
+            width: 3vh;
+        }
+
+        #srch{
+            width: 25vw;
+        }
+        
+        #srch input {
+            width: 0;
+            height: 2vh;
+            font-size: 1.5vh;
+        }
+        
+        #srch input::placeholder {
+            font-size: 1.5vh;
+        }
+
+
+        #srch label {
+            height: 2vh;
+            width: 4vw;
+            font-size: 1.5vh;
+            padding: 1vh 1vw;
+        }
+
+        #toggleSearch:checked ~ #srch input {
+            width: 25vw;
+            padding: 0 1vw;
+            opacity: 1;
+        }
+
+        #toggleSearch:checked ~ #srch label {
+            left: 90%;
+        }
+        
+        .banner{
+            background-position: 80% 50%;
+            height: 50vh;
+            margin-top: 5vh;
+        }
+        
+        .banner .filtr div{
+            font-size:3vh;
+            width: 60%;
+            padding-top: 30vh;
+        }
+        
+        footer{
+            font-size: 1vh;
+        }
+        
+        footer a{
+            font-size: 1vh;
+            margin-top: 1vh;
+        }
+
+        .ftr-0{
+            height: 20vh;
+        }
+        
+        .ft-1 div{
+            font-size: 4vh;
+        }
+        
+        .ft-1{
+            font-size: 1.5vh;
+        }
+
+        .ft-2{
+            padding: 2vh;
+        }
+
+        #ft-2-3 a{
+            font-size: 2vh;
+        }
+
+        .ft-3{
+            font-size: 1vh;
+        }
+
+}

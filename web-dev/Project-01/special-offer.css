@@ -268,3 +268,46 @@
     }
 
 }
+
+@media (max-width: 300px) {
+
+    .special-offer {
+        height: 35vh;
+    }
+    
+    .special-offer .spo-div {
+        height: 30vh;
+    }
+
+    .special-offer .spo-div .big-spo-div-2 .big-spo-discount {
+        font-size: 1.5vh;
+        padding: 1px;
+    }
+
+    .special-offer .spo-div .big-spo-div-2 .big-spo-price {
+        font-size: 2vh;
+    }
+
+    .special-offer .spo-div .big-spo-div-2 .big-spo-price .big-spo-previous-prc {
+        font-size: 1.5vh;
+        top: 5px;
+        left: 10px;
+    }
+
+    .special-offer .small-spo-div .small-spo-price {
+        font-size: 1.5vh;
+        padding: 5px 2px;
+    }
+
+    .special-offer .small-spo-div .small-spo-discount {
+        font-size: 1.5vh;
+        padding: 1px;
+    }
+
+    .special-offer .small-spo-div .small-spo-price .small-spo-previous-prc {
+        font-size: 1vh;
+        top: 1px;
+        left: 4px;
+    }
+
+}

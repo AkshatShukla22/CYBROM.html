@@ -98,14 +98,14 @@ int main(){
 //     }
 // }
 
-int a;
+// int a;
 // int b;
-cout<<"Enter Number - ";
-cin>>a;
-int i = 0;
-for(i; i<=a; i++){
-    cout<<i<<"\n";
-}
+// cout<<"Enter Number - ";
+// cin>>a;
+// int i = 0;
+// for(i; i<=a; i++){
+//     cout<<i<<"\n";
+// }
 
 // while(i<=a){
 //     cout<<i<<"\n";
@@ -116,4 +116,45 @@ for(i; i<=a; i++){
 //     cout<<i<<"\n";
 //     i++;
 // }while(i<=a);
+
+// int a;
+// cin>>a;
+// int sum=0;
+// for(int i=1; i<=a; i++){
+//     sum=sum+i;
+// }
+// cout<<sum;
+
+// int i = 1;
+// while(i<=a){
+//     sum=sum+i;
+//     i++;
+// }
+// cout<<sum;
+
+// do{
+//     sum=sum+i;
+//     i++;
+// }
+// while(i<=a);
+// cout<<sum;
+
+int a;
+cin>>a;
+int b = 1;
+for(int i = 2; i<a; i++){
+    if(a%i==0){
+        b++;
+        cout<<i<<"\n";
+    }
+}
+
+if(b>1){
+    cout<<a<<" is not a prime no.";
+}
+else{
+    cout<<a<<" is a prime no.";
+}
+
+
 }

@@ -239,3 +239,97 @@
         height: 0.8vw;
     }
 }
+
+@media (max-width: 300px) {
+    .support {
+        height: auto;
+    }
+
+    .support .support-dv {
+        width: 60%; 
+        padding: 1.5vh;
+    }
+
+    .support .support-dv h2 {
+        font-size: 2.5vh;
+    }
+
+    .support .support-dv form {
+        font-size: 1.5vh; 
+    }
+
+    .support .support-dv form input,
+    .support .support-dv form select,
+    .support .support-dv form textarea,
+    .support .support-dv form button {
+        font-size: 1vh;
+        padding: 1.2vh;
+        border-radius: 5px;
+    }
+
+    .support .support-dv form input[type="checkbox"] {
+        width: 1.6vw;
+        height: 1.6vw;
+    }
+
+    .support .support-dv form input[type="checkbox"]::before {
+        width: 0.4vw;
+        height: 0.8vw;
+    }
+}
+
+@media (max-width: 200px) {
+    .support {
+        height: auto;
+    }
+
+    .support .support-dv {
+        width: 70%; 
+        padding: 1vh;
+    }
+
+    .support .support-dv h2 {
+        font-size: 2vh;
+    }
+
+    .support .support-dv form {
+        font-size: 1.5vh; 
+    }
+
+    .support .support-dv form label {
+        font-size: 1vh;
+    }
+
+    .support .support-dv form input,
+    .support .support-dv form select,
+    .support .support-dv form textarea,
+    .support .support-dv form button {
+        font-size: 1vh;
+        padding: 1.2vh;
+        border-radius: 5px;
+    }
+
+    .support .support-dv form input[type="checkbox"] {
+        width: 1vw;
+        height: 1vh;
+    }
+
+    .support .support-dv form input[type="checkbox"]::before {
+        width: 0.4vw;
+        height: 0.8vw;
+    }
+
+    .support .support-dv form input[type="file"] {
+        width: 100%;
+        padding: 1.5vh;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-radius: 6px;
+        outline: none;
+        font-size: 1vh;
+        background-color: rgba(255, 255, 255, 0.1);
+        color: white;
+        transition: border 0.3s ease, background-color 0.3s ease;
+    }
+
+}
+

@@ -105,3 +105,19 @@
     }
 
 }
+
+@media (max-width: 200px) {
+    
+    .recomended-dv {
+        height: 20vh;
+        padding: 5px;
+    }
+
+    .recomended-dv a {
+        height: 10vh;
+        box-shadow: 5px 3px 5x black;
+        width: 18vw;
+        margin: 0 5px;
+    }
+
+}
