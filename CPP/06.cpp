@@ -40,22 +40,71 @@ int main(){
 //         cout<<a*i<<endl;
 //     }
 
-int a; 
-int b;
-cin>>a>>b;
-for(a; a<=b; a++){
-    int c = 1;
+// int a; 
+// int b;
+// cin>>a>>b;
+// for(a; a<=b; a++){
+//     int c = 1;
 
-    for(int i = 2; i<a; i++){
-        if(a%i==0){
-            c++;
-        }
+//     for(int i = 2; i<a; i++){
+//         if(a%i==0){
+//             c++;
+//         }
         
-    }
+//     }
+    
+//     if(c==1){
+//         cout<<a<<" ";
+//     }
+// }
 
-    if(c==1){
-        cout<<a<<" ";
+// int a; int b;
+// cin>>a>>b;
+// for(int j=a; j<=b; j++){
+//     int c = 1;
+//     for(int i = 2; i<j; i++){
+//         if(j%i==0)
+//             c++;
+//     }
+
+//     if(c==1)
+//         cout<<j<<" ";
+// }
+
+// int a;
+// cin>>a;
+// for(int j=1; j<=a; j++){
+//     for(int i =1; i<=a; i++){
+//         cout<<"* ";
+//     }
+//     cout<<"\n";
+// }
+
+int n=1;
+for (int i = n; i > 0; i++) {
+    for (int j = 0; j <= i; j++) {
+        cout << "* ";
     }
+    cout << endl;
 }
+
+// int n=5;
+// for (int i = n; i > 0; i--) {
+//     for (int j = 0; j < i; j++) {
+//         cout << "* ";
+//     }
+//     cout << endl;
+// }
+
+// int a=4;
+// for(int j=1; j<=3; j++){
+//     for(int i =1; i<=4; i++){
+//         cout<<a*i<<" ";
+//     }
+//     cout<<"\n";
+//     a++;
+// }
+
+
 
 }
