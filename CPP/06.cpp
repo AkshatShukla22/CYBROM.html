@@ -115,16 +115,59 @@ int main(){
 //     cout<<endl;
 // }
 
+// Q2.
 // int n=5;
 // for(int i=1; i<=n; i++){
 //     for (int j=1; j<=n-i; j++){
 //             cout<<" ";
 //     }
-
 //     for(int j=1; j<=i; j++){
 //         cout<<"* ";
 //     }
 //     cout<<endl;
 // }
+
+// Q3.
+// int a,b;
+// cin>>a>>b;
+// for(a; a<=b; a++){
+//     if(a%3==0 || a%5==0){
+//         cout<<a<<" ";
+//     }
+// }
+
+// Q4.
+// int a;
+// cin>>a;
+// int digit =0;
+// int b = a;
+// int c;
+// float d=0;
+// while(b!=0){
+//     b=b/10;
+//     digit++;
+// }
+// b=a;
+// while(b!=0){
+//     c=b%10;
+//     d = d + pow(c, digit);
+//     b= b/10;
+// }
+// if(d==a){
+//     cout<<"Armstrong no.";
+// }
+// else{
+//     cout<<"Not a Armstrong no.";
+// }
+
+// Q5.
+int a;
+cin>>a;
+int c;
+for(int i = 1; i<=a; i){
+    c=a%10;
+    cout<<c;
+    a=a/10;
+}
 
 }
