@@ -161,13 +161,13 @@ int main(){
 // }
 
 // Q5.
-int a;
-cin>>a;
-int c;
-for(int i = 1; i<=a; i){
-    c=a%10;
-    cout<<c;
-    a=a/10;
-}
+// int a;
+// cin>>a;
+// int c;
+// for(int i = 1; i<=a; i){
+//     c=a%10;
+//     cout<<c;
+//     a=a/10;
+// }
 
 }
