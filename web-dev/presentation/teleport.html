@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teleport</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+
+        *{
+            margin: 0px;
+            padding: 0px;
+            box-sizing: border-box;
+        }
+
+        body{
+            background-color: rgb(24, 22, 22);
+        }
+
+        button{
+            cursor: pointer;
+        }
+
+        header{
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            background-image: url(./Assits/491362538070.jpg);
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: cover;
+        }
+
+        header nav{
+            width: 100%;
+            padding: 0px 10%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 4vh;
+            text-align: center;
+            position: fixed;
+            top: 0px;
+            background-color: black;
+            z-index: 10;
+        }
+
+        header nav div{
+            display: flex;
+            align-items: center;
+            color: white;
+        }
+
+        header nav div sup{
+            font-size: 2vh;
+        }
+
+        header nav div img{
+            height: 10vh;
+            width: 8vw;
+        }
+
+        header nav div ul{
+            display: flex;
+            align-items: center;
+            gap: 2vw;
+        }
+
+        header nav div ul li{
+            font-size: 2.5vh;
+            color: white;
+            list-style: none;
+        }
+
+        header nav div ul li button{
+            font-size: 3vh;
+            color: white;
+            border: none;
+            padding: 5px 1vw;
+            background-color: #8DA9C4;
+            transition: transform 0.5 ease;
+        }
+
+        header nav div ul li button:hover{
+            transform: scale(1.2);
+            background-color: blueviolet;
+        }
+
+        header nav div ul li #login-btn{
+            font-size: 3vh;
+            color: white;
+            border: none;
+            padding: 5px 1vw;
+            background-color: grey;
+        }
+
+        .banner{
+            margin-top: 20vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .banner h1{
+            text-align: center;
+            color: white;
+            font-size: 8vh;
+        }
+
+        .banner h1 div{
+            color: #8DA9C4;
+        }
+
+        .banner p{
+            font-size: 4vh;
+            color: white;
+            width: 50%; 
+            margin: 5vh auto;
+            text-align: center;
+        }
+
+        .video-dv{
+            width: 52vw;
+            margin: auto;
+        }
+
+        .btn{
+            display: flex;
+            gap: 3vw;
+        }
+
+        .btn button{
+            background-color: rgba(0, 0, 0, 0);
+            font-size: 3vh;
+            padding: 1vh 1vw;
+            border: 2px solid white;
+            color: white;
+            transition: transform 0.5s ease;
+        }
+        .btn .btn1{
+            background-color: #8DA9C4;
+            border: 0px;
+        }
+        
+        .btn button:hover{
+            transform: scale(1.2);
+            background-color: blueviolet;
+        }
+
+        footer{
+            width: 100%;
+            font-size: 3vh;
+            color: white;
+        }
+
+        footer .ftr-dv{
+            display: flex;
+            width: 100%;
+        }
+
+        footer .ftr-dv div h4{
+            text-align: center;
+            margin-bottom: 4vh;
+        }
+
+
+        footer .ftr-dv div{
+            width: 25%;
+        }
+
+        footer .ftr-dv div ul{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 3vh;
+        }
+
+        footer .ftr-dv div ul li {
+            list-style: none;
+        }
+
+        footer .ftr-dv div ul li a{
+            text-decoration: none;
+            color: grey;
+        }
+
+        footer .ftr-dv div ul li a:hover{
+            text-decoration: underline;
+            color: white;
+        }
+
+        .ftr-dv2{
+            height: 10vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .slider{
+            display: flex;
+            gap: 20vw;
+            font-size: 12vh;
+            color: gray;
+            margin-bottom: 10vh;
+            padding: 0px 10vw;
+        }
+
+        .slider div{
+            display: flex;
+            gap: 5vw;
+            font-size: 12vh;
+            justify-content: space-between;
+            color: gray;
+            margin-bottom: 10vh;
+            padding: 0px 10vw;
+        }
+
+        hr{
+            margin: 30vh;
+        }
+
+        .csrd-sec{
+            width: 100%;
+            height: 40vh;
+            position: absolute;
+            top:215%;
+            display: flex;
+            justify-content: space-around;
+        }
+
+        .card{
+            height: 100%;
+            width: 20%;
+            background-color: rgb(24, 22, 22);
+            border: 2px solid white;
+            border-radius: 10px;
+            color: white;
+            padding: 5vh;
+            font-size: 3vh;
+        }
+
+        .card h4{
+            font-size: 5vh;
+            margin-bottom: 5vh;
+        }
+
+        .sec{
+            display: flex;
+            margin-bottom: 10vh;
+            justify-content: center;
+            padding: 0px 5vw;
+        }
+
+        .sec div{
+            width: 50%;
+            height: 50vh;
+        }
+
+        .sec div img{
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .sec{
+            color: white;
+            font-size: 3vh;
+        }
+
+        .sec h1{
+            color: blueviolet;
+            font-size: 4vh;
+        }
+
+        summary{
+            color: white;
+        }
+
+        details{
+            font-size: 3vh;
+            padding: 2vh;
+            color: gray;
+        }
+
+        @media (max-width: 600px) {
+
+        header nav{
+            padding: 0px 5%;
+            font-size: 3vh;
+        }
+
+        header nav div img{
+            height: 6vh;
+        }
+
+        header nav div ul li{
+            font-size: 2vh;
+        }
+
+        header nav div ul li button{
+            font-size: 2vh;
+            padding: 3px 1vw;
+        }
+
+            .banner h1{
+            text-align: center;
+            color: white;
+            font-size: 5vh;
+            }
+
+            .banner p{
+            font-size: 3vh;
+            width: 80%;
+        }
+
+        header nav div ul li #login-btn {
+        font-size: 2vh;
+        color: white;
+        border: none;
+        padding: 5px 1vw;
+        background-color: grey;
+        }
+
+            video{
+                height: 30vh;
+                width: 80vw;
+                margin: 5vh auto;
+            }
+
+            .slider{
+            font-size: 6vh;
+            color: gray;
+            margin-bottom: 5vh;
+            }
+
+            .csrd-sec{
+            top:125%;
+            height: 30vh;
+            }
+
+            .card{
+            height: 100%;
+            width: 20%;
+            background-color: rgb(24, 22, 22);
+            border: 2px solid white;
+            border-radius: 10px;
+            color: white;
+            padding: 3vh;
+            font-size: 2vh;
+        }
+
+        .card h4{
+            font-size: 3vh;
+            margin-bottom: 3vh;
+        }
+
+        footer .ftr-dv div ul li a{
+            font-size: 2vh;
+        }
+
+    
+    }
+
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div><img src="./Assits/teleporthq-social-preview-removebg-preview.png" alt="">
+                <span>teleport<sup>HQ</sup></span>
+            </div>
+            <div>
+                <ul>
+                    <li>Product</li>
+                    <li>Seervices</li>
+                    <li>Resources</li>
+                    <li>White Label Editor</Label></li>
+                    <li>Pricinng</li>
+                    <li><button id="login-btn">Login</button></li>
+                    <li><button>Start For Free</button></li>
+                </ul>
+            </div>
+        </nav>
+
+        <section class="hero">
+            <div class="banner">
+                <h1>Create Read Update Delete <div>Together</div></h1>
+                <p>TeleportHQ is the collaborative front-end platform with AI capabilities and headless content management system integrations. A powerful visual builder to create and publish your static and dynamic websites instantly.</p>
+                <div class="btn">
+                    <button class="btn1">Get started - it's free</button>
+                    <button>See how it works</button>
+                </div>
+            </div>
+            <div class="video-dv">
+                <video src="./Assits/teleport-home.mp4" width="1000px" height="1000px" autoplay loop muted></video>
+            </div>
+        </section>
+    </header>
+
+
+    <section class="slider">
+        <marquee behavior="" direction="">
+            <div>
+                <i class="fa-brands fa-js"></i>
+                <i class="fa-brands fa-github"></i>
+                <i class="fa-brands fa-angular"></i>
+                <i class="fa-brands fa-html5"></i>
+                <i class="fa-brands fa-react"></i>
+                <i class="fa-brands fa-css3-alt"></i>
+
+            </div>
+        </marquee>
+    </section>
+
+    <hr>
+    <section class="csrd-sec">
+         <div class="card">
+            <h4>Import</h4>
+            <p>Convert your designs to responsive websites, components and interfaces instantly, with our Figma Plugin.</p>
+         </div>
+         <div class="card">
+            <h4>Integrate</h4>
+            <p>Create and develop custom functionalities with our integrated front-end development tools.</p>
+         </div>
+         <div class="card">
+            <h4>Customize</h4>
+            <p>Add custom code, modify visually, create widgets and interactions with our powerful front-end UI Editor.
+            </p>
+         </div>
+         <div class="card">
+            <h4>Ship</h4>
+            <p>Deploy with Vercel, push to Github, host your website for free, or download your work as clean code.</p>
+         </div>
+    </section>
+
+    
+    <section class="sec">
+        <div><img src="./Assits/create - define and reuse component libraries@2x-1400w.png" alt=""></div>
+        <div>
+            <h1>Build visually. <br>
+                Code in real-time.</h1>
+                <details>
+                    <summary>Build fast with a powerful visual builder</summary>
+                    Design, build and code websites in real-time. Build the frontend part of any website, with fully featured visual building and development tools.
+                </details>
+                <details>
+                    <summary>Define and re-use component libraries</summary>
+                    Design, build and code websites in real-time. Build the frontend part of any website, with fully featured visual building and development tools.
+                </details>
+                <details>
+                    <summary>Create content driven designs</summary>
+                    Design, build and code websites in real-time. Build the frontend part of any website, with fully featured visual building and development tools.
+                </details>
+                <details>
+                    <summary>Blazing-fast, responsive static websites</summary>
+                    Design, build and code websites in real-time. Build the frontend part of any website, with fully featured visual building and development tools.
+                </details>
+        </div>
+    </section>
+
+    <section class="sec">
+        <div>
+            <h1>Bridge the gap between teams</h1>
+                <details>
+                    <summary>Ship faster. Empower the whole team.</summary>
+                    Design, build and code websites in real-time. Build the frontend part of any website, with fully featured visual building and development tools.
+                </details>
+                <details>
+                    <summary>Eliminate hand-off and save time</summary>
+                    Design, build and code websites in real-time. Build the frontend part of any website, with fully featured visual building and development tools.
+                </details>
+                <details>
+                    <summary>Share. Collaborate. Interate. Reuse.</summary>
+                    Design, build and code websites in real-time. Build the frontend part of any website, with fully featured visual building and development tools.
+                </details>
+                <details>
+                    <summary>Version control with GitHub</summary>
+                    Design, build and code websites in real-time. Build the frontend part of any website, with fully featured visual building and development tools.
+                </details>
+        </div>
+        <div><img src="./Assits/ship faster. empower the whole team.@2x-1400w.png" alt=""></div>
+    </section>
+
+    <footer>
+        <div class="ftr-dv">
+            <div>
+                <h4>Product</h4>
+                <ul>
+                    <li><a href="">White Label Editor</a></li>
+                    <li><a href="">Professional website builder</a></li>
+                    <li><a href="">Headless CMS Integrations</a></li>
+                    <li><a href="">Localization</a></li>
+                    <li><a href="">Static website builder</a></li>
+                    <li><a href="">AI website builder</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4>Services</h4>
+                <ul>
+                    <li><a href="">Website development</a></li>
+                    <li><a href="">Consultancy</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4>About</h4>
+                <ul>
+                    <li><a href="">About us</a></li>
+                    <li><a href="">Carrier</a></li>
+                    <li><a href="">Community</a></li>
+                    <li><a href="">Contact us</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4>Follow</h4>
+                <ul>
+                    <li><a href=""><i class="fa-brands fa-instagram"></i></a></li>
+                    <li><a href=""><i class="fa-brands fa-facebook"></i></a></li>
+                    <li><a href=""><i class="fa-brands fa-twitter"></i></a></li>
+                    <li><a href=""><i class="fa-brands fa-discord"></i></a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="ftr-dv ftr-dv2">
+            <h4>Copyright © TeleportHQ - 2024</h4>
+        </div>
+    </footer>
+</body>
+</html>
