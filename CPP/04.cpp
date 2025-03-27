@@ -4,15 +4,15 @@
 using namespace std;
 
 int main(){
-    int a;
-    float b;
-    float c;
-    cout<<"enter nambers: ";
-    cin>>a;
-    cin>>b;
+    // int a;
+    // float b;
+    // float c;
+    // cout<<"enter nambers: ";
+    // cin>>a;
+    // cin>>b;
     // cin>>c;
     // char c;
-    cin>>c;
+    // cin>>c;
     
     // switch (a)
     // {
