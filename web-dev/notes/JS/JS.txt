@@ -1,0 +1,15 @@
+-> JS was developed by Brandon Eich in 1995 within 10 days.
+-> JS was first  named as Mocha and right now it is registered as ECMA Script (ES)- Europian Computer Manufacture Association.
+-> JS is a Client side and Server side scripting language.
+-> JS was most popular in 2014-15 due to ES6 update.
+-> Latest update of JS/ES is ES14 which came out in 2023.
+-> Used in backend in year 2008 by Node.js.
+-> JS is added in the end of the body.
+   Ex:
+	<body>
+	code...
+	<script>
+		js code...
+	</script>
+	</body>
+-> JS Supported Window, Frame, Form, etc... 

@@ -202,7 +202,6 @@ int main(){
 // Q12.
 // int a;
 // cin>>a;
-
 // for(int i = 1; i<=a; i++){
 //     for (int j=1; j<=a-i; j++){
 //         cout<<" ";
@@ -219,7 +218,8 @@ int main(){
 // Q13.
 // int a;
 // cin>>a;
-// if(a>0 && (a&(a-1))==0){
+// int b = sqrt(a);
+// if(b*(a/2)==a){
 //     cout<<"power of 2";
 // }
 // else{
@@ -245,16 +245,16 @@ int main(){
 // cin>>x;
 // cout<<"Enter the value of Y: ";
 // cin>>y;
-// if(x>=0 && y<=90){
+// if(x>0 && y>0){
 //     cout<<"1st Quadrant";
 // }
-// else if(x>=90 && y<=180){
+// else if(x<0 && y>0){
 //     cout<<"2nd Quadrant";
 // }
-// else if(x>=180 && y<=270){
+// else if(x<0 && y<0){
 //     cout<<"3rd Quadrant";
 // }
-// else if(x>=270 && y<=360){
+// else if(x>0 && y<0){
 //     cout<<"4th Quadrant";
 // }
 // else{
@@ -262,12 +262,13 @@ int main(){
 // }
 
 // Q16.
-int a,b,c;
-cin>>a>>b>>c;
-if(a=b>c && b+c>a && a+b>b){
-    cout<<"valid triangle";
-}
-else{
-    cout<<"not a valid triangle";
-}
+// int a,b,c;
+// cin>>a>>b>>c;
+// if(a+b>c && b+c>a && a+b>b){
+//     cout<<"valid triangle";
+// }
+// else{
+//     cout<<"not a valid triangle";
+// }
+
 }
