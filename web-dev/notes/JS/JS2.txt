@@ -6,7 +6,7 @@
 -> JS variables
     1. var - Local Scope.
     2. let - Global Scope.
-    3. cobst - Constant (un-changable) / Global Scope
+    3. const - Constant (un-changable) / Global Scope
     
 -> Strict mode- came in JS in 2-15 uppdate
     using strict mode- while using it you have to use keyword like var, let, const for every variable otherwise it will throw error.

@@ -1,0 +1,14 @@
+-> External js - 
+    <body>
+        ...code...
+        <script src="./js03.js"></script>
+    </body>
+
+-> function in js - 
+    function something() {
+        var a = 5;
+        var b = 6;
+        console.log(a+b);
+    }
+
+-> JS is a Syncronous language - means it will execute every line in a linear way/ mean one line execute one after anoter, one line will not execute until previous line is completly executed.
