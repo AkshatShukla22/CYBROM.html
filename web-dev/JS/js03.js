@@ -18,4 +18,3 @@ arrow=()=>{  //declaring arrow function
     console.log(e+f);
 }
 arrow(); //calling  arrow function
-

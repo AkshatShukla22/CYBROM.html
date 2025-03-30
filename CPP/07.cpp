@@ -271,4 +271,22 @@ int main(){
 //     cout<<"not a valid triangle";
 // }
 
+int a = 1;
+while(a==10);
+{
+    cout<<a;
+    a++;
+}
+
+// if(9){
+//     cout<<"hello";
+// }
+// else{
+//     cout<<"bye";
+// }
+
+if(0,2,9){
+    cout<<"A";
+}
+
 }
