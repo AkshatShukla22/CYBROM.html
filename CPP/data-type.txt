@@ -1,0 +1,4 @@
+Data Types ---
+    1 Primitive - int, char, bool, float, double.
+    2 User Defined - Class, Structure.
+    3 Deriverd - Aray, String.
