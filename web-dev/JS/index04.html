@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        //scope { }
+        var a = 2;
+        let b = 4;
+
+        { //block of code
+            var a = 5; // Global Scope or function scope
+            let b = 8; // Local Scope or block scope
+        }
+
+        console.log(a);
+        console.log(b);
+
+        //Hoisting-
+        //in hoisting all the declaration reach at the top of the function or u can say that u can use a     variable before declaration
+
+        c = 5;// using variable before declaration
+        console.log(a);
+        var c; //declaring the variable
+
+    </script>
+</body>
+</html>
