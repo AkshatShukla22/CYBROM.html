@@ -96,25 +96,25 @@ int main(){
     // cout<<"second largest is: "<<c;
 
     // Q2. Reverae the array
-    int n;
-    cout<<"Enter the size of array: ";
-    cin>>n;
-    int a[n];
-    for(int i = 0; i<n; i++){
-        cin>>a[i];
-    }
-    int b = 0; int c = n-1;
-    while(b<c){
-        int temp = a[b];
-        a[b] = a[c];
-        a[c] = temp;
-        b++;
-        c--;
-    }
-    cout<<endl;
-    for(int i =0; i<n; i++){
-        cout<<a[i]<<" ";
-    }
+    // int n;
+    // cout<<"Enter the size of array: ";
+    // cin>>n;
+    // int a[n];
+    // for(int i = 0; i<n; i++){
+    //     cin>>a[i];
+    // }
+    // int b = 0; int c = n-1;
+    // while(b<c){
+    //     int temp = a[b];
+    //     a[b] = a[c];
+    //     a[c] = temp;
+    //     b++;
+    //     c--;
+    // }
+    // cout<<endl;
+    // for(int i =0; i<n; i++){
+    //     cout<<a[i]<<" ";
+    // }
 
     // Q3.
     // int n;
