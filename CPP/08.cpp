@@ -115,7 +115,7 @@ int main(){
     // for(int i =0; i<n; i++){
     //     cout<<a[i]<<" ";
     // }
-
+    
     // Q3.
     // int n;
     // cout<<"Enter the size of array: ";
@@ -127,7 +127,7 @@ int main(){
     // int pos = 0;
     // int neg = 0;
     // for(int i = 0; i<n; i++){
-    //     if(a[i]>=0){
+    //     if(a[i]>0){
     //         pos++;
     //     }
     //     else if(a[i]<0){
@@ -137,4 +137,28 @@ int main(){
     // cout<<endl;
     // cout<<"Positive: "<<pos<<endl;
     // cout<<"Negative: "<<neg<<endl;
+
+    //Q. Sort an array in assending order
+    int n;
+    cout<<"Enter the size of array: ";
+    cin>>n;
+    int a[n];
+    for(int i = 0; i<n; i++){
+        cin>>a[i];
+    }
+    int temp;
+    for(int i = 0; i<n; i++){
+        for(int j = i+1; j<n; j++){
+            if(a[i]>a[j]){
+                temp = a[i];
+                a[i] = a [j];
+                a[j] = temp;
+            }
+        }
+    }
+
+    for(int i = 0; i<n; i++){
+        cout<<a[i]<<" ";
+    }
+
 }
