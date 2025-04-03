@@ -161,6 +161,29 @@ int main(){
     //     cout<<a[i]<<" ";
     // }
 
+    // Q. Sort in decending order
+    // int n;
+    // cout<<"Enter the size of array: ";
+    // cin>>n;
+    // int a[n];
+    // for(int i = 0; i<n; i++){
+    //     cin>>a[i];
+    // }
+    // int temp;
+    // for(int i = 0; i<n; i++){
+    //     for(int j = i+1; j<n; j++){
+    //         if(a[i]<a[j]){
+    //             temp = a[i];
+    //             a[i] = a [j];
+    //             a[j] = temp;
+    //         }
+    //     }
+    // }
+
+    // for(int i = 0; i<n; i++){
+    //     cout<<a[i]<<" ";
+    // }
+
     // Q. Linear Search.
     // int n;
     // cout<<"Enter the size of array: ";
@@ -216,28 +239,30 @@ int main(){
     // }
 
 
-    // Q. find missing number in series.
-    // int n;
-    // cout<<"Enter the size of array: ";
-    // cin>>n;
-    // int a[n];
-    // for(int i = 0; i<n; i++){
-    //     cin>>a[i];
-    // }
-    // int b = a[0];
-    // cout<<"Missing: ";
-    // for(int i = 0; i<n; i++){
-    //     if(a[i]!=b){
-    //         while (b < a[i]) { 
-    //             cout << b << " ";
-    //             b++;
-    //         }
-    //     }
-    //     b++;
-    // }
-    // cout<<endl;
-    // for(int i = 0; i<n; i++){
-    //     cout<<a[i]<<" ";
-    // }
+    // Q. find missing number in series from 1 to n.
+    int n;
+    cout<<"Enter the size of array: ";
+    cin>>n;
+    int a[n];
+    for(int i = 0; i<n; i++){
+        cin>>a[i];
+    }
+    int b = 1;
+    cout<<"Missing: ";
+    for(int i = 0; i<n; i++){
+        if(a[i]!=b){
+            while (b < a[i]) { 
+                cout << b << " ";
+                b++;
+            }
+        }
+        b++;
+    }
+    cout<<endl;
+    for(int i = 0; i<n; i++){
+        cout<<a[i]<<" ";
+    }
+
+    // Q. 
 
 }
