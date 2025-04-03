@@ -10,6 +10,8 @@
         let a = "String 01 ";
         let b = "String 02 ";
 
+        //String methods
+
         console.log(a.length);
         
         document.write("<br>"+a.concat(b));
@@ -21,6 +23,23 @@
         document.write("<br>"+a.charCodeAt(0));
 
         document.write("<br>" +a.slice(0,7) );
+
+        let c = "JavaScript and something something with javaScript"
+
+        document.write("<br>" + c );
+        document.write("<br>" + c.replace("JavaScript","HTML") );
+        document.write("<br>" + c.replaceAll("JavaScript","HTML") );
+        document.write("<br>" + c.replace(/JavaScript/g,"HTML") );
+        document.write("<br>" + c.replace(/JavaScript/gi,"HTML") );
+
+        let d = "    something  something    ";
+        console.log(d);
+        console.log(d.trim());
+
+        let arr = [1,2,3,4,5,6,7,8,9,"hello","welcome",2.4];
+        let spl1 = "convet it into array";
+        console.log(spl1.split(" "));
+
 
     </script>
 </body>
