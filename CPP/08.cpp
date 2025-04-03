@@ -139,26 +139,105 @@ int main(){
     // cout<<"Negative: "<<neg<<endl;
 
     //Q. Sort an array in assending order
-    int n;
-    cout<<"Enter the size of array: ";
-    cin>>n;
-    int a[n];
-    for(int i = 0; i<n; i++){
-        cin>>a[i];
-    }
-    int temp;
-    for(int i = 0; i<n; i++){
-        for(int j = i+1; j<n; j++){
-            if(a[i]>a[j]){
-                temp = a[i];
-                a[i] = a [j];
-                a[j] = temp;
-            }
-        }
-    }
+    // int n;
+    // cout<<"Enter the size of array: ";
+    // cin>>n;
+    // int a[n];
+    // for(int i = 0; i<n; i++){
+    //     cin>>a[i];
+    // }
+    // int temp;
+    // for(int i = 0; i<n; i++){
+    //     for(int j = i+1; j<n; j++){
+    //         if(a[i]>a[j]){
+    //             temp = a[i];
+    //             a[i] = a [j];
+    //             a[j] = temp;
+    //         }
+    //     }
+    // }
 
-    for(int i = 0; i<n; i++){
-        cout<<a[i]<<" ";
-    }
+    // for(int i = 0; i<n; i++){
+    //     cout<<a[i]<<" ";
+    // }
+
+    // Q. Linear Search.
+    // int n;
+    // cout<<"Enter the size of array: ";
+    // cin>>n;
+    // int a[n];
+    // for(int i = 0; i<n; i++){
+    //     cin>>a[i];
+    // }
+    // cout<<"Search: ";
+    // int b;
+    // cin>>b;
+    // for(int i = 0; i<n; i++){
+    //     cout<<a[i]<<" ";
+    // }
+    // cout<<endl;
+    // for(int i = 0; i<n; i++){
+    //     if(a[i]==b){
+    //         cout<<b<<" is present in the array in "<<i<<" index";
+    //     }
+    // }
+
+    // Q. Check two array is equal or not
+    // int n;
+    // cout<<"Enter the size of array: ";
+    // cin>>n;
+    // int a[n];
+    // int b[n];
+    // int c = 1;
+    // cout<<"1st array elements: ";
+    // for(int i = 0; i<n; i++){
+    //     cin>>a[i];
+    // }
+    // cout<<"2nd array elsments: ";
+    // for(int i = 0; i<n; i++){
+    //     cin>>b[i];
+    // }
+    // cout<<"Equal: ";
+    // cout<<endl;
+    // for(int i = 0; i<n; i++){
+    //     if(a[i]==b[i]){
+    //         cout<<a[i]<<"=="<<b[i]<<endl;
+    //     }
+    //     else{
+    //         cout<<a[i]<<"!="<<b[i]<<endl;
+    //         c++;
+    //     }
+    // }
+    // if(c==1){
+    //     cout<<"Both arays are equal";
+    // }
+    // else{
+    //     cout<<"Both arays are not equal";
+    // }
+
+
+    // Q. find missing number in series.
+    // int n;
+    // cout<<"Enter the size of array: ";
+    // cin>>n;
+    // int a[n];
+    // for(int i = 0; i<n; i++){
+    //     cin>>a[i];
+    // }
+    // int b = a[0];
+    // cout<<"Missing: ";
+    // for(int i = 0; i<n; i++){
+    //     if(a[i]!=b){
+    //         while (b < a[i]) { 
+    //             cout << b << " ";
+    //             b++;
+    //         }
+    //     }
+    //     b++;
+    // }
+    // cout<<endl;
+    // for(int i = 0; i<n; i++){
+    //     cout<<a[i]<<" ";
+    // }
 
 }
