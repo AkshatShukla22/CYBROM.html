@@ -240,29 +240,82 @@ int main(){
 
 
     // Q. find missing number in series from 1 to n.
-    int n;
-    cout<<"Enter the size of array: ";
-    cin>>n;
-    int a[n];
-    for(int i = 0; i<n; i++){
-        cin>>a[i];
-    }
-    int b = 1;
-    cout<<"Missing: ";
-    for(int i = 0; i<n; i++){
-        if(a[i]!=b){
-            while (b < a[i]) { 
-                cout << b << " ";
-                b++;
-            }
-        }
-        b++;
-    }
-    cout<<endl;
-    for(int i = 0; i<n; i++){
-        cout<<a[i]<<" ";
-    }
+    // int n;
+    // cout<<"Enter the size of array: ";
+    // cin>>n;
+    // int a[n];
+    // for(int i = 0; i<n; i++){
+    //     cin>>a[i];
+    // }
+    // int b = 1;
+    // cout<<"Missing: ";
+    // for(int i = 0; i<n; i++){
+    //     if(a[i]!=b){
+    //         while (b < a[i]) { 
+    //             cout << b << " ";
+    //             b++;
+    //         }
+    //     }
+    //     b++;
+    // }
+    // cout<<endl;
+    // for(int i = 0; i<n; i++){
+    //     cout<<a[i]<<" ";
+    // }
 
-    // Q. 
+    // Q. Find Kth largest element in array
+    // int n;
+    // int temp;
+    // cout<<"Enter the size of array: ";
+    // cin>>n;
+    // int a[n];
+    // for(int i = 0; i<n; i++){
+    //     cin>>a[i];
+    // }
+    // for(int i = 0; i<n; i++){
+    //     for(int j=i+1; j<n; j++){
+    //         if(a[i]<a[j]){
+    //             temp = a[i];
+    //             a[i]=a[j];
+    //             a[j]=temp;
+    //         }
+    //     }
+    // }
+    // cout<<endl;
+    // int k;
+    // cout<<"Enter the value of K: ";
+    // cin>>k;
+    // if(k<=n){
+    //     cout<<k<<" largest element in array is: "<<a[k-1];
+    // }
+    // else{
+    //     cout<<"invalid";
+    // }
+
+    // Q. find max product of two element of array.
+    // int n;
+    // int temp;
+    // cout<<"Enter the size of array: ";
+    // cin>>n;
+    // int a[n];
+    // for(int i = 0; i<n; i++){
+    //     cin>>a[i];
+    // }
+    // int b = a[0];
+    // int c;
+    // for(int i = 0; i<n; i++){
+    //     if(b<a[i]){
+    //         c=b;
+    //         b=a[i];
+    //     }
+    //     else if(a[i]<b && a[i]>c){
+    //         c=a[i];
+    //     }
+    // }
+    // cout<<endl;
+    // cout<<"Max product of two elements of array is: "<<b+c;
+
+    // Q. Remove Duplicates in an array
+    
 
 }
