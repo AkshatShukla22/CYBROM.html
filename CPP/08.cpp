@@ -336,28 +336,28 @@ int main(){
     // }
 
     // Q. frequency of every lement
-    int n;
-    cout<<"Enter the size of array: ";
-    cin>>n;
-    int a[n];
-    for(int i = 0; i<n; i++){
-        cin>>a[i];
-    }
-    for(int i = 0; i<n; i++){
-        int c = 1;
-        int b = 0;
-        for(int j = 0; j<i; j++){
-            if(a[i]==a[j]){
-                b++;
-            }
-        }
-        for(int j=i+1; j<n; j++){
-            if(a[i]==a[j]){
-                c++;
-            }
-        }
-        if(b==0){
-            cout<<a[i]<<"-->"<<c<<endl;
-        }
-    }
+    // int n;
+    // cout<<"Enter the size of array: ";
+    // cin>>n;
+    // int a[n];
+    // for(int i = 0; i<n; i++){
+    //     cin>>a[i];
+    // }
+    // for(int i = 0; i<n; i++){
+    //     int c = 1;
+    //     int b = 0;
+    //     for(int j = 0; j<i; j++){
+    //         if(a[i]==a[j]){
+    //             b++;
+    //         }
+    //     }
+    //     for(int j=i+1; j<n; j++){
+    //         if(a[i]==a[j]){
+    //             c++;
+    //         }
+    //     }
+    //     if(b==0){
+    //         cout<<a[i]<<"-->"<<c<<endl;
+    //     }
+    // }
 }
