@@ -1,57 +1,60 @@
-const signUpBtn = document.getElementById('signUp');
-const signInBtn = document.getElementById('signIn');
-const container = document.getElementById('container');
+document.addEventListener("DOMContentLoaded", function () {
+  const loginForm = document.getElementById("loginform");
+  const signupForm = document.getElementById("signupform");
+  const container = document.querySelector(".container");
 
-signUpBtn.addEventListener('click', () => {
-  container.classList.add("right-panel-active");
-});
+  // Toggle panel buttons (optional — only needed if you're using buttons to switch)
+  const signUpButton = document.getElementById("signUp");
+  const signInButton = document.getElementById("signIn");
 
-signInBtn.addEventListener('click', () => {
-  container.classList.remove("right-panel-active");
-});
+  if (signUpButton && signInButton) {
+    signUpButton.addEventListener("click", () => {
+      container.classList.add("right-panel-active");
+    });
 
-// Signup
-const signupForm = document.getElementById('signupForm');
-if (signupForm) {
-  signupForm.addEventListener('submit', function (e) {
+    signInButton.addEventListener("click", () => {
+      container.classList.remove("right-panel-active");
+    });
+  }
+
+  // Handle Sign Up
+  signupForm.addEventListener("submit", function (e) {
     e.preventDefault();
-    const name = document.getElementById('signupName').value.trim();
-    const email = document.getElementById('signupEmail').value.trim();
-    const password = document.getElementById('signupPassword').value;
 
-    const users = JSON.parse(localStorage.getItem('users')) || [];
-    const userExists = users.some(user => user.email === email);
+    const name = document.getElementById("signupName").value.trim();
+    const email = document.getElementById("signupEmail").value.trim();
+    const password = document.getElementById("signupPassword").value;
 
-    if (userExists) {
-      alert('User already exists!');
+    if (!name || !email || !password) {
+      alert("Please fill out all fields.");
       return;
     }
 
-    users.push({ name, email, password, role: email.includes('admin@') ? 'admin' : 'user' });
-    localStorage.setItem('users', JSON.stringify(users));
-    alert('Signup successful! Please log in.');
+    // Save to localStorage (for demo purposes only)
+    localStorage.setItem("user", JSON.stringify({ name, email, password }));
+    alert("Account created successfully! Please login.");
+
+    // Reset form and switch to login panel
+    signupForm.reset();
     container.classList.remove("right-panel-active");
   });
-}
 
-// Login
-const loginForm = document.getElementById('loginForm');
-if (loginForm) {
-  loginForm.addEventListener('submit', function (e) {
+  // Handle Login
+  loginForm.addEventListener("submit", function (e) {
     e.preventDefault();
-    const email = document.getElementById('loginEmail').value.trim();
-    const password = document.getElementById('loginPassword').value;
 
-    const users = JSON.parse(localStorage.getItem('users')) || [];
-    const user = users.find(u => u.email === email && u.password === password);
+    const email = document.getElementById("loginEmail").value.trim();
+    const password = document.getElementById("loginPassword").value;
 
-    if (!user) {
-      alert('Invalid credentials!');
-      return;
+    const storedUser = JSON.parse(localStorage.getItem("user"));
+
+    if (storedUser && storedUser.email === email && storedUser.password === password) {
+      alert(`Welcome back, ${storedUser.name}!`);
+      // Redirect or show homepage content here
+    } else {
+      alert("Invalid email or password!");
     }
 
-    localStorage.setItem('loggedInUser', JSON.stringify(user));
-    alert(`Welcome ${user.role === 'admin' ? 'Admin' : user.name}!`);
-    window.location.href = user.role === 'admin' ? '../admin-dashboard.html' : '../browse.html';
+    loginForm.reset();
   });
-}
+});
