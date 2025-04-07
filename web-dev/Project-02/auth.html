@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="./auth.css">
+</head>
+<body>
+    <div class="container" id="container">
+        <!-- signup -->
+         <div class="form-container sign-up-container">
+            <form id="signupform">
+                <h2>Create Account</h2>
+                <input type="text" placeholder="Name" id="signupName" required>
+                <input type="email" placeholder="Email" id="signupEmail" required>
+                <input type="password" placeholder="Password" id="signupPassword"required>
+                <button type="submit">Sign Up</button>
+            </form>
+         </div>
+
+         <!-- login form -->
+         <div class="form-container sign-in-container">
+            <form id="loginform">
+                <h2>Login</h2>
+                <input type="email" id="loginEmail" placeholder="Email" required>
+                <input type="password" id="loginPassword" placeholder="Password" required>
+                <button type="submit">Login</button>
+            </form>
+         </div>
+
+         <!-- overlay panel -->
+         <div class="overlay-container">
+            <div class="overlay">
+              <div class="overlay-panel overlay-left">
+                <h2>Welcome Back!</h2>
+                <p>To keep watching, please login with your personal info</p>
+                <button class="ghost" id="signIn">Login</button>
+              </div>
+              <div class="overlay-panel overlay-right">
+                <h2>Hello, Friend!</h2>
+                <p>Enter your details and start your journey with us</p>
+                <button class="ghost" id="signUp">Sign Up</button>
+              </div>
+            </div>
+          </div>
+    </div>
+    <script src="./auth.js"></script>
+</body>
+</html>
