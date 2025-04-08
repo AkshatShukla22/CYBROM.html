@@ -31,6 +31,17 @@
   h2{
     font-size: 3em;
     color: white;
+    background: linear-gradient(90deg, #00FFF7, #00C2FF, #1e5eff,  #00FFF7);
+    background-size: cover;
+    background-clip: text;
+    color: transparent;
+    animation: h2-animation 10s linear infinite;
+  }
+
+  @keyframes h2-animation {
+    to{
+      background-position-x: -400px;
+    }
   }
   
   .form-container {
@@ -138,7 +149,8 @@
   }
   
   .overlay {
-    background: #BB86FC;
+    /* background: #BB86FC; */
+    background: linear-gradient(135deg, #1C1C1C, #3A0CA3, #BB86FC);
     color: white;
     position: relative;
     left: -100%;
