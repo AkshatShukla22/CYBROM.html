@@ -33,34 +33,34 @@ int main(){
 
 
 //Addition of two matrix ---->>    
-       int m ,n;
-       cout<<"Enter size of array";
-       cin>>m>>n;
-       int a[m][n];
-       int b[m][n];
+    //    int m ,n;
+    //    cout<<"Enter size of array";
+    //    cin>>m>>n;
+    //    int a[m][n];
+    //    int b[m][n];
 
-    cout<<"Enter elements of row and column of 2d array1";
-    for(int i=0;i<m;i++){
-        for(int j=0;j<n;j++){
-            cin>>a[i][j];
-        }
-    } 
+    // cout<<"Enter elements of row and column of 2d array1";
+    // for(int i=0;i<m;i++){
+    //     for(int j=0;j<n;j++){
+    //         cin>>a[i][j];
+    //     }
+    // } 
     
-    cout<<"Enter elements of row and column of 2d array2";
-    for(int i=0;i<m;i++){
-        for(int j=0;j<n;j++){
-            cin>>b[i][j];
-        }
-    } 
+    // cout<<"Enter elements of row and column of 2d array2";
+    // for(int i=0;i<m;i++){
+    //     for(int j=0;j<n;j++){
+    //         cin>>b[i][j];
+    //     }
+    // } 
 
-    int sum = 0;
-    for(int i=0;i<m;i++){
-        for(int j=0;j<n;j++){
-            sum = a[i][j]+b[i][j];
-            cout<<sum<<" ";
-        }
-        cout<<endl;
-    }
+    // int sum = 0;
+    // for(int i=0;i<m;i++){
+    //     for(int j=0;j<n;j++){
+    //         sum = a[i][j]+b[i][j];
+    //         cout<<sum<<" ";
+    //     }
+    //     cout<<endl;
+    // }
 
     
     

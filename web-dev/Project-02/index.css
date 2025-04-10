@@ -4,3 +4,11 @@
     box-sizing: border-box;
 }
 
+nav{
+    height: 7vh;
+    width: 100%;
+    background-color: aqua;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
