@@ -12,6 +12,9 @@
     <button id="btn2" onclick="decrement()">-</button>
     <button id="btn3" onclick="reset()">Reset</button>
 
+    <input type="text" id="name">
+    <button id="btn4" onclick="getTxt()">take</button>
+
 </body>
 <script>
     let a = document.querySelector("#show");
@@ -32,5 +35,13 @@
         count = 0;
         show.innerHTML=count;
     }
+
+    getTxt = () =>{
+        let inp = document.getElementById("name").value;
+        alert(inp);
+    }
+
+    
+
 </script>
 </html>
