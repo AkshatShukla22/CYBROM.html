@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+    <h1 id="show">0</h1>
+    <button id="btn1" onclick="increment()">+</button>
+    <button id="btn2" onclick="decrement()">-</button>
+    <button id="btn3" onclick="reset()">Reset</button>
+
+</body>
+<script>
+    let a = document.querySelector("#show");
+    let count = 0;
+    increment=() => {
+        count ++;
+        show.innerHTML=count;
+    }
+
+    decrement = () => {
+        if(count > 0){
+            count --;
+            show.innerHTML=count;
+        }
+    }
+
+    reset = () => {
+        count = 0;
+        show.innerHTML=count;
+    }
+</script>
+</html>
