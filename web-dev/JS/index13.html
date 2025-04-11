@@ -1,13 +1,178 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Simple Form</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: sans-serif;
+    }
+
+    body {
+      background-color: #0a0f1f;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    form {
+      background-color: #111c35;
+      padding: 60px 60px;
+      border-radius: 16px;
+      box-shadow: 0 0 30px rgba(0, 140, 255, 0.3);
+      width: 600px;
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 10px;
+      color: #00aaff;
+      letter-spacing: 1px;
+      font-size: 28px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    input {
+      padding: 14px;
+      font-size: 18px;
+      border: 2px solid transparent;
+      border-radius: 8px;
+      background-color: #1c2946;
+      color: white;
+      transition: border 0.2s;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: #0099ff;
+    }
+
+    .error {
+      color: #ff4d4d;
+      font-size: 14px;
+      position: absolute;
+      bottom: -20px;
+      left: 0;
+      height: 18px;
+    }
+
+    input.error-input {
+      border-color: #ff4d4d;
+    }
+
+    button {
+      padding: 14px;
+      font-size: 24px;
+      background-color: #0099ff;
+      border: none;
+      border-radius: 8px;
+      color: white;
+      cursor: pointer;
+      width: 50%;
+      align-self: center;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #007acc;
+    }
+  </style>
 </head>
 <body>
-    <form >
-        
-    </form>
+  <form>
+    <h2>Register Now</h2>
+    <div class="form-group">
+      <input type="text" id="name" placeholder="Enter your name" />
+      <span class="error" id="err-name"></span>
+    </div>
+    <div class="form-group">
+      <input type="number" id="number" placeholder="Enter your number" />
+      <span class="error" id="err-number"></span>
+    </div>
+    <div class="form-group">
+      <input type="text" id="pass" placeholder="Enter password" />
+      <span class="error" id="err-pass"></span>
+    </div>
+    <div class="form-group">
+      <input type="password" id="co-pass" placeholder="Confirm password" />
+      <span class="error" id="err-copass"></span>
+    </div>
+    <input type="submit" onclick="return validate()">
+  </form>
+
+  <script>
+    function validate() {
+      let name = document.getElementById("name");
+      let number = document.getElementById("number");
+      let pass = document.getElementById("pass");
+      let copass = document.getElementById("co-pass");
+
+      let errName = document.getElementById("err-name");
+      let errNumber = document.getElementById("err-number");
+      let errPass = document.getElementById("err-pass");
+      let errCopass = document.getElementById("err-copass");
+
+      let isValid = true;
+
+      if (name.value.trim() === "") {
+        errName.textContent = "Name is required";
+        name.classList.add("error-input");
+        isValid = false;
+      } else {
+        errName.textContent = "";
+        name.classList.remove("error-input");
+      }
+
+      if (number.value.trim() === "") {
+        errNumber.textContent = "Number is required";
+        number.classList.add("error-input");
+        isValid = false;
+      } else {
+        errNumber.textContent = "";
+        number.classList.remove("error-input");
+      }
+
+      if (pass.value.trim() === "") {
+        errPass.textContent = "Password is required";
+        pass.classList.add("error-input");
+        isValid = false;
+      } else {
+        errPass.textContent = "";
+        pass.classList.remove("error-input");
+      }
+
+      if (copass.value.trim() === "") {
+        errCopass.textContent = "Please confirm password";
+        copass.classList.add("error-input");
+        isValid = false;
+      } else if (copass.value !== pass.value) {
+        errCopass.textContent = "Passwords do not match";
+        copass.classList.add("error-input");
+        isValid = false;
+      } else {
+        errCopass.textContent = "";
+        copass.classList.remove("error-input");
+      }
+
+      if (isValid) {
+        alert("Form submitted successfully!");
+      }
+      return isValid
+    }
+  </script>
 </body>
 </html>
