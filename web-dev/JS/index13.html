@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Simple Form</title>
+  <title>Document</title>
   <style>
     * {
       margin: 0;
@@ -100,7 +100,7 @@
       <span class="error" id="err-name"></span>
     </div>
     <div class="form-group">
-      <input type="number" id="number" placeholder="Enter your number" />
+      <input type="text" id="number" placeholder="Enter your number" />
       <span class="error" id="err-number"></span>
     </div>
     <div class="form-group">
@@ -111,7 +111,7 @@
       <input type="password" id="co-pass" placeholder="Confirm password" />
       <span class="error" id="err-copass"></span>
     </div>
-    <input type="submit" onclick="return validate()">
+    <button type="submit" onclick="return validate()">Submit</button>
   </form>
 
   <script>
@@ -132,7 +132,8 @@
         errName.textContent = "Name is required";
         name.classList.add("error-input");
         isValid = false;
-      } else {
+      } 
+      else {
         errName.textContent = "";
         name.classList.remove("error-input");
       }
@@ -141,7 +142,8 @@
         errNumber.textContent = "Number is required";
         number.classList.add("error-input");
         isValid = false;
-      } else {
+      }
+       else {
         errNumber.textContent = "";
         number.classList.remove("error-input");
       }
@@ -150,7 +152,8 @@
         errPass.textContent = "Password is required";
         pass.classList.add("error-input");
         isValid = false;
-      } else {
+      } 
+      else {
         errPass.textContent = "";
         pass.classList.remove("error-input");
       }
@@ -159,11 +162,13 @@
         errCopass.textContent = "Please confirm password";
         copass.classList.add("error-input");
         isValid = false;
-      } else if (copass.value !== pass.value) {
+      } 
+      else if (copass.value !== pass.value) {
         errCopass.textContent = "Passwords do not match";
         copass.classList.add("error-input");
         isValid = false;
-      } else {
+      } 
+      else {
         errCopass.textContent = "";
         copass.classList.remove("error-input");
       }
