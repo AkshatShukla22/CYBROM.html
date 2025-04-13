@@ -38,7 +38,7 @@
       margin-bottom: 10px;
       color: #00aaff;
       letter-spacing: 1px;
-      font-size: 28px;
+      font-size: 4vh;
     }
 
     .form-group {
@@ -94,6 +94,11 @@
       animation: shake 0.1s linear;
     }
 
+    input.error-input-2 {
+      border-color: #ff4d4d;
+      box-shadow: 0px 0px 15px #ff4d4d;
+    }
+
     input.correct-input{
       border-color: #0ac204;
       box-shadow: 0px 0px 15px #0ac204;
@@ -127,11 +132,13 @@
       cursor: pointer;
       width: 50%;
       align-self: center;
-      transition: background-color 0.3s;
+      transition: transform 0.2s;
     }
 
     button:hover {
-      background-color: #007acc;
+      background-color: white;
+      color: #0099ff;
+      transform: scale(1.2);
     }
   </style>
 </head>
@@ -199,6 +206,132 @@
     let c5 = document.getElementById("c5");
     let inc5 = document.getElementById("inc5");
 
+    checker = () => {
+
+    if (name.value.trim() != "") {
+      errName.textContent = "";
+      name.classList.remove("error-input");
+      name.classList.add("correct-input");
+      c1.style.display = 'block';
+      inc1.style.display = 'none';
+    } 
+    else {
+      errName.textContent = "";
+      name.classList.remove("correct-input");
+      name.classList.remove("error-input");
+      c1.style.display = 'none';
+      inc1.style.display = 'none';
+    }
+
+    if (email.value.trim() != "") {
+      if (!(email.value.includes("@") && email.value.includes(".com"))) {
+        email.classList.remove("correct-input");
+        email.classList.add("error-input");
+        c2.style.display = 'none';
+        inc2.style.display = 'block';
+        errEmail.textContent = "";
+      } else {
+        errEmail.textContent = "";
+        email.classList.add("correct-input");
+        email.classList.remove("error-input");
+        c2.style.display = 'block';
+        inc2.style.display = 'none';
+        errEmail.textContent = "";
+      }
+    } else {
+      email.classList.remove("correct-input");
+      email.classList.remove("error-input");
+      c2.style.display = 'none';
+      inc2.style.display = 'none';
+      errEmail.textContent = "";
+    }
+
+    if (number.value.trim() != "") {
+      if (isNaN(number.value)) {
+        errNumber.textContent = "Invalid number";
+        number.classList.remove("correct-input");
+        number.classList.add("error-input");
+        c3.style.display = 'none';
+        inc3.style.display = 'block';
+      } 
+      else if (number.value.length !== 10) {
+        errNumber.textContent = "Number must be 10 digits";
+        number.classList.remove("correct-input");
+        number.classList.add("error-input");
+        c3.style.display = 'none';
+        inc3.style.display = 'block';
+      } 
+      else {
+        errNumber.textContent = "";
+        number.classList.remove("error-input");
+        number.classList.add("correct-input");
+        c3.style.display = 'block';
+        inc3.style.display = 'none';
+      }
+    }
+    else{
+      errNumber.textContent = "";
+      number.classList.remove("error-input");
+      number.classList.remove("correct-input");
+      c3.style.display = 'none';
+      inc3.style.display = 'none';
+    }
+
+    if (pass.value.trim() != "") {
+      if(pass.value.length>=6){
+        errPass.textContent = "";
+        pass.classList.remove("error-input");
+        pass.classList.add("correct-input");
+        c4.style.display = 'block';
+        inc4.style.display = 'none';
+      }
+      else{
+        errPass.textContent = "";
+        pass.classList.add("error-input");
+        pass.classList.remove("correct-input");
+        c4.style.display = 'none';
+        inc4.style.display = 'block';
+      }
+    }
+    else{
+      errPass.textContent = "";
+      pass.classList.remove("error-input");
+      pass.classList.remove("correct-input");
+      c4.style.display = 'none';
+      inc4.style.display = 'none';
+    }
+
+    if (copass.value.trim() != "") {
+      if(copass.value==pass.value){
+        errCopass.textContent = "";
+        copass.classList.remove("error-input");
+        copass.classList.add("correct-input");
+        c5.style.display = 'block';
+        inc5.style.display = 'none';
+      }
+      if(copass.value!=pass.value){
+        errCopass.textContent = "";
+        copass.classList.add("error-input");
+        copass.classList.remove("correct-input");
+        c5.style.display = 'none';
+        inc5.style.display = 'block';
+      }
+    }
+    else{
+      errCopass.textContent = "";
+      copass.classList.remove("error-input");
+      copass.classList.remove("correct-input");
+      c5.style.display = 'none';
+      inc5.style.display = 'none';
+    }
+  };
+
+    name.addEventListener('input', checker);
+    email.addEventListener('input', checker);
+    number.addEventListener('input', checker);
+    pass.addEventListener('input', checker);
+    copass.addEventListener('input', checker);
+
     function validate() {
       let isValid = true;
 
@@ -207,8 +340,7 @@
         name.classList.add("error-input");
         inc1.style.display = 'block';
         isValid = false;
-      } 
-      else {
+      } else {
         errName.textContent = "";
         name.classList.remove("error-input");
         name.classList.add("correct-input");
@@ -221,14 +353,12 @@
         email.classList.add("error-input");
         inc2.style.display = 'block';
         isValid = false;
-      } 
-      else if (!(email.value.includes("@") && email.value.includes(".com"))) {
+      } else if (!(email.value.includes("@") && email.value.includes(".com"))) {
         errEmail.textContent = "Invalid email";
         email.classList.add("error-input");
         inc2.style.display = 'block';
         isValid = false;
-      } 
-      else {
+      } else {
         errEmail.textContent = "";
         email.classList.add("correct-input");
         email.classList.remove("error-input");
@@ -241,20 +371,17 @@
         number.classList.add("error-input");
         inc3.style.display = 'block';
         isValid = false;
-      }
-      else if(isNaN(number.value)){
+      } else if (isNaN(number.value)) {
         errNumber.textContent = "Invalid number";
         number.classList.add("error-input");
         inc3.style.display = 'block';
         isValid = false;
-      }
-      else if(number.value.length !== 10){
+      } else if (number.value.length !== 10) {
         errNumber.textContent = "Invalid length of number";
         number.classList.add("error-input");
         inc3.style.display = 'block';
         isValid = false;
-      }
-      else {
+      } else {
         errNumber.textContent = "";
         number.classList.add("correct-input");
         number.classList.remove("error-input");
@@ -267,8 +394,7 @@
         pass.classList.add("error-input");
         inc4.style.display = 'block';
         isValid = false;
-      } 
-      else {
+      } else {
         errPass.textContent = "";
         pass.classList.remove("error-input");
         pass.classList.add("correct-input");
@@ -281,14 +407,12 @@
         copass.classList.add("error-input");
         inc5.style.display = 'block';
         isValid = false;
-      } 
-      else if (copass.value !== pass.value) {
+      } else if (copass.value !== pass.value) {
         errCopass.textContent = "Passwords do not match";
         copass.classList.add("error-input");
         inc5.style.display = 'block';
         isValid = false;
-      } 
-      else {
+      } else {
         errCopass.textContent = "";
         copass.classList.remove("error-input");
         copass.classList.add("correct-input");
