@@ -26,7 +26,7 @@
       background-color: #111c35;
       padding: 60px 60px;
       border-radius: 16px;
-      box-shadow: 0 0 30px rgba(0, 140, 255, 0.3);
+      box-shadow: 0 0 40px #00aaff;
       width: 600px;
       display: flex;
       flex-direction: column;
@@ -45,14 +45,22 @@
       display: flex;
       flex-direction: column;
       position: relative;
+      gap: 1vh;
+    }
+    
+    .form-group label{
+      color: #0099ff;
+      font-size: 1.1em;
+      letter-spacing: 3px;
+      margin-left: 1vw;
     }
 
     input {
       padding: 14px;
       font-size: 18px;
-      border: 2px solid transparent;
-      border-radius: 8px;
-      background-color: #1c2946;
+      border: 0px solid transparent;
+      border-bottom: 3px solid #0099ff;
+      background-color: transparent;
       color: white;
       transition: border 0.2s;
     }
@@ -65,7 +73,7 @@
     .corrector{
       font-size: 3vh;
       position: absolute;
-      top: 10px;
+      top: 35px;
       right: 10px;
     }
 
@@ -77,6 +85,16 @@
     .incorrect{
       color: #ff4d4d;
       display: none;
+    }
+
+    #showPass{
+      color: #0099ff;
+      position: absolute;
+      display: block;
+      top: -10px;
+      right: 40px;
+      font-size: 2.5vh;
+      background-color: transparent;
     }
 
     .error {
@@ -132,7 +150,7 @@
       cursor: pointer;
       width: 50%;
       align-self: center;
-      transition: transform 0.2s;
+      transition: all 0.2s;
     }
 
     button:hover {
@@ -146,30 +164,36 @@
   <form>
     <h2>Register Now</h2>
     <div class="form-group">
+      <label for="name">Name: </label>
       <input type="text" id="name" placeholder="Enter your name" />
       <span class="error" id="err-name"></span>
       <span class="corrector correct" id="c1"><i class="fa-solid fa-check"></i></span>
       <span class="corrector incorrect" id="inc1"><i class="fa-solid fa-xmark"></i></span>
     </div>
     <div class="form-group">
+      <label for="email">Email: </label>
       <input type="text" id="email" placeholder="Enter your email" />
       <span class="error" id="err-email"></span>
       <span class="corrector correct" id="c2"><i class="fa-solid fa-check"></i></span>
       <span class="corrector incorrect" id="inc2"><i class="fa-solid fa-xmark"></i></span>
     </div>
     <div class="form-group">
+      <label for="name">Phone number: </label>
       <input type="text" id="number" placeholder="Enter your number" />
       <span class="error" id="err-number"></span>
       <span class="corrector correct" id="c3"><i class="fa-solid fa-check"></i></span>
       <span class="corrector incorrect" id="inc3"><i class="fa-solid fa-xmark"></i></span>
     </div>
     <div class="form-group">
+      <label for="name">Password: </label>
       <input type="text" id="pass" placeholder="Enter password" />
+      <span class="corrector"><button  id="showPass" onclick="return hideShow()"><i class="fa-solid fa-eye"></i></button></i></span>
       <span class="error" id="err-pass"></span>
       <span class="corrector correct" id="c4"><i class="fa-solid fa-check"></i></span>
       <span class="corrector incorrect" id="inc4"><i class="fa-solid fa-xmark"></i></span>
     </div>
     <div class="form-group">
+      <label for="name">Confirm password: </label>
       <input type="password" id="co-pass" placeholder="Confirm password" />
       <span class="error" id="err-copass"></span>
       <span class="corrector correct" id="c5"><i class="fa-solid fa-check"></i></span>
@@ -205,6 +229,20 @@
 
     let c5 = document.getElementById("c5");
     let inc5 = document.getElementById("inc5");
+
+    let showPass = document.querySelector("#showPass")
+
+    hideShow = () =>{
+      if(pass.type == 'text'){
+        pass.type = 'password';
+        showPass.innerHTML = '<i class="fa-solid fa-eye-slash"></i>';
+      }
+      else{
+        pass.type = 'text';
+        showPass.innerHTML = '<i class="fa-solid fa-eye"></i>';
+      }
+      return false;
+    }
 
     checker = () => {
 
