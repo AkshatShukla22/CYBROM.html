@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Document</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <style>
     * {
       margin: 0;
@@ -29,7 +30,7 @@
       width: 600px;
       display: flex;
       flex-direction: column;
-      gap: 30px;
+      gap: 4vh;
     }
 
     h2 {
@@ -61,9 +62,26 @@
       border-color: #0099ff;
     }
 
+    .corrector{
+      font-size: 3vh;
+      position: absolute;
+      top: 10px;
+      right: 10px;
+    }
+
+    .correct{
+      color: #0ac204;
+      display: none;
+    }
+
+    .incorrect{
+      color: #ff4d4d;
+      display: none;
+    }
+
     .error {
       color: #ff4d4d;
-      font-size: 14px;
+      font-size: 17px;
       position: absolute;
       bottom: -20px;
       left: 0;
@@ -72,6 +90,31 @@
 
     input.error-input {
       border-color: #ff4d4d;
+      box-shadow: 0px 0px 15px #ff4d4d;
+      animation: shake 0.1s linear;
+    }
+
+    input.correct-input{
+      border-color: #0ac204;
+      box-shadow: 0px 0px 15px #0ac204;
+    }
+
+    @keyframes shake {
+      0%{
+        transform: translateX(0px);
+      }
+      25%{
+        transform: translateX(-20px);
+      }
+      50%{
+        transform: translateX(0px);
+      }
+      75%{
+        transform: translateX(20px);
+      }
+      100%{
+        transform: translateX(0px);
+      }
     }
 
     button {
@@ -98,116 +141,165 @@
     <div class="form-group">
       <input type="text" id="name" placeholder="Enter your name" />
       <span class="error" id="err-name"></span>
+      <span class="corrector correct" id="c1"><i class="fa-solid fa-check"></i></span>
+      <span class="corrector incorrect" id="inc1"><i class="fa-solid fa-xmark"></i></span>
     </div>
     <div class="form-group">
-      <input type="email" id="email" placeholder="Enter your email" />
+      <input type="text" id="email" placeholder="Enter your email" />
       <span class="error" id="err-email"></span>
+      <span class="corrector correct" id="c2"><i class="fa-solid fa-check"></i></span>
+      <span class="corrector incorrect" id="inc2"><i class="fa-solid fa-xmark"></i></span>
     </div>
     <div class="form-group">
       <input type="text" id="number" placeholder="Enter your number" />
       <span class="error" id="err-number"></span>
+      <span class="corrector correct" id="c3"><i class="fa-solid fa-check"></i></span>
+      <span class="corrector incorrect" id="inc3"><i class="fa-solid fa-xmark"></i></span>
     </div>
     <div class="form-group">
       <input type="text" id="pass" placeholder="Enter password" />
       <span class="error" id="err-pass"></span>
+      <span class="corrector correct" id="c4"><i class="fa-solid fa-check"></i></span>
+      <span class="corrector incorrect" id="inc4"><i class="fa-solid fa-xmark"></i></span>
     </div>
     <div class="form-group">
       <input type="password" id="co-pass" placeholder="Confirm password" />
       <span class="error" id="err-copass"></span>
+      <span class="corrector correct" id="c5"><i class="fa-solid fa-check"></i></span>
+      <span class="corrector incorrect" id="inc5"><i class="fa-solid fa-xmark"></i></span>
     </div>
     <button type="submit" onclick="return validate()">Submit</button>
   </form>
 
   <script>
+    let name = document.getElementById("name");
+    let email = document.getElementById("email");
+    let number = document.getElementById("number");
+    let pass = document.getElementById("pass");
+    let copass = document.getElementById("co-pass");
+
+    let errName = document.getElementById("err-name");
+    let errEmail = document.getElementById("err-email");
+    let errNumber = document.getElementById("err-number");
+    let errPass = document.getElementById("err-pass");
+    let errCopass = document.getElementById("err-copass");
+
+    let c1 = document.getElementById("c1");
+    let inc1 = document.getElementById("inc1");
+
+    let c2 = document.getElementById("c2");
+    let inc2 = document.getElementById("inc2");
+
+    let c3 = document.getElementById("c3");
+    let inc3 = document.getElementById("inc3");
+
+    let c4 = document.getElementById("c4");
+    let inc4 = document.getElementById("inc4");
+
+    let c5 = document.getElementById("c5");
+    let inc5 = document.getElementById("inc5");
+
     function validate() {
-      let name = document.getElementById("name");
-      let email = document.getElementById("email");
-      let number = document.getElementById("number");
-      let pass = document.getElementById("pass");
-      let copass = document.getElementById("co-pass");
-
-      let errName = document.getElementById("err-name");
-      let errEmail = document.getElementById("err-email");
-      let errNumber = document.getElementById("err-number");
-      let errPass = document.getElementById("err-pass");
-      let errCopass = document.getElementById("err-copass");
-
       let isValid = true;
 
       if (name.value.trim() === "") {
         errName.textContent = "Name is required";
         name.classList.add("error-input");
+        inc1.style.display = 'block';
         isValid = false;
       } 
       else {
         errName.textContent = "";
         name.classList.remove("error-input");
+        name.classList.add("correct-input");
+        c1.style.display = 'block';
+        inc1.style.display = 'none';
       }
 
       if (email.value.trim() === "") {
         errEmail.textContent = "Email is required";
         email.classList.add("error-input");
+        inc2.style.display = 'block';
         isValid = false;
       } 
-      else if ( !(email.includes("@") && email.includes(".com")) ) {
-        errEmail.textContent = "Email is required";
+      else if (!(email.value.includes("@") && email.value.includes(".com"))) {
+        errEmail.textContent = "Invalid email";
         email.classList.add("error-input");
+        inc2.style.display = 'block';
         isValid = false;
       } 
       else {
         errEmail.textContent = "";
-        name.classList.remove("error-input");
+        email.classList.add("correct-input");
+        email.classList.remove("error-input");
+        c2.style.display = 'block';
+        inc2.style.display = 'none';
       }
 
       if (number.value.trim() === "") {
-         errNumber.textContent = "Number is required";
+        errNumber.textContent = "Number is required";
         number.classList.add("error-input");
+        inc3.style.display = 'block';
         isValid = false;
       }
-      else if(number.length!=10){
-        errNumber.textContent = "Invalid length of number";
-        number.classList.add("error-input");
-        isValid = false;
-      }
-      else if(isNaN(number)){
+      else if(isNaN(number.value)){
         errNumber.textContent = "Invalid number";
         number.classList.add("error-input");
+        inc3.style.display = 'block';
+        isValid = false;
+      }
+      else if(number.value.length !== 10){
+        errNumber.textContent = "Invalid length of number";
+        number.classList.add("error-input");
+        inc3.style.display = 'block';
         isValid = false;
       }
       else {
         errNumber.textContent = "";
+        number.classList.add("correct-input");
         number.classList.remove("error-input");
+        c3.style.display = 'block';
+        inc3.style.display = 'none';
       }
 
       if (pass.value.trim() === "") {
         errPass.textContent = "Password is required";
         pass.classList.add("error-input");
+        inc4.style.display = 'block';
         isValid = false;
       } 
       else {
         errPass.textContent = "";
         pass.classList.remove("error-input");
+        pass.classList.add("correct-input");
+        c4.style.display = 'block';
+        inc4.style.display = 'none';
       }
 
       if (copass.value.trim() === "") {
         errCopass.textContent = "Please confirm password";
         copass.classList.add("error-input");
+        inc5.style.display = 'block';
         isValid = false;
       } 
       else if (copass.value !== pass.value) {
         errCopass.textContent = "Passwords do not match";
         copass.classList.add("error-input");
+        inc5.style.display = 'block';
         isValid = false;
       } 
       else {
         errCopass.textContent = "";
         copass.classList.remove("error-input");
+        copass.classList.add("correct-input");
+        c5.style.display = 'block';
+        inc5.style.display = 'none';
       }
 
       if (isValid) {
         alert("Form submitted successfully!");
       }
-      return isValid
+      return isValid;
     }
   </script>
 </body>

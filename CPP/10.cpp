@@ -50,11 +50,11 @@ int main(){
     // int n;
     // cout << "Enter the size of array: ";
     // cin >> n;
-
     // int a[n];
     // for (int i = 0; i < n; i++) {
     //     cin >> a[i];
     // }
+
     // int d = 0;
     // int c = 0;
     // int e = 0;
@@ -65,7 +65,6 @@ int main(){
     //         break;
     //     }
     // }
-
     // for(int i = 1; i < n; i++) {
     //     if(d==1){
     //         e = 1;
@@ -97,25 +96,26 @@ int main(){
     // }
 
     // Q. leetcode problem 121
-    // int n;
-    // cout << "Enter the size of array: ";
-    // cin >> n;
+    int n;
+    cout << "Enter the size of array: ";
+    cin >> n;
 
-    // int a[n];
-    // for (int i = 0; i < n; i++) {
-    //     cin >> a[i];
-    // }
-    // int min = a[0];
-    // int max = a[0];
-    // for(int i = 0; i < n; i++){
-    //     if(a[i]<min){
-    //         min = a[i];
-    //     }
-    //     if(a[i]>max){
-    //         max = a[i];
-    //     }
-    // }
-    // cout<<"prfot: "<<max-min;
+    int a[n];
+    for (int i = 0; i < n; i++) {
+        cin >> a[i];
+        
+    }
+    int min = a[0];
+    int profit = 0;
+    for(int i = 1; i < n; i++){
+        if(a[i]>min){
+            profit = a[i] - min;
+        }
+        else{
+            min = a[i];
+        }
+    }
+    cout<<"prfot: "<<profit;
    
 
 }
