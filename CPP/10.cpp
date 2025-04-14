@@ -96,6 +96,28 @@ int main(){
     // }
 
     // Q. leetcode problem 121
+    // int n;
+    // cout << "Enter the size of array: ";
+    // cin >> n;
+
+    // int a[n];
+    // for (int i = 0; i < n; i++) {
+    //     cin >> a[i];
+        
+    // }
+    // int min = a[0];
+    // int profit = 0;
+    // for(int i = 1; i < n; i++){
+    //     if(a[i]>min){
+    //         profit = a[i] - min;
+    //     }
+    //     else{
+    //         min = a[i];
+    //     }
+    // }
+    // cout<<"prfot: "<<profit;
+   
+    //Leetcode Q34
     int n;
     cout << "Enter the size of array: ";
     cin >> n;
@@ -103,20 +125,21 @@ int main(){
     int a[n];
     for (int i = 0; i < n; i++) {
         cin >> a[i];
-        
     }
-    int min = a[0];
-    int profit = 0;
-    for(int i = 1; i < n; i++){
-        if(a[i]>min){
-            profit = a[i] - min;
-        }
-        else{
-            min = a[i];
+    int target;
+    int c = 0;
+    int b;
+    cout<<"enter target:";
+    cin>>target; 
+    for (int i = 0; i < n; i++) {
+        if(a[i]==target){
+            cout<<"target found at: "<<i<<endl;
+            c++;
         }
     }
-    cout<<"prfot: "<<profit;
-   
+    if(c==0){
+        cout<<"target not found";
+    }
 
 }
-    // HW 296, 121
+    
