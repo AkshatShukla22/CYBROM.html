@@ -378,7 +378,8 @@
         name.classList.add("error-input");
         inc1.style.display = 'block';
         isValid = false;
-      } else {
+      }
+       else {
         errName.textContent = "";
         name.classList.remove("error-input");
         name.classList.add("correct-input");
@@ -388,15 +389,18 @@
 
       if (email.value.trim() === "") {
         errEmail.textContent = "Email is required";
+        email.classList.remove("error-input");
         email.classList.add("error-input");
         inc2.style.display = 'block';
         isValid = false;
-      } else if (!(email.value.includes("@") && email.value.includes(".com"))) {
+      } 
+      else if (!(email.value.includes("@") && email.value.includes(".com"))) {
         errEmail.textContent = "Invalid email";
         email.classList.add("error-input");
         inc2.style.display = 'block';
         isValid = false;
-      } else {
+      } 
+      else {
         errEmail.textContent = "";
         email.classList.add("correct-input");
         email.classList.remove("error-input");
@@ -409,17 +413,20 @@
         number.classList.add("error-input");
         inc3.style.display = 'block';
         isValid = false;
-      } else if (isNaN(number.value)) {
+      } 
+      else if (isNaN(number.value)) {
         errNumber.textContent = "Invalid number";
         number.classList.add("error-input");
         inc3.style.display = 'block';
         isValid = false;
-      } else if (number.value.length !== 10) {
+      } 
+      else if (number.value.length !== 10) {
         errNumber.textContent = "Invalid length of number";
         number.classList.add("error-input");
         inc3.style.display = 'block';
         isValid = false;
-      } else {
+      } 
+      else {
         errNumber.textContent = "";
         number.classList.add("correct-input");
         number.classList.remove("error-input");
@@ -432,7 +439,20 @@
         pass.classList.add("error-input");
         inc4.style.display = 'block';
         isValid = false;
-      } else {
+      } 
+      else if(pass.length>8){
+        errPass.textContent = "Password should be atleast 6 character long";
+        pass.classList.add("error-input");
+        inc4.style.display = 'block';
+        isValid = false;
+      }
+      else if(!(pass.value.match([/0123456789/])) && !(pass.value.match([/!@#$%^&*()_-/])) && !(pass.value.match([/A-Z/])) && !(pass.value.match([/a-z/]))){
+        errPass.textContent = "Password is too week";
+        pass.classList.add("error-input");
+        inc4.style.display = 'block';
+        isValid = false;
+      }
+      else {
         errPass.textContent = "";
         pass.classList.remove("error-input");
         pass.classList.add("correct-input");
@@ -445,13 +465,18 @@
         copass.classList.add("error-input");
         inc5.style.display = 'block';
         isValid = false;
-      } else if (copass.value !== pass.value) {
-        errCopass.textContent = "Passwords do not match";
+      } 
+      else if (copass.value !== pass.value) {
+        errCopass.textContent = "Passwords does not match";
         copass.classList.add("error-input");
         inc5.style.display = 'block';
+        copass.value = "";
         isValid = false;
-      } else {
+      } 
+      else {
         errCopass.textContent = "";
+        document.querySelector('#copass').value="";
+        document.querySelector('#copass').focus();
         copass.classList.remove("error-input");
         copass.classList.add("correct-input");
         c5.style.display = 'block';
