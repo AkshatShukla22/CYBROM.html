@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <p id="para">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Earum sit corrupti nobis. Deleniti quae vel incidunt ea aperiam! Officia eligendi repellendus ullam sequi ad animi reprehenderit! At debitis sapiente vitae.</p>
+    <button id="btn" onclick="show()">hide</button>
+    <script>
+        const para = document.querySelector('#para');
+        const btn = document.querySelector('#btn')
+        
+        show = () =>{
+            if(para.style.dispaly == "block"){
+                para.style.dispaly = "none";
+                btn.innerHTML = "Show"
+            }
+            else{
+                para.style.dispaly = 'block';
+                btn.innerHTML = "hide"
+
+            }
+        }
+        
+    </script>
+</body>
+</html>
