@@ -131,14 +131,24 @@ int main(){
     int b;
     cout<<"enter target:";
     cin>>target; 
+    int first = -1;
+    int last = -1;
     for (int i = 0; i < n; i++) {
         if(a[i]==target){
-            cout<<"target found at: "<<i<<endl;
-            c++;
+            first = target;
+            last = target;
+            if(c==0){
+                cout<<"target found at:"<<i<<endl;
+                c++;
+            }
+            if(a[i+1]!=target){
+                cout<<"target found at:"<<i<<endl;
+            }
         }
     }
+    
     if(c==0){
-        cout<<"target not found";
+        cout<<first<<" "<<last;
     }
 
 }

@@ -6,51 +6,27 @@
     <title>Document</title>
 </head>
 <body>
+    <p id="para">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Earum sit corrupti nobis. Deleniti quae vel incidunt ea aperiam! Officia eligendi repellendus ullam sequi ad animi reprehenderit! At debitis sapiente vitae.</p>
+    <button id="btn" onclick="show()">hide</button>
     <script>
-        // onject
-        let obj = {
-            //key: value
-            Name: "Akshat Shukla",
-            Age: 20,
-            City: "Bhopal"
+        const para = document.querySelector('#para');
+        const btn = document.querySelector('#btn')
+
+        para.style.display = "block";
+
+        
+        show = () =>{
+            if(para.style.display == "block"){
+                para.style.display = "none";
+                btn.innerHTML = "Show"
+            }
+            else{
+                para.style.display = 'block';
+                btn.innerHTML = "hide"
+
+            }
         }
-
-        console.log(obj);
-        console.log(obj.Age);
-
-        obj.College='BCE';//to insert an object => object_name.new_key=value
-        console.log(obj);
-
-        obj.Age=21//update existing key
-        console.log(obj);
-
-        delete obj.city; // delete key from an object
-        console.log(obj);
-
-        //destucturing = convert it into variable,
-        //  const student = {name: "akshat", age:25, city:"bhopal"}
-        // const {name, age} = student;
-        const {Name, Age} = obj;
-        console.log(Name);
-
-        //Spread Operator =>spread operator (...) allows us to quickly copy all or part of an existing array or object into another array or object.
-        const myVehicle = {
-        brand: 'Ford',
-        model: 'Mustang',
-        color: 'red'
-        }
-
-        const updateMyVehicle = {
-        type: 'car',
-        year: 2021, 
-        color: 'yellow'
-        }
-
-        const myUpdatedVehicle = {...myVehicle, ...updateMyVehicle};
-        console.log(myUpdatedVehicle);
-
-
-
+        
     </script>
 </body>
 </html>
