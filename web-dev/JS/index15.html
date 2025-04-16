@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+    let fruits={
+        name:"rity",
+        age:20,
+        city:"bhopal",
+    }
+   //  ***  for in object me lagta he bssss  issey key or valyes dono accesss kr sktey he
+    for(let simran in fruits){
+        console.log(simran," ",fruits[simran])
+    }
+  
+
+
+   //  ***  for of array or  strings me lagta heee
+    let arr1=["hello","world","bhopal"]
+    for(let vijay of arr1){
+        console.log(vijay);
+    }
+ 
+              //map//
+
+//map array ke her ek element ko access krta he  usme kcuh perform krega 
+//or bapas hame naya array return krega or ek naya updated array bana k dega
+//yeh map method/loop sirf array ke lye hoti heee 
+
+    let arr=[2,6,3,8,18,4]
+
+    let newarr=arr.map( (e)=> {
+        return e*2
+    })
+    console.log(newarr)
+
+ 
+            //filter//
+     let ar=[2,6,3,8,18,4]
+    let newarr1=ar.filter( (e)=>{
+        return e>6
+    }) 
+    console.log(newarr1)
+
+
+        //for each//  ye kam filter or map ka dono ka krta he
+        arr.forEach((e)=>{
+            console.log(e%2==0);
+        })
+
+</script>
+</body>
+</html>
