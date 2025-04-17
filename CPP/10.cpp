@@ -118,6 +118,41 @@ int main(){
     // cout<<"prfot: "<<profit;
    
     //Leetcode Q34
+    // int n;
+    // cout << "Enter the size of array: ";
+    // cin >> n;
+
+    // int a[n];
+    // for (int i = 0; i < n; i++) {
+    //     cin >> a[i];
+    // }
+    // int target;
+    // int c = 0;
+    // int b;
+    // cout<<"enter target:";
+    // cin>>target; 
+    // int first = -1;
+    // int last = -1;
+    // for (int i = 0; i < n; i++) {
+    //     if(a[i]==target){
+    //         first = target;
+    //         last = target;
+    //         if(c==0){
+    //             cout<<"target found at:"<<i<<endl;
+    //             c++;
+    //         }
+    //         if(a[i+1]!=target){
+    //             cout<<"target found at:"<<i<<endl;
+    //         }
+    //     }
+    // }
+    
+    // if(c==0){
+    //     cout<<first<<" "<<last;
+    // }
+
+
+    //leet code questio 01
     int n;
     cout << "Enter the size of array: ";
     cin >> n;
@@ -131,25 +166,15 @@ int main(){
     int b;
     cout<<"enter target:";
     cin>>target; 
-    int first = -1;
-    int last = -1;
-    for (int i = 0; i < n; i++) {
-        if(a[i]==target){
-            first = target;
-            last = target;
-            if(c==0){
-                cout<<"target found at:"<<i<<endl;
-                c++;
-            }
-            if(a[i+1]!=target){
-                cout<<"target found at:"<<i<<endl;
+    for(int i=0;  i<n; i++){
+         for(int j=i+1;  j<n; j++){
+            if(a[i]+a[j]==target){
+                c=i;
+                b=j;
             }
         }
     }
-    
-    if(c==0){
-        cout<<first<<" "<<last;
-    }
+    cout<<"target foud at: "<<c<<" and "<<b<<endl;
 
 }
     
