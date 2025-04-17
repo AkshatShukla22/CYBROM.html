@@ -10,5 +10,61 @@ nav{
     background-color: aqua;
     display: flex;
     align-items: center;
+    justify-content: space-between;
+    padding: 0px 10vw;
+}
+
+nav .logo{
+    display: flex;
+    align-items: center;
     justify-content: center;
+    font-size: 2.5em;
+    gap: 2vh;
+    letter-spacing: 0.1em;
+}
+
+nav .logo img{
+    height: 6vh;
+    width: 3vw;
+}
+
+nav .access{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    gap: 4vw;
+}
+
+nav .access .srch-dv input{
+    height: 4vh;
+    width: 15vw;
+    border: none;
+    border-radius: 50px;
+    padding: 0px 2vw;
+    font-size: 1.5em;
+}
+
+nav .access .srch-dv input:focus{
+    border: 0px;
+}
+
+nav .access .srch-dv button{
+    border: none;
+    background: transparent;
+    font-size: 1.5em;
+    position: absolute;
+    right: 8.5vw;
+    top: 0.5vh;
+}
+
+nav .profile-dv{
+    display: flex;
+    gap: 2vw;
+}
+
+nav .profile-dv button{
+    border: none;
+    background: transparent;
+    font-size: 1.5em;
 }
