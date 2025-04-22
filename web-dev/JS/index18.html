@@ -1,27 +1,201 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Alarm Clock</title>
+  <style>
+    body {
+      margin: 0;
+      background: #111;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    .clock-wrapper {
+      text-align: center;
+    }
+
+    .clock {
+      position: relative;
+      width: 300px;
+      height: 300px;
+      border: 8px solid #444;
+      border-radius: 50%;
+      margin: auto;
+      background: #222;
+    }
+
+    /* .circle{
+        background-color: #444;
+        position: absolute;
+        top: 47%;
+        left: 47%;
+        height: 20px;
+        width: 20px;
+        border-radius: 50px;
+        z-index: 10;
+    } */
+
+    .hand {
+      position: absolute;
+      width: 4px;
+      background: #fff;
+      bottom: 50%;
+      left: 50%;
+      transform-origin: bottom center;
+      transition: all 0.05s ease-in-out;
+    }
+
+    .hour { 
+        height: 25%; 
+        background: #f55; 
+    }
+
+    .minute { height: 35%; 
+        background: 
+        #5f5; 
+    }
+
+    .second { height: 45%; 
+        background: #55f; 
+    }
+
+    .digital-time {
+      font-size: 2rem;
+      margin-top: 20px;
+      letter-spacing: 2px;
+    }
+
+    .controls {
+      margin-top: 20px;
+    }
+
+    .controls input, .controls button {
+      padding: 10px 15px;
+      margin: 5px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 5px;
+    }
+
+    .controls input {
+      background: #222;
+      color: #fff;
+    }
+
+    .controls button {
+      cursor: pointer;
+      background: #444;
+      color: #fff;
+      transition: background 0.3s;
+    }
+
+    .controls button:hover {
+      background: #666;
+    }
+  </style>
 </head>
 <body>
-    <form>
-    <label for="time">Select a time:</label>
-    <input type="time" id="time" name="time">
-    <input type="submit">
-    <audio id="clickSound" src="./assits/anime-sounds-60614.mp3" preload="auto"></audio>
+  <div class="clock-wrapper">
+    <div class="clock">
+      <div class="circle"></div>
+      <div class="hand hour" id="hourHand"></div>
+      <div class="hand minute" id="minuteHand"></div>
+      <div class="hand second" id="secondHand"></div>
+    </div>
 
-    </form>
-    <script>
-        let clickSound = document.querySelector("#clickSound");
-        playClick = () => {
-            clickSound.play();
+    <div class="digital-time" id="digitalTime"></div>
+
+    <div class="controls">
+      <input type="time" id="alarmTime" />
+      <button onclick="setAlarm()">Set Alarm</button>
+      <button onclick="snoozeAlarm()">Snooze</button>
+      <button onclick="stopAlarm()">Stop</button>
+    </div>
+    <audio id="alarmSound" src="./assits/anime-sounds-60614.mp3" preload="auto"></audio>
+  </div>
+
+  <script>
+    const hourHand = document.getElementById("hourHand");
+    const minuteHand = document.getElementById("minuteHand");
+    const secondHand = document.getElementById("secondHand");
+    const digitalTime = document.getElementById("digitalTime");
+
+    const alarmInput = document.getElementById("alarmTime");
+    const alarmSound = document.getElementById("alarmSound");
+
+    let alarmTime = null;
+    let alarmTimeout = null;
+    let isAlarmRinging = false;
+
+    function updateClock() {
+      const now = new Date();
+      const hours = now.getHours();
+      const minutes = now.getMinutes();
+      const seconds = now.getSeconds();
+
+      const hourDeg = ((hours % 12) + minutes / 60) * 30;
+      const minuteDeg = (minutes + seconds / 60) * 6;
+      const secondDeg = seconds * 6;
+
+      hourHand.style.transform = `translateX(-50%) rotate(${hourDeg}deg)`;
+      minuteHand.style.transform = `translateX(-50%) rotate(${minuteDeg}deg)`;
+      secondHand.style.transform = `translateX(-50%) rotate(${secondDeg}deg)`;
+
+      digitalTime.textContent = now.toLocaleTimeString();
+
+      if (alarmTime && !isAlarmRinging) {
+        const current = now.toTimeString().slice(0, 5);
+        if (current === alarmTime) {
+          ringAlarm();
         }
+      }
+    }
 
-        setInterval(() => {
-            playClick();
-        },5000)
-    </script>
+    function setAlarm() {
+      if (alarmInput.value) {
+        alarmTime = alarmInput.value;
+        alert("Alarm set for " + alarmTime);
+      }
+    }
+
+    function ringAlarm() {
+      isAlarmRinging = true;
+      alarmSound.play();
+      alarmTimeout = setTimeout(stopAlarm, 60000);
+    }
+
+    function stopAlarm() {
+      alarmSound.pause();
+      alarmSound.currentTime = 0;
+      clearTimeout(alarmTimeout);
+      isAlarmRinging = false;
+      alarmTime = null;
+    }
+
+    function snoozeAlarm() {
+      if (!isAlarmRinging) return;
+
+      stopAlarm();
+
+      const [h, m] = alarmInput.value.split(":").map(Number);
+      const snoozeTime = new Date();
+      snoozeTime.setHours(h, m + 5);
+
+      const hh = String(snoozeTime.getHours()).padStart(2, "0");
+      const mm = String(snoozeTime.getMinutes()).padStart(2, "0");
+
+      alarmTime = `${hh}:${mm}`;
+    }
+
+    setInterval(updateClock, 1000);
+    updateClock();
+  </script>
 </body>
 </html>
