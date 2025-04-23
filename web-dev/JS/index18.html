@@ -13,9 +13,20 @@
 </head>
 <body>
     <div id="head"></div>
+    <table border="3" style="font-size: 2em;">
+        <tr>
+            <td>Name</td>
+            <td>Age</td>
+            <td>City</td>
+        </tr>
+        <tbody id="tbl">
+
+        </tbody>
+    </table>
     <script>
         let head = document.querySelector("#head");
-
+        let tbl = document.querySelector("#tbl");
+        
         //Array of object
         let userData = [
             {
@@ -56,6 +67,16 @@
                 <h1>Age: ${e.Age}</h1>
                 <h1>City: ${e.City}</h1>
             </div>
+            `;
+        })
+
+        userData.map((e)=>{
+            tbl.innerHTML += `
+            <tr>
+                <td>${e.Name}</td>
+                <td>${e.Age}</td>
+                <td>${e.City}</td>
+            </tr>
             `;
         })
 
