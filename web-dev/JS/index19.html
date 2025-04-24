@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+
+    *{
+        margin: 0px;
+        padding: 0px;
+        box-sizing: border-box;
+    }
+
+    body{
+        height: 100vh;
+    }
+
+    body div{
+        width: 40vw;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 4vh;
+        box-shadow: 0px 0px 10px black;
+        margin: auto;
+        margin-top: 20vh;
+        padding: 5vh 0px;
+    }
+
+    body div input{
+        width: 20vw;
+        height: 4vh;
+        padding: 1vh;
+        font-size: 2vh;
+    }
+
+    body div button{
+        width: 10vw;
+        height: 4vh;
+        padding: 1vh;
+        font-size: 2vh;
+    }
+</style>
+<body>
+    <div>
+        <input type="text" id="name" placeholder="Name">
+        <input type="text" id="email" placeholder="Email">
+        <input type="text" id="age" placeholder="Age">
+        <input type="text" id="num" placeholder="Phone Number">
+        <input type="text" id="pass" placeholder="Password">
+        <button onclick="return some()">Submit</button>
+    </div>
+
+
+    <script>
+        let name = document.querySelector("#name");
+        let email = document.querySelector("#email");
+        let age = document.querySelector("#age");
+        let num = document.querySelector("#num");
+        let pass = document.querySelector("#pass");
+
+        some = () =>{
+            console.log("hello");
+            // name = name.value;
+            // email = email.value;
+            // age = age.value;
+            // num = num.value;
+            // pass = pass.value;
+
+            localStorage.setItem("Name",name.value);
+            localStorage.setItem("Email",email.value);
+            localStorage.setItem("Age",age.value);
+            localStorage.setItem("Phone Number",num.value);
+            localStorage.setItem("Password",pass.value);
+            return false
+        }
+        localStorage.setItem("city", "Bhopal")   
+    </script>
+</body>
+</html>
