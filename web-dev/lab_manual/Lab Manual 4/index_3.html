@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+    </style>
+</head>
+<body>
+    <div id="container">Name: Cybrom</div>
+    <button id="btn" onclick="Show()">Hide</button>
+
+    <script>
+        let container = document.querySelector("#container");
+        let btn = document.querySelector("#btn");
+
+        Show = () => {
+            if (container.style.display === "block" || container.style.display === "") {
+                container.style.display = "none";
+                btn.innerHTML = "Show";
+            } 
+            else {
+                container.style.display = "block";
+                btn.innerHTML = "Hide";
+            }
+        };
+    </script>
+</body>
+</html>

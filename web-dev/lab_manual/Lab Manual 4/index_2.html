@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <form>
+        <input type="text" placeholder="Name" id="name">
+        <span id="sp1"></span><br><br>
+        <input type="text" placeholder="Email" id="email">
+        <span id="sp2"></span><br><br>
+        <button onclick="return validate()">Submit</button>
+    </form>
+
+    <script>
+        const sp1 = document.querySelector("#sp1");
+        const sp2 = document.querySelector("#sp2");
+
+        function validate() {
+            let name = document.querySelector("#name").value;
+            let email = document.querySelector("#email").value;
+            
+            sp1.innerHTML = ""; 
+            sp2.innerHTML = "";
+
+            if (name === "") {
+                sp1.innerHTML = "Name field cannot be empty";
+                return false;
+            } 
+            if (email === "") {
+                sp2.innerHTML = "Email field cannot be empty";
+                return false;
+            } 
+            if (!email.includes("@")) {
+                sp2.innerHTML = "Invalid Email";
+                return false;
+            }
+            alert("Form Submitted Successfully!");
+            return false; 
+        }
+    </script>
+</body>
+</html>
