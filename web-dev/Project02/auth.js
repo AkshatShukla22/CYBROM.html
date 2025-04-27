@@ -205,13 +205,28 @@ let isRight = true; // Start at right
 
 function Slider() {
   if (isRight) {
-    // If it's on the right, move it to the left
     slider.classList.remove("right_slider");
     slider.classList.add("left_slider");
+    slider.innerHTML = `
+        <h1>Book Your First Appointment!</h1>
+        <span>Create an account to schedule and manage appointments.</span>
+        <div>
+            <span>Already booked before? Slide to Login!</span>
+            <button onclick="Slider()">Login</button>
+        </div>
+    `;
+    
   } else {
-    // If it's on the left, move it to the right
     slider.classList.remove("left_slider");
     slider.classList.add("right_slider");
+    slider.innerHTML = `
+        <h1>Welcome Back!</h1>
+        <span>Log in to manage your appointments easily.</span>
+        <div>
+            <span>New here? Sign up to book your first appointment!</span>
+            <button onclick="Slider()">Sign Up</button>
+        </div>
+    `;
   }
-  isRight = !isRight; // Flip the state (true -> false or false -> true)
+  isRight = !isRight;
 }

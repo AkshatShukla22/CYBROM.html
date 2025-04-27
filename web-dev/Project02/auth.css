@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap');
+
 *{
     margin: 0px;
     padding: 0px;
@@ -15,12 +17,14 @@ body{
     align-items: center;
     justify-content: center;
     position: relative;
+    font-family: "Poppins", sans-serif;
+
 }
 
 .auth .container{
     height: 80%;
     width: 30%;
-    background-color: #528ded;
+    background-color: rgb(173, 173, 173);
     text-align: center;
     padding: 5vh 2vw;
 }
@@ -32,6 +36,8 @@ body{
     background-clip: text;
     color: transparent;
     animation: h1-animation 10s linear infinite;
+    font-family: "Roboto Condensed", sans-serif;
+    font-weight: 900;
 }
 
 .auth .container button{
@@ -50,6 +56,7 @@ body{
 .auth .container button:hover{
     background-color: white;
     color: #1e3a8a;
+    transform:  scale(1.1);
 }
 
 @keyframes h1-animation {
@@ -109,7 +116,7 @@ body{
     width: 20vw;
     border: 0px solid transparent;
     background-color: transparent;
-    color: white;
+    color: #1e3a8a;
     border-bottom: 3px solid #1e3a8a;
 }
 
@@ -153,14 +160,73 @@ body{
 }
 
 #slider{
-    background-color: rgba(0, 0, 0, 0.244);
+    background-image: linear-gradient(to right, #528ded, #1e3a8a 40%, #528ded );
     height: 80%;
     width: 30%;
     transition: all 0.3s ease;
     position: absolute;
     display: flex;
+    flex-direction: column;
+    gap: 10vh;
+    text-align: center;
     align-items: center;
     justify-content: center;
+    animation: slider-animation 10s linear infinite;
+    color: white;
+}
+
+@keyframes slider-animation {
+    to{
+      background-position-x: -600px;
+    }
+}
+
+#slider h1{
+    font-size: 3em;
+    letter-spacing: 2px;
+    white-space: 10px;
+    font-family: "Roboto Condensed", sans-serif;
+    font-weight: 900;
+}
+
+#slider span{
+    font-size: 1.4em;
+    color: white;
+    /* letter-spacing: 2px;
+    white-space: 10px; */
+}
+
+#slider div span{
+    font-size: 1.1em;
+    color: white;
+}
+
+#slider button{
+    background-color: white;
+    border: none;
+    color: #1e3a8a;
+    font-size: 1.5em;
+    font-weight: 800;
+    letter-spacing: 2px;
+    /* word-spacing: 4px; */
+    padding: 1vh 2vw;
+    border-radius: 20px;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+#slider button:hover{
+    background-color: rgb(189, 186, 186);
+    color: #111827;
+    transform: scale(1.1);
+}
+
+#slider div{
+    display: flex;
+    flex-direction: column;
+    gap: 2vh;
+    justify-content: center;
+    align-items: center;
 }
 
 .right_slider{
@@ -174,3 +240,5 @@ body{
     border-bottom-left-radius: 20px;
     right: 50vw;
 }
+
+
