@@ -18,6 +18,7 @@ body{
     justify-content: center;
     position: relative;
     font-family: "Poppins", sans-serif;
+    animation: fadeIn 1s ease forwards;
 
 }
 
@@ -27,7 +28,17 @@ body{
     background-color: rgb(173, 173, 173);
     text-align: center;
     padding: 5vh 2vw;
+    box-shadow: 0px 0px 20px #111827;
 }
+
+.auth .signup{
+    box-shadow: none;
+}
+
+@keyframes fadeIn {
+    0% { opacity: 0; transform: translateY(-10px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
 
 .auth .container h1{
     display: inline;
@@ -77,7 +88,7 @@ body{
 
 .auth .container form{
     display: flex;
-    gap: 2vh;
+    gap: 4vh;
     flex-direction: column;
     align-items: center;
     justify-content: center;
@@ -128,37 +139,6 @@ body{
     color: rgb(63, 62, 62);
 }
 
-.auth .container .form-group .error{
-    display: inline-block;
-    height: 2vh;
-    width: 100%;
-    color: red;
-    font-size: 2vh;
-    text-align: left;
-}
-
-.error-input {
-    animation: shake 0.1s linear;
-}
-
-@keyframes shake {
-    0%{
-      transform: translateX(0px);
-    }
-    25%{
-      transform: translateX(-20px);
-    }
-    50%{
-      transform: translateX(0px);
-    }
-    75%{
-      transform: translateX(20px);
-    }
-    100%{
-      transform: translateX(0px);
-    }
-}
-
 #slider{
     background-image: linear-gradient(to right, #528ded, #1e3a8a 40%, #528ded );
     height: 80%;
@@ -173,6 +153,7 @@ body{
     justify-content: center;
     animation: slider-animation 10s linear infinite;
     color: white;
+    box-shadow: 0px 0px 20px #111827;
 }
 
 @keyframes slider-animation {
@@ -242,3 +223,72 @@ body{
 }
 
 
+.msg{
+    padding: 5vh 0px;
+    height: 100vh;
+    width: 17vw;
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    display: flex;
+    flex-direction: column;
+    gap: 2vh;
+}
+
+.error{
+    display: none;
+    height: 7vh;
+    width: 100%;
+    background-color: rgb(173, 173, 173);
+    color: red;
+    font-size: 1.3em;
+    text-align: left;
+    border-radius: 10px;
+    flex-direction: column;
+    gap: 1vh;
+    overflow: hidden;
+}
+
+.error .error-timer{
+    height: 0.5vh;
+    width: 100%;
+    display: block;
+    background-color: red;
+    transition: all 0.2s ease;
+    animation: error-timer 10s linear;
+}
+
+.error .error-msg{
+    padding: 1vh 1vw;
+}
+
+.error-input {
+    animation: shake 0.1s linear;
+}
+
+@keyframes shake {
+    0%{
+      transform: translateX(0px);
+    }
+    25%{
+      transform: translateX(-20px);
+    }
+    50%{
+      transform: translateX(0px);
+    }
+    75%{
+      transform: translateX(20px);
+    }
+    100%{
+      transform: translateX(0px);
+    }
+}
+
+@keyframes error-timer {
+    0%{
+        transform: translateX(0px);
+    }
+    100%{
+        transform: translateX(-345px);
+    }
+}

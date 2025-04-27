@@ -16,7 +16,7 @@
                 <div class="form-group">
                     <label for="login_email">Email: </label>
                     <input type="text" id="login_email" placeholder="Enter your email" />
-                    <span class="error" id="err-login-email"></span>
+                    
                 </div>
                 <div class="form-group">
                     <label for="login_pass">Password: </label>
@@ -26,7 +26,6 @@
                             <i class="fa-solid fa-eye"></i>
                         </button>
                     </span>
-                    <span class="error" id="err-login-pass"></span>
                 </div>
                 <button type="submit" onclick="return validateLogin()">Login</button>
             </form>
@@ -38,17 +37,14 @@
                 <div class="form-group">
                     <label for="name">Name: </label>
                     <input type="text" id="name" placeholder="Enter your name" />
-                    <span class="error" id="err-name"></span>
                 </div>
                 <div class="form-group">
                     <label for="email">Email: </label>
                     <input type="text" id="email" placeholder="Enter your email" />
-                    <span class="error" id="err-email"></span>
                 </div>
                 <div class="form-group">
                     <label for="number">Phone number: </label>
                     <input type="text" id="number" placeholder="Enter your number" />
-                    <span class="error" id="err-number"></span>
                 </div>
                 <div class="form-group">
                     <label for="pass">Password: </label>
@@ -58,12 +54,10 @@
                             <i class="fa-solid fa-eye"></i>
                         </button>
                     </span>
-                    <span class="error" id="err-pass"></span>
                 </div>
                 <div class="form-group">
                     <label for="co-pass">Confirm password: </label>
                     <input type="password" id="co-pass" placeholder="Confirm password" />
-                    <span class="error" id="err-copass"></span>
                 </div>
                 <button type="submit"  onclick="return validate()">Register</button>
             </form>
@@ -76,7 +70,36 @@
                 <button onclick="Slider()">Sign Up</button>
             </div>
         </div>
-    </div>
+        <div class="msg">
+            <span class="error" id="error-1">
+                <span class="error-msg" id="err-login-email"></span>
+                <span class="error-timer"></span>
+            </span>
+            <span class="error" id="error-2">
+                <span class="error-msg" id="err-login-pass"></span>
+                <span class="error-timer"></span>
+            </span>
+            <span class="error" id="error-3">
+                <span class="error-msg" id="err-name"></span>
+                <span class="error-timer"></span>
+            </span>
+            <span class="error" id="error-4">
+                <span class="error-msg" id="err-email"></span>
+                <span class="error-timer"></span>
+            </span>
+            <span class="error" id="error-5">
+                <span class="error-msg" id="err-number"></span>
+                <span class="error-timer"></span>
+            </span>
+            <span class="error" id="error-6">
+                <span class="error-msg" id="err-pass"></span>
+                <span class="error-timer"></span>
+            </span>
+            <span class="error" id="error-7">
+                <span class="error-msg" id="err-copass"></span>
+                <span class="error-timer"></span>
+            </span>
+        </div>
     
     <script src="./auth.js"></script>
 </body>

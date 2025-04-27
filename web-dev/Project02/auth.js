@@ -24,6 +24,19 @@ let showPass_signup = document.querySelector("#showPass_signup");
 //Slider
 let slider = document.getElementById("slider");
 
+// Error message
+let error_1 = document.getElementById("error-1");
+let error_2 = document.getElementById("error-2");
+let error_3 = document.getElementById("error-3");
+let error_4 = document.getElementById("error-4");
+let error_5 = document.getElementById("error-5");
+let error_6 = document.getElementById("error-6");
+let error_7 = document.getElementById("error-7");
+
+// forms
+let loginForm = document.querySelector(".login");
+let signupForm = document.querySelector(".signup");
+
 // Hide/Show password for Signup
 function hideShow_signup() {
     if (pass.type === 'password') {
@@ -55,6 +68,12 @@ function validate() {
     if (signup_name.value.trim() === "") {
         errName.textContent = "Name is required";
         signup_name.classList.add("error-input");
+        error_3.style.display = "flex";
+        setTimeout(()=>{
+            errName.textContent = "";
+            error_3.style.display = "none"; 
+            signup_name.classList.remove("error-input");
+        }, 10000)
         isValid = false;
     }
     else {
@@ -66,16 +85,34 @@ function validate() {
     if (email.value.trim() === "") {
         errEmail.textContent = "Email is required";
         email.classList.add("error-input");
+        error_4.style.display = "flex";
+        setTimeout(()=>{
+            errEmail.textContent = "";
+            error_4.style.display = "none";
+            email.classList.remove("error-input"); 
+        }, 10000)
         isValid = false;
     } 
     else if (!(email.value.includes("@") && email.value.includes(".com"))) {
         errEmail.textContent = "Invalid email";
         email.classList.add("error-input");
+        error_4.style.display = "flex";
+        setTimeout(()=>{
+            errEmail.textContent = "";
+            error_4.style.display = "none"; 
+            email.classList.remove("error-input");
+        }, 10000)
         isValid = false;
     } 
     else if(user_email === email.value.trim()){
-      errEmail.textContent = "Email is alredy registered";
+        errEmail.textContent = "Email is already registered";
         email.classList.add("error-input");
+        error_4.style.display = "flex";
+        setTimeout(()=>{
+            errEmail.textContent = "";
+            error_4.style.display = "none"; 
+            email.classList.remove("error-input");
+        }, 10000)
         isValid = false;
     }
     else {
@@ -87,16 +124,34 @@ function validate() {
     if (number.value.trim() === "") {
         errNumber.textContent = "Number is required";
         number.classList.add("error-input");
+        error_5.style.display = "flex";
+        setTimeout(()=>{
+            errNumber.textContent = "";
+            error_5.style.display = "none"; 
+            number.classList.remove("error-input");
+        }, 10000)
         isValid = false;
     } 
     else if (isNaN(number.value)) {
         errNumber.textContent = "Invalid number";
         number.classList.add("error-input");
+        error_5.style.display = "flex";
+        setTimeout(()=>{
+            errNumber.textContent = "";
+            error_5.style.display = "none"; 
+            number.classList.remove("error-input");
+        }, 10000)
         isValid = false;
     } 
     else if (number.value.length !== 10) {
         errNumber.textContent = "Invalid length of number";
         number.classList.add("error-input");
+        error_5.style.display = "flex";
+        setTimeout(()=>{
+            errNumber.textContent = "";
+            error_5.style.display = "none"; 
+            number.classList.remove("error-input");
+        }, 10000)
         isValid = false;
     } 
     else {
@@ -108,11 +163,23 @@ function validate() {
     if (pass.value.trim() === "") {
         errPass.textContent = "Password is required";
         pass.classList.add("error-input");
+        error_6.style.display = "flex";
+        setTimeout(()=>{
+            errPass.textContent = "";
+            error_6.style.display = "none"; 
+            pass.classList.remove("error-input");
+        }, 10000)
         isValid = false;
     } 
     else if (pass.value.length < 6) {
         errPass.textContent = "Password should be at least 6 characters long";
         pass.classList.add("error-input");
+        error_6.style.display = "flex";
+        setTimeout(()=>{
+            errPass.textContent = "";
+            error_6.style.display = "none"; 
+            pass.classList.remove("error-input");
+        }, 10000)
         isValid = false;
     }
     else {
@@ -124,6 +191,12 @@ function validate() {
         if (!(hasDigit && hasSpecial && hasUpperCase && hasLowerCase)) {
             errPass.textContent = "Password is too weak. Include uppercase, lowercase, number, and special character.";
             pass.classList.add("error-input");
+            error_6.style.display = "flex";
+            setTimeout(()=>{
+                errPass.textContent = "";
+                error_6.style.display = "none"; 
+                pass.classList.remove("error-input");
+            }, 10000)
             isValid = false;
         } else {
             errPass.textContent = "";
@@ -134,11 +207,23 @@ function validate() {
     if (copass.value.trim() === "") {
         errCopass.textContent = "Please confirm password";
         copass.classList.add("error-input");
+        error_7.style.display = "flex";
+        setTimeout(()=>{
+            errCopass.textContent = "";
+            error_7.style.display = "none"; 
+            copass.classList.remove("error-input");
+        }, 10000)
         isValid = false;
     } 
     else if (copass.value !== pass.value) {
         errCopass.textContent = "Passwords do not match";
         copass.classList.add("error-input");
+        error_7.style.display = "flex";
+        setTimeout(()=>{
+            errCopass.textContent = "";
+            error_7.style.display = "none"; 
+            copass.classList.remove("error-input");
+        }, 10000)
         copass.value = "";
         copass.focus();
         isValid = false;
@@ -161,11 +246,23 @@ function validateLogin() {
     if (login_email.value.trim() === "") {
         errLoginEmail.textContent = "Email is required";
         login_email.classList.add("error-input");
+        error_1.style.display = "flex";
+        setTimeout(()=>{
+        errLoginEmail.textContent = "";
+            error_1.style.display = "none"; 
+            login_email.classList.remove("error-input");
+        }, 10000)
         isValid = false;
     } 
     else if (!(login_email.value.includes("@") && login_email.value.includes(".com"))) {
         errLoginEmail.textContent = "Invalid email";
         login_email.classList.add("error-input");
+        error_1.style.display = "flex";
+        setTimeout(()=>{
+        errLoginEmail.textContent = "";
+            error_1.style.display = "none";
+            login_email.classList.remove("error-input"); 
+        }, 10000)
         isValid = false;
     } 
     else {
@@ -176,6 +273,12 @@ function validateLogin() {
         else{
           errLoginEmail.textContent = "Email not registered";
           login_email.classList.add("error-input");
+          error_1.style.display = "flex";
+          setTimeout(()=>{
+          errLoginEmail.textContent = "";
+              error_1.style.display = "none"; 
+              login_email.classList.remove("error-input");
+          }, 10000)
           isValid = false;
         }
     }
@@ -183,17 +286,29 @@ function validateLogin() {
     if (login_pass.value.trim() === "") {
         errLoginPass.textContent = "Password is required";
         login_pass.classList.add("error-input");
+        error_2.style.display = "flex";
+        setTimeout(()=>{
+        errLoginPass.textContent = "";
+            error_2.style.display = "none"; 
+            login_pass.classList.remove("error-input");
+        }, 10000)
         isValid = false;
     } 
     else {
         if(user_pass === login_pass.value.trim()){
           errLoginPass.textContent = "";
           login_pass.classList.remove("error-input");
-          alert("loged in");
+          alert("logged in");
         }
         else{
           errLoginPass.textContent = "Incorrect Password";
           login_pass.classList.add("error-input");
+          error_2.style.display = "flex";
+          setTimeout(()=>{
+          errLoginPass.textContent = "";
+              error_2.style.display = "none"; 
+              login_pass.classList.remove("error-input");
+          }, 10000)
           isValid = false;
         }
     }
@@ -201,7 +316,7 @@ function validateLogin() {
     return false;
 }
 
-let isRight = true; // Start at right
+let isRight = true; 
 
 function Slider() {
   if (isRight) {
@@ -215,8 +330,11 @@ function Slider() {
             <button onclick="Slider()">Login</button>
         </div>
     `;
+    loginForm.style.boxShadow = "none";
+    signupForm.style.boxShadow = "0px 0px 20px #111827";
     
-  } else {
+} 
+  else {
     slider.classList.remove("left_slider");
     slider.classList.add("right_slider");
     slider.innerHTML = `
@@ -227,6 +345,9 @@ function Slider() {
             <button onclick="Slider()">Sign Up</button>
         </div>
     `;
+    loginForm.style.boxShadow = "0px 0px 20px #111827";
+    signupForm.style.boxShadow = "none";
+        
   }
   isRight = !isRight;
 }
