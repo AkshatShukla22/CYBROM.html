@@ -264,6 +264,7 @@ body{
 
 .error-input {
     animation: shake 0.1s linear;
+    border-bottom: 3px solid red !important;
 }
 
 @keyframes shake {

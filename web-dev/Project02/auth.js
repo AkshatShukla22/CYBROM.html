@@ -23,6 +23,7 @@ let showPass_signup = document.querySelector("#showPass_signup");
 
 //Slider
 let slider = document.getElementById("slider");
+let isRight = true; 
 
 // Error message
 let error_1 = document.getElementById("error-1");
@@ -231,7 +232,18 @@ function validate() {
     else {
         errCopass.textContent = "";
         copass.classList.remove("error-input");
-        localStorage.setItem("Password", copass.value.trim())
+        localStorage.setItem("Password", copass.value.trim());  
+    }
+
+    if(isValid){
+        isRight = false;
+        Slider(isRight);
+        errCopass.textContent = "Sign in Successfully";
+        error_7.style.display = "flex";
+        setTimeout(()=>{
+            errCopass.textContent = "";
+            error_7.style.display = "none"; 
+        }, 10000)
     }
 
     return false; 
@@ -298,7 +310,13 @@ function validateLogin() {
         if(user_pass === login_pass.value.trim()){
           errLoginPass.textContent = "";
           login_pass.classList.remove("error-input");
-          alert("logged in");
+          
+          errLoginPass.textContent = "Logged in Successfully";
+          error_2.style.display = "flex";
+          setTimeout(()=>{
+          errLoginPass.textContent = "";
+              error_2.style.display = "none"; 
+          }, 10000)
         }
         else{
           errLoginPass.textContent = "Incorrect Password";
@@ -312,11 +330,10 @@ function validateLogin() {
           isValid = false;
         }
     }
+
     
     return false;
 }
-
-let isRight = true; 
 
 function Slider() {
   if (isRight) {
