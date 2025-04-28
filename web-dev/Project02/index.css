@@ -1,0 +1,51 @@
+*{
+    margin: 0px;
+    padding: 0px;
+    box-sizing: border-box;
+}
+
+nav{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: blue;
+    padding: 0.5vh 5vw;
+    height: 10vh;
+    width: 100%;
+}
+
+nav div img{
+    height: 7vh;
+    width: 4vw;
+}
+
+nav div ul{
+    display: flex;
+    gap: 1vw;
+}
+
+nav div ul li{
+    list-style: none;
+}
+
+nav div ul li a{
+    color: white;
+    text-decoration: none;
+    font-size: 1.5em;
+    padding: 1vh 2vw;
+    border-radius: 20px;
+}
+
+nav div ul li .active{
+    color: blue;
+    background-color: white;
+    border-radius: 20px;
+}
+
+nav div input{
+
+}
+
+nav div input:focus{
+    outline: none;
+}

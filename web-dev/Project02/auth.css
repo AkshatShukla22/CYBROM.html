@@ -267,6 +267,11 @@ body{
     border-bottom: 3px solid red !important;
 }
 
+.correct-input {
+    animation: shake 0.1s linear;
+    border-bottom: 3px solid green !important;
+}
+
 @keyframes shake {
     0%{
       transform: translateX(0px);
