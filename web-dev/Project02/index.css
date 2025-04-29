@@ -1,51 +1,123 @@
-*{
-    margin: 0px;
-    padding: 0px;
+* {
+    margin: 0;
+    padding: 0;
     box-sizing: border-box;
 }
-
-nav{
+  
+  body {
+    font-family: 'Poppins', sans-serif;
+  }
+  
+  nav {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: blue;
+    background-color: #1e3a8a;
     padding: 0.5vh 5vw;
     height: 10vh;
     width: 100%;
-}
-
-nav div img{
-    height: 7vh;
-    width: 4vw;
-}
-
-nav div ul{
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    animation: slideDown 0.8s ease forwards;
+  }
+  
+  @keyframes slideDown {
+    0% { transform: translateY(-100%); }
+    100% { transform: translateY(0); }
+  }
+  
+  nav div {
     display: flex;
-    gap: 1vw;
-}
-
-nav div ul li{
+    align-items: center;
+    gap: 2vw;
+  }
+  
+  nav div img {
+    height: 7vh;
+    width: auto;
+  }
+  
+  nav div ul {
+    display: flex;
+    gap: 2vw;
+  }
+  
+  nav div ul li {
     list-style: none;
-}
-
-nav div ul li a{
+  }
+  
+  nav div ul li a {
     color: white;
     text-decoration: none;
-    font-size: 1.5em;
-    padding: 1vh 2vw;
+    font-size: 1.2em;
+    padding: 0.8vh 1.5vw;
     border-radius: 20px;
-}
-
-nav div ul li .active{
-    color: blue;
+    transition: all 0.3s ease;
+  }
+  
+  nav div ul li a:hover {
+    background-color: #3b82f6;
+    color: white;
+  }
+  
+  nav div ul li .active {
+    color: #1e3a8a;
     background-color: white;
     border-radius: 20px;
-}
-
-nav div input{
-
-}
-
-nav div input:focus{
+  }
+  
+  #srch_dv {
+    display: flex;
+    align-items: center;
+    gap: 0.5vw;
+    background: white;
+    padding: 0.3vh 0.5vw;
+    border-radius: 30px;
+    transition: all 0.4s ease;
+  }
+  
+  #Srch {
+    border: none;
     outline: none;
+    height: 4vh;
+    width: 13vw;
+    padding: 0.5vh 1vw;
+    font-size: 1em;
+    color: #111827;
+    background: transparent;
+  }
+  
+  #srch_btn {
+    border: none;
+    background: none;
+    font-size: 1.4em;
+    color: #1e3a8a;
+    cursor: pointer;
+  }
+  
+  nav div button {
+    border: none;
+    background-color: transparent;
+    font-size: 1.8em;
+    color: white;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+  }
+  
+.banner{
+    height: 90vh;
+    width: 100%;
+    background-image: url(./assits/banner.jpg);
+    background-position: right;
+    background-repeat: no-repeat;
+}
+
+.banner .filter{
+    height: 100%;
+    width: 100%;
+    background-image: linear-gradient(to right, #528ded, transparent,transparent);
+    color: white;
+    font-size: 2em;
 }
