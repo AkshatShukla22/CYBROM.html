@@ -1,3 +1,4 @@
+// auth.js
 // Targeting inputs
 let signup_name = document.getElementById("name");
 let email = document.getElementById("email");
