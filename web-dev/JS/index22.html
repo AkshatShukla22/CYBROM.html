@@ -15,6 +15,10 @@
                 <th>Check-out</th>
                 <th>Person</th>
                 <th>City</th>
+                <th>Price</th>
+                <th>Delete</th>
+
+
             </tr>
         </thead>
         <tbody id="datashow">
@@ -22,36 +26,39 @@
     </table>
 
     <script>
-        // fetch method -- CRUD operations. 
-        // Java Script Object Notation (JSON).
-        // It works as a database for js by storing mock files.
-        // Create Read Update Delete methods can be performed on JSON.
-        // fetch methods - Get Push Put Delete.
-
-        // to use JSON you have to install node.js in your system and then run npm i -g json-server in your cmd.
-        let fetchData = async () => {
-            let url = "http://localhost:3000/hotel";
+        let fetchData = async () => {                      
+            let url = "http://localhost:3000/user";
 
             let res = await fetch(url);
             let data = await res.json();
 
-            let dataShow = document.querySelector("#datashow");
+            let dataShow = document.querySelector("#datashow");    
 
             data.map((e) => {
                 dataShow.innerHTML += `
                 <tr>
                     <td>${e.Name}</td>
                     <td>${e.Age}</td>
-                    <td>${e["Check-in"]}</td>
-                    <td>${e["Check-out"]}</td>
+                    <td>${e.Check_in}</td>
+                    <td>${e.Check_out}</td>
                     <td>${e.Person}</td>
                     <td>${e.City}</td>
+                    <td>${e.Price}</td>
+                    <td onclick="Del('${e.id}')"> Delete </td>
                 </tr>
                 `;
             });
         };
-        
+
         fetchData();
+
+
+        //How to delete data by particular id ---->>>
+        let Del = (id) =>{
+            // alert (id);
+            let url = `http://localhost:3000/user/${id}`;
+            fetch (url,{method:"DELETE"})                         //url ko fetch kiye or DELETE method lgaya , or ye json se bhi data delete kr dega
+        }
     </script>
 </body>
 </html>

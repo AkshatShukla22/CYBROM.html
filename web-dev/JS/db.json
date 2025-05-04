@@ -13,8 +13,8 @@
         {
             "Name":"Mohan Sharma",
             "Age":"21",
-            "Checkin":"20-11-2025",
-            "Checkout":"22-11-2025",
+            "Check-in":"20-11-2025",
+            "Check-out":"22-11-2025",
             "City":"Bhopal",
             "Person":2,
             "Price":1000
