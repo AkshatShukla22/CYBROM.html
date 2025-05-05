@@ -6,13 +6,14 @@
   
   body {
     font-family: 'Poppins', sans-serif;
+    background-color: #2a2c3e;
   }
   
   nav {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: #1e3a8a;
+    background-color: #BB86FC;
     padding: 0.5vh 5vw;
     height: 10vh;
     width: 100%;
@@ -35,37 +36,8 @@
   }
   
   nav div img {
-    height: 7vh;
+    height: 8vh;
     width: auto;
-  }
-  
-  nav div ul {
-    display: flex;
-    gap: 2vw;
-  }
-  
-  nav div ul li {
-    list-style: none;
-  }
-  
-  nav div ul li a {
-    color: white;
-    text-decoration: none;
-    font-size: 1.2em;
-    padding: 0.8vh 1.5vw;
-    border-radius: 20px;
-    transition: all 0.3s ease;
-  }
-  
-  nav div ul li a:hover {
-    background-color: #3b82f6;
-    color: white;
-  }
-  
-  nav div ul li .active {
-    color: #1e3a8a;
-    background-color: white;
-    border-radius: 20px;
   }
   
   #srch_dv {
@@ -93,31 +65,62 @@
     border: none;
     background: none;
     font-size: 1.4em;
-    color: #1e3a8a;
+    color: #BB86FC;
     cursor: pointer;
   }
   
   nav div button {
     border: none;
     background-color: transparent;
-    font-size: 1.8em;
+    font-size: 1.2em;
     color: white;
     cursor: pointer;
     transition: transform 0.3s ease;
   }
-  
-.banner{
+
+  .swiper {
+    width: 100%;
+    height: 90vh;
+  }
+
+  .swiper-slide {
+    text-align: center;
+    font-size: 18px;
+    background: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .swiper-slide img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .trending img{
+    object-fit: cover;
+    position: absolute;
+  }
+
+  .trending .trending-filter{
     height: 90vh;
     width: 100%;
-    background-image: url(./assits/banner.jpg);
-    background-position: right;
-    background-repeat: no-repeat;
-}
+    background-image: linear-gradient(to right, black, transparent);
+    z-index: 5;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    justify-content: ;
+  }
 
-.banner .filter{
-    height: 100%;
-    width: 100%;
-    background-image: linear-gradient(to right, #528ded, transparent,transparent);
+  .trending .trending-filter h4{
+    color: #BB86FC;
+    font-size: 1em;
+  }
+
+  .trending .trending-filter h1{
     color: white;
-    font-size: 2em;
-}
+    font-size: 3em;
+  }

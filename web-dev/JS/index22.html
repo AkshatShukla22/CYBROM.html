@@ -27,7 +27,7 @@
 
     <script>
         let fetchData = async () => {                      
-            let url = "http://localhost:3000/user";
+            let url = "http://localhost:3000/hotel";
 
             let res = await fetch(url);
             let data = await res.json();
@@ -56,7 +56,7 @@
         //How to delete data by particular id ---->>>
         let Del = (id) =>{
             // alert (id);
-            let url = `http://localhost:3000/user/${id}`;
+            let url = `http://localhost:3000/hotel/${id}`;
             fetch (url,{method:"DELETE"})                         //url ko fetch kiye or DELETE method lgaya , or ye json se bhi data delete kr dega
         }
     </script>
