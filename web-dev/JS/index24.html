@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Hotel Booking</title>
+</head>
+<body>
+  <form align="center" onsubmit="return Book()">
+    <h2>Hotel Booking Form</h2>
+    Enter Name: <input type="text" id="name" required /><br /><br />
+    Enter Age: <input type="text" id="age" required /><br /><br />
+    Check-in Date: <input type="date" id="checkin" required /><br /><br />
+    Check-out Date: <input type="date" id="checkout" required /><br /><br />
+    Select City:
+    <select id="city">
+      <option value="Bhopal">Bhopal</option>
+      <option value="Delhi">Delhi</option>
+      <option value="Indore">Indore</option>
+      <option value="Noida">Noida</option>
+    </select><br /><br />
+    No. of Persons: <input type="number" id="person" required /><br /><br />
+    <input type="submit" value="Book Now" />
+  </form>
+
+  <br />
+
+  <table border="1" align="center">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Age</th>
+        <th>Check-in</th>
+        <th>Check-out</th>
+        <th>City</th>
+        <th>Persons</th>
+        <th>Total Price</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody id="datashow"></tbody>
+  </table>
+
+  <script>
+    const BASE_URL = "http://localhost:3000/hotel";
+
+    async function fetchData() {
+      let res = await fetch(BASE_URL);
+      let data = await res.json();
+
+      let dataShow = document.querySelector("#datashow");
+      dataShow.innerHTML = "";
+
+      data.forEach((e) => {
+        dataShow.innerHTML += `
+          <tr>
+            <td>${e.Name}</td>
+            <td>${e.Age}</td>
+            <td>${e.Checkin}</td>
+            <td>${e.Checkout}</td>
+            <td>${e.City}</td>
+            <td>${e.Person}</td>
+            <td>${e.Person * e.Price}</td>
+            <td><button onclick="Del(${e.id})">Delete</button></td>
+          </tr>
+        `;
+      });
+    }
+
+    async function Del(id) {
+      await fetch(`${BASE_URL}/${id}`, { method: "DELETE" });
+      fetchData();
+    }
+
+    function Book() {
+      let name = document.querySelector("#name").value;
+      let age = document.querySelector("#age").value;
+      let checkin = document.querySelector("#checkin").value;
+      let checkout = document.querySelector("#checkout").value;
+      let city = document.querySelector("#city").value;
+      let person = document.querySelector("#person").value;
+
+      fetch(BASE_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          Name: name,
+          Age: age,
+          Checkin: checkin,
+          Checkout: checkout,
+          City: city,
+          Person: Number(person),
+          Price: 500  // Price per person
+        }),
+      }).then(() => {
+        document.querySelector("form").reset();
+        fetchData();
+      });
+
+      return false; // Prevent page reload
+    }
+
+    // Load data on page load
+    fetchData();
+  </script>
+</body>
+</html>

@@ -1,41 +1,40 @@
-
 {
-    "hotel":[
-        {
-            "Name":"Akshat Shukla",
-            "Age":"20",
-            "Checkin":"20-11-2025",
-            "Checkout":"25-11-2025",
-            "City":"Bhopal",
-            "Person":4,
-            "Price":2000
-        },
-        {
-            "Name":"Mohan Sharma",
-            "Age":"21",
-            "Check-in":"20-11-2025",
-            "Check-out":"22-11-2025",
-            "City":"Bhopal",
-            "Person":2,
-            "Price":1000
-        },
-        {
-            "Name":"Chetan",
-            "Age":"20",
-            "Checkin":"21-11-2025",
-            "Checkout":"24-11-2025",
-            "City":"Dubai",
-            "Person":3,
-            "Price":1500
-        },
-        {
-            "Name":"Hritik Shukla",
-            "Age":"22",
-            "Checkin":"22-11-2025",
-            "Checkout":"26-11-2025",
-            "City":"Kashmir",
-            "Person":2,
-            "Price":1000
-        }
-    ]
+  "hotel": [
+    {
+      "Name": "Akshat Shukla",
+      "Age": "20",
+      "Checkin": "2025-11-20",
+      "Checkout": "2025-11-25",
+      "City": "Bhopal",
+      "Person": 4,
+      "Price": 2000
+    },
+    {
+      "Name": "Mohan Sharma",
+      "Age": "21",
+      "Checkin": "2025-11-20",
+      "Checkout": "2025-11-22",
+      "City": "Bhopal",
+      "Person": 2,
+      "Price": 1000
+    },
+    {
+      "Name": "Chetan",
+      "Age": "20",
+      "Checkin": "2025-11-21",
+      "Checkout": "2025-11-24",
+      "City": "Dubai",
+      "Person": 3,
+      "Price": 1500
+    },
+    {
+      "Name": "Hritik Shukla",
+      "Age": "22",
+      "Checkin": "2025-11-22",
+      "Checkout": "2025-11-26",
+      "City": "Kashmir",
+      "Person": 2,
+      "Price": 1000
+    }
+  ]
 }
