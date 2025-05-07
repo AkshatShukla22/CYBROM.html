@@ -1,3 +1,4 @@
+// anime_info.html 
 // DOM Elements
 const searchInput = document.getElementById('searchInput');
 const searchBtn = document.getElementById('searchBtn');
