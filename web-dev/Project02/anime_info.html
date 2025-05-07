@@ -3,10 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AnimeStream - Watch Anime Online</title>
-    <link rel="stylesheet" href="./index.css">
+    <title>Anime Details - AnimeStream</title>
+    <link rel="stylesheet" href="./anime_info.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
 </head>
 <body>
     <!-- Navigation Bar -->
@@ -45,61 +44,68 @@
 
     <!-- Main Content -->
     <main>
-        <!-- Hero Banner Slider -->
-        <section class="hero-slider">
-            <div class="swiper">
-                <div class="swiper-wrapper" id="heroSlider">
-                    <!-- Slides will be inserted here by JavaScript -->
+        <div class="anime-container">
+            <!-- Anime Details Section -->
+            <section class="anime-details">
+                <div class="anime-backdrop">
+                    <div class="backdrop-overlay"></div>
                 </div>
-                <div class="swiper-pagination"></div>
-                <div class="swiper-button-prev"></div>
-                <div class="swiper-button-next"></div>
-            </div>
-        </section>
-
-        <!-- Trending Anime Section -->
-        <section class="anime-section" id="trendingSection">
-            <div class="section-header">
-                <h2>Trending Now</h2>
-                <button class="load-more" data-section="trending">Load More</button>
-            </div>
-            <div class="anime-grid" id="trendingGrid">
-                <!-- Anime cards will be inserted here by JavaScript -->
-            </div>
-        </section>
-
-        <!-- Action Anime Section -->
-        <section class="anime-section" id="actionSection">
-            <div class="section-header">
-                <h2>Action Anime</h2>
-                <button class="load-more" data-section="action">Load More</button>
-            </div>
-            <div class="anime-grid" id="actionGrid">
-                <!-- Anime cards will be inserted here by JavaScript -->
-            </div>
-        </section>
-
-        <!-- Adventure Anime Section -->
-        <section class="anime-section" id="adventureSection">
-            <div class="section-header">
-                <h2>Adventure Anime</h2>
-                <button class="load-more" data-section="adventure">Load More</button>
-            </div>
-            <div class="anime-grid" id="adventureGrid">
-                <!-- Anime cards will be inserted here by JavaScript -->
-            </div>
-        </section>
-
-        <!-- Comedy Anime Section -->
-        <section class="anime-section" id="comedySection">
-            <div class="section-header">
-                <h2>Comedy Anime</h2>
-                <button class="load-more" data-section="comedy">Load More</button>
-            </div>
-            <div class="anime-grid" id="comedyGrid">
-                <!-- Anime cards will be inserted here by JavaScript -->
-            </div>
-        </section>
+                
+                <div class="content-wrapper">
+                    <div class="anime-poster">
+                        <img id="animePoster" src="" alt="Anime Poster">
+                        <div class="rating">
+                            <i class="fas fa-star"></i>
+                            <span id="animeRating">0.0</span>
+                        </div>
+                    </div>
+                    
+                    <div class="anime-info">
+                        <h1 id="animeTitle">Loading anime...</h1>
+                        
+                        <div class="meta-info">
+                            <div class="meta-item">
+                                <i class="fas fa-list"></i>
+                                <span id="episodeCount">0 Episodes</span>
+                            </div>
+                            <div class="meta-item">
+                                <i class="fas fa-tag"></i>
+                                <span id="animeGenres">Loading genres...</span>
+                            </div>
+                        </div>
+                        
+                        <div class="description">
+                            <p id="animeDescription">Loading description...</p>
+                        </div>
+                        
+                        <div class="action-buttons">
+                            <button id="watchNowBtn" class="primary-btn">
+                                <i class="fas fa-play"></i> Watch Now
+                            </button>
+                            <button id="addToWatchlistBtn" class="secondary-btn">
+                                <i class="fas fa-plus"></i> Add to Watchlist
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Recommendations Section -->
+            <section class="recommendations">
+                <h2>Similar Anime</h2>
+                <div class="anime-grid" id="similarAnimeGrid">
+                    <!-- Similar anime cards will be inserted here by JavaScript -->
+                </div>
+            </section>
+            
+            <!-- More from this Genre Section -->
+            <section class="more-from-genre">
+                <h2 id="genreTitle">More Action Anime</h2>
+                <div class="anime-grid" id="genreAnimeGrid">
+                    <!-- Genre anime cards will be inserted here by JavaScript -->
+                </div>
+            </section>
+        </div>
     </main>
 
     <!-- Footer -->
@@ -115,7 +121,7 @@
                 <div class="footer-section">
                     <h3>Explore</h3>
                     <ul>
-                        <li><a href="#">Home</a></li>
+                        <li><a href="index.html">Home</a></li>
                         <li><a href="#">Genres</a></li>
                         <li><a href="#">New Releases</a></li>
                         <li><a href="#">Popular</a></li>
@@ -150,8 +156,8 @@
     </footer>
 
     <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-    <script src=".db.js"></script>
-    <script src=".index.js"></script>
+    <script src="./db.js"></script>
+    <script src="./common.js"></script>
+    <script src="./anime_info.js"></script>
 </body>
 </html>

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Watch Anime - AniStream</title>
+    <link rel="stylesheet" href="watch.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav>
+        <div class="logo">
+            <h1>AniStream</h1>
+        </div>
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="Search anime...">
+            <button id="searchBtn"><i class="fas fa-search"></i></button>
+            <div class="search-results" id="searchResults"></div>
+        </div>
+        <div class="nav-buttons">
+            <div class="notification-container">
+                <button id="notificationBtn"><i class="fas fa-bell"></i></button>
+                <div class="notification-panel" id="notificationPanel">
+                    <h3>Notifications</h3>
+                    <div class="notification-list" id="notificationList">
+                        <!-- Notifications will be populated dynamically -->
+                    </div>
+                </div>
+            </div>
+            <button id="userBtn" class="hidden"><i class="fas fa-user"></i></button>
+            <button id="loginBtn"><i class="fas fa-sign-in-alt"></i> Login</button>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Anime Information Section -->
+        <div class="anime-info">
+            <h1 id="anime-title">Loading Anime...</h1>
+            <div class="episode-info">
+                <h2 id="episode-title">Episode Title</h2>
+                <div class="rating">
+                    <i class="fas fa-star"></i>
+                    <span id="episode-rating">0.0</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Video Player Section -->
+        <div class="video-player-container">
+            <video id="video-player" controls>
+                <source src="" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+            <div class="video-controls">
+                <button id="add-to-watchlist"><i class="fas fa-plus"></i> Add to Watchlist</button>
+                <button id="share-button"><i class="fas fa-share"></i> Share</button>
+            </div>
+        </div>
+
+        <!-- Episodes List -->
+        <div class="episodes-section">
+            <h2>Episodes</h2>
+            <div class="episodes-container" id="episodes-list">
+                <!-- Episodes will be populated dynamically -->
+            </div>
+        </div>
+
+        <!-- Recommendations Section -->
+        <div class="recommendations-section">
+            <h2>You May Also Like</h2>
+            <div class="recommendations-container" id="recommendations-list">
+                <!-- Recommendations will be populated dynamically -->
+            </div>
+        </div>
+
+        <!-- Similar Genre Section -->
+        <div class="similar-genre-section">
+            <h2 id="similar-genre-title">Similar Anime</h2>
+            <div class="similar-genre-container" id="similar-genre-list">
+                <!-- Similar genre anime will be populated dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-logo">
+                <h2>AniStream</h2>
+                <p>Your favorite anime streaming platform</p>
+            </div>
+            <div class="footer-links">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="#">Popular Anime</a></li>
+                    <li><a href="#">New Releases</a></li>
+                    <li><a href="#">Genres</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h3>Info</h3>
+                <ul>
+                    <li><a href="#">About Us</a></li>
+                    <li><a href="#">Contact Us</a></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Terms of Service</a></li>
+                </ul>
+            </div>
+            <div class="footer-social">
+                <h3>Connect With Us</h3>
+                <div class="social-icons">
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-discord"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 AniStream. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="watch.js"></script>
+</body>
+</html>

@@ -1,0 +1,95 @@
+{
+    "users": [
+      {
+        "id": 1,
+        "name": "Test User",
+        "email": "test@example.com",
+        "password": "password123",
+        "phone": "1234567890",
+        "watchlist": [1, 3]
+      },
+      {
+        "id": 2,
+        "name": "Admin User",
+        "email": "admin@gmail.com",
+        "password": "admin",
+        "phone": "9876543210",
+        "isAdmin": true,
+        "watchlist": []
+      }
+    ],
+    "anime": [
+      {
+        "id": 1,
+        "name": "Demon Slayer",
+        "description": "A boy who sells coal becomes a demon slayer after his family is slaughtered.",
+        "genera": ["action", "adventure", "fantasy"],
+        "rating": 4.8,
+        "image": "assets/images/demon_slayer.jpg",
+        "episodes": [
+          {
+            "number": 1,
+            "title": "Cruelty",
+            "videoSrc": "assets/videos/demon_slayer_ep1.mp4",
+            "rating": 4.7
+          },
+          {
+            "number": 2,
+            "title": "Trainer Sakonji Urokodaki",
+            "videoSrc": "assets/videos/demon_slayer_ep2.mp4",
+            "rating": 4.8
+          },
+          {
+            "number": 3,
+            "title": "Sabito and Makomo",
+            "videoSrc": "assets/videos/demon_slayer_ep3.mp4",
+            "rating": 4.9
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "name": "Attack on Titan",
+        "description": "Humanity fights for survival against giant humanoid Titans.",
+        "genera": ["action", "drama", "horror"],
+        "rating": 4.9,
+        "image": "assets/images/attack_on_titan.jpg",
+        "episodes": [
+          {
+            "number": 1,
+            "title": "To You, 2000 Years From Now",
+            "videoSrc": "assets/videos/aot_ep1.mp4",
+            "rating": 4.8
+          },
+          {
+            "number": 2,
+            "title": "That Day",
+            "videoSrc": "assets/videos/aot_ep2.mp4",
+            "rating": 4.9
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "name": "My Hero Academia",
+        "description": "A boy born without powers in a world of superheroes aims to become the greatest hero.",
+        "genera": ["action", "comedy", "school"],
+        "rating": 4.7,
+        "image": "assets/images/my_hero_academia.jpg",
+        "episodes": [
+          {
+            "number": 1,
+            "title": "Izuku Midoriya: Origin",
+            "videoSrc": "assets/videos/mha_ep1.mp4",
+            "rating": 4.6
+          },
+          {
+            "number": 2,
+            "title": "What It Takes to Be a Hero",
+            "videoSrc": "assets/videos/mha_ep2.mp4",
+            "rating": 4.7
+          }
+        ]
+      }
+    ]
+  }
