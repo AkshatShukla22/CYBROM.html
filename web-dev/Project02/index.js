@@ -6,7 +6,7 @@ let isLoggedIn = false;
 let notifications = [];
 
 // DOM Elements
-const searchInput = document.getElementById('searchInput');
+var searchInput = document.getElementById('searchInput');
 const searchResults = document.getElementById('searchResults');
 const notificationBtn = document.getElementById('notificationBtn');
 const notificationPanel = document.getElementById('notificationPanel');
@@ -177,7 +177,7 @@ function setupEventListeners() {
     });
 }
 
-// Initialize Hero Slider
+// Enhanced Hero Slider Implementation
 function initializeHeroSlider() {
     // Clear existing slider content
     heroSlider.innerHTML = '';
@@ -203,8 +203,18 @@ function initializeHeroSlider() {
                         </div>
                         <span>${anime.rating.toFixed(1)}/5.0</span>
                     </div>
+                    <div class="genres">
+                        ${anime.genera ? anime.genera.map(genre => `<span class="genre-tag">${genre}</span>`).join('') : ''}
+                    </div>
                     <p>${anime.description.length > 150 ? anime.description.substring(0, 150) + '...' : anime.description}</p>
-                    <a href="anime_info.html?id=${anime.id}" class="btn">Watch Now</a>
+                    <div class="slide-buttons">
+                        <a href="anime_info.html?id=${anime.id}" class="btn watch-btn">
+                            <i class="fas fa-play-circle"></i> Watch Now
+                        </a>
+                        <button class="btn add-btn" onclick="addToWatchlist(${anime.id})">
+                            <i class="fas fa-plus"></i> Add to List
+                        </button>
+                    </div>
                 </div>
             </div>
         `;
@@ -212,16 +222,17 @@ function initializeHeroSlider() {
         heroSlider.appendChild(slide);
     });
     
-    // Initialize Swiper
+    // Initialize Swiper with enhanced options
     const swiper = new Swiper('.swiper', {
         loop: true,
         autoplay: {
-            delay: 10000,
+            delay: 5000,
             disableOnInteraction: false,
         },
         pagination: {
             el: '.swiper-pagination',
             clickable: true,
+            dynamicBullets: true,
         },
         navigation: {
             nextEl: '.swiper-button-next',
@@ -231,19 +242,24 @@ function initializeHeroSlider() {
         fadeEffect: {
             crossFade: true
         },
+        speed: 800,
         on: {
             slideChangeTransitionStart: function() {
                 // Add animation to slide content
-                document.querySelector('.swiper-slide-active .slide-content').style.animation = 'none';
-                setTimeout(() => {
-                    document.querySelector('.swiper-slide-active .slide-content').style.animation = 'fadeIn 1s ease';
-                }, 10);
+                const activeContent = document.querySelector('.swiper-slide-active .slide-content');
+                if (activeContent) {
+                    activeContent.style.animation = 'none';
+                    setTimeout(() => {
+                        activeContent.style.animation = 'fadeInRight 1s ease forwards';
+                    }, 10);
+                }
             }
         }
     });
 }
 
-// Load anime sections
+
+// Enhanced Anime Sections Implementation
 function loadAnimeSections() {
     // Clear all grids first
     trendingGrid.innerHTML = '';
@@ -251,16 +267,17 @@ function loadAnimeSections() {
     adventureGrid.innerHTML = '';
     comedyGrid.innerHTML = '';
     
-    loadTrendingAnime();
-    loadActionAnime();
-    loadAdventureAnime();
-    loadComedyAnime();
+    // Load each section with animation delay between sections
+    setTimeout(() => loadTrendingAnime(), 100);
+    setTimeout(() => loadActionAnime(), 300);
+    setTimeout(() => loadAdventureAnime(), 500);
+    setTimeout(() => loadComedyAnime(), 700);
     
     // Check if we should hide any "Load More" buttons
-    checkLoadMoreButtonsVisibility();
+    setTimeout(() => checkLoadMoreButtonsVisibility(), 800);
 }
 
-// Load trending anime (based on rating)
+// Enhanced Trending Anime Implementation
 function loadTrendingAnime() {
     const { page, limit } = paginationState.trending;
     const startIndex = 0;
@@ -271,56 +288,83 @@ function loadTrendingAnime() {
         .sort((a, b) => b.rating - a.rating)
         .slice(startIndex, endIndex);
     
-    // Render anime cards
+    // Render anime cards with enhanced display
     renderAnimeCards(trending, trendingGrid);
+    
+    // Update the section header to show count
+    const sectionHeader = document.querySelector('#trendingSection .section-header h2');
+    if (sectionHeader) {
+        sectionHeader.innerHTML = `Trending Now <span class="anime-count">(${trending.length}/${paginationState.trending.total})</span>`;
+    }
 }
 
-// Load action anime
+// Enhanced Action Anime Implementation
 function loadActionAnime() {
     const { page, limit } = paginationState.action;
     const startIndex = 0;
     const endIndex = page * limit;
     
-    // Get action anime
+    // Get action anime with better filtering
     const actionAnime = animeData
         .filter(anime => anime.genera && anime.genera.includes('action'))
+        .sort((a, b) => b.rating - a.rating) // Sort by rating
         .slice(startIndex, endIndex);
     
     // Render anime cards
     renderAnimeCards(actionAnime, actionGrid);
+    
+    // Update the section header to show count
+    const sectionHeader = document.querySelector('#actionSection .section-header h2');
+    if (sectionHeader) {
+        sectionHeader.innerHTML = `Action Anime <span class="anime-count">(${actionAnime.length}/${paginationState.action.total})</span>`;
+    }
 }
 
-// Load adventure anime
+// Enhanced Adventure Anime Implementation
 function loadAdventureAnime() {
     const { page, limit } = paginationState.adventure;
     const startIndex = 0;
     const endIndex = page * limit;
     
-    // Get adventure anime
+    // Get adventure anime with better filtering
     const adventureAnime = animeData
         .filter(anime => anime.genera && anime.genera.includes('adventure'))
+        .sort((a, b) => b.rating - a.rating) // Sort by rating
         .slice(startIndex, endIndex);
     
     // Render anime cards
     renderAnimeCards(adventureAnime, adventureGrid);
+    
+    // Update the section header to show count
+    const sectionHeader = document.querySelector('#adventureSection .section-header h2');
+    if (sectionHeader) {
+        sectionHeader.innerHTML = `Adventure Anime <span class="anime-count">(${adventureAnime.length}/${paginationState.adventure.total})</span>`;
+    }
 }
 
-// Load comedy anime
+// Enhanced Comedy Anime Implementation
 function loadComedyAnime() {
     const { page, limit } = paginationState.comedy;
     const startIndex = 0;
     const endIndex = page * limit;
     
-    // Get comedy anime
+    // Get comedy anime with better filtering
     const comedyAnime = animeData
         .filter(anime => anime.genera && anime.genera.includes('comedy'))
+        .sort((a, b) => b.rating - a.rating) // Sort by rating
         .slice(startIndex, endIndex);
     
     // Render anime cards
     renderAnimeCards(comedyAnime, comedyGrid);
+    
+    // Update the section header to show count
+    const sectionHeader = document.querySelector('#comedySection .section-header h2');
+    if (sectionHeader) {
+        sectionHeader.innerHTML = `Comedy Anime <span class="anime-count">(${comedyAnime.length}/${paginationState.comedy.total})</span>`;
+    }
 }
 
-// Render anime cards with animation
+// Enhanced Anime Card Rendering
 function renderAnimeCards(animeList, container) {
     if (animeList.length === 0) {
         container.innerHTML = '<p class="no-anime">No anime found in this category</p>';
@@ -336,12 +380,28 @@ function renderAnimeCards(animeList, container) {
         card.style.opacity = '0';
         
         card.innerHTML = `
-            <img src="${anime.image}" alt="${anime.name}">
+            <div class="anime-card-image">
+                <img src="${anime.image}" alt="${anime.name}">
+                <div class="episode-count">${anime.episodes ? anime.episodes.length : 0} eps</div>
+            </div>
             <div class="anime-card-overlay">
                 <h3>${anime.name}</h3>
+                <div class="genres">
+                    ${anime.genera ? anime.genera.map(genre => 
+                        `<span class="genre-pill">${genre}</span>`
+                    ).join('') : ''}
+                </div>
                 <div class="rating">
                     <i class="fas fa-star"></i>
                     <span>${anime.rating.toFixed(1)}</span>
+                </div>
+                <div class="anime-card-buttons">
+                    <button class="watch-now" onclick="window.location.href='anime_info.html?id=${anime.id}'">
+                        <i class="fas fa-play"></i>
+                    </button>
+                    <button class="add-to-list" onclick="event.stopPropagation(); addToWatchlist(${anime.id})">
+                        <i class="fas fa-plus"></i>
+                    </button>
                 </div>
             </div>
         `;
@@ -354,7 +414,7 @@ function renderAnimeCards(animeList, container) {
         container.appendChild(card);
     });
     
-    // Add fadeInUp animation to CSS
+    // Add enhanced animations to CSS if not already present
     if (!document.querySelector('#animationStyles')) {
         const styleSheet = document.createElement('style');
         styleSheet.id = 'animationStyles';
@@ -369,12 +429,93 @@ function renderAnimeCards(animeList, container) {
                     transform: translateY(0);
                 }
             }
+            
+            @keyframes fadeInRight {
+                from {
+                    opacity: 0;
+                    transform: translateX(-20px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateX(0);
+                }
+            }
+            
+            .anime-count {
+                font-size: 0.8em;
+                opacity: 0.7;
+                font-weight: normal;
+            }
+            
+            .genre-pill {
+                display: inline-block;
+                padding: 2px 6px;
+                border-radius: 12px;
+                background-color: rgba(255, 87, 34, 0.7);
+                color: white;
+                font-size: 0.6rem;
+                margin-right: 4px;
+                margin-bottom: 4px;
+                text-transform: capitalize;
+            }
+            
+            .genre-tag {
+                display: inline-block;
+                padding: 3px 8px;
+                border-radius: 15px;
+                background-color: rgba(255, 87, 34, 0.8);
+                color: white;
+                font-size: 0.7rem;
+                margin-right: 6px;
+                margin-bottom: 8px;
+                text-transform: capitalize;
+            }
+            
+            .episode-count {
+                position: absolute;
+                top: 10px;
+                right: 10px;
+                background-color: rgba(0, 0, 0, 0.7);
+                color: white;
+                padding: 2px 6px;
+                border-radius: 10px;
+                font-size: 0.7rem;
+            }
+            
+            .anime-card-image {
+                position: relative;
+                width: 100%;
+                height: 100%;
+            }
+            
+            .anime-card-buttons {
+                display: flex;
+                justify-content: space-between;
+                width: 80%;
+                margin-top: 10px;
+            }
+            
+            .anime-card-buttons button {
+                width: 35px;
+                height: 35px;
+                border-radius: 50%;
+                background-color: rgba(255, 255, 255, 0.2);
+                border: none;
+                color: white;
+                cursor: pointer;
+                transition: all 0.3s ease;
+            }
+            
+            .anime-card-buttons button:hover {
+                background-color: var(--primary-color);
+                transform: scale(1.1);
+            }
         `;
         document.head.appendChild(styleSheet);
     }
 }
 
-// Load more anime for a specific section
+// Load more anime implementation
 function loadMoreAnime(section) {
     // Increment page
     paginationState[section].page += 1;
@@ -401,9 +542,12 @@ function loadMoreAnime(section) {
     
     // Check if we should hide the load more button
     checkLoadMoreButtonsVisibility();
+    
+    // Scroll to the top of the section
+    document.getElementById(`${section}Section`).scrollIntoView({ behavior: 'smooth' });
 }
 
-// Check if load more buttons should be visible
+// Enhanced check load more buttons visibility
 function checkLoadMoreButtonsVisibility() {
     loadMoreButtons.forEach(button => {
         const section = button.getAttribute('data-section');
@@ -414,6 +558,7 @@ function checkLoadMoreButtonsVisibility() {
             button.style.display = 'none';
         } else {
             button.style.display = 'block';
+            button.innerHTML = `Load More (${Math.min(limit, total - page * limit)} more)`;
         }
     });
 }
@@ -661,3 +806,4 @@ if (!document.querySelector('#toastStyles')) {
     `;
     document.head.appendChild(toastStyles);
 }
+
