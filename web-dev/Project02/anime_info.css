@@ -461,6 +461,7 @@ nav {
 }
 
 .anime-card {
+    height: 30vh;
     background-color: var(--surface-color);
     border-radius: 10px;
     overflow: hidden;

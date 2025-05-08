@@ -592,6 +592,69 @@ footer {
     font-size: 0.9rem;
 }
 
+.banner-slider {
+    position: relative;
+    width: 100%;
+    height: 400px;
+    overflow: hidden;
+    border: 4px solid red;
+  }
+  
+  .slider-container {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    position: relative;
+  }
+  
+  .slide {
+    display: none;
+    flex: 1;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    transition: opacity 1s ease;
+  }
+  
+  .slide.active {
+    display: flex;
+    opacity: 1;
+  }
+  
+  .slide-content {
+    width: 40%;
+    background-color: #2a2c3e;
+    color: white;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    z-index: 2;
+  }
+  
+  .slide-image {
+    width: 60%;
+    background-size: cover;
+    background-position: center;
+  }
+  
+  .slider-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 2rem;
+    background-color: rgba(0,0,0,0.5);
+    color: white;
+    border: none;
+    cursor: pointer;
+    padding: 10px;
+    z-index: 3;
+  }
+  
+  #prevBtn { left: 10px; }
+  #nextBtn { right: 10px; }
+  
+
 /* Responsive Design */
 @media (max-width: 992px) {
     .slide-content h2 {

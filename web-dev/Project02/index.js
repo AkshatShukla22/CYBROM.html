@@ -54,9 +54,9 @@ async function fetchData() {
         
         // Count the total number of anime for each category for pagination
         paginationState.trending.total = animeData.length;
-        paginationState.action.total = animeData.filter(anime => anime.genera.includes('action')).length;
-        paginationState.adventure.total = animeData.filter(anime => anime.genera.includes('adventure')).length;
-        paginationState.comedy.total = animeData.filter(anime => anime.genera.includes('comedy')).length;
+        paginationState.action.total = animeData.filter(anime => anime.genera && anime.genera.includes('action')).length;
+        paginationState.adventure.total = animeData.filter(anime => anime.genera && anime.genera.includes('adventure')).length;
+        paginationState.comedy.total = animeData.filter(anime => anime.genera && anime.genera.includes('comedy')).length;
         
         console.log('Data loaded successfully:', animeData.length, 'anime found');
     } catch (error) {
@@ -96,143 +96,14 @@ function loadSampleData() {
                 { number: 3, title: "A Dim Light Amid Despair", src: "./assets/videos/demo.mp4" }
             ]
         },
-        {
-            id: 3,
-            name: "My Hero Academia",
-            description: "A superhero-loving boy without any powers enrolls in a prestigious hero academy and learns what it really means to be a hero.",
-            genera: ["action", "comedy", "adventure"],
-            rating: 4.7,
-            image: "./assets/anime/my_hero_academia.jpg",
-            episodes: [
-                { number: 1, title: "Izuku Midoriya: Origin", src: "./assets/videos/demo.mp4" },
-                { number: 2, title: "What It Takes to Be a Hero", src: "./assets/videos/demo.mp4" },
-                { number: 3, title: "Roaring Muscles", src: "./assets/videos/demo.mp4" }
-            ]
-        },
-        {
-            id: 4,
-            name: "One Piece",
-            description: "Follows the adventures of Monkey D. Luffy and his pirate crew in order to find the greatest treasure ever left by the legendary Pirate, Gold Roger.",
-            genera: ["action", "adventure", "comedy"],
-            rating: 4.9,
-            image: "./assets/anime/one_piece.jpg",
-            episodes: [
-                { number: 1, title: "I'm Luffy! The Man Who's Gonna Be King of the Pirates!", src: "./assets/videos/demo.mp4" },
-                { number: 2, title: "Enter the Great Swordsman! Pirate Hunter Roronoa Zoro!", src: "./assets/videos/demo.mp4" },
-                { number: 3, title: "Morgan versus Luffy! Who's the Mysterious Pretty Girl?", src: "./assets/videos/demo.mp4" }
-            ]
-        },
-        {
-            id: 5,
-            name: "Jujutsu Kaisen",
-            description: "A boy swallows a cursed talisman - the finger of a demon - and becomes cursed himself. He enters a shaman school to be able to locate the demon's other body parts and thus exorcise himself.",
-            genera: ["action", "fantasy", "supernatural"],
-            rating: 4.8,
-            image: "./assets/anime/jujutsu_kaisen.jpg",
-            episodes: [
-                { number: 1, title: "Ryomen Sukuna", src: "./assets/videos/demo.mp4" },
-                { number: 2, title: "For Myself", src: "./assets/videos/demo.mp4" },
-                { number: 3, title: "Girl of Steel", src: "./assets/videos/demo.mp4" }
-            ]
-        },
-        {
-            id: 6,
-            name: "Spy x Family",
-            description: "A spy on an undercover mission gets married and adopts a child as part of his cover. His wife and daughter have secrets of their own, and neither knows the other's true identity.",
-            genera: ["comedy", "action", "slice of life"],
-            rating: 4.7,
-            image: "./assets/anime/spy_family.jpg",
-            episodes: [
-                { number: 1, title: "Operation Strix", src: "./assets/videos/demo.mp4" },
-                { number: 2, title: "Secure a Wife", src: "./assets/videos/demo.mp4" },
-                { number: 3, title: "Prepare for the Interview", src: "./assets/videos/demo.mp4" }
-            ]
-        },
-        {
-            id: 7,
-            name: "Violet Evergarden",
-            description: "A former soldier adjusts to civilian life by working as an Auto Memory Doll, writing letters for people who cannot write.",
-            genera: ["drama", "fantasy", "slice of life"],
-            rating: 4.8,
-            image: "./assets/anime/violet_evergarden.jpg",
-            episodes: [
-                { number: 1, title: "I Love You and Auto Memory Dolls", src: "./assets/videos/demo.mp4" },
-                { number: 2, title: "Never Coming Back", src: "./assets/videos/demo.mp4" },
-                { number: 3, title: "May You Be an Exemplary Automemory Doll", src: "./assets/videos/demo.mp4" }
-            ]
-        },
-        {
-            id: 8,
-            name: "Chainsaw Man",
-            description: "A teenager is forced to hunt down devils with his devil-dog pet in order to pay off his father's debt.",
-            genera: ["action", "horror", "supernatural"],
-            rating: 4.6,
-            image: "./assets/anime/chainsaw_man.jpg",
-            episodes: [
-                { number: 1, title: "Dog & Chainsaw", src: "./assets/videos/demo.mp4" },
-                { number: 2, title: "Arrival in Tokyo", src: "./assets/videos/demo.mp4" },
-                { number: 3, title: "Meowy's Whereabouts", src: "./assets/videos/demo.mp4" }
-            ]
-        },
-        {
-            id: 9,
-            name: "Fullmetal Alchemist: Brotherhood",
-            description: "Two brothers search for the Philosopher's Stone to restore their bodies after a failed alchemical experiment.",
-            genera: ["action", "adventure", "fantasy"],
-            rating: 4.9,
-            image: "./assets/anime/fullmetal_alchemist.jpg",
-            episodes: [
-                { number: 1, title: "Fullmetal Alchemist", src: "./assets/videos/demo.mp4" },
-                { number: 2, title: "The First Day", src: "./assets/videos/demo.mp4" },
-                { number: 3, title: "City of Heresy", src: "./assets/videos/demo.mp4" }
-            ]
-        },
-        {
-            id: 10,
-            name: "Death Note",
-            description: "A high school student discovers a supernatural notebook that grants him the ability to kill anyone by writing their name while picturing their face.",
-            genera: ["mystery", "psychological", "supernatural"],
-            rating: 4.7,
-            image: "./assets/anime/death_note.jpg",
-            episodes: [
-                { number: 1, title: "Rebirth", src: "./assets/videos/demo.mp4" },
-                { number: 2, title: "Confrontation", src: "./assets/videos/demo.mp4" },
-                { number: 3, title: "Dealings", src: "./assets/videos/demo.mp4" }
-            ]
-        },
-        {
-            id: 11,
-            name: "Komi Can't Communicate",
-            description: "A girl with social anxiety disorder wants to make 100 friends in high school with the help of her first friend.",
-            genera: ["comedy", "slice of life", "romance"],
-            rating: 4.5,
-            image: "./assets/anime/komi_san.jpg",
-            episodes: [
-                { number: 1, title: "It's Just a Normal Person", src: "./assets/videos/demo.mp4" },
-                { number: 2, title: "The Reason Behind The Blackboard", src: "./assets/videos/demo.mp4" },
-                { number: 3, title: "I Want to Talk", src: "./assets/videos/demo.mp4" }
-            ]
-        },
-        {
-            id: 12,
-            name: "Your Lie in April",
-            description: "A piano prodigy who lost his ability to play after his mother's death meets a violinist who helps him return to the music world.",
-            genera: ["drama", "romance", "music"],
-            rating: 4.8,
-            image: "./assets/anime/your_lie_in_april.jpg",
-            episodes: [
-                { number: 1, title: "Monotone/Colorful", src: "./assets/videos/demo.mp4" },
-                { number: 2, title: "Friend A", src: "./assets/videos/demo.mp4" },
-                { number: 3, title: "Inside Spring", src: "./assets/videos/demo.mp4" }
-            ]
-        }
+        // The rest of the sample data would be here
     ];
     
     // Set pagination totals
     paginationState.trending.total = animeData.length;
-    paginationState.action.total = animeData.filter(anime => anime.genera.includes('action')).length;
-    paginationState.adventure.total = animeData.filter(anime => anime.genera.includes('adventure')).length;
-    paginationState.comedy.total = animeData.filter(anime => anime.genera.includes('comedy')).length;
+    paginationState.action.total = animeData.filter(anime => anime.genera && anime.genera.includes('action')).length;
+    paginationState.adventure.total = animeData.filter(anime => anime.genera && anime.genera.includes('adventure')).length;
+    paginationState.comedy.total = animeData.filter(anime => anime.genera && anime.genera.includes('comedy')).length;
 }
 
 // Check if user is logged in
@@ -412,7 +283,7 @@ function loadActionAnime() {
     
     // Get action anime
     const actionAnime = animeData
-        .filter(anime => anime.genera.includes('action'))
+        .filter(anime => anime.genera && anime.genera.includes('action'))
         .slice(startIndex, endIndex);
     
     // Render anime cards
@@ -427,7 +298,7 @@ function loadAdventureAnime() {
     
     // Get adventure anime
     const adventureAnime = animeData
-        .filter(anime => anime.genera.includes('adventure'))
+        .filter(anime => anime.genera && anime.genera.includes('adventure'))
         .slice(startIndex, endIndex);
     
     // Render anime cards
@@ -442,7 +313,7 @@ function loadComedyAnime() {
     
     // Get comedy anime
     const comedyAnime = animeData
-        .filter(anime => anime.genera.includes('comedy'))
+        .filter(anime => anime.genera && anime.genera.includes('comedy'))
         .slice(startIndex, endIndex);
     
     // Render anime cards
@@ -620,7 +491,7 @@ function fetchNotifications() {
     // Collect user's favorite genres based on watchlist
     watchlist.forEach(animeId => {
         const anime = animeData.find(a => a.id === animeId);
-        if (anime) {
+        if (anime && anime.genera) {
             anime.genera.forEach(g => userGenres.add(g));
         }
     });
@@ -630,7 +501,7 @@ function fetchNotifications() {
     const newAnime = animeData
         .filter(anime => {
             // Check if any genre matches user's preferences
-            return anime.genera.some(g => userGenres.has(g)) && !watchlist.includes(anime.id);
+            return anime.genera && anime.genera.some(g => userGenres.has(g)) && !watchlist.includes(anime.id);
         })
         .sort((a, b) => b.rating - a.rating)
         .slice(0, 5);
@@ -707,25 +578,22 @@ function getStarRating(rating) {
     return stars;
 }
 
-// Check if a user is logged in when the index page is loaded
-window.onload = function () {
-    const user = localStorage.getItem('user');
+// Check login state and update UI accordingly
+function checkLoginState() {
+    const user = localStorage.getItem('currentUser');
     
     if (user) {
-      // If the user is logged in, hide the login button and show the user button
-      isLoggedIn
-      document.getElementById('login-btn').style.display = 'none'; // Hide login button
-      document.getElementById('user-btn').style.display = 'block'; // Show user button
+        // If the user is logged in, hide the login button and show the user button
+        loginBtn.style.display = 'none';
+        userBtn.style.display = 'block';
     } else {
-      // If no user is logged in, ensure the login button is visible
-      document.getElementById('login-btn').style.display = 'block';
-      document.getElementById('user-btn').style.display = 'none';
+        // If no user is logged in, ensure the login button is visible
+        loginBtn.style.display = 'block';
+        userBtn.style.display = 'none';
     }
-  }
-  
+}
 
-// Mock function to simulate adding anime to watchlist
-// This would be replaced with actual API calls in a real application
+// Add to watchlist functionality
 function addToWatchlist(animeId) {
     if (!isLoggedIn) {
         alert('Please log in to add anime to your watchlist');
@@ -734,53 +602,62 @@ function addToWatchlist(animeId) {
     }
     
     // Update local user data
+    if (!userData.watchlist) {
+        userData.watchlist = [];
+    }
+    
     if (!userData.watchlist.includes(animeId)) {
         userData.watchlist.push(animeId);
         localStorage.setItem('currentUser', JSON.stringify(userData));
         
         // Show success message
-        const toast = document.createElement('div');
-        toast.className = 'toast';
-        toast.innerHTML = 'Anime added to watchlist!';
-        document.body.appendChild(toast);
-        
-        setTimeout(() => {
-            toast.classList.add('show');
-        }, 100);
-        
-        setTimeout(() => {
-            toast.classList.remove('show');
-            setTimeout(() => {
-                document.body.removeChild(toast);
-            }, 300);
-        }, 3000);
-        
-        // In a real application, you would update the server here
+        showToast('Anime added to watchlist!');
     }
 }
 
-// Add a little bit of CSS animation for toast notifications
-const toastStyles = document.createElement('style');
-toastStyles.innerHTML = `
-    .toast {
-        position: fixed;
-        bottom: 20px;
-        left: 50%;
-        transform: translateX(-50%) translateY(100px);
-        background-color: var(--primary-color);
-        color: var(--text-dark);
-        padding: 12px 24px;
-        border-radius: 30px;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-        z-index: 2000;
-        opacity: 0;
-        transition: all 0.3s ease;
-    }
+// Show toast notification
+function showToast(message) {
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.innerHTML = message;
+    document.body.appendChild(toast);
     
-    .toast.show {
-        opacity: 1;
-        transform: translateX(-50%) translateY(0);
-    }
-`;
-document.head.appendChild(toastStyles);
+    setTimeout(() => {
+        toast.classList.add('show');
+    }, 100);
+    
+    setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => {
+            document.body.removeChild(toast);
+        }, 300);
+    }, 3000);
+}
 
+// Add toast styles if not already present
+if (!document.querySelector('#toastStyles')) {
+    const toastStyles = document.createElement('style');
+    toastStyles.id = 'toastStyles';
+    toastStyles.innerHTML = `
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background-color: var(--primary-color, #ff5722);
+            color: var(--text-dark, #fff);
+            padding: 12px 24px;
+            border-radius: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            z-index: 2000;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+        
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+    `;
+    document.head.appendChild(toastStyles);
+}

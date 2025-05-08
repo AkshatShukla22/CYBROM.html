@@ -22,7 +22,7 @@ let errLoginPass = document.getElementById("err-login-pass");
 let showPass_login = document.querySelector("#showPass_login");
 let showPass_signup = document.querySelector("#showPass_signup");
 
-//Slider
+// Slider
 let slider = document.getElementById("slider");
 let isRight = true; 
 
@@ -35,9 +35,73 @@ let error_5 = document.getElementById("error-5");
 let error_6 = document.getElementById("error-6");
 let error_7 = document.getElementById("error-7");
 
-// forms
+// Forms
 let loginForm = document.querySelector(".login");
 let signupForm = document.querySelector(".signup");
+
+// Check if database instance is available, otherwise wait for it
+let dbInstance = null;
+function getDB() {
+    if (window.db) {
+        dbInstance = window.db;
+        return dbInstance;
+    } else {
+        console.error("Database not initialized. Make sure db.js is loaded before auth.js");
+        // Wait for db to be initialized
+        return new Promise((resolve) => {
+            let checkInterval = setInterval(() => {
+                if (window.db) {
+                    clearInterval(checkInterval);
+                    dbInstance = window.db;
+                    resolve(dbInstance);
+                }
+            }, 100);
+        });
+    }
+}
+
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', async function() {
+    // Try to get the database instance
+    dbInstance = await getDB();
+    
+    // Check if user is already logged in
+    const currentUserEmail = localStorage.getItem('currentUserEmail');
+    if (currentUserEmail) {
+        const isAdmin = localStorage.getItem('isAdmin') === 'true';
+        redirectLoggedInUser(isAdmin);
+    }
+
+    // Add animations to form elements
+    animateFormElements();
+});
+
+// Add animations to form elements
+function animateFormElements() {
+    // Animate input fields on focus
+    const inputs = document.querySelectorAll('input');
+    inputs.forEach(input => {
+        input.addEventListener('focus', function() {
+            this.parentElement.classList.add('input-focus-animation');
+        });
+        
+        input.addEventListener('blur', function() {
+            this.parentElement.classList.remove('input-focus-animation');
+        });
+    });
+
+    // Add button hover animations
+    const buttons = document.querySelectorAll('button');
+    buttons.forEach(button => {
+        button.addEventListener('mouseover', function() {
+            this.classList.add('button-hover');
+        });
+        
+        button.addEventListener('mouseout', function() {
+            this.classList.remove('button-hover');
+        });
+    });
+}
 
 // Hide/Show password for Signup
 function hideShow_signup() {
@@ -63,309 +127,265 @@ function hideShow_login() {
     return false;
 }
 
-function validate() {
-    let isValid = true;
-    let user_email = localStorage.getItem("Email");
+// Function to show success message
+function showSuccess(element, message, errorDiv) {
+    element.textContent = message;
+    errorDiv.style.display = "flex";
+    errorDiv.style.color = "var(--success)";
+    errorDiv.classList.add('slide-in-animation');
+    
+    setTimeout(() => {
+        errorDiv.classList.remove('slide-in-animation');
+        errorDiv.classList.add('slide-out-animation');
+        
+        setTimeout(() => {
+            element.textContent = "";
+            errorDiv.style.display = "none";
+            errorDiv.classList.remove('slide-out-animation');
+        }, 500);
+    }, 4500);
+}
 
-    if (signup_name.value.trim() === "") {
-        errName.textContent = "Name is required";
-        signup_name.classList.add("error-input");
-        error_3.style.display = "flex";
-        setTimeout(()=>{
-            errName.textContent = "";
-            error_3.style.display = "none"; 
-            signup_name.classList.remove("error-input");
-        }, 10000)
-        isValid = false;
+// Function to show error message
+function showError(element, message, inputElement, errorDiv) {
+    element.textContent = message;
+    inputElement.classList.add("error-input");
+    errorDiv.style.display = "flex";
+    errorDiv.classList.add('slide-in-animation');
+    
+    setTimeout(() => {
+        errorDiv.classList.remove('slide-in-animation');
+        errorDiv.classList.add('slide-out-animation');
+        
+        setTimeout(() => {
+            element.textContent = "";
+            errorDiv.style.display = "none";
+            inputElement.classList.remove("error-input");
+            errorDiv.classList.remove('slide-out-animation');
+        }, 500);
+    }, 4500);
+}
+
+// Function to redirect user after successful login
+function redirectLoggedInUser(isAdmin) {
+    if (isAdmin) {
+        window.location.href = "admin.html";
+    } else {
+        window.location.href = "home.html";
     }
-    else {
-        errName.textContent = "";
-        signup_name.classList.remove("error-input");
-        localStorage.setItem("User_Name", signup_name.value.trim());
+}
+
+// Validate signup form
+async function validate() {
+    let isValid = true;
+    
+    // Basic form validation
+    if (signup_name.value.trim() === "") {
+        showError(errName, "Name is required", signup_name, error_3);
+        isValid = false;
     }
 
     if (email.value.trim() === "") {
-        errEmail.textContent = "Email is required";
-        email.classList.add("error-input");
-        error_4.style.display = "flex";
-        setTimeout(()=>{
-            errEmail.textContent = "";
-            error_4.style.display = "none";
-            email.classList.remove("error-input"); 
-        }, 10000)
+        showError(errEmail, "Email is required", email, error_4);
         isValid = false;
-    } 
-    else if (!(email.value.includes("@") && email.value.includes(".com"))) {
-        errEmail.textContent = "Invalid email";
-        email.classList.add("error-input");
-        error_4.style.display = "flex";
-        setTimeout(()=>{
-            errEmail.textContent = "";
-            error_4.style.display = "none"; 
-            email.classList.remove("error-input");
-        }, 10000)
+    } else if (!(email.value.includes("@") && email.value.includes(".com"))) {
+        showError(errEmail, "Invalid email format", email, error_4);
         isValid = false;
-    } 
-    else if(user_email === email.value.trim()){
-        errEmail.textContent = "Email is already registered";
-        email.classList.add("error-input");
-        error_4.style.display = "flex";
-        setTimeout(()=>{
-            errEmail.textContent = "";
-            error_4.style.display = "none"; 
-            email.classList.remove("error-input");
-        }, 10000)
-        isValid = false;
-    }
-    else {
-        errEmail.textContent = "";
-        email.classList.remove("error-input");
-        localStorage.setItem("Email", email.value.trim());
     }
 
     if (number.value.trim() === "") {
-        errNumber.textContent = "Number is required";
-        number.classList.add("error-input");
-        error_5.style.display = "flex";
-        setTimeout(()=>{
-            errNumber.textContent = "";
-            error_5.style.display = "none"; 
-            number.classList.remove("error-input");
-        }, 10000)
+        showError(errNumber, "Phone number is required", number, error_5);
         isValid = false;
-    } 
-    else if (isNaN(number.value)) {
-        errNumber.textContent = "Invalid number";
-        number.classList.add("error-input");
-        error_5.style.display = "flex";
-        setTimeout(()=>{
-            errNumber.textContent = "";
-            error_5.style.display = "none"; 
-            number.classList.remove("error-input");
-        }, 10000)
+    } else if (isNaN(number.value)) {
+        showError(errNumber, "Phone number must contain only digits", number, error_5);
         isValid = false;
-    } 
-    else if (number.value.length !== 10) {
-        errNumber.textContent = "Invalid length of number";
-        number.classList.add("error-input");
-        error_5.style.display = "flex";
-        setTimeout(()=>{
-            errNumber.textContent = "";
-            error_5.style.display = "none"; 
-            number.classList.remove("error-input");
-        }, 10000)
+    } else if (number.value.length !== 10) {
+        showError(errNumber, "Phone number must be 10 digits", number, error_5);
         isValid = false;
-    } 
-    else {
-        errNumber.textContent = "";
-        number.classList.remove("error-input");
-        localStorage.setItem("Phone_Number", number.value.trim());
     }
 
     if (pass.value.trim() === "") {
-        errPass.textContent = "Password is required";
-        pass.classList.add("error-input");
-        error_6.style.display = "flex";
-        setTimeout(()=>{
-            errPass.textContent = "";
-            error_6.style.display = "none"; 
-            pass.classList.remove("error-input");
-        }, 10000)
+        showError(errPass, "Password is required", pass, error_6);
         isValid = false;
-    } 
-    else if (pass.value.length < 6) {
-        errPass.textContent = "Password should be at least 6 characters long";
-        pass.classList.add("error-input");
-        error_6.style.display = "flex";
-        setTimeout(()=>{
-            errPass.textContent = "";
-            error_6.style.display = "none"; 
-            pass.classList.remove("error-input");
-        }, 10000)
+    } else if (pass.value.length < 6) {
+        showError(errPass, "Password should be at least 6 characters long", pass, error_6);
         isValid = false;
-    }
-    else {
+    } else {
         const hasDigit = /[0-9]/.test(pass.value);
         const hasSpecial = /[!@#$%^&*()_\-]/.test(pass.value);
         const hasUpperCase = /[A-Z]/.test(pass.value);
         const hasLowerCase = /[a-z]/.test(pass.value);
         
         if (!(hasDigit && hasSpecial && hasUpperCase && hasLowerCase)) {
-            errPass.textContent = "Password is too weak. Include uppercase, lowercase, number, and special character.";
-            pass.classList.add("error-input");
-            error_6.style.display = "flex";
-            setTimeout(()=>{
-                errPass.textContent = "";
-                error_6.style.display = "none"; 
-                pass.classList.remove("error-input");
-            }, 10000)
+            showError(errPass, "Password must include uppercase, lowercase, number, and special character", pass, error_6);
             isValid = false;
-        } else {
-            errPass.textContent = "";
-            pass.classList.remove("error-input");
         }
     }
 
     if (copass.value.trim() === "") {
-        errCopass.textContent = "Please confirm password";
-        copass.classList.add("error-input");
-        error_7.style.display = "flex";
-        setTimeout(()=>{
-            errCopass.textContent = "";
-            error_7.style.display = "none"; 
-            copass.classList.remove("error-input");
-        }, 10000)
+        showError(errCopass, "Please confirm your password", copass, error_7);
         isValid = false;
-    } 
-    else if (copass.value !== pass.value) {
-        errCopass.textContent = "Passwords do not match";
-        copass.classList.add("error-input");
-        error_7.style.display = "flex";
-        setTimeout(()=>{
-            errCopass.textContent = "";
-            error_7.style.display = "none"; 
-            copass.classList.remove("error-input");
-        }, 10000)
+    } else if (copass.value !== pass.value) {
+        showError(errCopass, "Passwords do not match", copass, error_7);
         copass.value = "";
-        copass.focus();
         isValid = false;
-    } 
-    else {
-        errCopass.textContent = "";
-        copass.classList.remove("error-input");
-        localStorage.setItem("Password", copass.value.trim());  
     }
 
-    if(isValid){
-        isRight = false;
-        Slider(isRight);
-        errCopass.textContent = "Sign in Successfully";
-        error_7.style.display = "flex";
-        setTimeout(()=>{
-            errCopass.textContent = "";
-            error_7.style.display = "none"; 
-        }, 10000)
-    }
-
-    return false; 
-}
-
-function validateLogin() {
-    let isValid = true;
-    let user_email = localStorage.getItem("Email");
-    let user_pass = localStorage.getItem("Password");
-
-    
-    if (login_email.value.trim() === "") {
-        errLoginEmail.textContent = "Email is required";
-        login_email.classList.add("error-input");
-        error_1.style.display = "flex";
-        setTimeout(()=>{
-        errLoginEmail.textContent = "";
-            error_1.style.display = "none"; 
-            login_email.classList.remove("error-input");
-        }, 10000)
-        isValid = false;
-    } 
-    else if (!(login_email.value.includes("@") && login_email.value.includes(".com"))) {
-        errLoginEmail.textContent = "Invalid email";
-        login_email.classList.add("error-input");
-        error_1.style.display = "flex";
-        setTimeout(()=>{
-        errLoginEmail.textContent = "";
-            error_1.style.display = "none";
-            login_email.classList.remove("error-input"); 
-        }, 10000)
-        isValid = false;
-    } 
-    else {
-        if(user_email === login_email.value.trim()){
-          errLoginEmail.textContent = "";
-          login_email.classList.remove("error-input");
+    // If all validations pass, proceed with signup
+    if (isValid) {
+        // Ensure database instance is available
+        if (!dbInstance) {
+            dbInstance = await getDB();
         }
-        else{
-          errLoginEmail.textContent = "Email not registered";
-          login_email.classList.add("error-input");
-          error_1.style.display = "flex";
-          setTimeout(()=>{
-          errLoginEmail.textContent = "";
-              error_1.style.display = "none"; 
-              login_email.classList.remove("error-input");
-          }, 10000)
-          isValid = false;
+        
+        // Check if email already exists
+        const existingUser = dbInstance.data.users.find(u => u.email === email.value.trim());
+        if (existingUser) {
+            showError(errEmail, "Email is already registered", email, error_4);
+            return false;
+        }
+        
+        // Create new user object
+        const newUser = {
+            name: signup_name.value.trim(),
+            email: email.value.trim(),
+            password: pass.value.trim(),
+            phone: number.value.trim(),
+            watchlist: [] // Initialize empty watchlist
+        };
+        
+        // Save user to database
+        const saved = dbInstance.saveUser(newUser);
+        if (saved) {
+            showSuccess(errCopass, "Registration successful! Please login.", error_7);
+            
+            // Apply success animation to form
+            document.getElementById("signupForm").classList.add("success-animation");
+            
+            // Reset form
+            setTimeout(() => {
+                document.getElementById("signupForm").reset();
+                document.getElementById("signupForm").classList.remove("success-animation");
+                
+                // Switch to login view
+                isRight = false;
+                Slider();
+            }, 2000);
+        } else {
+            showError(errCopass, "Error saving user. Please try again.", copass, error_7);
         }
     }
-    
-    if (login_pass.value.trim() === "") {
-        errLoginPass.textContent = "Password is required";
-        login_pass.classList.add("error-input");
-        error_2.style.display = "flex";
-        setTimeout(()=>{
-        errLoginPass.textContent = "";
-            error_2.style.display = "none"; 
-            login_pass.classList.remove("error-input");
-        }, 10000)
-        isValid = false;
-    } 
-    else {
-        if(user_pass === login_pass.value.trim()){
-          errLoginPass.textContent = "";
-          login_pass.classList.remove("error-input");
-          
-          errLoginPass.textContent = "Logged in Successfully";
-          error_2.style.display = "flex";
-          setTimeout(()=>{
-          errLoginPass.textContent = "";
-              error_2.style.display = "none"; 
-          }, 10000)
-        }
-        else{
-          errLoginPass.textContent = "Incorrect Password";
-          login_pass.classList.add("error-input");
-          error_2.style.display = "flex";
-          setTimeout(()=>{
-          errLoginPass.textContent = "";
-              error_2.style.display = "none"; 
-              login_pass.classList.remove("error-input");
-          }, 10000)
-          isValid = false;
-        }
-    }
-
     
     return false;
 }
 
-function Slider() {
-  if (isRight) {
-    slider.classList.remove("right_slider");
-    slider.classList.add("left_slider");
-    slider.innerHTML = `
-        <h1>Book Your First Appointment!</h1>
-        <span>Create an account to schedule and manage appointments.</span>
-        <div>
-            <span>Already booked before? Slide to Login!</span>
-            <button onclick="Slider()">Login</button>
-        </div>
-    `;
-    loginForm.style.boxShadow = "none";
-    signupForm.style.boxShadow = "0px 0px 20px #111827";
+// Validate login form
+async function validateLogin() {
+    let isValid = true;
     
-} 
-  else {
-    slider.classList.remove("left_slider");
-    slider.classList.add("right_slider");
-    slider.innerHTML = `
-        <h1>Welcome Back!</h1>
-        <span>Log in to manage your appointments easily.</span>
-        <div>
-            <span>New here? Sign up to book your first appointment!</span>
-            <button onclick="Slider()">Sign Up</button>
-        </div>
-    `;
-    loginForm.style.boxShadow = "0px 0px 20px #111827";
-    signupForm.style.boxShadow = "none";
+    // Basic form validation
+    if (login_email.value.trim() === "") {
+        showError(errLoginEmail, "Email is required", login_email, error_1);
+        isValid = false;
+    } else if (!(login_email.value.includes("@") && login_email.value.includes(".com"))) {
+        showError(errLoginEmail, "Invalid email format", login_email, error_1);
+        isValid = false;
+    }
+    
+    if (login_pass.value.trim() === "") {
+        showError(errLoginPass, "Password is required", login_pass, error_2);
+        isValid = false;
+    }
+    
+    // If basic validation passes, attempt login
+    if (isValid) {
+        // Ensure database instance is available
+        if (!dbInstance) {
+            dbInstance = await getDB();
+        }
         
-  }
-  isRight = !isRight;
+        const result = dbInstance.loginUser(login_email.value.trim(), login_pass.value.trim());
+        
+        if (result.success) {
+            // Apply success animation to login form
+            loginForm.classList.add("success-animation");
+            
+            showSuccess(errLoginPass, "Login successful! Redirecting...", error_2);
+            
+            // Short delay before redirect to show success message
+            setTimeout(() => {
+                redirectLoggedInUser(result.isAdmin);
+            }, 2000);
+        } else {
+            // Check if email exists to provide specific error
+            const userExists = dbInstance.data.users.some(u => u.email === login_email.value.trim());
+            if (userExists) {
+                showError(errLoginPass, "Incorrect password", login_pass, error_2);
+                // Apply error shake animation
+                login_pass.classList.add("shake-animation");
+                setTimeout(() => {
+                    login_pass.classList.remove("shake-animation");
+                }, 500);
+            } else {
+                showError(errLoginEmail, "Email not registered", login_email, error_1);
+                // Apply error shake animation
+                login_email.classList.add("shake-animation");
+                setTimeout(() => {
+                    login_email.classList.remove("shake-animation");
+                }, 500);
+            }
+        }
+    }
+    
+    return false;
+}
+
+// Handle slider animation for login/signup toggle
+function Slider() {
+    if (isRight) {
+        slider.classList.remove("right_slider");
+        slider.classList.add("left_slider");
+        slider.innerHTML = `
+            <h1>Join Our Anime World!</h1>
+            <span>Create an account to start your anime journey.</span>
+            <div>
+                <span>Already have an account? Slide to Login!</span>
+                <button onclick="Slider()">Login</button>
+            </div>
+        `;
+        loginForm.style.boxShadow = "none";
+        signupForm.style.boxShadow = "0px 0px 20px #111827";
+        
+        // Add fade animations
+        loginForm.classList.add("fade-out");
+        signupForm.classList.add("fade-in");
+        
+        setTimeout(() => {
+            loginForm.classList.remove("fade-out");
+            signupForm.classList.remove("fade-in");
+        }, 1000);
+    } else {
+        slider.classList.remove("left_slider");
+        slider.classList.add("right_slider");
+        slider.innerHTML = `
+            <h1>Welcome Back!</h1>
+            <span>Log in to continue your anime adventure.</span>
+            <div>
+                <span>New here? Sign up to discover amazing anime!</span>
+                <button onclick="Slider()">Sign Up</button>
+            </div>
+        `;
+        loginForm.style.boxShadow = "0px 0px 20px #111827";
+        signupForm.style.boxShadow = "none";
+        
+        // Add fade animations
+        loginForm.classList.add("fade-in");
+        signupForm.classList.add("fade-out");
+        
+        setTimeout(() => {
+            loginForm.classList.remove("fade-in");
+            signupForm.classList.remove("fade-out");
+        }, 1000);
+    }
+    isRight = !isRight;
 }
