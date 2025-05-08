@@ -1,11 +1,117 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sliding Banner</title>
+  <link rel="stylesheet" href="index.css" />
+  <style>
+    body {
+  margin: 0;
+  background-color: #2a2c3e;
+  font-family: sans-serif;
+  overflow-x: hidden;
+}
+
+.slider-container {
+  position: relative;
+  width: 100%;
+  max-width: 100vw;
+  height: 300px;
+  overflow: hidden;
+  margin: auto;
+}
+
+.slider {
+  display: flex;
+  width: 1000%;
+  transition: transform 0.5s ease-in-out;
+}
+
+.slide {
+  width: 100vw;
+  height: 300px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 80px;
+  color: white;
+  background: linear-gradient(to right, #bb86fc, #6a5acd);
+}
+
+.nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: rgba(0,0,0,0.5);
+  border: none;
+  color: white;
+  font-size: 30px;
+  padding: 10px;
+  cursor: pointer;
+  z-index: 1;
+}
+
+.left {
+  left: 10px;
+}
+.right {
+  right: 10px;
+}
+
+  </style>
 </head>
 <body>
-    
+  <div class="slider-container">
+    <div class="slider" id="slider">
+      <!-- 10 slides -->
+      <div class="slide">1</div>
+      <div class="slide">2</div>
+      <div class="slide">3</div>
+      <div class="slide">4</div>
+      <div class="slide">5</div>
+      <div class="slide">6</div>
+      <div class="slide">7</div>
+      <div class="slide">8</div>
+      <div class="slide">9</div>
+      <div class="slide">10</div>
+    </div>
+    <button class="nav left" onclick="prevSlide()">&#10094;</button>
+    <button class="nav right" onclick="nextSlide()">&#10095;</button>
+  </div>
+
+  <script>
+    let currentSlide = 0;
+const slider = document.getElementById('slider');
+const totalSlides = 10;
+let slideInterval = setInterval(nextSlide, 10000);
+
+function updateSlider() {
+  slider.style.transform = `translateX(-${currentSlide * 100}vw)`;
+}
+
+function nextSlide() {
+  currentSlide = (currentSlide + 1) % totalSlides;
+  updateSlider();
+}
+
+function prevSlide() {
+  currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+  updateSlider();
+}
+
+// Reset timer on manual navigation
+document.querySelector('.left').addEventListener('click', () => {
+  clearInterval(slideInterval);
+  slideInterval = setInterval(nextSlide, 10000);
+});
+
+document.querySelector('.right').addEventListener('click', () => {
+  clearInterval(slideInterval);
+  slideInterval = setInterval(nextSlide, 10000);
+});
+
+  </script>
 </body>
 </html>

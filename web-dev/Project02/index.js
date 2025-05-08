@@ -14,12 +14,15 @@ const notificationList = document.getElementById('notificationList');
 const notificationCount = document.querySelector('.notification-count');
 const userBtn = document.getElementById('userBtn');
 const loginBtn = document.getElementById('loginBtn');
-const heroSlider = document.getElementById('heroSlider');
 const trendingGrid = document.getElementById('trendingGrid');
 const actionGrid = document.getElementById('actionGrid');
 const adventureGrid = document.getElementById('adventureGrid');
 const comedyGrid = document.getElementById('comedyGrid');
 const loadMoreButtons = document.querySelectorAll('.load-more');
+
+// url
+let animeUrl = "http://localhost:3000/anime";
+let usersUrl = "http://localhost:3000/users";
 
 // Pagination settings for each section
 const paginationState = {
@@ -108,7 +111,7 @@ function loadSampleData() {
 
 // Check if user is logged in
 function checkUserAuthentication() {
-    const loggedInUser = localStorage.getItem('currentUser');
+    const loggedInUser = localStorage.getItem('User');
     if (loggedInUser) {
         userData = JSON.parse(loggedInUser);
         isLoggedIn = true;
@@ -806,4 +809,6 @@ if (!document.querySelector('#toastStyles')) {
     `;
     document.head.appendChild(toastStyles);
 }
+
+
 

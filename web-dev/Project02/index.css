@@ -433,6 +433,9 @@ nav {
     transition: all 0.3s ease;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
     position: relative;
+    display: flex;
+    flex-direction: column;
+    height: auto;
 }
 
 .anime-card:hover {
@@ -445,6 +448,7 @@ nav {
     height: 250px;
     object-fit: cover;
     transition: transform 0.5s ease;
+    display: block; /* This helps eliminate any extra space */
 }
 
 .anime-card:hover img {
@@ -459,6 +463,10 @@ nav {
     padding: 15px;
     background: linear-gradient(to top, rgba(0, 0, 0, 0.9), transparent);
     transition: all 0.3s ease;
+    height: 80px; 
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
 }
 
 .anime-card-overlay h3 {
@@ -653,6 +661,53 @@ footer {
   
   #prevBtn { left: 10px; }
   #nextBtn { right: 10px; }
+
+  .slider-container {
+    position: relative;
+    width: 100%;
+    max-width: 100vw;
+    height: 300px;
+    overflow: hidden;
+    margin: auto;
+  }
+  
+  .slider {
+    display: flex;
+    width: 1000%;
+    transition: transform 0.5s ease-in-out;
+  }
+  
+  .slide {
+    width: 100vw;
+    height: 300px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 80px;
+    color: white;
+    background: linear-gradient(to right, #bb86fc, #6a5acd);
+  }
+  
+  .nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(0,0,0,0.5);
+    border: none;
+    color: white;
+    font-size: 30px;
+    padding: 10px;
+    cursor: pointer;
+    z-index: 1;
+  }
+  
+  .left {
+    left: 10px;
+  }
+  .right {
+    right: 10px;
+  }
   
 
 /* Responsive Design */

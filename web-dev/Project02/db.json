@@ -6,7 +6,10 @@
       "email": "test@example.com",
       "password": "password123",
       "phone": "1234567890",
-      "watchlist": [1, 3]
+      "watchlist": [
+        1,
+        3
+      ]
     },
     {
       "id": 2,
@@ -23,7 +26,11 @@
       "id": 1,
       "name": "Demon Slayer",
       "description": "A boy who sells coal becomes a demon slayer after his family is slaughtered.",
-      "genera": ["action", "adventure", "fantasy"],
+      "genera": [
+        "action",
+        "adventure",
+        "fantasy"
+      ],
       "rating": 4.8,
       "image": "assets/images/demon_slayer.jpg",
       "episodes": [
@@ -51,7 +58,11 @@
       "id": 2,
       "name": "Attack on Titan",
       "description": "Humanity fights for survival against giant humanoid Titans.",
-      "genera": ["action", "drama", "horror"],
+      "genera": [
+        "action",
+        "drama",
+        "horror"
+      ],
       "rating": 4.9,
       "image": "assets/images/attack_on_titan.jpg",
       "episodes": [
@@ -73,7 +84,11 @@
       "id": 3,
       "name": "My Hero Academia",
       "description": "A boy born without powers in a world of superheroes aims to become the greatest hero.",
-      "genera": ["action", "comedy", "school"],
+      "genera": [
+        "action",
+        "comedy",
+        "school"
+      ],
       "rating": 4.7,
       "image": "assets/images/my_hero_academia.jpg",
       "episodes": [
@@ -95,7 +110,11 @@
       "id": 4,
       "name": "Naruto",
       "description": "Naruto Uzumaki, a young ninja with a sealed demon fox spirit, strives to become Hokage.",
-      "genera": ["action", "adventure", "fantasy"],
+      "genera": [
+        "action",
+        "adventure",
+        "fantasy"
+      ],
       "rating": 4.9,
       "image": "assets/images/naruto.jpg",
       "episodes": [
@@ -117,7 +136,11 @@
       "id": 5,
       "name": "Bleach",
       "description": "Ichigo Kurosaki becomes a Soul Reaper to protect humans from evil spirits.",
-      "genera": ["action", "supernatural", "drama"],
+      "genera": [
+        "action",
+        "supernatural",
+        "drama"
+      ],
       "rating": 4.6,
       "image": "assets/images/bleach.jpg",
       "episodes": [
@@ -131,7 +154,7 @@
           "number": 2,
           "title": "Episode 2",
           "videoSrc": "assets/videos/bleach_ep2.mp4",
-          "rating": 5.0
+          "rating": 5
         }
       ]
     },
@@ -139,7 +162,11 @@
       "id": 6,
       "name": "One Piece",
       "description": "Monkey D. Luffy sails to find the One Piece and become the Pirate King.",
-      "genera": ["action", "adventure", "comedy"],
+      "genera": [
+        "action",
+        "adventure",
+        "comedy"
+      ],
       "rating": 4.9,
       "image": "assets/images/one_piece.jpg",
       "episodes": [
@@ -161,7 +188,11 @@
       "id": 7,
       "name": "Death Note",
       "description": "Light Yagami discovers a notebook that allows him to kill anyone whose name he writes.",
-      "genera": ["thriller", "supernatural", "psychological"],
+      "genera": [
+        "thriller",
+        "supernatural",
+        "psychological"
+      ],
       "rating": 4.9,
       "image": "assets/images/death_note.jpg",
       "episodes": [
@@ -183,7 +214,11 @@
       "id": 8,
       "name": "Jujutsu Kaisen",
       "description": "Yuji Itadori joins a secret organization to battle curses.",
-      "genera": ["action", "dark fantasy", "supernatural"],
+      "genera": [
+        "action",
+        "dark fantasy",
+        "supernatural"
+      ],
       "rating": 4.9,
       "image": "assets/images/jujutsu_kaisen.jpg",
       "episodes": [
@@ -205,7 +240,11 @@
       "id": 9,
       "name": "Fullmetal Alchemist: Brotherhood",
       "description": "Two brothers search for the Philosopher’s Stone after a failed alchemy experiment.",
-      "genera": ["action", "adventure", "fantasy"],
+      "genera": [
+        "action",
+        "adventure",
+        "fantasy"
+      ],
       "rating": 4.8,
       "image": "assets/images/fullmetal_alchemist:_brotherhood.jpg",
       "episodes": [
@@ -227,7 +266,11 @@
       "id": 11,
       "name": "Fullmetal Alchemist: Brotherhood",
       "description": "Two brothers search for the Philosopher’s Stone after a failed alchemy experiment.",
-      "genera": ["action", "adventure", "fantasy"],
+      "genera": [
+        "action",
+        "adventure",
+        "fantasy"
+      ],
       "rating": 4.8,
       "image": "assets/images/fullmetal_alchemist:_brotherhood.jpg",
       "episodes": [
@@ -249,7 +292,11 @@
       "id": 12,
       "name": "Tokyo Ghoul",
       "description": "A college student becomes a half-ghoul after a near-fatal encounter with one of these dangerous beings.",
-      "genera": ["action", "horror", "supernatural"],
+      "genera": [
+        "action",
+        "horror",
+        "supernatural"
+      ],
       "rating": 4.6,
       "image": "assets/images/tokyo_ghoul.jpg",
       "episodes": [
@@ -271,7 +318,11 @@
       "id": 13,
       "name": "Dragon Ball Z",
       "description": "A powerful fighter trains to protect Earth from powerful forces of evil while facing new challenges.",
-      "genera": ["action", "adventure", "sci-fi"],
+      "genera": [
+        "action",
+        "adventure",
+        "sci-fi"
+      ],
       "rating": 4.9,
       "image": "assets/images/dragon_ball_z.jpg",
       "episodes": [
@@ -285,7 +336,7 @@
           "number": 2,
           "title": "The Androids Appear",
           "videoSrc": "assets/videos/dbz_ep2.mp4",
-          "rating": 5.0
+          "rating": 5
         }
       ]
     },
@@ -293,7 +344,11 @@
       "id": 14,
       "name": "One Punch Man",
       "description": "A superhero who can defeat any opponent with a single punch seeks a worthy challenge.",
-      "genera": ["action", "comedy", "superhero"],
+      "genera": [
+        "action",
+        "comedy",
+        "superhero"
+      ],
       "rating": 4.7,
       "image": "assets/images/one_punch_man.jpg",
       "episodes": [
@@ -310,6 +365,16 @@
           "rating": 4.6
         }
       ]
+    },
+    {
+      "id": "cef8",
+      "name": "Hunter x Hunter",
+      "description": "Gon a 10 year old boy becomes a hunter to find his dad and follow his hoot steps.",
+      "rating": 4.8,
+      "genres": "action,adventure",
+      "releaseYear": 2013,
+      "image": "images/hunterxhunter",
+      "episodes": []
     }
   ]
 }
