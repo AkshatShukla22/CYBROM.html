@@ -65,11 +65,19 @@ document.addEventListener('DOMContentLoaded', async function() {
     // Try to get the database instance
     dbInstance = await getDB();
     
-    // Check if user is already logged in
-    const currentUserEmail = localStorage.getItem('currentUserEmail');
-    if (currentUserEmail) {
-        const isAdmin = localStorage.getItem('isAdmin') === 'true';
-        redirectLoggedInUser(isAdmin);
+    // Check if we're on the auth page
+    if (window.location.pathname.includes('auth.html')) {
+        // Check if user is already logged in
+        const user = JSON.parse(localStorage.getItem('user'));
+        if (user && user.email) {
+            // If already logged in, redirect to appropriate page
+            if (user.email === 'admin@gmail.com') {
+                window.location.href = "admin.html";
+            } else {
+                window.location.href = "index.html";
+            }
+            return; // Stop execution to prevent the rest of the code from running
+        }
     }
 
     // Add animations to form elements
@@ -307,6 +315,13 @@ async function validateLogin() {
         const result = dbInstance.loginUser(login_email.value.trim(), login_pass.value.trim());
         
         if (result.success) {
+            // Store user info in localStorage (keep the format consistent with admin.js)
+            const userData = {
+                email: login_email.value.trim(),
+                isAdmin: result.isAdmin
+            };
+            localStorage.setItem('user', JSON.stringify(userData));
+            
             // Apply success animation to login form
             loginForm.classList.add("success-animation");
             
@@ -389,3 +404,30 @@ function Slider() {
     }
     isRight = !isRight;
 }
+
+// Clear logout function to avoid potential issues
+function logout() {
+    localStorage.removeItem('user');
+    window.location.href = 'auth.html';
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const loginForm = document.getElementById('loginForm');
+    const signupForm = document.getElementById('signupForm');
+
+    if (loginForm) {
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            // Add your login logic here
+            console.log("Login submitted");
+        });
+    }
+
+    if (signupForm) {
+        signupForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            // Add your signup logic here
+            console.log("Signup submitted");
+        });
+    }
+});
