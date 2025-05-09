@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Authentication check
 function checkAdminAuth() {
-    const loggedInUser = JSON.parse(localStorage.getItem('currentUser')) || {};
+    const loggedInUser = JSON.parse(localStorage.getItem('user')) || {};
     
     if (!loggedInUser.email || loggedInUser.email !== 'admin@gmail.com') {
         // Redirect to login if not admin
@@ -1237,3 +1237,5 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeExportData();
     initializeImportData();
 });
+
+console.log("done");
