@@ -1,7 +1,7 @@
 {
   "users": [
     {
-      "id": 1,
+      "id": "1",
       "name": "Test User",
       "email": "test@example.com",
       "password": "password123",
@@ -12,7 +12,7 @@
       ]
     },
     {
-      "id": 2,
+      "id": "2",
       "name": "Admin User",
       "email": "admin@gmail.com",
       "password": "admin",
@@ -23,7 +23,7 @@
   ],
   "anime": [
     {
-      "id": 1,
+      "id": "1",
       "name": "Demon Slayer",
       "description": "A boy who sells coal becomes a demon slayer after his family is slaughtered.",
       "genera": [
@@ -55,7 +55,7 @@
       ]
     },
     {
-      "id": 2,
+      "id": "2",
       "name": "Attack on Titan",
       "description": "Humanity fights for survival against giant humanoid Titans.",
       "genera": [
@@ -81,7 +81,7 @@
       ]
     },
     {
-      "id": 3,
+      "id": "3",
       "name": "My Hero Academia",
       "description": "A boy born without powers in a world of superheroes aims to become the greatest hero.",
       "genera": [
@@ -107,7 +107,7 @@
       ]
     },
     {
-      "id": 4,
+      "id": "4",
       "name": "Naruto",
       "description": "Naruto Uzumaki, a young ninja with a sealed demon fox spirit, strives to become Hokage.",
       "genera": [
@@ -133,7 +133,7 @@
       ]
     },
     {
-      "id": 5,
+      "id": "5",
       "name": "Bleach",
       "description": "Ichigo Kurosaki becomes a Soul Reaper to protect humans from evil spirits.",
       "genera": [
@@ -159,7 +159,7 @@
       ]
     },
     {
-      "id": 6,
+      "id": "6",
       "name": "One Piece",
       "description": "Monkey D. Luffy sails to find the One Piece and become the Pirate King.",
       "genera": [
@@ -185,7 +185,7 @@
       ]
     },
     {
-      "id": 7,
+      "id": "7",
       "name": "Death Note",
       "description": "Light Yagami discovers a notebook that allows him to kill anyone whose name he writes.",
       "genera": [
@@ -211,7 +211,7 @@
       ]
     },
     {
-      "id": 8,
+      "id": "8",
       "name": "Jujutsu Kaisen",
       "description": "Yuji Itadori joins a secret organization to battle curses.",
       "genera": [
@@ -237,7 +237,7 @@
       ]
     },
     {
-      "id": 9,
+      "id": "9",
       "name": "Fullmetal Alchemist: Brotherhood",
       "description": "Two brothers search for the Philosopher’s Stone after a failed alchemy experiment.",
       "genera": [
@@ -263,7 +263,7 @@
       ]
     },
     {
-      "id": 11,
+      "id": "11",
       "name": "Fullmetal Alchemist: Brotherhood",
       "description": "Two brothers search for the Philosopher’s Stone after a failed alchemy experiment.",
       "genera": [
@@ -289,7 +289,7 @@
       ]
     },
     {
-      "id": 12,
+      "id": "12",
       "name": "Tokyo Ghoul",
       "description": "A college student becomes a half-ghoul after a near-fatal encounter with one of these dangerous beings.",
       "genera": [
@@ -315,7 +315,7 @@
       ]
     },
     {
-      "id": 13,
+      "id": "13",
       "name": "Dragon Ball Z",
       "description": "A powerful fighter trains to protect Earth from powerful forces of evil while facing new challenges.",
       "genera": [
@@ -341,7 +341,7 @@
       ]
     },
     {
-      "id": 14,
+      "id": "14",
       "name": "One Punch Man",
       "description": "A superhero who can defeat any opponent with a single punch seeks a worthy challenge.",
       "genera": [
@@ -367,13 +367,30 @@
       ]
     },
     {
-      "id": "cef8",
+      "id": "d1e9",
       "name": "Hunter x Hunter",
-      "description": "Gon a 10 year old boy becomes a hunter to find his dad and follow his foot steps.",
-      "rating": 4.8,
-      "genres": "action",
+      "description": "Gon a 10 year boy wants to become a hunter to follow his father footsteps and find him.",
+      "rating": 4.7,
+      "genera": [
+        "action",
+        "adventure"
+      ],
       "releaseYear": 2013,
       "image": "images/hunterxhunter",
+      "episodes": []
+    },
+    {
+      "id": "b54d",
+      "name": "Code Geass",
+      "description": "The Holy Empire of Britannia subjugates Japan and annuls its citizens' rights. It uses Knightmares, destructive robotic weapons, to rule the Japanese. A Japanese insurrection is about to begin.",
+      "rating": 4.9,
+      "genera": [
+        "action",
+        "adventure",
+        "thriller"
+      ],
+      "releaseYear": 2010,
+      "image": "images/codeGeass",
       "episodes": []
     }
   ]

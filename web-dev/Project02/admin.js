@@ -115,9 +115,9 @@ async function loadDashboardData() {
             // Count episodes
             totalEpisodes += anime.episodes ? anime.episodes.length : 0;
             
-            // Count unique genres
-            if (anime.genres) {
-                anime.genres.split(',').forEach(genre => {
+            // Count unique genres (now handling as array)
+            if (anime.genera && Array.isArray(anime.genera)) {
+                anime.genera.forEach(genre => {
                     genres.add(genre.trim());
                 });
             }
@@ -134,7 +134,12 @@ async function loadDashboardData() {
         recentAnimeList.innerHTML = '';
         
         // Sort by most recent and get top 5
-        const recentAnime = [...animeData].sort((a, b) => b.id - a.id).slice(0, 5);
+        const recentAnime = [...animeData].sort((a, b) => {
+            // Convert IDs to numbers for proper comparison
+            const idA = parseInt(a.id);
+            const idB = parseInt(b.id);
+            return idB - idA;
+        }).slice(0, 5);
         
         recentAnime.forEach(anime => {
             const animeCard = document.createElement('div');
@@ -195,6 +200,7 @@ function initializeSearch() {
                         </div>
                     `;
                     resultItem.addEventListener('click', () => {
+                        // Ensure ID is passed consistently
                         window.location.href = `anime-info.html?id=${anime.id}`;
                     });
                     searchResults.appendChild(resultItem);
@@ -284,7 +290,12 @@ async function loadNotifications() {
         const animeData = await response.json();
         
         // Get the 5 most recent anime
-        const recentAnime = [...animeData].sort((a, b) => b.id - a.id).slice(0, 5);
+        const recentAnime = [...animeData].sort((a, b) => {
+            // Convert IDs to numbers for proper comparison
+            const idA = parseInt(a.id);
+            const idB = parseInt(b.id);
+            return idB - idA;
+        }).slice(0, 5);
         
         if (recentAnime.length > 0) {
             notificationList.innerHTML = '';
@@ -351,11 +362,15 @@ function initializeFormSubmissions() {
     addAnimeForm.addEventListener('submit', async function(e) {
         e.preventDefault();
         
+        // Parse input genres into an array
+        const genresInput = document.getElementById('anime-genres').value;
+        const genresArray = genresInput.split(',').map(genre => genre.trim()).filter(genre => genre !== '');
+        
         const animeData = {
             name: document.getElementById('anime-name').value,
             description: document.getElementById('anime-description').value,
             rating: parseFloat(document.getElementById('anime-rating').value),
-            genres: document.getElementById('anime-genres').value,
+            genera: genresArray, // Changed from genres string to genera array
             releaseYear: parseInt(document.getElementById('anime-release-year').value),
             image: document.getElementById('anime-image').value,
             episodes: []
@@ -391,11 +406,15 @@ function initializeFormSubmissions() {
         
         const animeId = document.getElementById('edit-anime-id').value;
         
+        // Parse input genres into an array
+        const genresInput = document.getElementById('edit-anime-genres').value;
+        const genresArray = genresInput.split(',').map(genre => genre.trim()).filter(genre => genre !== '');
+        
         const animeData = {
             name: document.getElementById('edit-anime-name').value,
             description: document.getElementById('edit-anime-description').value,
             rating: parseFloat(document.getElementById('edit-anime-rating').value),
-            genres: document.getElementById('edit-anime-genres').value,
+            genera: genresArray, // Changed from genres string to genera array
             releaseYear: parseInt(document.getElementById('edit-anime-release-year').value),
             image: document.getElementById('edit-anime-image').value
         };
@@ -410,6 +429,9 @@ function initializeFormSubmissions() {
                 ...existingAnime,
                 ...animeData
             };
+            
+            // Ensure id remains the same type as in the original data
+            updatedAnime.id = existingAnime.id;
             
             const response = await fetch(`${animeUrl}/${animeId}`, {
                 method: 'PUT',
@@ -498,6 +520,9 @@ function initializeFormSubmissions() {
             // Sort episodes by number
             anime.episodes.sort((a, b) => a.number - b.number);
             
+            // Ensure anime id remains the same type as in the original data
+            anime.id = animeId;
+            
             // Update anime with new episode
             const response = await fetch(`${animeUrl}/${animeId}`, {
                 method: 'PUT',
@@ -541,13 +566,19 @@ async function loadAnimeList() {
             animeData.forEach(anime => {
                 const animeCard = document.createElement('div');
                 animeCard.className = 'anime-management-card';
+                
+                // Format genera array to display
+                const generaDisplay = anime.genera && Array.isArray(anime.genera) 
+                    ? anime.genera.join(', ') 
+                    : 'N/A';
+                
                 animeCard.innerHTML = `
                     <img src="${anime.image || '/api/placeholder/100/150'}" alt="${anime.name}">
                     <div class="anime-management-info">
                         <h3>${anime.name}</h3>
                         <p><i class="fas fa-star"></i> ${anime.rating || 'N/A'}</p>
                         <p><i class="fas fa-video"></i> ${anime.episodes ? anime.episodes.length : 0} episodes</p>
-                        <p><i class="fas fa-tags"></i> ${anime.genres || 'N/A'}</p>
+                        <p><i class="fas fa-tags"></i> ${generaDisplay}</p>
                     </div>
                     <div class="anime-management-actions">
                         <button class="btn-edit" data-id="${anime.id}">Edit</button>
@@ -656,6 +687,7 @@ async function viewUserDetails(userId) {
             watchlistContainer.innerHTML = '<div class="loading">Loading watchlist...</div>';
             
             try {
+                // Ensure all IDs are treated as strings for consistent API requests
                 const animePromises = userData.watchlist.map(animeId => 
                     fetch(`${animeUrl}/${animeId}`).then(res => res.json())
                 );
@@ -753,7 +785,13 @@ async function openAnimeModal(animeId) {
         document.getElementById('edit-anime-name').value = anime.name;
         document.getElementById('edit-anime-description').value = anime.description || '';
         document.getElementById('edit-anime-rating').value = anime.rating || '';
-        document.getElementById('edit-anime-genres').value = anime.genres || '';
+        
+        // Convert genera array to string for form input
+        const generaString = anime.genera && Array.isArray(anime.genera) 
+            ? anime.genera.join(', ') 
+            : '';
+        document.getElementById('edit-anime-genres').value = generaString;
+        
         document.getElementById('edit-anime-release-year').value = anime.releaseYear || '';
         document.getElementById('edit-anime-image').value = anime.image || '';
         
@@ -811,7 +849,7 @@ async function loadEpisodesList(animeId) {
                 episodesTableBody.appendChild(tr);
                 
                 // Add event listeners
-                tr.querySelector('.btn-edit-episode').addEventListener('click', () => editEpisode(animeId, episode));
+                tr.querySelector('.btn-edit-episode').addEventListener('click', () => editEpisode(animeId, episode.number));
                 tr.querySelector('.btn-delete-episode').addEventListener('click', () => deleteEpisode(animeId, episode.number));
             });
         } else {
@@ -824,15 +862,33 @@ async function loadEpisodesList(animeId) {
 }
 
 // Edit episode
-function editEpisode(animeId, episode) {
-    // Fill add episode form with episode data
-    document.getElementById('episode-anime-id').value = animeId;
-    document.getElementById('episode-number').value = episode.number;
-    document.getElementById('episode-title').value = episode.title;
-    document.getElementById('episode-video').value = episode.video;
-    
-    // Switch to add episode tab
-    document.querySelector('[data-tab="add-episode"]').click();
+async function editEpisode(animeId, episodeNumber) {
+    try {
+        const response = await fetch(`${animeUrl}/${animeId}`);
+        const anime = await response.json();
+        
+        // Find episode
+        const episode = anime.episodes.find(ep => ep.number === episodeNumber);
+        
+        if (episode) {
+            // Fill form
+            document.getElementById('episode-anime-id').value = animeId;
+            document.getElementById('episode-number').value = episode.number;
+            document.getElementById('episode-title').value = episode.title;
+            document.getElementById('episode-video').value = episode.video;
+            
+            // Switch to add episode tab
+            document.querySelector('[data-tab="add-episode"]').click();
+            
+            // Focus on form
+            document.getElementById('episode-title').focus();
+        } else {
+            showNotification('Episode not found', 'error');
+        }
+    } catch (error) {
+        console.error('Error editing episode:', error);
+        showNotification('Failed to edit episode', 'error');
+    }
 }
 
 // Delete episode
@@ -842,15 +898,14 @@ async function deleteEpisode(animeId, episodeNumber) {
     }
     
     try {
-        // First get existing anime
-        const getResponse = await fetch(`${animeUrl}/${animeId}`);
-        const anime = await getResponse.json();
+        const response = await fetch(`${animeUrl}/${animeId}`);
+        const anime = await response.json();
         
-        // Remove episode from episodes array
+        // Remove episode
         anime.episodes = anime.episodes.filter(ep => ep.number !== episodeNumber);
         
-        // Update anime without the deleted episode
-        const response = await fetch(`${animeUrl}/${animeId}`, {
+        // Update anime
+        await fetch(`${animeUrl}/${animeId}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
@@ -858,13 +913,9 @@ async function deleteEpisode(animeId, episodeNumber) {
             body: JSON.stringify(anime)
         });
         
-        if (response.ok) {
-            showNotification('Episode deleted successfully!', 'success');
-            loadEpisodesList(animeId);
-            loadDashboardData();
-        } else {
-            throw new Error('Failed to delete episode');
-        }
+        showNotification('Episode deleted successfully!', 'success');
+        loadEpisodesList(animeId);
+        loadDashboardData();
     } catch (error) {
         console.error('Error deleting episode:', error);
         showNotification('Failed to delete episode', 'error');
@@ -873,369 +924,103 @@ async function deleteEpisode(animeId, episodeNumber) {
 
 // Show notification
 function showNotification(message, type = 'info') {
-    // Create notification element
     const notification = document.createElement('div');
-    notification.className = `notification-toast ${type}`;
-    notification.innerHTML = `
-        <div class="notification-content">
-            <p>${message}</p>
-        </div>
-        <button class="close-notification">&times;</button>
-    `;
+    notification.className = `notification ${type}`;
+    notification.innerHTML = message;
     
     document.body.appendChild(notification);
     
-    // Show notification
+    // Slide in
     setTimeout(() => {
-        notification.classList.add('active');
+        notification.classList.add('show');
     }, 10);
     
-    // Auto hide after 5 seconds
-    const hideTimeout = setTimeout(() => {
-        hideNotification(notification);
-    }, 5000);
-    
-    // Manual close button
-    const closeButton = notification.querySelector('.close-notification');
-    closeButton.addEventListener('click', () => {
-        clearTimeout(hideTimeout);
-        hideNotification(notification);
-    });
-}
-
-// Hide notification
-function hideNotification(notification) {
-    notification.classList.remove('active');
-    
-    // Remove from DOM after animation
+    // Remove after timeout
     setTimeout(() => {
-        document.body.removeChild(notification);
-    }, 300);
+        notification.classList.remove('show');
+        
+        // Remove from DOM after animation
+        setTimeout(() => {
+            document.body.removeChild(notification);
+        }, 300);
+    }, 3000);
 }
 
 // Logout function
 function logout() {
-    localStorage.removeItem('User');
+    localStorage.removeItem('user');
     window.location.href = 'auth.html';
-    localStorage.clear();
 }
 
-// Pagination functions for anime management
-function setupPagination(totalItems, itemsPerPage, currentPage, containerSelector, callback) {
-    const totalPages = Math.ceil(totalItems / itemsPerPage);
-    const paginationContainer = document.querySelector(containerSelector);
-    
-    if (!paginationContainer) return;
-    
-    paginationContainer.innerHTML = '';
+// Pagination
+function setupPagination(itemsCount, itemsPerPage, currentPage, containerElement, updateFunction) {
+    const totalPages = Math.ceil(itemsCount / itemsPerPage);
+    containerElement.innerHTML = '';
     
     // Previous button
     const prevButton = document.createElement('button');
-    prevButton.className = 'pagination-btn prev';
     prevButton.innerHTML = '&laquo;';
+    prevButton.classList.add('pagination-btn');
     prevButton.disabled = currentPage === 1;
     prevButton.addEventListener('click', () => {
         if (currentPage > 1) {
-            callback(currentPage - 1);
+            updateFunction(currentPage - 1);
         }
     });
-    paginationContainer.appendChild(prevButton);
+    containerElement.appendChild(prevButton);
     
     // Page buttons
-    const maxPageButtons = 5;
-    let startPage = Math.max(1, currentPage - Math.floor(maxPageButtons / 2));
-    let endPage = Math.min(totalPages, startPage + maxPageButtons - 1);
-    
-    if (endPage - startPage + 1 < maxPageButtons) {
-        startPage = Math.max(1, endPage - maxPageButtons + 1);
-    }
-    
-    for (let i = startPage; i <= endPage; i++) {
+    for (let i = 1; i <= totalPages; i++) {
         const pageButton = document.createElement('button');
-        pageButton.className = `pagination-btn ${i === currentPage ? 'active' : ''}`;
         pageButton.textContent = i;
+        pageButton.classList.add('pagination-btn');
+        
+        if (i === currentPage) {
+            pageButton.classList.add('active');
+        }
+        
         pageButton.addEventListener('click', () => {
-            if (i !== currentPage) {
-                callback(i);
-            }
+            updateFunction(i);
         });
-        paginationContainer.appendChild(pageButton);
+        
+        containerElement.appendChild(pageButton);
     }
     
     // Next button
     const nextButton = document.createElement('button');
-    nextButton.className = 'pagination-btn next';
     nextButton.innerHTML = '&raquo;';
+    nextButton.classList.add('pagination-btn');
     nextButton.disabled = currentPage === totalPages;
     nextButton.addEventListener('click', () => {
         if (currentPage < totalPages) {
-            callback(currentPage + 1);
+            updateFunction(currentPage + 1);
         }
     });
-    paginationContainer.appendChild(nextButton);
+    containerElement.appendChild(nextButton);
 }
 
-// Function to handle bulk operations
-function initializeBulkOperations() {
-    // Add bulk operation buttons if they exist
-    const bulkDeleteBtn = document.getElementById('bulk-delete-btn');
-    if (bulkDeleteBtn) {
-        bulkDeleteBtn.addEventListener('click', bulkDeleteAnime);
-    }
-    
-    const selectAllCheckbox = document.getElementById('select-all-anime');
-    if (selectAllCheckbox) {
-        selectAllCheckbox.addEventListener('change', function() {
-            const checkboxes = document.querySelectorAll('.anime-checkbox');
-            checkboxes.forEach(checkbox => {
-                checkbox.checked = this.checked;
-            });
-            
-            updateBulkActionButtons();
-        });
-    }
+// Format date helper
+function formatDate(dateString) {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+    });
 }
 
-// Update bulk action buttons state
-function updateBulkActionButtons() {
-    const anyChecked = document.querySelectorAll('.anime-checkbox:checked').length > 0;
-    const bulkDeleteBtn = document.getElementById('bulk-delete-btn');
-    
-    if (bulkDeleteBtn) {
-        bulkDeleteBtn.disabled = !anyChecked;
+// Truncate text helper
+function truncateText(text, maxLength) {
+    if (text.length > maxLength) {
+        return text.substring(0, maxLength) + '...';
     }
+    return text;
 }
 
-// Bulk delete anime
-async function bulkDeleteAnime() {
-    const selectedAnime = document.querySelectorAll('.anime-checkbox:checked');
-    
-    if (selectedAnime.length === 0) {
-        showNotification('No anime selected for deletion', 'warning');
-        return;
-    }
-    
-    if (!confirm(`Are you sure you want to delete ${selectedAnime.length} anime? This action cannot be undone.`)) {
-        return;
-    }
-    
-    const animeIds = Array.from(selectedAnime).map(checkbox => checkbox.dataset.id);
-    let successCount = 0;
-    let failCount = 0;
-    
-    // Show loading notification
-    showNotification(`Deleting ${animeIds.length} anime...`, 'info');
-    
-    // Delete each anime
-    for (const id of animeIds) {
-        try {
-            const response = await fetch(`${animeUrl}/${id}`, {
-                method: 'DELETE'
-            });
-            
-            if (response.ok) {
-                successCount++;
-            } else {
-                failCount++;
-            }
-        } catch (error) {
-            console.error(`Error deleting anime ID ${id}:`, error);
-            failCount++;
-        }
-    }
-    
-    // Show result notification
-    if (failCount === 0) {
-        showNotification(`Successfully deleted ${successCount} anime`, 'success');
-    } else {
-        showNotification(`Deleted ${successCount} anime, failed to delete ${failCount} anime`, 'warning');
-    }
-    
-    // Reload anime list
-    loadAnimeList();
-    loadDashboardData();
-}
-
-// Export data functionality
-function initializeExportData() {
-    const exportBtn = document.getElementById('export-data-btn');
-    if (exportBtn) {
-        exportBtn.addEventListener('click', exportData);
-    }
-}
-
-// Export database data
-async function exportData() {
-    try {
-        // Fetch all data
-        const animeResponse = await fetch(animeUrl);
-        const animeData = await animeResponse.json();
-        
-        const usersResponse = await fetch(usersUrl);
-        const usersData = await usersResponse.json();
-        
-        // Create export object
-        const exportData = {
-            anime: animeData,
-            users: usersData,
-            exportDate: new Date().toISOString()
-        };
-        
-        // Convert to JSON string
-        const jsonString = JSON.stringify(exportData, null, 2);
-        
-        // Create download link
-        const blob = new Blob([jsonString], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `animestream_backup_${new Date().toISOString().split('T')[0]}.json`;
-        a.click();
-        
-        // Clean up
-        URL.revokeObjectURL(url);
-        
-        showNotification('Data exported successfully!', 'success');
-    } catch (error) {
-        console.error('Error exporting data:', error);
-        showNotification('Failed to export data', 'error');
-    }
-}
-
-// Import data functionality
-function initializeImportData() {
-    const importBtn = document.getElementById('import-data-btn');
-    const importFileInput = document.getElementById('import-file');
-    
-    if (importBtn && importFileInput) {
-        importBtn.addEventListener('click', () => {
-            importFileInput.click();
-        });
-        
-        importFileInput.addEventListener('change', importData);
-    }
-}
-
-// Import database data
-async function importData(event) {
-    const file = event.target.files[0];
-    if (!file) return;
-    
-    // Reset file input
-    event.target.value = '';
-    
-    if (file.type !== 'application/json') {
-        showNotification('Please select a JSON file', 'error');
-        return;
-    }
-    
-    try {
-        // Read file
-        const reader = new FileReader();
-        
-        reader.onload = async function(e) {
-            try {
-                const importData = JSON.parse(e.target.result);
-                
-                if (!importData.anime || !importData.users) {
-                    showNotification('Invalid data format', 'error');
-                    return;
-                }
-                
-                if (!confirm('This will overwrite your current database. Continue?')) {
-                    return;
-                }
-                
-                // Show loading notification
-                showNotification('Importing data...', 'info');
-                
-                // Process anime data
-                for (const anime of importData.anime) {
-                    try {
-                        // Check if anime exists
-                        const checkResponse = await fetch(`${animeUrl}/${anime.id}`);
-                        
-                        if (checkResponse.ok) {
-                            // Update existing anime
-                            await fetch(`${animeUrl}/${anime.id}`, {
-                                method: 'PUT',
-                                headers: {
-                                    'Content-Type': 'application/json'
-                                },
-                                body: JSON.stringify(anime)
-                            });
-                        } else {
-                            // Add new anime
-                            await fetch(animeUrl, {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json'
-                                },
-                                body: JSON.stringify(anime)
-                            });
-                        }
-                    } catch (error) {
-                        console.error(`Error importing anime ID ${anime.id}:`, error);
-                    }
-                }
-                
-                // Process users data
-                for (const user of importData.users) {
-                    try {
-                        // Check if user exists
-                        const checkResponse = await fetch(`${usersUrl}/${user.id}`);
-                        
-                        if (checkResponse.ok) {
-                            // Update existing user
-                            await fetch(`${usersUrl}/${user.id}`, {
-                                method: 'PUT',
-                                headers: {
-                                    'Content-Type': 'application/json'
-                                },
-                                body: JSON.stringify(user)
-                            });
-                        } else {
-                            // Add new user
-                            await fetch(usersUrl, {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json'
-                                },
-                                body: JSON.stringify(user)
-                            });
-                        }
-                    } catch (error) {
-                        console.error(`Error importing user ID ${user.id}:`, error);
-                    }
-                }
-                
-                showNotification('Data imported successfully!', 'success');
-                
-                // Reload data
-                loadDashboardData();
-                loadAnimeList();
-                loadUsersList();
-                
-            } catch (parseError) {
-                console.error('Error parsing JSON:', parseError);
-                showNotification('Failed to parse import file', 'error');
-            }
-        };
-        
-        reader.readAsText(file);
-        
-    } catch (error) {
-        console.error('Error importing data:', error);
-        showNotification('Failed to import data', 'error');
-    }
-}
-
-// Initialize additional functionalities when DOM is ready
-document.addEventListener('DOMContentLoaded', function() {
-    // Call additional init functions
-    initializeBulkOperations();
-    initializeExportData();
-    initializeImportData();
-});
-
-console.log("done");
+// Export functions - useful if needed for other scripts
+window.adminFunctions = {
+    loadAnimeList,
+    loadUsersList,
+    openAnimeModal,
+    loadDashboardData
+};

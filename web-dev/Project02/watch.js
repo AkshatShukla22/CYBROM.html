@@ -38,12 +38,19 @@ function checkUserLogin() {
     const loggedInUser = localStorage.getItem('currentUser');
     if (loggedInUser) {
         userData = JSON.parse(loggedInUser);
-        userBtn.classList.remove('hidden');
-        loginBtn.classList.add('hidden');
+        console.log('User is logged in:', userData);
+        
+        // Show user button, hide login button
+        if(userBtn) userBtn.classList.remove('hidden');
+        if(loginBtn) loginBtn.classList.add('hidden');
+        
         loadUserNotifications();
     } else {
-        userBtn.classList.add('hidden');
-        loginBtn.classList.remove('hidden');
+        console.log('No user logged in');
+        
+        // Hide user button, show login button
+        if(userBtn) userBtn.classList.add('hidden');
+        if(loginBtn) loginBtn.classList.remove('hidden');
     }
 }
 
@@ -77,7 +84,7 @@ function loadSampleData() {
     console.log('Loading sample data as fallback');
     animeData = [
         {
-            id: 1,
+            id: "1",
             name: "Demon Slayer",
             description: "A boy who sells coal becomes a demon slayer after his family is slaughtered.",
             genera: ["action", "adventure", "fantasy"],
@@ -105,7 +112,7 @@ function loadSampleData() {
             ]
         },
         {
-            id: 2,
+            id: "2",
             name: "Attack on Titan",
             description: "Humanity fights for survival against giant humanoid Titans.",
             genera: ["action", "drama", "horror"],
@@ -134,35 +141,52 @@ function loadSampleData() {
 // Set up event listeners
 function setupEventListeners() {
     // Search functionality
-    searchInput.addEventListener('input', handleSearch);
-    searchBtn.addEventListener('click', () => {
-        if (searchInput.value.trim() !== '') {
-            handleSearch();
-        }
-    });
+    if(searchInput) {
+        searchInput.addEventListener('input', handleSearch);
+    }
+    
+    if(searchBtn) {
+        searchBtn.addEventListener('click', () => {
+            if (searchInput && searchInput.value.trim() !== '') {
+                handleSearch();
+            }
+        });
+    }
     
     // Notification button
-    notificationBtn.addEventListener('click', toggleNotificationPanel);
+    if(notificationBtn) {
+        notificationBtn.addEventListener('click', toggleNotificationPanel);
+    }
     
     // Login button
-    loginBtn.addEventListener('click', () => {
-        window.location.href = 'auth.html';
-    });
+    if(loginBtn) {
+        loginBtn.addEventListener('click', () => {
+            window.location.href = 'auth.html';
+        });
+    }
     
     // User button
-    userBtn.addEventListener('click', () => {
-        window.location.href = 'user.html';
-    });
+    if(userBtn) {
+        userBtn.addEventListener('click', () => {
+            window.location.href = 'user.html';
+        });
+    }
     
     // Add to watchlist button
-    addToWatchlistBtn.addEventListener('click', addToWatchlist);
+    if(addToWatchlistBtn) {
+        addToWatchlistBtn.addEventListener('click', addToWatchlist);
+    }
     
     // Share button
-    shareButton.addEventListener('click', shareAnime);
+    if(shareButton) {
+        shareButton.addEventListener('click', shareAnime);
+    }
     
     // Close notification panel when clicking outside
     document.addEventListener('click', (e) => {
-        if (!notificationBtn.contains(e.target) && !notificationPanel.contains(e.target)) {
+        if (notificationBtn && notificationPanel && 
+            !notificationBtn.contains(e.target) && 
+            !notificationPanel.contains(e.target)) {
             notificationPanel.classList.remove('active');
         }
     });
@@ -170,12 +194,14 @@ function setupEventListeners() {
 
 // Toggle notification panel
 function toggleNotificationPanel() {
-    notificationPanel.classList.toggle('active');
+    if(notificationPanel) {
+        notificationPanel.classList.toggle('active');
+    }
 }
 
 // Load user notifications
 function loadUserNotifications() {
-    if (!userData) return;
+    if (!userData || !notificationList) return;
     
     notificationList.innerHTML = '';
     
@@ -210,6 +236,8 @@ function loadUserNotifications() {
 
 // Handle search functionality
 function handleSearch() {
+    if(!searchInput || !searchResults) return;
+    
     const searchTerm = searchInput.value.trim().toLowerCase();
     
     if (searchTerm === '') {
@@ -253,10 +281,10 @@ function handleSearch() {
 function loadCurrentAnimeFromURL() {
     const urlParams = new URLSearchParams(window.location.search);
     
-    // Parse animeId from URL parameters
+    // Parse animeId from URL parameters as string
     let animeId = urlParams.get('id');
-    // If animeId exists, convert to integer
-    animeId = animeId ? parseInt(animeId) : 1;
+    // Set default if not provided
+    if (!animeId) animeId = "1";
     
     // Parse episodeNumber from URL parameters
     let episodeNumber = urlParams.get('ep');
@@ -265,7 +293,7 @@ function loadCurrentAnimeFromURL() {
     
     console.log(`Loading anime ID: ${animeId}, episode: ${episodeNumber}`);
     
-    // Find anime by ID
+    // Find anime by ID (now comparing strings)
     currentAnime = animeData.find(anime => anime.id === animeId);
     
     if (currentAnime) {
@@ -310,37 +338,40 @@ function checkWatchProgress() {
     if (savedProgress) {
         const progress = parseFloat(savedProgress);
         
-        // Only resume if progress is greater than 10 seconds and less than 95% of the video
-        if (progress > 10 && progress < (videoPlayer.duration * 0.95)) {
-            // Show resume watching overlay
-            const resumeOverlay = document.createElement('div');
-            resumeOverlay.classList.add('resume-overlay');
-            resumeOverlay.innerHTML = `
-                <div class="resume-content">
-                    <h3>Resume Watching</h3>
-                    <p>Would you like to continue from where you left off?</p>
-                    <div class="resume-buttons">
-                        <button id="resume-yes">Yes</button>
-                        <button id="resume-no">No, Start from Beginning</button>
+        // Wait for video metadata to be loaded
+        videoPlayer.addEventListener('loadedmetadata', () => {
+            // Only resume if progress is greater than 10 seconds and less than 95% of the video
+            if (progress > 10 && progress < (videoPlayer.duration * 0.95)) {
+                // Show resume watching overlay
+                const resumeOverlay = document.createElement('div');
+                resumeOverlay.classList.add('resume-overlay');
+                resumeOverlay.innerHTML = `
+                    <div class="resume-content">
+                        <h3>Resume Watching</h3>
+                        <p>Would you like to continue from where you left off?</p>
+                        <div class="resume-buttons">
+                            <button id="resume-yes">Yes</button>
+                            <button id="resume-no">No, Start from Beginning</button>
+                        </div>
                     </div>
-                </div>
-            `;
-            
-            videoPlayer.parentNode.appendChild(resumeOverlay);
-            
-            // Resume button
-            document.getElementById('resume-yes')?.addEventListener('click', () => {
-                videoPlayer.currentTime = progress;
-                resumeOverlay.remove();
-                videoPlayer.play();
-            });
-            
-            // Start from beginning button
-            document.getElementById('resume-no')?.addEventListener('click', () => {
-                resumeOverlay.remove();
-                videoPlayer.play();
-            });
-        }
+                `;
+                
+                videoPlayer.parentNode.appendChild(resumeOverlay);
+                
+                // Resume button
+                document.getElementById('resume-yes')?.addEventListener('click', () => {
+                    videoPlayer.currentTime = progress;
+                    resumeOverlay.remove();
+                    videoPlayer.play();
+                });
+                
+                // Start from beginning button
+                document.getElementById('resume-no')?.addEventListener('click', () => {
+                    resumeOverlay.remove();
+                    videoPlayer.play();
+                });
+            }
+        });
     }
 }
 
@@ -427,8 +458,17 @@ function loadEpisodesList() {
 
 // Load recommendations
 function loadRecommendations() {
-    if (!animeData || animeData.length === 0 || !recommendationsList || !currentAnime) return;
+    if (!animeData || animeData.length === 0 || !recommendationsList || !currentAnime) {
+        console.log("Cannot load recommendations - missing data:", {
+            animeDataExists: !!animeData,
+            animeDataLength: animeData?.length,
+            recommendationsListExists: !!recommendationsList,
+            currentAnimeExists: !!currentAnime
+        });
+        return;
+    }
     
+    console.log("Loading recommendations...");
     recommendationsList.innerHTML = '';
     
     // Filter out current anime and get random 6 anime
@@ -436,10 +476,16 @@ function loadRecommendations() {
         .filter(anime => anime.id !== currentAnime.id)
         .sort(() => 0.5 - Math.random())
         .slice(0, 6);
+        
+    console.log(`Found ${recommendations.length} recommendations`);
     
-    recommendations.forEach(anime => {
-        createAnimeCard(anime, recommendationsList);
-    });
+    if (recommendations.length > 0) {
+        recommendations.forEach(anime => {
+            createAnimeCard(anime, recommendationsList);
+        });
+    } else {
+        recommendationsList.innerHTML = '<p>No recommendations available</p>';
+    }
 }
 
 // Load similar genre anime
@@ -458,18 +504,28 @@ function loadSimilarGenreAnime() {
             .filter(anime => anime.id !== currentAnime.id && anime.genera && anime.genera.includes(primaryGenre))
             .slice(0, 6);
         
-        similarAnime.forEach(anime => {
-            createAnimeCard(anime, similarGenreList);
-        });
+        if (similarAnime.length > 0) {
+            similarAnime.forEach(anime => {
+                createAnimeCard(anime, similarGenreList);
+            });
+        } else {
+            similarGenreList.innerHTML = '<p>No similar anime found</p>';
+        }
     }
 }
 
 // Create anime card
 function createAnimeCard(anime, container) {
+    if (!anime || !container) return;
+    
     const animeCard = document.createElement('div');
     animeCard.classList.add('anime-card');
+    
+    // Default image if none is provided
+    const imageSrc = anime.image || 'assets/images/placeholder.jpg';
+    
     animeCard.innerHTML = `
-        <img src="${anime.image}" alt="${anime.name}">
+        <img src="${imageSrc}" alt="${anime.name}" onerror="this.src='assets/images/placeholder.jpg'">
         <div class="anime-card-info">
             <h3>${anime.name}</h3>
             <div class="rating">
@@ -494,6 +550,11 @@ function addToWatchlist() {
         return;
     }
     
+    if (!currentAnime) {
+        showToast('Error: No anime selected');
+        return;
+    }
+    
     // Initialize watchlist if it doesn't exist
     if (!userData.watchlist) {
         userData.watchlist = [];
@@ -505,12 +566,16 @@ function addToWatchlist() {
     if (animeIndex === -1) {
         // Add anime to watchlist
         userData.watchlist.push(currentAnime.id);
-        addToWatchlistBtn.innerHTML = '<i class="fas fa-check"></i> In Watchlist';
+        if (addToWatchlistBtn) {
+            addToWatchlistBtn.innerHTML = '<i class="fas fa-check"></i> In Watchlist';
+        }
         showToast('Added to watchlist');
     } else {
         // Remove anime from watchlist
         userData.watchlist.splice(animeIndex, 1);
-        addToWatchlistBtn.innerHTML = '<i class="fas fa-plus"></i> Add to Watchlist';
+        if (addToWatchlistBtn) {
+            addToWatchlistBtn.innerHTML = '<i class="fas fa-plus"></i> Add to Watchlist';
+        }
         showToast('Removed from watchlist');
     }
     
@@ -802,32 +867,7 @@ function handleKeyboardShortcuts(e) {
             break;
         case 'ArrowRight':
             // Right arrow: forward 10 seconds
-            videoPlayer.currentTime += 10;
-            e.preventDefault();
-            break;
-        case 'ArrowUp':
-            // Up arrow: increase volume
-            videoPlayer.volume = Math.min(1, videoPlayer.volume + 0.1);
-            const volumeSlider = document.getElementById('volume-slider');
-            if (volumeSlider) {
-                volumeSlider.value = videoPlayer.volume;
-                updateVolume();
-            }
-            e.preventDefault();
-            break;
-        case 'ArrowDown':
-            // Down arrow: decrease volume
-            videoPlayer.volume = Math.max(0, videoPlayer.volume - 0.1);
-            const volSlider = document.getElementById('volume-slider');
-            if (volSlider) {
-                volSlider.value = videoPlayer.volume;
-                updateVolume();
-            }
-            e.preventDefault();
-            break;
-        case 'm':
-            // M key: toggle mute
-            toggleMute();
+           videoPlayer.currentTime += 10;
             e.preventDefault();
             break;
         case 'f':
@@ -835,516 +875,546 @@ function handleKeyboardShortcuts(e) {
             toggleFullscreen();
             e.preventDefault();
             break;
+        case 'm':
+            // M key: toggle mute
+            toggleMute();
+            e.preventDefault();
+            break;
+        case 'ArrowUp':
+            // Up arrow: increase volume
+            if (videoPlayer.volume < 1) {
+                videoPlayer.volume = Math.min(1, videoPlayer.volume + 0.1);
+                const volumeSlider = document.getElementById('volume-slider');
+                if (volumeSlider) volumeSlider.value = videoPlayer.volume;
+                videoPlayer.muted = false;
+                const muteBtn = document.getElementById('mute');
+                if (muteBtn) muteBtn.innerHTML = '<i class="fas fa-volume-up"></i>';
+            }
+            e.preventDefault();
+            break;
+        case 'ArrowDown':
+            // Down arrow: decrease volume
+            if (videoPlayer.volume > 0) {
+                videoPlayer.volume = Math.max(0, videoPlayer.volume - 0.1);
+                const volumeSlider = document.getElementById('volume-slider');
+                if (volumeSlider) volumeSlider.value = videoPlayer.volume;
+                const muteBtn = document.getElementById('mute');
+                if (muteBtn && videoPlayer.volume === 0) {
+                    muteBtn.innerHTML = '<i class="fas fa-volume-mute"></i>';
+                }
+            }
+            e.preventDefault();
+            break;
     }
 }
 
-// Video ended event
+// Save watch progress periodically
 if (videoPlayer) {
-    videoPlayer.addEventListener('ended', () => {
-        const playPauseBtn = document.getElementById('play-pause');
-        if (playPauseBtn) {
-            playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
-        }
-        
-        // Auto-play next episode if available
-        if (currentAnime && currentEpisode) {
-            const nextEpisodeNumber = currentEpisode.number + 1;
-            const nextEpisode = currentAnime.episodes.find(ep => ep.number === nextEpisodeNumber);
-            
-            if (nextEpisode) {
-                // Show next episode overlay
-                const nextEpisodeOverlay = document.createElement('div');
-                nextEpisodeOverlay.classList.add('next-episode-overlay');
-                nextEpisodeOverlay.innerHTML = `
-                    <div class="next-episode-content">
-                        <h3>Next Episode</h3>
-                        <p>Episode ${nextEpisode.number}: ${nextEpisode.title}</p>
-                        <div class="next-episode-buttons">
-                            <button id="play-next">Play Next</button>
-                            <button id="cancel-next">Cancel</button>
-                        </div>
-                        <div class="autoplay-countdown">
-                            <p>Playing next in <span id="countdown-timer">10</span> seconds</p>
-                        </div>
-                    </div>
-                `;
-                
-                videoPlayer.parentNode.appendChild(nextEpisodeOverlay);
-                
-                // Play next button
-                document.getElementById('play-next')?.addEventListener('click', () => {
-                    window.location.href = `watch.html?id=${currentAnime.id}&ep=${nextEpisodeNumber}`;
-                });
-                
-                // Cancel button
-                document.getElementById('cancel-next')?.addEventListener('click', () => {
-                    nextEpisodeOverlay.remove();
-                });
-                
-                // Autoplay countdown
-                let countdownTime = 10;
-                const countdownTimer = document.getElementById('countdown-timer');
-                
-                const countdown = setInterval(() => {
-                    countdownTime--;
-                    
-                    if (countdownTimer) {
-                        countdownTimer.textContent = countdownTime;
-                    }
-                    
-                    if (countdownTime <= 0) {
-                        clearInterval(countdown);
-                        window.location.href = `watch.html?id=${currentAnime.id}&ep=${nextEpisodeNumber}`;
-                    }
-                }, 1000);
-            }
-        }
-    });
-    
-    // Save watch progress periodically
-    videoPlayer.addEventListener('timeupdate', () => {
-        if (currentAnime && currentEpisode && userData) {
-            // Save progress every 5 seconds
-            if (Math.floor(videoPlayer.currentTime) % 5 === 0) {
-                const watchProgressKey = `watchProgress_${currentAnime.id}_${currentEpisode.number}`;
-                localStorage.setItem(watchProgressKey, videoPlayer.currentTime.toString());
-            }
-        }
-    });
+    videoPlayer.addEventListener('timeupdate', saveWatchProgress);
 }
 
-// Video quality selector
+function saveWatchProgress() {
+    if (!userData || !currentAnime || !currentEpisode || !videoPlayer) return;
+    
+    // Only save if more than 10 seconds have been watched and video is not at the end
+    if (videoPlayer.currentTime > 10 && videoPlayer.currentTime < (videoPlayer.duration * 0.95)) {
+        const watchProgressKey = `watchProgress_${currentAnime.id}_${currentEpisode.number}`;
+        localStorage.setItem(watchProgressKey, videoPlayer.currentTime.toString());
+    }
+    
+    // If near the end, mark as completed
+    if (videoPlayer.currentTime > (videoPlayer.duration * 0.95)) {
+        const watchProgressKey = `watchProgress_${currentAnime.id}_${currentEpisode.number}`;
+        localStorage.removeItem(watchProgressKey);
+        
+        // Mark episode as watched in user data
+        if (!userData.watchedEpisodes) {
+            userData.watchedEpisodes = [];
+        }
+        
+        const episodeKey = `${currentAnime.id}_${currentEpisode.number}`;
+        if (!userData.watchedEpisodes.includes(episodeKey)) {
+            userData.watchedEpisodes.push(episodeKey);
+            localStorage.setItem('currentUser', JSON.stringify(userData));
+            
+            // Show "Next Episode" button if available
+            showNextEpisodeButton();
+        }
+    }
+}
+
+// Show next episode button when near the end of video
+function showNextEpisodeButton() {
+    if (!currentAnime || !currentEpisode || !videoPlayer) return;
+    
+    // Check if there's a next episode
+    const nextEpisodeNumber = currentEpisode.number + 1;
+    const nextEpisode = currentAnime.episodes.find(ep => ep.number === nextEpisodeNumber);
+    
+    if (nextEpisode) {
+        // Create or show next episode button if not already created
+        let nextEpisodeBtn = document.getElementById('next-episode-btn');
+        
+        if (!nextEpisodeBtn) {
+            nextEpisodeBtn = document.createElement('button');
+            nextEpisodeBtn.id = 'next-episode-btn';
+            nextEpisodeBtn.classList.add('next-episode-btn');
+            nextEpisodeBtn.innerHTML = `
+                <i class="fas fa-forward"></i>
+                <span>Next Episode</span>
+            `;
+            
+            nextEpisodeBtn.addEventListener('click', () => {
+                window.location.href = `watch.html?id=${currentAnime.id}&ep=${nextEpisodeNumber}`;
+            });
+            
+            const videoContainer = document.querySelector('.video-container');
+            if (videoContainer) {
+                videoContainer.appendChild(nextEpisodeBtn);
+            }
+        } else {
+            nextEpisodeBtn.classList.add('show');
+        }
+    }
+}
+
+// Handle video quality selection
 const qualitySelector = document.getElementById('quality-selector');
 if (qualitySelector) {
     qualitySelector.addEventListener('change', () => {
         const currentTime = videoPlayer.currentTime;
         const isPaused = videoPlayer.paused;
         
-        // In a real implementation, we would set the video source to a different quality version
-        // But for this demo, we'll just log the change
-        console.log(`Quality changed to ${qualitySelector.value}`);
+        // In a real implementation, this would switch to different quality video sources
+        // For this demo, we'll just log the change
+        console.log(`Changed quality to: ${qualitySelector.value}`);
         
-        // Resume playback from the same position
+        // Restore playback state
         videoPlayer.currentTime = currentTime;
-        
         if (!isPaused) {
             videoPlayer.play();
         }
     });
 }
 
-// Show video controls when mouse moves
-const videoControls = document.getElementById('video-controls');
+// Handle playback speed selection
+const speedSelector = document.getElementById('speed-selector');
+if (speedSelector) {
+    speedSelector.addEventListener('change', () => {
+        if (videoPlayer) {
+            videoPlayer.playbackRate = parseFloat(speedSelector.value);
+        }
+    });
+}
+
+// Add double click to fullscreen
+if (videoPlayer) {
+    videoPlayer.addEventListener('dblclick', toggleFullscreen);
+}
+
+// Show/hide controls on mouse movement
+const videoControls = document.querySelector('.video-controls');
 if (videoPlayer && videoControls) {
-    let hideControlsTimeout;
+    let controlsTimeout;
     
-    // Show controls on mouse move
-    videoPlayer.parentNode.addEventListener('mousemove', () => {
-        videoControls.classList.add('active');
+    function showControls() {
+        videoControls.classList.add('visible');
+        clearTimeout(controlsTimeout);
         
-        // Clear previous timeout
-        clearTimeout(hideControlsTimeout);
-        
-        // Set new timeout to hide controls after 3 seconds of inactivity
-        hideControlsTimeout = setTimeout(() => {
+        controlsTimeout = setTimeout(() => {
             if (!videoPlayer.paused) {
-                videoControls.classList.remove('active');
+                videoControls.classList.remove('visible');
             }
+        }, 3000);
+    }
+    
+    videoPlayer.addEventListener('mousemove', showControls);
+    videoControls.addEventListener('mousemove', showControls);
+    
+    videoPlayer.addEventListener('mouseout', () => {
+        if (!videoPlayer.paused) {
+            setTimeout(() => {
+                videoControls.classList.remove('visible');
+            }, 1000);
+        }
+    });
+    
+    videoPlayer.addEventListener('play', () => {
+        controlsTimeout = setTimeout(() => {
+            videoControls.classList.remove('visible');
         }, 3000);
     });
     
-    // Keep controls visible when hovering over them
-    videoControls.addEventListener('mouseover', () => {
-        clearTimeout(hideControlsTimeout);
-        videoControls.classList.add('active');
-    });
-    
-    // Hide controls when mouse leaves the video container
-    videoPlayer.parentNode.addEventListener('mouseleave', () => {
-        if (!videoPlayer.paused) {
-            videoControls.classList.remove('active');
-        }
+    videoPlayer.addEventListener('pause', () => {
+        videoControls.classList.add('visible');
+        clearTimeout(controlsTimeout);
     });
 }
 
-// Add double-click to toggle fullscreen
-if (videoPlayer) {
-    let clickCount = 0;
-    
-    videoPlayer.addEventListener('click', (e) => {
-        clickCount++;
-        
-        if (clickCount === 1) {
-            setTimeout(() => {
-                if (clickCount === 1) {
-                    // Single click - toggle play/pause
-                    togglePlayPause();
-                } else {
-                    // Double click - toggle fullscreen
-                    toggleFullscreen();
-                }
-                
-                clickCount = 0;
-            }, 300);
-        }
-        
-        e.stopPropagation();
-    });
-}
+// Handle comments section
+const commentForm = document.getElementById('comment-form');
+const commentsList = document.getElementById('comments-list');
+const commentInput = document.getElementById('comment-input');
 
-// Add episode rating functionality
-const rateEpisodeBtn = document.getElementById('rate-episode');
-if (rateEpisodeBtn) {
-    rateEpisodeBtn.addEventListener('click', () => {
+if (commentForm && commentInput && commentsList) {
+    // Load existing comments
+    loadComments();
+    
+    // Handle new comment submission
+    commentForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        
         if (!userData) {
-            // Redirect to login if user is not logged in
+            // Redirect to login if not logged in
             window.location.href = 'auth.html';
             return;
         }
         
-        // Show rating overlay
-        const ratingOverlay = document.createElement('div');
-        ratingOverlay.classList.add('rating-overlay');
-        ratingOverlay.innerHTML = `
-            <div class="rating-content">
-                <h3>Rate This Episode</h3>
-                <div class="star-rating">
-                    <i class="far fa-star" data-rating="1"></i>
-                    <i class="far fa-star" data-rating="2"></i>
-                    <i class="far fa-star" data-rating="3"></i>
-                    <i class="far fa-star" data-rating="4"></i>
-                    <i class="far fa-star" data-rating="5"></i>
-                </div>
-                <div class="rating-buttons">
-                    <button id="submit-rating">Submit</button>
-                    <button id="cancel-rating">Cancel</button>
-                </div>
-            </div>
-        `;
+        const commentText = commentInput.value.trim();
         
-        document.body.appendChild(ratingOverlay);
-        
-        // Star rating functionality
-        let selectedRating = 0;
-        const stars = document.querySelectorAll('.star-rating i');
-        
-        stars.forEach(star => {
-            // Hover effect
-            star.addEventListener('mouseover', () => {
-                const rating = parseInt(star.getAttribute('data-rating'));
-                
-                stars.forEach(s => {
-                    const starRating = parseInt(s.getAttribute('data-rating'));
-                    if (starRating <= rating) {
-                        s.classList.remove('far');
-                        s.classList.add('fas');
-                    } else {
-                        s.classList.remove('fas');
-                        s.classList.add('far');
-                    }
-                });
-            });
-            
-            // Mouse leave effect
-            star.addEventListener('mouseleave', () => {
-                stars.forEach(s => {
-                    const starRating = parseInt(s.getAttribute('data-rating'));
-                    if (starRating <= selectedRating) {
-                        s.classList.remove('far');
-                        s.classList.add('fas');
-                    } else {
-                        s.classList.remove('fas');
-                        s.classList.add('far');
-                    }
-                });
-            });
-            
-            // Click to select rating
-            star.addEventListener('click', () => {
-                selectedRating = parseInt(star.getAttribute('data-rating'));
-            });
-        });
-        
-        // Submit button
-        document.getElementById('submit-rating')?.addEventListener('click', () => {
-            if (selectedRating > 0) {
-                // In a real implementation, we would send this rating to the server
-                console.log(`Rating submitted: ${selectedRating} stars for episode ${currentEpisode.number} of ${currentAnime.name}`);
-                showToast(`Thank you for rating ${selectedRating}/5!`);
-                ratingOverlay.remove();
-            } else {
-                showToast('Please select a rating');
-            }
-        });
-        
-        // Cancel button
-        document.getElementById('cancel-rating')?.addEventListener('click', () => {
-            ratingOverlay.remove();
-        });
-    });
-}
-
-// Add comments section
-const commentsSection = document.getElementById('comments-section');
-const commentInput = document.getElementById('comment-input');
-const submitCommentBtn = document.getElementById('submit-comment');
-
-if (commentsSection && commentInput && submitCommentBtn) {
-    // Load sample comments
-    loadSampleComments();
-    
-    // Submit comment
-    submitCommentBtn.addEventListener('click', submitComment);
-    
-    // Submit on Enter key
-    commentInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            submitComment();
+        if (commentText !== '') {
+            addComment(commentText);
+            commentInput.value = '';
         }
     });
 }
 
-// Load sample comments
-function loadSampleComments() {
-    if (!commentsSection) return;
+// Load comments for current episode
+function loadComments() {
+    if (!commentsList || !currentAnime || !currentEpisode) return;
     
-    const sampleComments = [
-        {
-            username: 'anime_lover123',
-            text: 'This episode was amazing! The animation quality was top-notch.',
-            timestamp: '2 days ago',
-            likes: 24
+    commentsList.innerHTML = '';
+    
+    // Get comments from localStorage or API
+    const commentsKey = `comments_${currentAnime.id}_${currentEpisode.number}`;
+    let comments = JSON.parse(localStorage.getItem(commentsKey)) || [];
+    
+    if (comments.length > 0) {
+        comments.forEach(comment => {
+            const commentElement = createCommentElement(comment);
+            commentsList.appendChild(commentElement);
+        });
+    } else {
+        const noComments = document.createElement('div');
+        noComments.classList.add('no-comments');
+        noComments.textContent = 'No comments yet. Be the first to comment!';
+        commentsList.appendChild(noComments);
+    }
+}
+
+// Add a new comment
+function addComment(commentText) {
+    if (!currentAnime || !currentEpisode || !userData) return;
+    
+    const commentsKey = `comments_${currentAnime.id}_${currentEpisode.number}`;
+    let comments = JSON.parse(localStorage.getItem(commentsKey)) || [];
+    
+    // Create new comment object
+    const newComment = {
+        id: Date.now().toString(),
+        user: {
+            name: userData.name,
+            avatar: userData.avatar || 'assets/images/default-avatar.png'
         },
-        {
-            username: 'otaku_master',
-            text: 'That fight scene at 12:45 was incredible. Best animation I\'ve seen this season!',
-            timestamp: '1 day ago',
-            likes: 18
-        },
-        {
-            username: 'manga_reader',
-            text: 'As a manga reader, I was worried about this adaptation, but they nailed it perfectly.',
-            timestamp: '10 hours ago',
-            likes: 7
-        }
-    ];
+        text: commentText,
+        timestamp: new Date().toISOString(),
+        likes: 0,
+        replies: []
+    };
     
-    const commentsList = document.createElement('div');
-    commentsList.classList.add('comments-list');
+    // Add to comments array
+    comments.unshift(newComment);
     
-    sampleComments.forEach(comment => {
-        const commentElement = createCommentElement(comment);
+    // Save to localStorage
+    localStorage.setItem(commentsKey, JSON.stringify(comments));
+    
+    // Add to DOM
+    const commentElement = createCommentElement(newComment);
+    
+    if (commentsList.firstChild) {
+        commentsList.insertBefore(commentElement, commentsList.firstChild);
+    } else {
         commentsList.appendChild(commentElement);
-    });
+    }
     
-    commentsSection.appendChild(commentsList);
+    // Remove "no comments" message if present
+    const noComments = commentsList.querySelector('.no-comments');
+    if (noComments) {
+        noComments.remove();
+    }
 }
 
 // Create comment element
 function createCommentElement(comment) {
     const commentElement = document.createElement('div');
     commentElement.classList.add('comment');
+    commentElement.dataset.id = comment.id;
+    
+    // Format date
+    const date = new Date(comment.timestamp);
+    const formattedDate = date.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+    });
     
     commentElement.innerHTML = `
         <div class="comment-header">
-            <strong>${comment.username}</strong>
-            <span class="comment-time">${comment.timestamp}</span>
+            <img src="${comment.user.avatar}" alt="${comment.user.name}" class="user-avatar">
+            <div class="comment-user-info">
+                <h4>${comment.user.name}</h4>
+                <span class="comment-date">${formattedDate}</span>
+            </div>
         </div>
-        <div class="comment-body">
+        <div class="comment-content">
             <p>${comment.text}</p>
         </div>
         <div class="comment-actions">
-            <button class="like-btn">
+            <button class="like-button" data-id="${comment.id}">
                 <i class="far fa-heart"></i>
-                <span class="likes-count">${comment.likes}</span>
+                <span>${comment.likes}</span>
             </button>
-            <button class="reply-btn">Reply</button>
+            <button class="reply-button" data-id="${comment.id}">
+                <i class="far fa-comment"></i>
+                <span>Reply</span>
+            </button>
         </div>
     `;
     
-    // Like button functionality
-    const likeBtn = commentElement.querySelector('.like-btn');
-    let isLiked = false;
+    // Add event listeners for like and reply buttons
+    const likeButton = commentElement.querySelector('.like-button');
+    if (likeButton) {
+        likeButton.addEventListener('click', () => likeComment(comment.id));
+    }
     
-    likeBtn?.addEventListener('click', () => {
-        const likesCount = likeBtn.querySelector('.likes-count');
-        const likeIcon = likeBtn.querySelector('i');
+    const replyButton = commentElement.querySelector('.reply-button');
+    if (replyButton) {
+        replyButton.addEventListener('click', () => showReplyForm(comment.id));
+    }
+    
+    // Add replies if any
+    if (comment.replies && comment.replies.length > 0) {
+        const repliesContainer = document.createElement('div');
+        repliesContainer.classList.add('replies-container');
         
-        if (isLiked) {
-            // Unlike
-            likesCount.textContent = (parseInt(likesCount.textContent) - 1).toString();
-            likeIcon.classList.remove('fas');
-            likeIcon.classList.add('far');
-            isLiked = false;
-        } else {
-            // Like
-            likesCount.textContent = (parseInt(likesCount.textContent) + 1).toString();
-            likeIcon.classList.remove('far');
-            likeIcon.classList.add('fas');
-            isLiked = true;
-        }
-    });
-    
-    // Reply button functionality
-    const replyBtn = commentElement.querySelector('.reply-btn');
-    
-    replyBtn?.addEventListener('click', () => {
-        // Create reply box if it doesn't exist
-        if (!commentElement.querySelector('.reply-box')) {
-            const replyBox = document.createElement('div');
-            replyBox.classList.add('reply-box');
-            replyBox.innerHTML = `
-                <textarea placeholder="Write a reply..."></textarea>
-                <button class="submit-reply-btn">Reply</button>
-                <button class="cancel-reply-btn">Cancel</button>
-            `;
-            
-            commentElement.appendChild(replyBox);
-            
-            // Focus on textarea
-            replyBox.querySelector('textarea').focus();
-            
-            // Submit reply
-            replyBox.querySelector('.submit-reply-btn').addEventListener('click', () => {
-                const replyText = replyBox.querySelector('textarea').value.trim();
-                
-                if (replyText) {
-                    // Create reply element
-                    const replyElement = document.createElement('div');
-                    replyElement.classList.add('comment', 'reply');
-                    
-                    replyElement.innerHTML = `
-                        <div class="comment-header">
-                            <strong>${userData ? userData.username : 'Guest'}</strong>
-                            <span class="comment-time">Just now</span>
-                        </div>
-                        <div class="comment-body">
-                            <p>${replyText}</p>
-                        </div>
-                        <div class="comment-actions">
-                            <button class="like-btn">
-                                <i class="far fa-heart"></i>
-                                <span class="likes-count">0</span>
-                            </button>
-                        </div>
-                    `;
-                    
-                    // Add reply after the comment
-                    commentElement.parentNode.insertBefore(replyElement, commentElement.nextSibling);
-                    
-                    // Remove reply box
-                    replyBox.remove();
-                }
-            });
-            
-            // Cancel reply
-            replyBox.querySelector('.cancel-reply-btn').addEventListener('click', () => {
-                replyBox.remove();
-            });
-        }
-    });
+        comment.replies.forEach(reply => {
+            const replyElement = createReplyElement(reply);
+            repliesContainer.appendChild(replyElement);
+        });
+        
+        commentElement.appendChild(repliesContainer);
+    }
     
     return commentElement;
 }
 
-// Submit comment
-function submitComment() {
-    if (!commentInput || !commentsSection) return;
+// Like a comment
+function likeComment(commentId) {
+    if (!currentAnime || !currentEpisode || !userData) return;
     
-    const commentText = commentInput.value.trim();
+    const commentsKey = `comments_${currentAnime.id}_${currentEpisode.number}`;
+    let comments = JSON.parse(localStorage.getItem(commentsKey)) || [];
     
-    if (commentText) {
-        const commentsList = commentsSection.querySelector('.comments-list');
+    // Find the comment
+    const comment = comments.find(c => c.id === commentId);
+    
+    if (comment) {
+        // Increment likes
+        comment.likes += 1;
         
-        // Create new comment
-        const newComment = {
-            username: userData ? userData.username : 'Guest',
-            text: commentText,
-            timestamp: 'Just now',
-            likes: 0
-        };
+        // Update in localStorage
+        localStorage.setItem(commentsKey, JSON.stringify(comments));
         
-        const commentElement = createCommentElement(newComment);
-        
-        // Add comment to the top of the list
-        if (commentsList) {
-            commentsList.insertBefore(commentElement, commentsList.firstChild);
-        } else {
-            // Create comments list if it doesn't exist
-            const newCommentsList = document.createElement('div');
-            newCommentsList.classList.add('comments-list');
-            newCommentsList.appendChild(commentElement);
-            commentsSection.appendChild(newCommentsList);
+        // Update UI
+        const likeButton = document.querySelector(`.like-button[data-id="${commentId}"] span`);
+        if (likeButton) {
+            likeButton.textContent = comment.likes;
         }
-        
-        // Clear input
-        commentInput.value = '';
-        
-        // Show confirmation
-        showToast('Comment posted successfully');
     }
 }
 
-// Add report button functionality
-const reportBtn = document.getElementById('report-button');
-if (reportBtn) {
-    reportBtn.addEventListener('click', () => {
-        // Show report modal
-        const reportModal = document.createElement('div');
-        reportModal.classList.add('report-modal');
-        reportModal.innerHTML = `
-            <div class="report-content">
-                <h3>Report Issue</h3>
-                <select id="report-type">
-                    <option value="">Select issue type</option>
-                    <option value="video">Video playback issue</option>
-                    <option value="subtitle">Subtitle issue</option>
-                    <option value="audio">Audio issue</option>
-                    <option value="content">Inappropriate content</option>
-                    <option value="other">Other</option>
-                </select>
-                <textarea id="report-details" placeholder="Provide details about the issue"></textarea>
-                <div class="report-buttons">
-                    <button id="submit-report">Submit</button>
-                    <button id="cancel-report">Cancel</button>
-                </div>
+// Show reply form for a comment
+function showReplyForm(commentId) {
+    if (!userData) {
+        // Redirect to login if not logged in
+        window.location.href = 'auth.html';
+        return;
+    }
+    
+    // Remove any existing reply forms
+    const existingForms = document.querySelectorAll('.reply-form');
+    existingForms.forEach(form => form.remove());
+    
+    // Create new reply form
+    const replyForm = document.createElement('div');
+    replyForm.classList.add('reply-form');
+    replyForm.innerHTML = `
+        <img src="${userData.avatar || 'assets/images/default-avatar.png'}" alt="${userData.name}" class="user-avatar">
+        <div class="reply-input-container">
+            <textarea class="reply-input" placeholder="Write a reply..."></textarea>
+            <div class="reply-actions">
+                <button class="cancel-reply">Cancel</button>
+                <button class="submit-reply">Reply</button>
             </div>
-        `;
+        </div>
+    `;
+    
+    // Add event listeners
+    const commentElement = document.querySelector(`.comment[data-id="${commentId}"]`);
+    
+    if (commentElement) {
+        // Insert form after comment actions
+        const commentActions = commentElement.querySelector('.comment-actions');
+        commentActions.after(replyForm);
         
-        document.body.appendChild(reportModal);
+        // Focus the textarea
+        const textarea = replyForm.querySelector('.reply-input');
+        textarea.focus();
         
-        // Submit report
-        document.getElementById('submit-report')?.addEventListener('click', () => {
-            const reportType = document.getElementById('report-type').value;
-            const reportDetails = document.getElementById('report-details').value.trim();
+        // Cancel button
+        const cancelButton = replyForm.querySelector('.cancel-reply');
+        cancelButton.addEventListener('click', () => replyForm.remove());
+        
+        // Submit button
+        const submitButton = replyForm.querySelector('.submit-reply');
+        submitButton.addEventListener('click', () => {
+            const replyText = textarea.value.trim();
             
-            if (reportType && reportDetails) {
-                // In a real implementation, we would send this report to the server
-                console.log(`Report submitted: ${reportType} - ${reportDetails}`);
-                showToast('Thank you for your report');
-                reportModal.remove();
-            } else {
-                showToast('Please fill in all fields');
+            if (replyText !== '') {
+                addReply(commentId, replyText);
+                replyForm.remove();
             }
         });
-        
-        // Cancel report
-        document.getElementById('cancel-report')?.addEventListener('click', () => {
-            reportModal.remove();
-        });
-    });
+    }
 }
 
-// Export functions for testing
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = {
-        togglePlayPause,
-        toggleMute,
-        updateVolume,
-        toggleFullscreen,
-        updateProgressBar,
-        seek,
-        updateTimeDisplay,
-        handleKeyboardShortcuts
-    };
+// Add a reply to a comment
+function addReply(commentId, replyText) {
+    if (!currentAnime || !currentEpisode || !userData) return;
+    
+    const commentsKey = `comments_${currentAnime.id}_${currentEpisode.number}`;
+    let comments = JSON.parse(localStorage.getItem(commentsKey)) || [];
+    
+    // Find the comment
+    const comment = comments.find(c => c.id === commentId);
+    
+    if (comment) {
+        // Initialize replies array if it doesn't exist
+        if (!comment.replies) {
+            comment.replies = [];
+        }
+        
+        // Create new reply
+        const newReply = {
+            id: Date.now().toString(),
+            user: {
+                name: userData.name,
+                avatar: userData.avatar || 'assets/images/default-avatar.png'
+            },
+            text: replyText,
+            timestamp: new Date().toISOString(),
+            likes: 0
+        };
+        
+        // Add to replies array
+        comment.replies.push(newReply);
+        
+        // Save to localStorage
+        localStorage.setItem(commentsKey, JSON.stringify(comments));
+        
+        // Update UI
+        const commentElement = document.querySelector(`.comment[data-id="${commentId}"]`);
+        
+        if (commentElement) {
+            // Check if replies container exists
+            let repliesContainer = commentElement.querySelector('.replies-container');
+            
+            if (!repliesContainer) {
+                repliesContainer = document.createElement('div');
+                repliesContainer.classList.add('replies-container');
+                commentElement.appendChild(repliesContainer);
+            }
+            
+            // Add reply element
+            const replyElement = createReplyElement(newReply);
+            repliesContainer.appendChild(replyElement);
+        }
+    }
+}
+
+// Create reply element
+function createReplyElement(reply) {
+    const replyElement = document.createElement('div');
+    replyElement.classList.add('reply');
+    replyElement.dataset.id = reply.id;
+    
+    // Format date
+    const date = new Date(reply.timestamp);
+    const formattedDate = date.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+    });
+    
+    replyElement.innerHTML = `
+        <div class="reply-header">
+            <img src="${reply.user.avatar}" alt="${reply.user.name}" class="user-avatar small">
+            <div class="reply-user-info">
+                <h5>${reply.user.name}</h5>
+                <span class="reply-date">${formattedDate}</span>
+            </div>
+        </div>
+        <div class="reply-content">
+            <p>${reply.text}</p>
+        </div>
+        <div class="reply-actions">
+            <button class="like-reply-button" data-id="${reply.id}">
+                <i class="far fa-heart"></i>
+                <span>${reply.likes}</span>
+            </button>
+        </div>
+    `;
+    
+    // Add event listener for like button
+    const likeButton = replyElement.querySelector('.like-reply-button');
+    if (likeButton) {
+        likeButton.addEventListener('click', () => likeReply(reply.id));
+    }
+    
+    return replyElement;
+}
+
+// Like a reply
+function likeReply(replyId) {
+    if (!currentAnime || !currentEpisode || !userData) return;
+    
+    const commentsKey = `comments_${currentAnime.id}_${currentEpisode.number}`;
+    let comments = JSON.parse(localStorage.getItem(commentsKey)) || [];
+    
+    // Find the comment containing the reply
+    let found = false;
+    
+    for (const comment of comments) {
+        if (comment.replies && Array.isArray(comment.replies)) {
+            const reply = comment.replies.find(r => r.id === replyId);
+            
+            if (reply) {
+                // Increment likes
+                reply.likes += 1;
+                found = true;
+                break;
+            }
+        }
+    }
+    
+    if (found) {
+        // Update in localStorage
+        localStorage.setItem(commentsKey, JSON.stringify(comments));
+        
+        // Update UI
+        const likeButton = document.querySelector(`.like-reply-button[data-id="${replyId}"] span`);
+        if (likeButton) {
+            likeButton.textContent = parseInt(likeButton.textContent) + 1;
+        }
+    }
 }
