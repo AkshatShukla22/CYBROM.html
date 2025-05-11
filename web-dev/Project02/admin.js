@@ -948,7 +948,7 @@ function showNotification(message, type = 'info') {
 
 // Logout function
 function logout() {
-    localStorage.removeItem('user');
+    localStorage.removeItem('currentUser');
     window.location.href = 'auth.html';
 }
 
