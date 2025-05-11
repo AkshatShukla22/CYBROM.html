@@ -2,116 +2,106 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Sliding Banner</title>
-  <link rel="stylesheet" href="index.css" />
-  <style>
-    body {
-  margin: 0;
-  background-color: #2a2c3e;
-  font-family: sans-serif;
-  overflow-x: hidden;
-}
-
-.slider-container {
-  position: relative;
-  width: 100%;
-  max-width: 100vw;
-  height: 300px;
-  overflow: hidden;
-  margin: auto;
-}
-
-.slider {
-  display: flex;
-  width: 1000%;
-  transition: transform 0.5s ease-in-out;
-}
-
-.slide {
-  width: 100vw;
-  height: 300px;
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 80px;
-  color: white;
-  background: linear-gradient(to right, #bb86fc, #6a5acd);
-}
-
-.nav {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  background-color: rgba(0,0,0,0.5);
-  border: none;
-  color: white;
-  font-size: 30px;
-  padding: 10px;
-  cursor: pointer;
-  z-index: 1;
-}
-
-.left {
-  left: 10px;
-}
-.right {
-  right: 10px;
-}
-
-  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Hotel Booking</title>
 </head>
 <body>
-  <div class="slider-container">
-    <div class="slider" id="slider">
-      <!-- 10 slides -->
-      <div class="slide">1</div>
-      <div class="slide">2</div>
-      <div class="slide">3</div>
-      <div class="slide">4</div>
-      <div class="slide">5</div>
-      <div class="slide">6</div>
-      <div class="slide">7</div>
-      <div class="slide">8</div>
-      <div class="slide">9</div>
-      <div class="slide">10</div>
-    </div>
-    <button class="nav left" onclick="prevSlide()">&#10094;</button>
-    <button class="nav right" onclick="nextSlide()">&#10095;</button>
-  </div>
+  <form align="center" onsubmit="return Book()">
+    <h2>Hotel Booking Form</h2>
+    Enter Name: <input type="text" id="name" required /><br /><br />
+    Enter Age: <input type="text" id="age" required /><br /><br />
+    Check-in Date: <input type="date" id="checkin" required /><br /><br />
+    Check-out Date: <input type="date" id="checkout" required /><br /><br />
+    Select City:
+    <select id="city">
+      <option value="Bhopal">Bhopal</option>
+      <option value="Delhi">Delhi</option>
+      <option value="Indore">Indore</option>
+      <option value="Noida">Noida</option>
+    </select><br /><br />
+    No. of Persons: <input type="number" id="person" required /><br /><br />
+    <input type="submit" value="Book Now" />
+  </form>
+
+  <br />
+
+  <table border="1" align="center">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Age</th>
+        <th>Check-in</th>
+        <th>Check-out</th>
+        <th>City</th>
+        <th>Persons</th>
+        <th>Total Price</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody id="datashow"></tbody>
+  </table>
 
   <script>
-    let currentSlide = 0;
-const slider = document.getElementById('slider');
-const totalSlides = 10;
-let slideInterval = setInterval(nextSlide, 10000);
+    const BASE_URL = "http://localhost:3000/hotel";
 
-function updateSlider() {
-  slider.style.transform = `translateX(-${currentSlide * 100}vw)`;
-}
+    async function fetchData() {
+      let res = await fetch(BASE_URL);
+      let data = await res.json();
 
-function nextSlide() {
-  currentSlide = (currentSlide + 1) % totalSlides;
-  updateSlider();
-}
+      let dataShow = document.querySelector("#datashow");
+      dataShow.innerHTML = "";
 
-function prevSlide() {
-  currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
-  updateSlider();
-}
+      data.forEach((e) => {
+        dataShow.innerHTML += `
+          <tr>
+            <td>${e.Name}</td>
+            <td>${e.Age}</td>
+            <td>${e.Checkin}</td>
+            <td>${e.Checkout}</td>
+            <td>${e.City}</td>
+            <td>${e.Person}</td>
+            <td>${e.Person * e.Price}</td>
+            <td><button onclick="Del(${e.id})">Delete</button></td>
+          </tr>
+        `;
+      });
+    }
 
-// Reset timer on manual navigation
-document.querySelector('.left').addEventListener('click', () => {
-  clearInterval(slideInterval);
-  slideInterval = setInterval(nextSlide, 10000);
-});
+    async function Del(id) {
+      await fetch(`${BASE_URL}/${id}`, { method: "DELETE" });
+      fetchData();
+    }
 
-document.querySelector('.right').addEventListener('click', () => {
-  clearInterval(slideInterval);
-  slideInterval = setInterval(nextSlide, 10000);
-});
+    function Book() {
+      let name = document.querySelector("#name").value;
+      let age = document.querySelector("#age").value;
+      let checkin = document.querySelector("#checkin").value;
+      let checkout = document.querySelector("#checkout").value;
+      let city = document.querySelector("#city").value;
+      let person = document.querySelector("#person").value;
 
+      fetch(BASE_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          Name: name,
+          Age: age,
+          Checkin: checkin,
+          Checkout: checkout,
+          City: city,
+          Person: Number(person),
+          Price: 500  // Price per person
+        }),
+      }).then(() => {
+        document.querySelector("form").reset();
+        fetchData();
+      });
+
+      return false; // Prevent page reload
+    }
+
+    // Load data on page load
+    fetchData();
   </script>
 </body>
 </html>

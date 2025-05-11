@@ -68,7 +68,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     // Check if we're on the auth page
     if (window.location.pathname.includes('auth.html')) {
         // Check if user is already logged in
-        const user = JSON.parse(localStorage.getItem('user'));
+        const user = JSON.parse(localStorage.getItem('currentUser'));
         if (user && user.email) {
             // If already logged in, redirect to appropriate page
             if (user.email === 'admin@gmail.com') {
@@ -320,7 +320,7 @@ async function validateLogin() {
                 email: login_email.value.trim(),
                 isAdmin: result.isAdmin
             };
-            localStorage.setItem('user', JSON.stringify(userData));
+            localStorage.setItem('currentUser', JSON.stringify(userData));
             
             // Apply success animation to login form
             loginForm.classList.add("success-animation");
@@ -407,7 +407,7 @@ function Slider() {
 
 // Clear logout function to avoid potential issues
 function logout() {
-    localStorage.removeItem('user');
+    localStorage.removeItem('currentUser');
     window.location.href = 'auth.html';
 }
 

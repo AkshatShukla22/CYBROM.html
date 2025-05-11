@@ -290,6 +290,31 @@ function handleApiError(error, message = 'Something went wrong') {
     showToast(message, 'error');
 }
 
+// Toggle login/logout button display based on user login status
+function updateLoginUI() {
+    const user = checkUserLogin();
+    const loginBtn = document.getElementById('loginBtn');  // Assuming this is your login button ID
+    const userBtn = document.getElementById('userBtn');    // Assuming this is your user button ID
+    
+    if (loginBtn && userBtn) {
+        if (user) {
+            // User is logged in, show user button, hide login button
+            loginBtn.style.display = 'none';
+            userBtn.style.display = 'flex';
+            
+            // If you have a user name display element, update it
+            const userNameElement = document.getElementById('userName');
+            if (userNameElement && user.name) {
+                userNameElement.textContent = user.name;
+            }
+        } else {
+            // User is not logged in, show login button, hide user button
+            loginBtn.style.display = 'flex';
+            userBtn.style.display = 'none';
+        }
+    }
+}
+
 // Export all functions to be available globally
 window.common = {
     checkUserLogin,
@@ -306,5 +331,6 @@ window.common = {
     toggleWatchlist,
     updateWatchlistButton,
     createAnimeCard,
-    handleApiError
+    handleApiError,
+    updateLoginUI  // Added the new function to the exports
 };

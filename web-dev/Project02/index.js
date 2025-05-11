@@ -111,27 +111,37 @@ function loadSampleData() {
 
 // Check if user is logged in
 function checkUserAuthentication() {
-    const loggedInUser = localStorage.getItem('User');
-    if (loggedInUser) {
-        userData = JSON.parse(loggedInUser);
-        isLoggedIn = true;
-        
-        // Update UI based on login status
-        userBtn.style.display = 'flex';
-        loginBtn.style.display = 'none';
-        
-        // Check for notifications
+    // Use the common utility function to check login status
+    userData = common.checkUserLogin();
+    isLoggedIn = userData !== null;
+    
+    // Update UI based on login status
+    updateLoginButtons();
+    
+    // Check for notifications if logged in
+    if (isLoggedIn) {
         fetchNotifications();
     } else {
-        isLoggedIn = false;
-        
-        // Update UI based on login status
-        userBtn.style.display = 'none';
-        loginBtn.style.display = 'flex';
-        
-        // Hide notification count
+        // Hide notification count if not logged in
         notificationCount.style.display = 'none';
     }
+}
+
+// Update login/user button visibility
+function updateLoginButtons() {
+    if (isLoggedIn) {
+        userBtn.style.display = 'flex';
+        loginBtn.style.display = 'none';
+    } else {
+        userBtn.style.display = 'none';
+        loginBtn.style.display = 'flex';
+    }
+}
+
+// Check login state - now calls the main authentication function
+function checkLoginState() {
+    // Simply call our main authentication check function
+    checkUserAuthentication();
 }
 
 // Setup event listeners
@@ -214,8 +224,10 @@ function initializeHeroSlider() {
                         <a href="anime_info.html?id=${anime.id}" class="btn watch-btn">
                             <i class="fas fa-play-circle"></i> Watch Now
                         </a>
-                        <button class="btn add-btn" onclick="addToWatchlist(${anime.id})">
-                            <i class="fas fa-plus"></i> Add to List
+                        <button class="btn add-btn" onclick="toggleWatchlist(${anime.id}, this)">
+                            ${isInWatchlist(anime.id) ? 
+                                '<i class="fas fa-bookmark"></i> In Watchlist' : 
+                                '<i class="far fa-bookmark"></i> Add to List'}
                         </button>
                     </div>
                 </div>
@@ -260,7 +272,6 @@ function initializeHeroSlider() {
         }
     });
 }
-
 
 // Enhanced Anime Sections Implementation
 function loadAnimeSections() {
@@ -402,8 +413,8 @@ function renderAnimeCards(animeList, container) {
                     <button class="watch-now" onclick="window.location.href='anime_info.html?id=${anime.id}'">
                         <i class="fas fa-play"></i>
                     </button>
-                    <button class="add-to-list" onclick="event.stopPropagation(); addToWatchlist(${anime.id})">
-                        <i class="fas fa-plus"></i>
+                    <button class="add-to-list" onclick="event.stopPropagation(); toggleWatchlist(${anime.id}, this)">
+                        <i class="${isInWatchlist(anime.id) ? 'fas' : 'far'} fa-bookmark"></i>
                     </button>
                 </div>
             </div>
@@ -512,6 +523,10 @@ function renderAnimeCards(animeList, container) {
             .anime-card-buttons button:hover {
                 background-color: var(--primary-color);
                 transform: scale(1.1);
+            }
+            
+            .in-watchlist {
+                background-color: var(--primary-color) !important;
             }
         `;
         document.head.appendChild(styleSheet);
@@ -726,89 +741,42 @@ function getStarRating(rating) {
     return stars;
 }
 
-// Check login state and update UI accordingly
-function checkLoginState() {
-    const user = localStorage.getItem('currentUser');
-    
-    if (user) {
-        // If the user is logged in, hide the login button and show the user button
-        loginBtn.style.display = 'none';
-        userBtn.style.display = 'block';
-    } else {
-        // If no user is logged in, ensure the login button is visible
-        loginBtn.style.display = 'block';
-        userBtn.style.display = 'none';
-    }
-}
-
-// Add to watchlist functionality
+// Add to watchlist - now using common utilities
 function addToWatchlist(animeId) {
     if (!isLoggedIn) {
-        alert('Please log in to add anime to your watchlist');
-        window.location.href = './auth.html';
+        common.showToast('Please log in to add anime to your watchlist', 'error');
+        setTimeout(() => {
+            window.location.href = './auth.html';
+        }, 2000);
         return;
     }
     
-    // Update local user data
-    if (!userData.watchlist) {
-        userData.watchlist = [];
-    }
-    
-    if (!userData.watchlist.includes(animeId)) {
-        userData.watchlist.push(animeId);
-        localStorage.setItem('currentUser', JSON.stringify(userData));
-        
-        // Show success message
-        showToast('Anime added to watchlist!');
+    // Use the common utility function for adding to watchlist
+    if (common.addToWatchlist(animeId)) {
+        // Re-check user data since it might have been updated
+        userData = common.checkUserLogin();
+        // common.addToWatchlist already shows a toast
     }
 }
 
-// Show toast notification
-function showToast(message) {
-    const toast = document.createElement('div');
-    toast.className = 'toast';
-    toast.innerHTML = message;
-    document.body.appendChild(toast);
-    
-    setTimeout(() => {
-        toast.classList.add('show');
-    }, 100);
-    
-    setTimeout(() => {
-        toast.classList.remove('show');
+// Toggle watchlist status - using common utilities
+function toggleWatchlist(animeId, button) {
+    if (!isLoggedIn) {
+        common.showToast('Please log in to manage your watchlist', 'error');
         setTimeout(() => {
-            document.body.removeChild(toast);
-        }, 300);
-    }, 3000);
+            window.location.href = './auth.html';
+        }, 2000);
+        return;
+    }
+    
+    // Use common utility for toggling
+    common.toggleWatchlist(animeId, button);
+    
+    // Re-check user data and update UI
+    userData = common.checkUserLogin();
 }
 
-// Add toast styles if not already present
-if (!document.querySelector('#toastStyles')) {
-    const toastStyles = document.createElement('style');
-    toastStyles.id = 'toastStyles';
-    toastStyles.innerHTML = `
-        .toast {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%) translateY(100px);
-            background-color: var(--primary-color, #ff5722);
-            color: var(--text-dark, #fff);
-            padding: 12px 24px;
-            border-radius: 30px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-            z-index: 2000;
-            opacity: 0;
-            transition: all 0.3s ease;
-        }
-        
-        .toast.show {
-            opacity: 1;
-            transform: translateX(-50%) translateY(0);
-        }
-    `;
-    document.head.appendChild(toastStyles);
+// Check if anime is in watchlist - using common utilities
+function isInWatchlist(animeId) {
+    return common.isInWatchlist(animeId);
 }
-
-
-
