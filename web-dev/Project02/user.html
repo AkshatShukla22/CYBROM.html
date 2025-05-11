@@ -3,169 +3,179 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Profile - AnimStream</title>
+    <title>User Profile - AnimeStream</title>
     <link rel="stylesheet" href="./index.css">
     <link rel="stylesheet" href="./user.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body>
-    <!-- Navigation Bar -->
-    <nav class="navbar">
-        <div class="logo" onclick="window.location.href='index.html'">Anim<span>Stream</span></div>
-        
-        <div class="search-container">
-            <input type="text" class="search-input" placeholder="Search anime...">
-            <div class="search-results"></div>
+    <!-- Navigation Bar - Matching index.html -->
+    <nav>
+        <div class="logo">
+            <a href="index.html">
+                <img src="./assets/logo.png" alt="AnimeStream Logo">
+                <span>AnimeStream</span>
+            </a>
         </div>
         
-        <div class="nav-buttons">
-            <div class="notification">
-                <i class="fas fa-bell"></i>
-                <span class="notification-count">0</span>
-                <div class="notification-panel">
-                    <h3>Notifications</h3>
-                    <div class="notifications-container">
-                        <!-- Notifications will be added dynamically -->
-                    </div>
-                </div>
+        <div class="nav-right">
+            <div class="search-container">
+                <input type="search" id="searchInput" placeholder="Search anime...">
+                <button id="searchBtn"><i class="fa-solid fa-magnifying-glass"></i></button>
+                <div id="searchResults" class="search-results"></div>
             </div>
             
-            <div class="user-btn">
-                <img src="./assets/default-avatar.png" alt="User" class="user-avatar">
+            <div class="nav-buttons">
+                <div class="notification-container">
+                    <button id="notificationBtn"><i class="fa-solid fa-bell"></i>
+                        <span class="notification-count">0</span>
+                    </button>
+                    <div id="notificationPanel" class="notification-panel">
+                        <h3>Notifications</h3>
+                        <div class="notification-list" id="notificationList">
+                            <p class="no-notifications">No new notifications</p>
+                        </div>
+                    </div>
+                </div>
+                <button id="userBtn" class="user-btn active"><i class="fa-solid fa-user"></i></button>
             </div>
         </div>
     </nav>
 
     <!-- Main Content -->
-    <div class="profile-container">
-        <div class="profile-header">
-            <div class="profile-image">
-                <img src="./assets/default-avatar.png" alt="Profile Picture" id="profile-pic">
-                <div class="edit-pic">
-                    <i class="fas fa-camera"></i>
+    <main>
+        <div class="profile-container">
+            <div class="profile-header">
+                <div class="profile-image">
+                    <img src="./assets/default-avatar.png" alt="Profile Picture" id="profile-pic">
+                    <div class="edit-pic">
+                        <i class="fas fa-camera"></i>
+                    </div>
+                </div>
+                <div class="profile-info">
+                    <h2 id="user-name">Loading...</h2>
+                    <p id="user-email">Loading...</p>
+                    <button class="logout-btn">Logout</button>
                 </div>
             </div>
-            <div class="profile-info">
-                <h2 id="user-name">Loading...</h2>
-                <p id="user-email">Loading...</p>
-                <button class="logout-btn">Logout</button>
+
+            <div class="profile-tabs">
+                <button class="tab-btn active" data-tab="watchlist">My Watchlist</button>
+                <button class="tab-btn" data-tab="history">Watch History</button>
+                <button class="tab-btn" data-tab="settings">Account Settings</button>
+            </div>
+
+            <div class="tab-content">
+                <!-- Watchlist Tab -->
+                <div class="tab-pane active" id="watchlist">
+                    <h3>My Watchlist</h3>
+                    <div class="empty-state hidden">
+                        <img src="./assets/empty-watchlist.png" alt="Empty Watchlist">
+                        <p>Your watchlist is empty</p>
+                        <button class="browse-btn" onclick="window.location.href='index.html'">Browse Anime</button>
+                    </div>
+                    <div class="watchlist-container">
+                        <!-- Watchlist items will be added dynamically -->
+                    </div>
+                </div>
+
+                <!-- History Tab -->
+                <div class="tab-pane" id="history">
+                    <h3>Watch History</h3>
+                    <div class="empty-state hidden">
+                        <img src="./assets/empty-history.png" alt="Empty History">
+                        <p>No watch history found</p>
+                        <button class="browse-btn" onclick="window.location.href='index.html'">Browse Anime</button>
+                    </div>
+                    <div class="history-container">
+                        <!-- History items will be added dynamically -->
+                    </div>
+                </div>
+
+                <!-- Settings Tab -->
+                <div class="tab-pane" id="settings">
+                    <h3>Account Settings</h3>
+                    <form id="update-form">
+                        <div class="form-group">
+                            <label for="update-name">Name</label>
+                            <input type="text" id="update-name" name="name">
+                        </div>
+                        <div class="form-group">
+                            <label for="update-email">Email</label>
+                            <input type="email" id="update-email" name="email" disabled>
+                        </div>
+                        <div class="form-group">
+                            <label for="update-phone">Phone Number</label>
+                            <input type="tel" id="update-phone" name="phone">
+                        </div>
+                        <div class="form-group">
+                            <label for="current-password">Current Password</label>
+                            <input type="password" id="current-password" name="currentPassword">
+                        </div>
+                        <div class="form-group">
+                            <label for="new-password">New Password</label>
+                            <input type="password" id="new-password" name="newPassword">
+                        </div>
+                        <div class="form-group">
+                            <label for="confirm-password">Confirm New Password</label>
+                            <input type="password" id="confirm-password" name="confirmPassword">
+                        </div>
+                        <button type="submit" class="save-btn">Save Changes</button>
+                    </form>
+                </div>
             </div>
         </div>
+    </main>
 
-        <div class="profile-tabs">
-            <button class="tab-btn active" data-tab="watchlist">My Watchlist</button>
-            <button class="tab-btn" data-tab="history">Watch History</button>
-            <button class="tab-btn" data-tab="settings">Account Settings</button>
-        </div>
-
-        <div class="tab-content">
-            <!-- Watchlist Tab -->
-            <div class="tab-pane active" id="watchlist">
-                <h3>My Watchlist</h3>
-                <div class="empty-state hidden">
-                    <img src="./assets/empty-watchlist.png" alt="Empty Watchlist">
-                    <p>Your watchlist is empty</p>
-                    <button class="browse-btn" onclick="window.location.href='index.html'">Browse Anime</button>
-                </div>
-                <div class="watchlist-container">
-                    <!-- Watchlist items will be added dynamically -->
-                </div>
-            </div>
-
-            <!-- History Tab -->
-            <div class="tab-pane" id="history">
-                <h3>Watch History</h3>
-                <div class="empty-state hidden">
-                    <img src="./assets/empty-history.png" alt="Empty History">
-                    <p>No watch history found</p>
-                    <button class="browse-btn" onclick="window.location.href='index.html'">Browse Anime</button>
-                </div>
-                <div class="history-container">
-                    <!-- History items will be added dynamically -->
-                </div>
-            </div>
-
-            <!-- Settings Tab -->
-            <div class="tab-pane" id="settings">
-                <h3>Account Settings</h3>
-                <form id="update-form">
-                    <div class="form-group">
-                        <label for="update-name">Name</label>
-                        <input type="text" id="update-name" name="name">
-                    </div>
-                    <div class="form-group">
-                        <label for="update-email">Email</label>
-                        <input type="email" id="update-email" name="email" disabled>
-                    </div>
-                    <div class="form-group">
-                        <label for="update-phone">Phone Number</label>
-                        <input type="tel" id="update-phone" name="phone">
-                    </div>
-                    <div class="form-group">
-                        <label for="current-password">Current Password</label>
-                        <input type="password" id="current-password" name="currentPassword">
-                    </div>
-                    <div class="form-group">
-                        <label for="new-password">New Password</label>
-                        <input type="password" id="new-password" name="newPassword">
-                    </div>
-                    <div class="form-group">
-                        <label for="confirm-password">Confirm New Password</label>
-                        <input type="password" id="confirm-password" name="confirmPassword">
-                    </div>
-                    <button type="submit" class="save-btn">Save Changes</button>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- Footer -->
+    <!-- Footer - Matching index.html -->
     <footer>
-        <div class="footer-container">
-            <div class="footer-section">
-                <h3>AnimStream</h3>
-                <p>Your ultimate anime streaming platform with thousands of titles.</p>
-                <div class="social-icons">
-                    <i class="fab fa-facebook"></i>
-                    <i class="fab fa-twitter"></i>
-                    <i class="fab fa-instagram"></i>
-                    <i class="fab fa-discord"></i>
+        <div class="footer-content">
+            <div class="footer-logo">
+                <img src="./assets/logo.png" alt="AnimeStream Logo">
+                <h2>AnimeStream</h2>
+                <p>Your ultimate anime streaming destination</p>
+            </div>
+            
+            <div class="footer-links">
+                <div class="footer-section">
+                    <h3>Explore</h3>
+                    <ul>
+                        <li><a href="#">Home</a></li>
+                        <li><a href="#">Genres</a></li>
+                        <li><a href="#">New Releases</a></li>
+                        <li><a href="#">Popular</a></li>
+                    </ul>
                 </div>
-            </div>
-            <div class="footer-section">
-                <h3>Quick Links</h3>
-                <ul>
-                    <li><a href="index.html">Home</a></li>
-                    <li><a href="#">Trending</a></li>
-                    <li><a href="#">New Releases</a></li>
-                    <li><a href="#">Genres</a></li>
-                </ul>
-            </div>
-            <div class="footer-section">
-                <h3>Help & Support</h3>
-                <ul>
-                    <li><a href="#">FAQ</a></li>
-                    <li><a href="#">Contact Us</a></li>
-                    <li><a href="#">Terms of Service</a></li>
-                    <li><a href="#">Privacy Policy</a></li>
-                </ul>
-            </div>
-            <div class="footer-section">
-                <h3>Subscribe</h3>
-                <p>Get updates on new anime and features</p>
-                <div class="subscribe">
-                    <input type="email" placeholder="Your Email">
-                    <button>Subscribe</button>
+                
+                <div class="footer-section">
+                    <h3>About</h3>
+                    <ul>
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">Contact</a></li>
+                        <li><a href="#">FAQ</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Connect</h3>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-discord"></i></a>
+                    </div>
                 </div>
             </div>
         </div>
+        
         <div class="footer-bottom">
-            <p>&copy; 2025 AnimStream. All rights reserved.</p>
+            <p>&copy; 2025 AnimeStream. All rights reserved.</p>
         </div>
     </footer>
 
-    <script src="./common.js"></script>
+    <!-- Scripts -->
+    <script src="./db.js"></script>
     <script src="./user.js"></script>
-    <script src="./index.js"></script>
 </body>
 </html>

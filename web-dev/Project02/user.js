@@ -1,91 +1,117 @@
-// profile.js - Script for the user profile page functionality
-
-document.addEventListener('DOMContentLoaded', function() {
+// User Profile Management Script
+document.addEventListener('DOMContentLoaded', () => {
     // Check if user is logged in
-    const currentUser = checkLogin();
+    const currentUser = getCurrentUser();
     if (!currentUser) {
-        window.location.href = 'auth.html'; // Redirect to login page if not logged in
+        window.location.href = 'auth.html'; // Redirect to login if not logged in
         return;
     }
 
     // Load user data
     loadUserData(currentUser);
     
-    // Load user watchlist
+    // Load watchlist
     loadWatchlist(currentUser);
     
     // Load watch history
     loadWatchHistory(currentUser);
     
-    // Setup tab navigation
+    // Setup tab switching
     setupTabs();
     
-    // Setup logout button
+    // Setup notification functionality
+    setupNotifications();
+    
+    // Setup logout functionality
     setupLogout();
     
-    // Setup form submission
-    setupFormSubmission(currentUser);
+    // Setup account settings form
+    setupAccountSettings(currentUser);
     
-    // Setup notification functionality
-    setupNotifications(currentUser);
-    
-    // Setup search functionality
-    setupSearch();
+    // Setup profile picture change
+    setupProfilePicChange();
 });
 
-// Check if user is logged in
-function checkLogin() {
-    const currentUser = localStorage.getItem('currentUser');
-    if (!currentUser) {
+// Get current logged in user
+function getCurrentUser() {
+    // Check local storage for logged in user
+    const loggedInUser = localStorage.getItem('currentUser');
+    if (!loggedInUser) {
         return null;
     }
-    return JSON.parse(currentUser);
+    return JSON.parse(loggedInUser);
 }
 
-// Load user data
+// Load user data into profile
 function loadUserData(user) {
-    // Display user name and email
-    document.getElementById('user-name').textContent = user.name;
-    document.getElementById('user-email').textContent = user.email;
+    const userNameElement = document.getElementById('user-name');
+    const userEmailElement = document.getElementById('user-email');
     
-    // Populate form fields
-    document.getElementById('update-name').value = user.name;
-    document.getElementById('update-email').value = user.email;
-    document.getElementById('update-phone').value = user.phone || '';
-    
-    // Set profile picture if available
-    if (user.profilePic) {
-        document.getElementById('profile-pic').src = user.profilePic;
-        document.querySelector('.user-avatar').src = user.profilePic;
-    }
-    
-    // Setup profile picture upload
-    setupProfilePicUpload();
+    userNameElement.textContent = user.name || 'User';
+    userEmailElement.textContent = user.email || '';
 }
 
-// Load user watchlist
+// Load user watchlist - FIXED FUNCTION
 function loadWatchlist(user) {
+    // Make sure we have the latest user data from localStorage
+    const currentUser = getCurrentUser();
+    if (currentUser) {
+        // Use the latest user data
+        user = currentUser;
+    }
+  
     const watchlistContainer = document.querySelector('.watchlist-container');
     const emptyState = document.querySelector('#watchlist .empty-state');
     
-    // Simulate fetching watchlist from db.json
-    // In a real application, you'd fetch this from the server
-    fetchUserWatchlist(user.email)
-        .then(watchlist => {
-            if (watchlist.length === 0) {
-                emptyState.classList.remove('hidden');
-                watchlistContainer.innerHTML = '';
-                return;
-            }
+    // Clear existing content
+    watchlistContainer.innerHTML = '';
+    
+    // Get user watchlist - ensure it exists
+    const watchlist = user.watchlist || [];
+    
+    // Debug - Log watchlist to console
+    console.log('Loading watchlist items:', watchlist);
+    
+    if (watchlist.length === 0) {
+        emptyState.classList.remove('hidden');
+        return;
+    }
+    
+    emptyState.classList.add('hidden');
+    
+    // Fetch anime data from db
+    fetch('db.json')
+        .then(response => response.json())
+        .then(data => {
+            const animeList = data.anime || [];
             
-            emptyState.classList.add('hidden');
-            watchlistContainer.innerHTML = '';
+            // Check if we found any matching anime
+            let matchFound = false;
             
-            // Display each anime in watchlist
-            watchlist.forEach(anime => {
-                const animeCard = createAnimeCard(anime, 'watchlist');
-                watchlistContainer.appendChild(animeCard);
+            // Loop through watchlist IDs and create cards
+            watchlist.forEach(animeId => {
+                // Convert animeId to number if it's stored as string
+                const searchId = typeof animeId === 'string' ? parseInt(animeId) : animeId;
+                
+                // Find the anime in the list
+                const anime = animeList.find(a => {
+                    const dataId = typeof a.id === 'string' ? parseInt(a.id) : a.id;
+                    return dataId === searchId;
+                });
+                
+                if (anime) {
+                    matchFound = true;
+                    const animeCard = createAnimeCard(anime, true);
+                    watchlistContainer.appendChild(animeCard);
+                } else {
+                    console.warn(`Anime with ID ${animeId} not found in database`);
+                }
             });
+            
+            // Show empty state if no matches were found
+            if (!matchFound) {
+                emptyState.classList.remove('hidden');
+            }
         })
         .catch(error => {
             console.error('Error loading watchlist:', error);
@@ -98,23 +124,35 @@ function loadWatchHistory(user) {
     const historyContainer = document.querySelector('.history-container');
     const emptyState = document.querySelector('#history .empty-state');
     
-    // Simulate fetching watch history from db.json
-    // In a real application, you'd fetch this from the server
-    fetchWatchHistory(user.email)
-        .then(history => {
-            if (history.length === 0) {
-                emptyState.classList.remove('hidden');
-                historyContainer.innerHTML = '';
-                return;
-            }
+    // Clear existing content
+    historyContainer.innerHTML = '';
+    
+    // Get user watch history
+    const history = user.watchHistory || [];
+    
+    if (history.length === 0) {
+        emptyState.classList.remove('hidden');
+        return;
+    }
+    
+    emptyState.classList.add('hidden');
+    
+    // Fetch anime data from db
+    fetch('db.json')
+        .then(response => response.json())
+        .then(data => {
+            const animeList = data.anime || [];
             
-            emptyState.classList.add('hidden');
-            historyContainer.innerHTML = '';
+            // Sort history by last watched (most recent first)
+            history.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
             
-            // Display each anime in history
-            history.forEach(item => {
-                const animeCard = createAnimeCard(item.anime, 'history', item.progress);
-                historyContainer.appendChild(animeCard);
+            // Loop through history and create cards
+            history.forEach(historyItem => {
+                const anime = animeList.find(a => a.id === historyItem.animeId);
+                if (anime) {
+                    const historyCard = createHistoryCard(anime, historyItem);
+                    historyContainer.appendChild(historyCard);
+                }
             });
         })
         .catch(error => {
@@ -123,52 +161,40 @@ function loadWatchHistory(user) {
         });
 }
 
-// Create anime card element
-function createAnimeCard(anime, type, progress = null) {
+// Create anime card for watchlist
+function createAnimeCard(anime, isWatchlist = false) {
     const card = document.createElement('div');
-    card.classList.add('anime-card');
-    card.setAttribute('data-id', anime.id);
-    
-    // Add animation class with delay based on index
-    card.style.animationDelay = `${Math.random() * 0.5}s`;
-    
-    let progressHTML = '';
-    if (type === 'history' && progress) {
-        progressHTML = `
-            <div class="progress-bar">
-                <div class="progress" style="width: ${progress}%"></div>
-            </div>
-            <p class="episodes">${Math.round(progress / 100 * anime.episodes.length)}/${anime.episodes.length} episodes</p>
-        `;
-    }
+    card.className = 'anime-card';
+    card.dataset.id = anime.id;
     
     card.innerHTML = `
-        <img src="${anime.image}" alt="${anime.name}">
-        <div class="anime-info">
-            <h4>${anime.name}</h4>
-            <div class="rating">
-                <i class="fas fa-star"></i>
-                <span>${anime.rating}</span>
-            </div>
-            ${progressHTML}
+        <div class="anime-card-image">
+            <img src="${anime.image || './assets/default-anime.png'}" alt="${anime.name}">
         </div>
-        ${type === 'watchlist' ? '<div class="remove-btn"><i class="fas fa-times"></i></div>' : ''}
+        <div class="anime-card-info">
+            <h4>${anime.name}</h4>
+            <div class="anime-card-rating">
+                <i class="fas fa-star"></i>
+                <span>${anime.rating || '0.0'}</span>
+            </div>
+        </div>
+        ${isWatchlist ? '<button class="remove-btn"><i class="fas fa-times"></i></button>' : ''}
     `;
     
-    // Add event listener to redirect to anime info page
-    card.addEventListener('click', function(e) {
-        // Don't redirect if remove button is clicked
+    // Add event listener to open anime info page
+    card.addEventListener('click', (e) => {
+        // Don't redirect if clicking on remove button
         if (e.target.closest('.remove-btn')) {
             return;
         }
         window.location.href = `anime_info.html?id=${anime.id}`;
     });
     
-    // Add event listener to remove button
-    if (type === 'watchlist') {
+    // Add event listener to remove button if it exists
+    if (isWatchlist) {
         const removeBtn = card.querySelector('.remove-btn');
-        removeBtn.addEventListener('click', function(e) {
-            e.stopPropagation();
+        removeBtn.addEventListener('click', (e) => {
+            e.stopPropagation(); // Prevent card click
             removeFromWatchlist(anime.id);
         });
     }
@@ -176,581 +202,713 @@ function createAnimeCard(anime, type, progress = null) {
     return card;
 }
 
-// Remove anime from watchlist
-function removeFromWatchlist(animeId) {
-    const currentUser = checkLogin();
-    if (!currentUser) return;
+// Create history card
+function createHistoryCard(anime, historyItem) {
+    const card = document.createElement('div');
+    card.className = 'history-card';
+    card.dataset.id = anime.id;
     
-    // Simulate API call to remove from watchlist
-    // In a real application, you'd make a server request
+    // Format date
+    const watchDate = new Date(historyItem.timestamp);
+    const formattedDate = watchDate.toLocaleDateString();
+    
+    card.innerHTML = `
+        <div class="history-card-image">
+            <img src="${anime.image || './assets/default-anime.png'}" alt="${anime.name}">
+        </div>
+        <div class="history-card-info">
+            <h4>${anime.name}</h4>
+            <p>Episode ${historyItem.episode || 1}: ${historyItem.episodeTitle || 'Episode'}</p>
+            <div class="history-card-details">
+                <span class="watched-on">Watched on ${formattedDate}</span>
+                <div class="progress-bar">
+                    <div class="progress" style="width: ${historyItem.progress || 0}%"></div>
+                </div>
+            </div>
+        </div>
+        <button class="continue-btn">Continue</button>
+    `;
+    
+    // Add event listener to continue button
+    const continueBtn = card.querySelector('.continue-btn');
+    continueBtn.addEventListener('click', () => {
+        window.location.href = `watch.html?id=${anime.id}&ep=${historyItem.episode || 1}`;
+    });
+    
+    // Add event listener to open anime info page
+    card.addEventListener('click', (e) => {
+        // Don't redirect if clicking on continue button
+        if (e.target.closest('.continue-btn')) {
+            return;
+        }
+        window.location.href = `anime_info.html?id=${anime.id}`;
+    });
+    
+    return card;
+}
+
+// Remove anime from watchlist - UPDATED
+function removeFromWatchlist(animeId) {
+    // Use common utility if available
+    if (window.common && typeof window.common.removeFromWatchlist === 'function') {
+        if (window.common.removeFromWatchlist(animeId)) {
+            // Reload the watchlist to reflect changes
+            loadWatchlist(getCurrentUser());
+        }
+        return;
+    }
+    
+    // Fallback to original implementation
+    const currentUser = getCurrentUser();
+    if (!currentUser) {
+        return;
+    }
+    
+    // Filter out the selected anime
+    currentUser.watchlist = (currentUser.watchlist || []).filter(id => id !== animeId);
+    
+    // Update local storage
+    localStorage.setItem('currentUser', JSON.stringify(currentUser));
+    
+    // Update UI
+    loadWatchlist(currentUser);
+    
+    // Update notification count
+    updateNotificationCount();
+    
+    // Show removal notification
+    showToast('Removed from watchlist');
+    
+    // Update watchlist in db.json
+    updateUserInDb(currentUser);
+}
+
+// Update user in db.json
+function updateUserInDb(user) {
+    // Use common utility if available
+    if (window.common && typeof window.common.updateUserInDb === 'function') {
+        window.common.updateUserInDb(user);
+        return;
+    }
+    
+    // Fallback to original implementation
     fetch('db.json')
         .then(response => response.json())
         .then(data => {
-            // Find the user in the database
-            const userIndex = data.users.findIndex(user => user.email === currentUser.email);
-            if (userIndex === -1) return;
+            const users = data.users || [];
+            const userIndex = users.findIndex(u => u.email === user.email);
             
-            // Remove anime from watchlist
-            const watchlist = data.users[userIndex].watchlist || [];
-            const updatedWatchlist = watchlist.filter(id => id !== animeId);
-            
-            // Update local storage
-            currentUser.watchlist = updatedWatchlist;
-            localStorage.setItem('currentUser', JSON.stringify(currentUser));
-            
-            // Update UI
-            const animeCard = document.querySelector(`.anime-card[data-id="${animeId}"]`);
-            if (animeCard) {
-                animeCard.style.animation = 'fadeOut 0.3s ease-in-out forwards';
-                setTimeout(() => {
-                    animeCard.remove();
-                    
-                    // Show empty state if watchlist is empty
-                    const watchlistContainer = document.querySelector('.watchlist-container');
-                    if (watchlistContainer.children.length === 0) {
-                        document.querySelector('#watchlist .empty-state').classList.remove('hidden');
-                    }
-                }, 300);
+            if (userIndex !== -1) {
+                // Update user in the array
+                data.users[userIndex] = user;
+                
+                // Update db.json (this is a mock since we can't directly update json file with client-side JS)
+                // In a real app, you would use a server-side API endpoint to update the db
+                console.log('User data updated in database:', user);
             }
-            
-            // Show notification
-            showToast('Removed from watchlist');
         })
         .catch(error => {
-            console.error('Error removing from watchlist:', error);
-            showToast('Failed to remove from watchlist', 'error');
+            console.error('Error updating user in database:', error);
         });
 }
 
-// Setup tab navigation
+// Setup tab switching
 function setupTabs() {
-    const tabBtns = document.querySelectorAll('.tab-btn');
+    const tabButtons = document.querySelectorAll('.tab-btn');
     const tabPanes = document.querySelectorAll('.tab-pane');
     
-    tabBtns.forEach(btn => {
-        btn.addEventListener('click', function() {
-            // Remove active class from all tabs
-            tabBtns.forEach(b => b.classList.remove('active'));
-            tabPanes.forEach(p => p.classList.remove('active'));
+    tabButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            // Remove active class from all buttons
+            tabButtons.forEach(button => button.classList.remove('active'));
+            // Add active class to clicked button
+            btn.classList.add('active');
             
-            // Add active class to current tab
-            this.classList.add('active');
+            // Hide all tab panes
+            tabPanes.forEach(pane => pane.classList.remove('active'));
             
-            // Show corresponding tab pane
-            const tabId = this.getAttribute('data-tab');
+            // Show the corresponding tab pane
+            const tabId = btn.dataset.tab;
             document.getElementById(tabId).classList.add('active');
         });
     });
 }
 
-// Setup logout button
+// Setup logout functionality
 function setupLogout() {
     const logoutBtn = document.querySelector('.logout-btn');
-    logoutBtn.addEventListener('click', function() {
-        // Clear local storage
+    
+    logoutBtn.addEventListener('click', () => {
+        // Clear current user from local storage
         localStorage.removeItem('currentUser');
         
-        // Show notification
-        showToast('Logged out successfully');
-        
         // Redirect to login page
-        setTimeout(() => {
-            window.location.href = 'auth.html';
-        }, 1000);
+        window.location.href = 'auth.html';
     });
 }
 
-// Setup form submission
-function setupFormSubmission(user) {
+// Setup account settings form
+function setupAccountSettings(user) {
     const updateForm = document.getElementById('update-form');
-    updateForm.addEventListener('submit', function(e) {
+    const nameInput = document.getElementById('update-name');
+    const emailInput = document.getElementById('update-email');
+    const phoneInput = document.getElementById('update-phone');
+    
+    // Populate form with user data
+    nameInput.value = user.name || '';
+    emailInput.value = user.email || '';
+    phoneInput.value = user.phone || '';
+    
+    // Handle form submission
+    updateForm.addEventListener('submit', (e) => {
         e.preventDefault();
         
-        const name = document.getElementById('update-name').value.trim();
-        const phone = document.getElementById('update-phone').value.trim();
         const currentPassword = document.getElementById('current-password').value;
         const newPassword = document.getElementById('new-password').value;
         const confirmPassword = document.getElementById('confirm-password').value;
         
         // Validate form
-        if (!name) {
-            showToast('Name is required', 'error');
+        if (newPassword !== confirmPassword) {
+            showToast('New passwords do not match', 'error');
             return;
         }
         
-        // Check if user wants to change password
-        if (currentPassword || newPassword || confirmPassword) {
-            // Validate current password
-            if (currentPassword !== user.password) {
-                showToast('Current password is incorrect', 'error');
-                return;
-            }
-            
-            // Validate new password
-            if (newPassword !== confirmPassword) {
-                showToast('New passwords do not match', 'error');
-                return;
-            }
-            
-            // Validate password strength
-            if (newPassword.length < 6) {
-                showToast('Password must be at least 6 characters long', 'error');
-                return;
-            }
+        if (currentPassword && !newPassword) {
+            showToast('Please enter a new password', 'error');
+            return;
+        }
+        
+        if (newPassword && !currentPassword) {
+            showToast('Please enter your current password', 'error');
+            return;
+        }
+        
+        // Validate current password
+        if (currentPassword && currentPassword !== user.password) {
+            showToast('Current password is incorrect', 'error');
+            return;
         }
         
         // Update user data
-        const updatedUser = {
-            ...user,
-            name,
-            phone
-        };
+        user.name = nameInput.value;
+        user.phone = phoneInput.value;
         
         // Update password if provided
         if (newPassword) {
-            updatedUser.password = newPassword;
+            user.password = newPassword;
         }
         
-        // Simulate API call to update user data
-        // In a real application, you'd make a server request
-        
-        // Update local storage
-        localStorage.setItem('currentUser', JSON.stringify(updatedUser));
+        // Update user in local storage
+        localStorage.setItem('currentUser', JSON.stringify(user));
         
         // Update UI
-        document.getElementById('user-name').textContent = name;
+        loadUserData(user);
         
-        // Clear password fields
+        // Update user in db
+        updateUserInDb(user);
+        
+        // Reset password fields
         document.getElementById('current-password').value = '';
         document.getElementById('new-password').value = '';
         document.getElementById('confirm-password').value = '';
         
-        // Show notification
-        showToast('Profile updated successfully');
+        // Show success message
+        showToast('Account settings updated successfully');
     });
 }
 
-// Setup profile picture upload
-function setupProfilePicUpload() {
+// Setup profile picture change
+function setupProfilePicChange() {
+    const profilePic = document.getElementById('profile-pic');
     const editPicBtn = document.querySelector('.edit-pic');
     
-    editPicBtn.addEventListener('click', function() {
-        // In a real application, you'd open a file picker
-        // For demonstration, we'll use a random avatar
-        const randomAvatar = `https://i.pravatar.cc/150?u=${Date.now()}`;
+    editPicBtn.addEventListener('click', () => {
+        // Create a file input
+        const fileInput = document.createElement('input');
+        fileInput.type = 'file';
+        fileInput.accept = 'image/*';
         
-        // Update profile picture
-        document.getElementById('profile-pic').src = randomAvatar;
-        document.querySelector('.user-avatar').src = randomAvatar;
-        
-        // Update user data
-        const currentUser = checkLogin();
-        if (currentUser) {
-            currentUser.profilePic = randomAvatar;
-            localStorage.setItem('currentUser', JSON.stringify(currentUser));
-        }
-        
-        // Show notification
-        showToast('Profile picture updated');
-    });
-}
-
-// Show toast notification
-function showToast(message, type = 'success') {
-    // Check if toast container exists
-    let toastContainer = document.querySelector('.toast-container');
-    if (!toastContainer) {
-        // Create toast container
-        toastContainer = document.createElement('div');
-        toastContainer.classList.add('toast-container');
-        document.body.appendChild(toastContainer);
-    }
-    
-    // Create toast
-    const toast = document.createElement('div');
-    toast.classList.add('toast', type);
-    toast.innerHTML = `
-        <div class="toast-content">
-            <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i>
-            <span>${message}</span>
-        </div>
-        <div class="toast-progress"></div>
-    `;
-    
-    // Add toast to container
-    toastContainer.appendChild(toast);
-    
-    // Auto remove toast after 3 seconds
-    setTimeout(() => {
-        toast.style.animation = 'fadeOut 0.3s ease-in-out forwards';
-        setTimeout(() => {
-            toast.remove();
-            
-            // Remove container if empty
-            if (toastContainer.children.length === 0) {
-                toastContainer.remove();
+        // Handle file selection
+        fileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    // Update profile picture
+                    profilePic.src = event.target.result;
+                    
+                    // Save to local storage
+                    const currentUser = getCurrentUser();
+                    if (currentUser) {
+                        currentUser.profilePic = event.target.result;
+                        localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                        
+                        // Update in db
+                        updateUserInDb(currentUser);
+                    }
+                };
+                reader.readAsDataURL(file);
             }
-        }, 300);
-    }, 3000);
+        });
+        
+        // Click the file input
+        fileInput.click();
+    });
+    
+    // Load profile picture if available
+    const currentUser = getCurrentUser();
+    if (currentUser && currentUser.profilePic) {
+        profilePic.src = currentUser.profilePic;
+    }
 }
 
 // Setup notifications
-function setupNotifications(user) {
-    const notificationBtn = document.querySelector('.notification');
-    const notificationPanel = document.querySelector('.notification-panel');
-    const notificationsContainer = document.querySelector('.notifications-container');
-    const notificationCount = document.querySelector('.notification-count');
+function setupNotifications() {
+    const notificationBtn = document.getElementById('notificationBtn');
+    const notificationPanel = document.getElementById('notificationPanel');
+    const notificationList = document.getElementById('notificationList');
     
     // Toggle notification panel
-    notificationBtn.addEventListener('click', function() {
+    notificationBtn.addEventListener('click', () => {
         notificationPanel.classList.toggle('active');
         
-        // Mark all notifications as read when panel is opened
+        // Mark notifications as read
         if (notificationPanel.classList.contains('active')) {
-            markAllNotificationsAsRead();
+            markNotificationsAsRead();
         }
     });
     
     // Close notification panel when clicking outside
-    document.addEventListener('click', function(e) {
+    document.addEventListener('click', (e) => {
         if (!notificationBtn.contains(e.target) && !notificationPanel.contains(e.target)) {
             notificationPanel.classList.remove('active');
         }
     });
     
-    // Fetch notifications
-    fetchNotifications(user.email)
-        .then(notifications => {
-            // Update notification count
-            const unreadCount = notifications.filter(notification => !notification.read).length;
-            notificationCount.textContent = unreadCount;
+    // Load notifications
+    loadNotifications();
+    
+    // Update notification count
+    updateNotificationCount();
+}
+
+// Load notifications
+function loadNotifications() {
+    const notificationList = document.getElementById('notificationList');
+    const currentUser = getCurrentUser();
+    
+    // Clear existing notifications
+    notificationList.innerHTML = '';
+    
+    if (!currentUser) {
+        notificationList.innerHTML = '<p class="no-notifications">No new notifications</p>';
+        return;
+    }
+    
+    // Get user watchlist
+    const watchlist = currentUser.watchlist || [];
+    
+    // Fetch anime data
+    fetch('db.json')
+        .then(response => response.json())
+        .then(data => {
+            const animeList = data.anime || [];
+            const notifications = [];
             
-            // Show notification count
-            if (unreadCount > 0) {
-                notificationCount.classList.add('active');
-            } else {
-                notificationCount.classList.remove('active');
-            }
+            // Check for new episodes of watchlisted anime
+            watchlist.forEach(animeId => {
+                const anime = animeList.find(a => a.id === animeId);
+                if (anime) {
+                    // Assume any anime updated in the last week has new episodes
+                    const updatedTime = anime.lastUpdated ? new Date(anime.lastUpdated) : new Date();
+                    const oneWeekAgo = new Date();
+                    oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+                    
+                    if (updatedTime > oneWeekAgo) {
+                        notifications.push({
+                            animeId: anime.id,
+                            animeName: anime.name,
+                            message: `New episode of ${anime.name} is now available!`,
+                            timestamp: updatedTime.getTime(),
+                            read: false
+                        });
+                    }
+                }
+            });
+            
+            // Add any stored notifications
+            const storedNotifications = currentUser.notifications || [];
+            notifications.push(...storedNotifications);
+            
+            // Sort notifications by timestamp (newest first)
+            notifications.sort((a, b) => b.timestamp - a.timestamp);
+            
+            // Save notifications to user
+            currentUser.notifications = notifications;
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
             
             // Display notifications
-            notificationsContainer.innerHTML = '';
-            
             if (notifications.length === 0) {
-                notificationsContainer.innerHTML = '<div class="empty-notification">No notifications</div>';
+                notificationList.innerHTML = '<p class="no-notifications">No new notifications</p>';
                 return;
             }
             
             notifications.forEach(notification => {
-                const notificationItem = createNotificationItem(notification);
-                notificationsContainer.appendChild(notificationItem);
+                const notificationItem = document.createElement('div');
+                notificationItem.className = `notification-item ${notification.read ? 'read' : ''}`;
+                
+                const notificationDate = new Date(notification.timestamp);
+                const formattedDate = notificationDate.toLocaleDateString();
+                
+                notificationItem.innerHTML = `
+                    <p>${notification.message}</p>
+                    <span class="notification-time">${formattedDate}</span>
+                `;
+                
+                // Add click event to navigate to anime
+                if (notification.animeId) {
+                    notificationItem.addEventListener('click', () => {
+                        window.location.href = `anime_info.html?id=${notification.animeId}`;
+                    });
+                }
+                
+                notificationList.appendChild(notificationItem);
             });
+            
+            // Update notification count
+            updateNotificationCount();
         })
         .catch(error => {
-            console.error('Error fetching notifications:', error);
+            console.error('Error loading notifications:', error);
+            notificationList.innerHTML = '<p class="no-notifications">Error loading notifications</p>';
         });
+}
+
+// Mark notifications as read
+function markNotificationsAsRead() {
+    const currentUser = getCurrentUser();
+    if (!currentUser) {
+        return;
+    }
     
     // Mark all notifications as read
-    function markAllNotificationsAsRead() {
-        // Simulate API call to mark all notifications as read
-        // In a real application, you'd make a server request
+    if (currentUser.notifications) {
+        currentUser.notifications.forEach(notification => {
+            notification.read = true;
+        });
+        
+        // Update local storage
+        localStorage.setItem('currentUser', JSON.stringify(currentUser));
+        
+        // Update notification count
+        updateNotificationCount();
         
         // Update UI
-        notificationCount.textContent = '0';
-        notificationCount.classList.remove('active');
-        
         const notificationItems = document.querySelectorAll('.notification-item');
         notificationItems.forEach(item => {
-            item.classList.remove('unread');
+            item.classList.add('read');
         });
     }
 }
 
-// Create notification item
-function createNotificationItem(notification) {
-    const item = document.createElement('div');
-    item.classList.add('notification-item');
+// Update notification count
+function updateNotificationCount() {
+    const notificationCount = document.querySelector('.notification-count');
+    const currentUser = getCurrentUser();
     
-    if (!notification.read) {
-        item.classList.add('unread');
+    if (!currentUser || !currentUser.notifications) {
+        notificationCount.textContent = '0';
+        return;
     }
     
-    item.innerHTML = `
-        <div class="notification-icon">
-            <i class="fas ${notification.icon || 'fa-bell'}"></i>
-        </div>
-        <div class="notification-content">
-            <p>${notification.message}</p>
-            <span class="notification-time">${formatTimeAgo(notification.time)}</span>
-        </div>
-    `;
+    // Count unread notifications
+    const unreadCount = currentUser.notifications.filter(notification => !notification.read).length;
     
-    return item;
-}
-
-// Format time ago
-function formatTimeAgo(timestamp) {
-    const now = new Date();
-    const time = new Date(timestamp);
-    const diff = Math.floor((now - time) / 1000); // difference in seconds
+    // Update UI
+    notificationCount.textContent = unreadCount.toString();
     
-    if (diff < 60) {
-        return 'Just now';
-    } else if (diff < 3600) {
-        const minutes = Math.floor(diff / 60);
-        return `${minutes} ${minutes === 1 ? 'minute' : 'minutes'} ago`;
-    } else if (diff < 86400) {
-        const hours = Math.floor(diff / 3600);
-        return `${hours} ${hours === 1 ? 'hour' : 'hours'} ago`;
-    } else if (diff < 604800) {
-        const days = Math.floor(diff / 86400);
-        return `${days} ${days === 1 ? 'day' : 'days'} ago`;
+    // Show/hide notification count
+    if (unreadCount > 0) {
+        notificationCount.classList.add('active');
     } else {
-        // Format date
-        const options = { year: 'numeric', month: 'short', day: 'numeric' };
-        return time.toLocaleDateString(undefined, options);
+        notificationCount.classList.remove('active');
     }
 }
 
-// Setup search functionality
-function setupSearch() {
-    const searchInput = document.querySelector('.search-input');
-    const searchResults = document.querySelector('.search-results');
+// Show toast message -
+// Show toast message
+function showToast(message, type = 'success') {
+    // Create toast element if it doesn't exist
+    let toast = document.getElementById('toast');
+    if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'toast';
+        document.body.appendChild(toast);
+    }
     
-    // Add event listener to search input
-    searchInput.addEventListener('input', function() {
-        const query = this.value.trim();
+    // Set toast message and type
+    toast.textContent = message;
+    toast.className = `toast ${type}`;
+    
+    // Show toast
+    toast.classList.add('show');
+    
+    // Hide toast after 3 seconds
+    setTimeout(() => {
+        toast.classList.remove('show');
+    }, 3000);
+}
+
+// Add a debugging function to help identify issues
+function debugWatchlist() {
+    const currentUser = getCurrentUser();
+    if (!currentUser) {
+        console.log('No user logged in');
+        return;
+    }
+    
+    console.log('Current user:', currentUser);
+    console.log('Watchlist data:', currentUser.watchlist);
+    
+    // Check for data type issues
+    if (currentUser.watchlist) {
+        currentUser.watchlist.forEach((id, index) => {
+            console.log(`Watchlist item ${index}:`, id, typeof id);
+        });
+    }
+    
+    // Add a check for localStorage sync
+    const storedUser = JSON.parse(localStorage.getItem('currentUser'));
+    console.log('Stored user watchlist:', storedUser.watchlist);
+    
+    // Check if the two match
+    const watchlistMatches = JSON.stringify(currentUser.watchlist) === JSON.stringify(storedUser.watchlist);
+    console.log('Watchlists match:', watchlistMatches);
+}
+
+// Fix - Add a function to sync local storage with current user object
+function syncUserWithStorage() {
+    const currentUser = getCurrentUser();
+    if (currentUser) {
+        localStorage.setItem('currentUser', JSON.stringify(currentUser));
+        console.log('User data synced with localStorage');
+    }
+}
+
+// Fix - Add compatibility function to ensure consistent ID formats
+function normalizeAnimeId(id) {
+    // Ensure ID is always a number for consistency
+    return typeof id === 'string' ? parseInt(id, 10) : id;
+}
+
+// Fix - Modified loadWatchlist function with improved error handling and logging
+function loadWatchlist(user) {
+    // Make sure we have the latest user data from localStorage
+    const currentUser = getCurrentUser();
+    if (currentUser) {
+        // Use the latest user data
+        user = currentUser;
+    }
+  
+    const watchlistContainer = document.querySelector('.watchlist-container');
+    const emptyState = document.querySelector('#watchlist .empty-state');
+    
+    if (!watchlistContainer || !emptyState) {
+        console.error('Watchlist DOM elements not found');
+        return;
+    }
+    
+    // Clear existing content
+    watchlistContainer.innerHTML = '';
+    
+    // Get user watchlist - ensure it exists and is an array
+    const watchlist = Array.isArray(user.watchlist) ? user.watchlist : [];
+    
+    // Debug - Log watchlist to console
+    console.log('Loading watchlist items:', watchlist);
+    
+    if (watchlist.length === 0) {
+        emptyState.classList.remove('hidden');
+        return;
+    }
+    
+    emptyState.classList.add('hidden');
+    
+    // Fetch anime data from db
+    fetch('db.json')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            const animeList = data.anime || [];
+            console.log('Fetched anime list:', animeList);
+            
+            // Check if we found any matching anime
+            let matchFound = false;
+            
+            // Loop through watchlist IDs and create cards
+            watchlist.forEach(animeId => {
+                // Convert animeId to number for consistent comparison
+                const searchId = normalizeAnimeId(animeId);
+                
+                // Find the anime in the list
+                const anime = animeList.find(a => {
+                    const dataId = normalizeAnimeId(a.id);
+                    return dataId === searchId;
+                });
+                
+                if (anime) {
+                    matchFound = true;
+                    const animeCard = createAnimeCard(anime, true);
+                    watchlistContainer.appendChild(animeCard);
+                    console.log(`Added anime ${anime.name} (ID: ${anime.id}) to watchlist display`);
+                } else {
+                    console.warn(`Anime with ID ${animeId} not found in database`);
+                }
+            });
+            
+            // Show empty state if no matches were found
+            if (!matchFound) {
+                console.warn('No matching anime found in database for watchlist items');
+                emptyState.classList.remove('hidden');
+            }
+        })
+        .catch(error => {
+            console.error('Error loading watchlist:', error);
+            emptyState.classList.remove('hidden');
+        });
+}
+
+// Fix - Modified removeFromWatchlist function for better consistency
+function removeFromWatchlist(animeId) {
+    // Normalize the ID to ensure consistent format
+    const normalizedId = normalizeAnimeId(animeId);
+    
+    // Use common utility if available
+    if (window.common && typeof window.common.removeFromWatchlist === 'function') {
+        if (window.common.removeFromWatchlist(normalizedId)) {
+            // Reload the watchlist to reflect changes
+            loadWatchlist(getCurrentUser());
+        }
+        return;
+    }
+    
+    // Fallback to original implementation
+    const currentUser = getCurrentUser();
+    if (!currentUser) {
+        console.error('No user logged in');
+        return;
+    }
+    
+    // Ensure watchlist exists and is an array
+    if (!Array.isArray(currentUser.watchlist)) {
+        currentUser.watchlist = [];
+    }
+    
+    // Filter out the selected anime, ensuring we compare with consistent types
+    currentUser.watchlist = currentUser.watchlist.filter(id => {
+        // Normalize both IDs for comparison
+        return normalizeAnimeId(id) !== normalizedId;
+    });
+    
+    console.log(`Removed anime ID ${normalizedId} from watchlist`);
+    console.log('Updated watchlist:', currentUser.watchlist);
+    
+    // Update local storage
+    localStorage.setItem('currentUser', JSON.stringify(currentUser));
+    
+    // Update UI
+    loadWatchlist(currentUser);
+    
+    // Update notification count
+    updateNotificationCount();
+    
+    // Show removal notification
+    showToast('Removed from watchlist');
+    
+    // Update watchlist in db.json
+    updateUserInDb(currentUser);
+}
+
+// Add a new function to check if anime is in watchlist
+function isInWatchlist(animeId) {
+    const currentUser = getCurrentUser();
+    if (!currentUser || !Array.isArray(currentUser.watchlist)) {
+        return false;
+    }
+    
+    // Normalize the ID to ensure consistent format
+    const normalizedId = normalizeAnimeId(animeId);
+    
+    // Check if the anime ID exists in the watchlist
+    return currentUser.watchlist.some(id => normalizeAnimeId(id) === normalizedId);
+}
+
+// Add a function to add anime to watchlist (for completeness)
+function addToWatchlist(animeId) {
+    // Normalize the ID to ensure consistent format
+    const normalizedId = normalizeAnimeId(animeId);
+    
+    // Use common utility if available
+    if (window.common && typeof window.common.addToWatchlist === 'function') {
+        if (window.common.addToWatchlist(normalizedId)) {
+            // If using the profile page, reload the watchlist to reflect changes
+            if (document.querySelector('.watchlist-container')) {
+                loadWatchlist(getCurrentUser());
+            }
+        }
+        return;
+    }
+    
+    // Fallback to original implementation
+    const currentUser = getCurrentUser();
+    if (!currentUser) {
+        console.error('No user logged in');
+        return false;
+    }
+    
+    // Ensure watchlist exists and is an array
+    if (!Array.isArray(currentUser.watchlist)) {
+        currentUser.watchlist = [];
+    }
+    
+    // Check if anime is already in watchlist
+    if (!isInWatchlist(normalizedId)) {
+        // Add anime to watchlist
+        currentUser.watchlist.push(normalizedId);
         
-        // Hide search results if query is empty
-        if (!query) {
-            searchResults.classList.remove('active');
-            return;
+        console.log(`Added anime ID ${normalizedId} to watchlist`);
+        console.log('Updated watchlist:', currentUser.watchlist);
+        
+        // Update local storage
+        localStorage.setItem('currentUser', JSON.stringify(currentUser));
+        
+        // Update notification count
+        if (typeof updateNotificationCount === 'function') {
+            updateNotificationCount();
         }
         
-        // Search for anime
-        searchAnime(query)
-            .then(results => {
-                // Show search results
-                searchResults.classList.add('active');
-                
-                // Display search results
-                searchResults.innerHTML = '';
-                
-                if (results.length === 0) {
-                    searchResults.innerHTML = '<div class="empty-search">No results found</div>';
-                    return;
-                }
-                
-                // Display search results
-                results.slice(0, 5).forEach(anime => {
-                    const searchItem = createSearchItem(anime);
-                    searchResults.appendChild(searchItem);
-                });
-                
-                // Add "See all results" button
-                if (results.length > 5) {
-                    const seeAllBtn = document.createElement('div');
-                    seeAllBtn.classList.add('see-all-btn');
-                    seeAllBtn.textContent = 'See all results';
-                    seeAllBtn.addEventListener('click', function() {
-                        window.location.href = `search.html?q=${encodeURIComponent(query)}`;
-                    });
-                    searchResults.appendChild(seeAllBtn);
-                }
-            })
-            .catch(error => {
-                console.error('Error searching anime:', error);
-                searchResults.innerHTML = '<div class="empty-search">Error searching</div>';
-            });
-    });
+        // Show success notification
+        showToast('Added to watchlist');
+        
+        // Update watchlist in db.json
+        updateUserInDb(currentUser);
+        
+        return true;
+    }
     
-    // Close search results when clicking outside
-    document.addEventListener('click', function(e) {
-        if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) {
-            searchResults.classList.remove('active');
-        }
-    });
-    
-    // Clear search input when pressing Escape
-    searchInput.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') {
-            this.value = '';
-            searchResults.classList.remove('active');
-        }
-    });
+    return false;
 }
 
-// Create search item
-function createSearchItem(anime) {
-    const item = document.createElement('div');
-    item.classList.add('search-item');
+// Initialize debugging on page load
+document.addEventListener('DOMContentLoaded', () => {
+    // Call the original event listener code
     
-    item.innerHTML = `
-        <img src="${anime.image}" alt="${anime.name}">
-        <div class="search-item-info">
-            <h4>${anime.name}</h4>
-            <div class="search-item-meta">
-                <span>${anime.year}</span>
-                <span>${anime.episodes.length} episodes</span>
-            </div>
-        </div>
-    `;
-    
-    // Add event listener to redirect to anime info page
-    item.addEventListener('click', function() {
-        window.location.href = `anime_info.html?id=${anime.id}`;
-    });
-    
-    return item;
-}
-
-// Fetch user watchlist
-function fetchUserWatchlist(email) {
-    return new Promise((resolve, reject) => {
-        // Simulate API call to fetch watchlist
-        // In a real application, you'd make a server request
-        fetch('db.json')
-            .then(response => response.json())
-            .then(data => {
-                // Find user in the database
-                const user = data.users.find(user => user.email === email);
-                if (!user) {
-                    resolve([]);
-                    return;
-                }
-                
-                // Get watchlist
-                const watchlist = user.watchlist || [];
-                
-                // Fetch anime info for each watchlist item
-                const animePromises = watchlist.map(animeId => {
-                    // Find anime in database
-                    const anime = data.animes.find(anime => anime.id === animeId);
-                    return anime || null;
-                });
-                
-                // Wait for all anime info to be fetched
-                Promise.all(animePromises)
-                    .then(animes => {
-                        // Filter out null values
-                        const validAnimes = animes.filter(anime => anime !== null);
-                        resolve(validAnimes);
-                    })
-                    .catch(error => {
-                        reject(error);
-                    });
-            })
-            .catch(error => {
-                reject(error);
-            });
-    });
-}
-
-// Fetch watch history
-function fetchWatchHistory(email) {
-    return new Promise((resolve, reject) => {
-        // Simulate API call to fetch watch history
-        // In a real application, you'd make a server request
-        fetch('db.json')
-            .then(response => response.json())
-            .then(data => {
-                // Find user in the database
-                const user = data.users.find(user => user.email === email);
-                if (!user) {
-                    resolve([]);
-                    return;
-                }
-                
-                // Get watch history
-                const history = user.watchHistory || [];
-                
-                // Fetch anime info for each history item
-                const historyPromises = history.map(item => {
-                    // Find anime in database
-                    const anime = data.animes.find(anime => anime.id === item.animeId);
-                    if (!anime) {
-                        return null;
-                    }
-                    
-                    // Return history item with anime info
-                    return {
-                        anime,
-                        progress: item.progress
-                    };
-                });
-                
-                // Wait for all anime info to be fetched
-                Promise.all(historyPromises)
-                    .then(historyItems => {
-                        // Filter out null values
-                        const validHistoryItems = historyItems.filter(item => item !== null);
-                        resolve(validHistoryItems);
-                    })
-                    .catch(error => {
-                        reject(error);
-                    });
-            })
-            .catch(error => {
-                reject(error);
-            });
-    });
-}
-
-// Fetch notifications
-function fetchNotifications(email) {
-    return new Promise((resolve, reject) => {
-        // Simulate API call to fetch notifications
-        // In a real application, you'd make a server request
-        fetch('db.json')
-            .then(response => response.json())
-            .then(data => {
-                // Find user in the database
-                const user = data.users.find(user => user.email === email);
-                if (!user) {
-                    resolve([]);
-                    return;
-                }
-                
-                // Get notifications
-                const notifications = user.notifications || [];
-                
-                // Sort notifications by time (newest first)
-                notifications.sort((a, b) => new Date(b.time) - new Date(a.time));
-                
-                resolve(notifications);
-            })
-            .catch(error => {
-                reject(error);
-            });
-    });
-}
-
-// Search anime
-function searchAnime(query) {
-    return new Promise((resolve, reject) => {
-        // Simulate API call to search anime
-        // In a real application, you'd make a server request
-        fetch('db.json')
-            .then(response => response.json())
-            .then(data => {
-                // Search anime
-                const results = data.animes.filter(anime => {
-                    // Search in name
-                    if (anime.name.toLowerCase().includes(query.toLowerCase())) {
-                        return true;
-                    }
-                    
-                    // Search in genres
-                    if (anime.genres.some(genre => genre.toLowerCase().includes(query.toLowerCase()))) {
-                        return true;
-                    }
-                    
-                    return false;
-                });
-                
-                resolve(results);
-            })
-            .catch(error => {
-                reject(error);
-            });
-    });
-}
+    // Add debug function call
+    setTimeout(() => {
+        debugWatchlist();
+    }, 1000);
+});
