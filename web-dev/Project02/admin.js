@@ -492,7 +492,7 @@ function initializeFormSubmissions() {
         const episodeData = {
             number: parseInt(document.getElementById('episode-number').value),
             title: document.getElementById('episode-title').value,
-            video: document.getElementById('episode-video').value
+            videoSrc: document.getElementById('episode-video').value
         };
         
         try {
@@ -875,7 +875,7 @@ async function editEpisode(animeId, episodeNumber) {
             document.getElementById('episode-anime-id').value = animeId;
             document.getElementById('episode-number').value = episode.number;
             document.getElementById('episode-title').value = episode.title;
-            document.getElementById('episode-video').value = episode.video;
+            document.getElementById('episode-video').value = episode.videoSrc;
             
             // Switch to add episode tab
             document.querySelector('[data-tab="add-episode"]').click();

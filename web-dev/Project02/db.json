@@ -392,6 +392,30 @@
       "releaseYear": 2010,
       "image": "images/codeGeass",
       "episodes": []
+    },
+    {
+      "id": "8f27",
+      "name": "Fire Force Season 3",
+      "description": "When humans simultaneously combust into flames and then gain the ability to manipulate fire, Shinra Kusakabe and his companions strive to save people from the widespread phenomenon.",
+      "rating": 4.8,
+      "genera": [
+        "action",
+        "fantasy"
+      ],
+      "releaseYear": 2024,
+      "image": "assets/images/Fire_Force_S3.png",
+      "episodes": [
+        {
+          "number": 1,
+          "title": "episode1",
+          "videoSrc": "assets/videos/fire_force_s3_e1.mkv"
+        },
+        {
+          "number": 2,
+          "title": "episode 02",
+          "videoSrc": "assets/videos/fire_force_s3_e2.mkv"
+        }
+      ]
     }
   ]
 }
