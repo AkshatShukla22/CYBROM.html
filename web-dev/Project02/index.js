@@ -206,7 +206,7 @@ function initializeHeroSlider() {
         slide.className = 'swiper-slide';
         
         slide.innerHTML = `
-            <div class="slide-background" style="background-image: url('${anime.image}')"></div>
+            <div class="slide-background" style="background-image: url('${anime.banner_image}')"></div>
             <div class="slide-overlay">
                 <div class="slide-content">
                     <h2>${anime.name}</h2>

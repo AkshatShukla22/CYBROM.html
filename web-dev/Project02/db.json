@@ -32,6 +32,7 @@
         "fantasy"
       ],
       "rating": 4.8,
+      "banner_image": "assets/images/demon_slayer_banner.jpg",
       "image": "assets/images/demon_slayer.jpg",
       "episodes": [
         {
@@ -246,33 +247,7 @@
         "fantasy"
       ],
       "rating": 4.8,
-      "image": "assets/images/fullmetal_alchemist:_brotherhood.jpg",
-      "episodes": [
-        {
-          "number": 1,
-          "title": "Episode 1",
-          "videoSrc": "assets/videos/fullmetal_alchemist:_brotherhood_ep1.mp4",
-          "rating": 4.3
-        },
-        {
-          "number": 2,
-          "title": "Episode 2",
-          "videoSrc": "assets/videos/fullmetal_alchemist:_brotherhood_ep2.mp4",
-          "rating": 4.2
-        }
-      ]
-    },
-    {
-      "id": "11",
-      "name": "Fullmetal Alchemist: Brotherhood",
-      "description": "Two brothers search for the Philosopher’s Stone after a failed alchemy experiment.",
-      "genera": [
-        "action",
-        "adventure",
-        "fantasy"
-      ],
-      "rating": 4.8,
-      "image": "assets/images/fullmetal_alchemist:_brotherhood.jpg",
+      "image": "assets/images/fullmetal_alchemist.jpg",
       "episodes": [
         {
           "number": 1,
@@ -376,7 +351,7 @@
         "adventure"
       ],
       "releaseYear": 2013,
-      "image": "images/hunterxhunter",
+      "image": "assets/images/hunterxhunter.jpg",
       "episodes": []
     },
     {
@@ -390,7 +365,7 @@
         "thriller"
       ],
       "releaseYear": 2010,
-      "image": "images/codeGeass",
+      "image": "assets/images/code_geass.avif",
       "episodes": []
     },
     {
