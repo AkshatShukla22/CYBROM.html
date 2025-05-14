@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        'strict mode'
+        // Q1
+        // let a = "dog";
+        // let len = a.length;
+        // for(let i= 0; i<=len; i++){
+        //     for(let j = i+1; j<=len; j++){
+        //         console.log(a.slice(i,j));
+        //     }
+        // }
+
+        // Q2
+        // let a = "The quick brown fox";
+        // let len = a.length;
+        // let count = 0;
+        // for(let i = 0; i<=len; i++){
+        //     let j = i+1;
+        //     let b = a.slice(i,j);
+        //     if(b==="a" || b==="e" || b==="i" || b==="o" || b==="u"){
+        //         count ++;
+        //     }
+        // }
+        // console.log(count);
+
+        // Q3
+        fun1 = () => {
+            let a = "Hello";
+            console.log(a);
+        }
+        fun2 = (fun1) => {
+            setTimeout(fun1,2000);
+        }
+        fun2(fun1);
+    </script>
+</body>
+</html>
