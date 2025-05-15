@@ -36,12 +36,12 @@
         // console.log(greet("Akshat"));
 
         // Q.8
-        import { add, subtract, multiply, divide } from './index26.js';
+        // import { add, subtract, multiply, divide } from './index26.js';
 
-        console.log(add(10, 5)); 
-        console.log(subtract(10, 5)); 
-        console.log(multiply(10, 5));
-        console.log(divide(10, 5));   
+        // console.log(add(10, 5)); 
+        // console.log(subtract(10, 5)); 
+        // console.log(multiply(10, 5));
+        // console.log(divide(10, 5));   
 
 
         // Q.9
