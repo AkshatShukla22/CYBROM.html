@@ -153,28 +153,44 @@ int main(){
 
 
     //leet code questio 01
-    int n;
-    cout << "Enter the size of array: ";
-    cin >> n;
+    // int n;
+    // cout << "Enter the size of array: ";
+    // cin >> n;
 
-    int a[n];
-    for (int i = 0; i < n; i++) {
-        cin >> a[i];
-    }
-    int target;
-    int c = 0;
-    int b;
-    cout<<"enter target:";
-    cin>>target; 
-    for(int i=0;  i<n; i++){
-         for(int j=i+1;  j<n; j++){
-            if(a[i]+a[j]==target){
-                c=i;
-                b=j;
-            }
-        }
-    }
-    cout<<"target foud at: "<<c<<" and "<<b<<endl;
+    // int a[n];
+    // for (int i = 0; i < n; i++) {
+    //     cin >> a[i];
+    // }
+    // int target;
+    // int c = 0;
+    // int b;
+    // cout<<"enter target:";
+    // cin>>target; 
+    // for(int i=0;  i<n; i++){
+    //      for(int j=i+1;  j<n; j++){
+    //         if(a[i]+a[j]==target){
+    //             c=i;
+    //             b=j;
+    //         }
+    //     }
+    // }
+    // cout<<"target foud at: "<<c<<" and "<<b<<endl;
 
+
+    // paneldrome
+    int a;
+    cin >> a;
+    int rev = 0;
+    int b = a;
+    while (b > 0) {
+        int c = b % 10;
+        rev = (rev * 10) + c;
+        b = b / 10;
+    }
+    if (rev == a) {
+        cout << "palindrome";
+    } else {
+        cout << "not a palindrome";
+    }
 }
     
