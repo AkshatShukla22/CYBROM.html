@@ -94,16 +94,98 @@
         // console.log(arr2);
 
         // Q.14
-        let str = "String";
-        let a = str.slice(0,1);
-        if(/[A-Z]/.test(a)){
-            console.log(true);
-        }
-        else{
-            console.log(false);
-        }
+        // let str = "String";
+        // let a = str.slice(0,1);
+        // if(/[A-Z]/.test(a)){
+        //     console.log(true);
+        // }
+        // else{
+        //     console.log(false);
+        // }
 
-        // Q.15
+        // // Q.15
+        // let number = "4111111111111111";
+        // let message = "";
+
+        // if (number.length === 15 && (number.startsWith("34") || number.startsWith("37"))) {
+        // message = "American Express card detected.";
+        // } else if ((number.length === 13 || number.length === 16) && number.startsWith("4")) {
+        // message = "Visa card detected.";
+        // } else if (number.length === 16 && number.slice(0, 2) >= "51" && number.slice(0, 2) <= "55") {
+        // message = "MasterCard card detected.";
+        // } else if ((number.length === 16 && number.startsWith("6011")) || (number.length === 16 && number.startsWith("5"))) {
+        // message = "Discover card detected.";
+        // } else if (number.length === 14 && (
+        //     number.startsWith("300") || number.startsWith("301") || number.startsWith("302") || 
+        //     number.startsWith("303") || number.startsWith("304") || number.startsWith("305") || 
+        //     number.startsWith("36") || number.startsWith("38"))) {
+        // message = "Diners Club card detected.";
+        // } else if ((number.length === 15 && (number.startsWith("2131") || number.startsWith("1800"))) || 
+        //         (number.length === 16 && number.startsWith("35"))) {
+        // message = "JCB card detected.";
+        // } else {
+        // message = "Invalid card number.";
+        // }
+
+        // console.log(message);
+
+        // Q.16
+        // const emailPattern = /^[A-Za-z0-9!#$%&'*+\-/=?^_`{|}~]+(\.[A-Za-z0-9!#$%&'*+\-/=?^_`{|}~]+)*@[A-Za-z0-9]+(\.[A-Za-z0-9]+)*\.[A-Za-z]{2,}$/;
+        // console.log(emailPattern.test("test.email@example.com"));
+        // console.log(emailPattern.test(".test@example.com"));
+        // console.log(emailPattern.test("test..email@example.com"));
+
+        // Q.17
+        // function findDate(text) {
+        // const words = text.split(" ");
+        // const dates = [];
+
+        // for (let word of words) {
+        //     if (word.includes("/") || word.includes("-")) {
+        //     let parts = word.split(/\/|-/); 
+        //     if (
+        //         parts.length === 3 &&
+        //         parts[0].length <= 2 &&
+        //         parts[1].length <= 2 &&
+        //         (parts[2].length === 2 || parts[2].length === 4)
+        //     ) {
+        //         dates.push(word);
+        //     }
+        //     }
+        // }
+
+        // return dates;
+        // }
+        // console.log(findDate("Today is 16/05/2025 and tomorrow is 17-05-2025."));
+
+        // // Q.18
+        // let sentence = "Count the number of words in this sentence.";
+        // let trimmed = sentence.trim();
+        // let words = trimmed.split(" ");
+        // let count = 0;
+
+        // for (let word of words) {
+        // if (word !== "") {
+        //     count++;
+        // }
+        // }
+
+        // console.log(count);
+
+        // Q.19
+        // function isAlphanumeric(value) {
+        // return /^[a-z0-9]+$/i.test(value);
+        // }
+
+        // console.log(isAlphanumeric("abc123"));
+        // console.log(isAlphanumeric("abc-123"));
+
+        // Q.20
+        let value = "<div>Hello</div>";
+        let isHtml = value.includes("<") && value.includes(">") && value.indexOf("<") < value.indexOf(">");
+        console.log(isHtml); // true
+
+
 
     </script>
 </body>
