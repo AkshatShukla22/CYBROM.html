@@ -1,3 +1,4 @@
+<!-- index26.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,7 +7,25 @@
     <title>Document</title>
 </head>
 <body>
-    <script src="index27.js"></script>
+    <!-- Q.21 -->
+    <!-- <p id="text">Something Something</p>
+    <button onclick="styl()">Style</button> -->
+
+    <!-- Q.22 -->
+    <!-- <form id="form1" onsubmit="getFormValue(event)">
+        First name: <input type="text" name="fname" value="Akshat"><br>
+        Last name: <input type="text" name="lname" value="Shukla"><br>
+        <input type="submit" value="Submit">
+    </form> -->
+
+    <!-- Q.23 -->
+    <!-- <table id="tbl" border="1">
+    <tr><td>Row1 cell1</td> <td>Row1 cell2</td></tr>
+    <tr><td>Row2 cell1</td> <td>Row2 cell2</td></tr>
+    </table>
+    <br>
+    <input type="button" onclick="insrt()" value="Insert row"> -->
+
     <script>
 
         // Q1
@@ -181,9 +200,62 @@
         // console.log(isAlphanumeric("abc-123"));
 
         // Q.20
-        let value = "<div>Hello</div>";
-        let isHtml = value.includes("<") && value.includes(">") && value.indexOf("<") < value.indexOf(">");
-        console.log(isHtml); // true
+        // let value = "<div>Hello</div>";
+        // let isHtml = value.includes("<") && value.includes(">") && value.indexOf("<") < value.indexOf(">");
+        // console.log(isHtml);
+
+        // Q.21
+        // function styl() {
+        // const p = document.getElementById('text');
+        // p.style.color = 'blue';
+        // p.style.fontSize = '40px';
+        // p.style.fontWeight = 'bold';
+        // }
+
+        // Q.22
+        // function getFormValue(e) {
+        // e.preventDefault();
+        // const form = document.getElementById('form1');
+        // const fname = form.fname.value;
+        // const lname = form.lname.value;
+        // alert(`First Name: ${fname}, Last Name: ${lname}`);
+        // }
+
+        // Q.23
+        // function insrt() {
+        // const table = document.getElementById('tbl');
+        // const newRow = table.insertRow();
+        // const cell1 = newRow.insertCell(0);
+        // const cell2 = newRow.insertCell(1);
+        // cell1.innerHTML = 'New cell1';
+        // cell2.innerHTML = 'New cell2';
+        // }
+
+        // Q.24
+        // function insrt(num) {
+        // if (!Number.isInteger(num)) {
+        //     throw new Error('Error: Number is not an integer');
+        // }
+        // return 'Number is integer';
+        // }
+        // try {
+        // console.log(insrt(4.5));
+        // } catch(e) {
+        // console.error(e.message);
+        // }
+
+        // Q.25
+        // function checkSecondNumber(num1, num2) {
+        // if (num2 === 0) {
+        //     throw new Error('Error: Second number cannot be zero');
+        // }
+        // return num1 / num2;
+        // }
+        // try {
+        // console.log(checkSecondNumber(10, 0));
+        // } catch(e) {
+        // console.error(e.message);
+        // }
 
 
 
