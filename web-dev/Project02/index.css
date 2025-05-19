@@ -321,6 +321,7 @@ nav {
 
 .slide-content {
     padding: 0 10%;
+    border-radius: 10px;
     max-width: 600px;
     animation: fadeIn 1s ease;
 }

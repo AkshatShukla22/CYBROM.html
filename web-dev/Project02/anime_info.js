@@ -153,7 +153,7 @@ function displayAnimeDetails(anime) {
     animePoster.alt = anime.name;
     
     // Set backdrop image
-    animeBackdrop.style.backgroundImage = `url(${anime.banner_image})`;
+    animeBackdrop.style.backgroundImage = `url(${anime.image})`;
     
     // Set anime details
     animeTitle.textContent = anime.name;
