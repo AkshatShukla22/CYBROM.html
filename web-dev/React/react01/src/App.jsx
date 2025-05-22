@@ -1,3 +1,5 @@
+import App01 from "./components/components/App01";
+
 const name = "Akshat";
 const age = 20;
 
@@ -12,6 +14,8 @@ const sub = <ol>
 const App = () => {
   return(
     <>
+    <App01 />
+
     <h1>Hello {name} you are {age} years old.</h1>
     my sub = {sub}
 
