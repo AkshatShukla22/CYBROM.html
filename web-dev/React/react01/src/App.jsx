@@ -1,27 +1,23 @@
-import App01 from "./components/components/App01";
 
-const name = "Akshat";
-const age = 20;
+import Logo from "./components/logo";
+import Banner from "./components/banner";
+import TopData from "./components/TopData";
+import MiddleData from "./components/MiddleData";
+import BottomData from "./components/BottomData";
+import FooterTop from "./components/FooterTop";
+import FooterBottom from "./components/FooterBottom";
 
-const sub = <ol>
-    <li>React</li>
-    <li>Rust</li>
-    <li>Ruby</li>
-    <li>JS</li>
-    <li>Html</li>
-</ol>
 
 const App = () => {
   return(
     <>
-    <App01 />
-
-    <h1>Hello {name} you are {age} years old.</h1>
-    my sub = {sub}
-
-    <h1>My application form</h1><br/>
-    Enter name: <input type="text" /><br/>
-    Enter city: <input type="text" />
+    <Logo />
+    <Banner />
+    <TopData />
+    <MiddleData />
+    <BottomData />
+    <FooterTop />
+    <FooterBottom />
     </>
   )
 }
