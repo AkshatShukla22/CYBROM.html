@@ -1,23 +1,21 @@
+import Cybrom from "./components/Cybrom";
+const fees = 15000;
+const add = "Bhopal raisen";
 
-import Logo from "./components/logo";
-import Banner from "./components/banner";
-import TopData from "./components/TopData";
-import MiddleData from "./components/MiddleData";
-import BottomData from "./components/BottomData";
-import FooterTop from "./components/FooterTop";
-import FooterBottom from "./components/FooterBottom";
+const student={
+  name: "Akshat Shukla",
+  city: "Bhopal",
+  address: "Raisen Bhopal",
+  fees: 15000
+}
 
 
 const App = () => {
   return(
     <>
-    <Logo />
-    <Banner />
-    <TopData />
-    <MiddleData />
-    <BottomData />
-    <FooterTop />
-    <FooterBottom />
+  <h1>Welcome!!</h1>
+  {/* <Cybrom nm="Akshat" city="Bhopal" address={add} fs={fees} /> */}
+  <Cybrom nm={student.name} city={student.city} address={student.address} fs={student.fees} />
     </>
   )
 }
