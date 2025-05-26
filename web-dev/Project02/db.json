@@ -155,6 +155,11 @@
           "title": "Episode 2",
           "videoSrc": "assets/videos/bleach_ep2.mp4",
           "rating": 5
+        },
+        {
+          "number": 3,
+          "title": "Episode 3",
+          "videoSrc": "assets/videos/bleach_ep_3.mp4"
         }
       ]
     },
