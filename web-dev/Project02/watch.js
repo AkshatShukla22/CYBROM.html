@@ -35,22 +35,88 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Check if user is logged in
 function checkUserLogin() {
-    const loggedInUser = localStorage.getItem('currentUser');
-    if (loggedInUser) {
-        userData = JSON.parse(loggedInUser);
-        console.log('User is logged in:', userData);
+    try {
+        const loggedInUser = localStorage.getItem('currentUser');
+        const userBtn = document.getElementById('userBtn');
+        const loginBtn = document.getElementById('loginBtn');
         
-        // Show user button, hide login button
-        if(userBtn) userBtn.classList.remove('hidden');
-        if(loginBtn) loginBtn.classList.add('hidden');
+        if (loggedInUser) {
+            // User is logged in
+            userData = JSON.parse(loggedInUser);
+            console.log('User is logged in:', userData);
+            
+            // Show user button, hide login button
+            if (userBtn) {
+                userBtn.classList.remove('hidden');
+                userBtn.style.display = 'block'; // Fallback for CSS display
+            }
+            if (loginBtn) {
+                loginBtn.classList.add('hidden');
+                loginBtn.style.display = 'none'; // Fallback for CSS display
+            }
+            
+            // Load user-specific data
+            loadUserNotifications();
+            
+        } else {
+            // User is not logged in
+            console.log('No user logged in');
+            userData = null;
+            
+            // Hide user button, show login button
+            if (userBtn) {
+                userBtn.classList.add('hidden');
+                userBtn.style.display = 'none'; // Fallback for CSS display
+            }
+            if (loginBtn) {
+                loginBtn.classList.remove('hidden');
+                loginBtn.style.display = 'block'; // Fallback for CSS display
+            }
+        }
         
-        loadUserNotifications();
-    } else {
-        console.log('No user logged in');
+        // Update other UI elements based on login status
+        updateUIForLoginStatus();
         
-        // Hide user button, show login button
-        if(userBtn) userBtn.classList.add('hidden');
-        if(loginBtn) loginBtn.classList.remove('hidden');
+    } catch (error) {
+        console.error('Error checking user login status:', error);
+        
+        // On error, default to logged out state
+        userData = null;
+        const userBtn = document.getElementById('userBtn');
+        const loginBtn = document.getElementById('loginBtn');
+        
+        if (userBtn) {
+            userBtn.classList.add('hidden');
+            userBtn.style.display = 'none';
+        }
+        if (loginBtn) {
+            loginBtn.classList.remove('hidden');
+            loginBtn.style.display = 'block';
+        }
+    }
+}
+
+// New function to update UI elements based on login status
+function updateUIForLoginStatus() {
+    // Update watchlist button text if user is logged in and anime is loaded
+    if (addToWatchlistBtn && currentAnime) {
+        if (userData && userData.watchlist && userData.watchlist.includes(currentAnime.id)) {
+            addToWatchlistBtn.innerHTML = '<i class="fas fa-check"></i> In Watchlist';
+        } else {
+            addToWatchlistBtn.innerHTML = '<i class="fas fa-plus"></i> Add to Watchlist';
+        }
+    }
+    
+    // Update notification button visibility
+    const notificationBtn = document.getElementById('notificationBtn');
+    if (notificationBtn) {
+        if (userData) {
+            notificationBtn.classList.remove('hidden');
+            notificationBtn.style.display = 'block';
+        } else {
+            notificationBtn.classList.add('hidden');
+            notificationBtn.style.display = 'none';
+        }
     }
 }
 
