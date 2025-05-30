@@ -101,7 +101,7 @@ const Map = () => {
 />)
     return(
         <>
-        <table border={1}>
+        <table border={1}  style={{margin: "auto",}}>
             <tr>
                 <th>Name</th>
                 <th>Age</th>
