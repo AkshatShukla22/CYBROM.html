@@ -1,0 +1,13 @@
+footer{
+    background-color: rgb(52, 52, 52);
+    height: 40vh;
+    color: white;
+}
+
+.myContainer{
+    height: 90vh;
+    display: flex;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+}

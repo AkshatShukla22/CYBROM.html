@@ -1,13 +1,13 @@
 import React from 'react';
 
-const About = () => {
+const Support = () => {
   return (
     <>
       <div className="myContainer">
-      <h1>About Page</h1>
-      </div>
+      <h1>Home Page</h1>
+    </div>
     </>
   );
 }
 
-export default About;
+export default Support;

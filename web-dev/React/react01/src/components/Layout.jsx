@@ -1,19 +1,21 @@
 import React from 'react';
-import { Link, Outlet} from 'react-router-dom';
 import Home from './Home';
 import About from './About';
 import ContactUs from './ContactUs';
+import { Link, Outlet } from 'react-router-dom';
 
 const Layout = () => {
   return (
     <>
-      <Link to="Home">Home| </Link>
-      <Link to="About">About us| </Link>
-      <Link to="ContactUs">Contact us| </Link>
+      <Link to={"Home"}>Home</Link> | 
+      <Link to={"About"}>About us</Link> | 
+      <Link to={"ContactUs"}>Contact us</Link> | 
+      <Link to={"Support"}>Support</Link>
       <hr />
       <Outlet />
       <hr />
-      <h6>All right reserved to me.</h6>
+      <h4>All rights are reserved to me.</h4> 
+
     </>
   );
 }
