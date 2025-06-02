@@ -178,19 +178,22 @@ int main(){
 
 
     // paneldrome
-    int a;
-    cin >> a;
-    int rev = 0;
-    int b = a;
-    while (b > 0) {
-        int c = b % 10;
-        rev = (rev * 10) + c;
-        b = b / 10;
-    }
-    if (rev == a) {
-        cout << "palindrome";
-    } else {
-        cout << "not a palindrome";
-    }
+    // int a;
+    // cin >> a;
+    // int rev = 0;
+    // int b = a;
+    // while (b > 0) {
+    //     int c = b % 10;
+    //     rev = (rev * 10) + c;
+    //     b = b / 10;
+    // }
+    // if (rev == a) {
+    //     cout << "palindrome";
+    // } else {
+    //     cout << "not a palindrome";
+    // }
+
+    cout<<"Hello";
 }
+
     
