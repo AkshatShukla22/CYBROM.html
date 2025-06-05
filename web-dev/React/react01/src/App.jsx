@@ -1,29 +1,29 @@
 import { useState } from "react";
+import axios from "axios";
+ const App=()=>{
+    const[input,setInput]=useState({})
+const handleInput=(e)=>{
+    let name=e.target.name;
+    let value=e.target.value;
 
-const App = () => {
-  const [ name, setName ] = useState("");
-  const [ city, setCity ] = useState("");
-  const [ rno, setRno ] = useState("");
-  const [ fees, setFees ] = useState("");
-  const [ input, setInput] = useState({});
-  const handleInput=(e)=>{
-    let name = e.target.name;
-    let value = e.target.value;
-    setInput(values=>({...values, [name]: value}))
+    setInput(values=>({...values,[name]:value}))
     console.log(input)
-  }
-  
-
-  return (
+}
+    const handleSubmit=async()=>{
+        let api="http://localhost:3000/student";
+        const response=await axios.post(api,input )
+        alert("data inserted")
+      
+    }
+return(
     <>
-      <h1>Application Form</h1>
-      Enter Name: <input type="text" name="name" onChange={handleInput} /><br/>
-      Enter City: <input type="text" name="city" onChange={handleInput} /><br/>
-      Enter Roll no: <input type="text" name="rollno" onChange={handleInput} /><br/>
-      Enter Fees: <input type="text" name="fees" onChange={handleInput} /><br/>
-      <button >Click Me</button>
-    </>
-  );
-};
 
-export default App;
+Enter employment:<input type="text" name="rollnum" onChange={handleInput}/><br />
+Enter name:<input type="text" name="name" onChange={handleInput}/><br />
+Enter designation:<input type="text" name="city" onChange={handleInput}/><br />
+Enter city:<input type="text" name="fees" onChange={handleInput}/><br />
+<button onClick={handleSubmit} >click me</button>
+    </>
+)
+ }
+ export default App;
