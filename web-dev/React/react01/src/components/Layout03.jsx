@@ -3,18 +3,22 @@ import Home from './Home';
 import About from './About';
 import ContactUs from './ContactUs';
 import Insert from './Insert';
+import Display from './Display';
 import { Link, Outlet } from 'react-router-dom';
 
-const Layout = () => {
+const Layout03 = () => {
   return (
     <>
       <Link to={"Home"}>Home</Link> | 
       <Link to={"About"}>About us</Link> | 
       <Link to={"ContactUs"}>Contact us</Link> | 
-      <Link to={"Support"}>Support</Link>
-      <Link to={"Insert"}>Insert</Link>
+      <Link to={"Support"}>Support</Link> | 
+      <Link to={"Insert"}>Insert</Link> |
+      <Link to={"Display"}>Display</Link> |
       <hr />
+
       <Outlet />
+      
       <hr />
       <h4>All rights are reserved to me.</h4> 
 
@@ -22,4 +26,4 @@ const Layout = () => {
   );
 }
 
-export default Layout;
+export default Layout03;
