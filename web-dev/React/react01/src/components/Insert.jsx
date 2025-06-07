@@ -19,10 +19,10 @@ const Insert = () => {
     }
   return (
     <>
-    Enter employment:<input type="text" name="rollnum" onChange={handleInput} /><br />
-    Enter name:<input type="text" name="name" onChange={handleInput} /><br />
-    Enter designation:<input type="text" name="city" onChange={handleInput} /><br />
-    Enter city:<input type="text" name="fees" onChange={handleInput} /><br />
+    Enter Roll no.:<input type="text" name="rollnum" onChange={handleInput} /><br />
+    Enter Name:<input type="text" name="name" onChange={handleInput} /><br />
+    Enter City:<input type="text" name="city" onChange={handleInput} /><br />
+    Enter Fees:<input type="text" name="fees" onChange={handleInput} /><br />
     <button onClick={handleSubmit} >Submit</button>
     </>
   );
