@@ -5,6 +5,7 @@ import axios from "axios";
 const Insert = () => {
     const [input, setInput] = useState({});
 
+
     const handleInput=(e)=>{
     let name = e.target.name;
     let value = e.target.value;

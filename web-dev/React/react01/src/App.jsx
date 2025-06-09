@@ -8,6 +8,7 @@ import NoPage from "./components/NoPage";
 import Insert from "./components/Insert";
 import Display from "./components/Display";
 import Update from "./components/Update";
+import Search from "./components/Search";
 
 const App = () => {
   return(
@@ -23,6 +24,7 @@ const App = () => {
           <Route path="Insert" element={<Insert />}/>
           <Route path="Display" element={<Display />}/>
           <Route path="Update" element={<Update />}/>
+          <Route path="Search" element={<Search />}/>
           </Route>
           
           <Route path="*" element={<NoPage />}/>
