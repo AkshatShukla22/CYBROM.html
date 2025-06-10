@@ -4,6 +4,7 @@ import About from './About';
 import ContactUs from './ContactUs';
 import Insert from './Insert';
 import Display from './Display';
+import Update02 from './Update02';
 import Update from './Update';
 import Search from './Search';
 import { Link, Outlet } from 'react-router-dom';
@@ -19,6 +20,7 @@ const Layout03 = () => {
       <Link to={"Display"}>Display</Link> |
       <Link to={"Update"}>Update</Link> |
       <Link to={"Search"}>Search</Link> |
+      <Link to={"Update02"}>Update02</Link> |
       <hr />
 
       <Outlet />
