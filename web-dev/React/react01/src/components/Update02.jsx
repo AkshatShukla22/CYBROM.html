@@ -44,8 +44,8 @@ const Update = () => {
                     <tr>
                         <th>Roll No</th>
                         <th>Name</th>
-                        <th>Designation</th>
                         <th>City</th>
+                        <th>Fees</th>
                         <th>Edit</th>
                         <th>Delete</th>
                     </tr>

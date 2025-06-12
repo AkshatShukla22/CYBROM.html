@@ -1,29 +1,14 @@
-import { useState } from "react"; 
-import { createContext } from "react";
-import Component01 from "./components/Component01";
-
-const UserContext  = createContext();
+import Cybrom02 from "./components/Cybrom02";
 
 const App = () => {
-  const [user, setUser] = useState("Akshat");
-  return(
-    <>
+  return (
     <div>
-    <h1>Welcome - {user}!!!</h1>
-    {/* <Component01 user={user} /> */}
+      <h1>Welcome My App!</h1>
+      <Cybrom02>
+        <h3>We learn Java Script</h3>
+      </Cybrom02>
     </div>
-
-    <hr />
-
-    <div>
-      <UserContext.Provider value={{user}}>
-        <Component01 />
-      </UserContext.Provider>
-    </div>
-
-    </>
-  ) 
-}
+  );
+};
 
 export default App;
-export {UserContext};
