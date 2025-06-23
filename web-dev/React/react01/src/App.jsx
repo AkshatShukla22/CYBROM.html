@@ -1,49 +1,59 @@
-import { useState } from "react";
-import { addtoTask } from './todoSlice';
-import { useDispatch, useSelector } from "react-redux";
+import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { addTask, removeTask, markAsComplete } from './todoSlice';
 
-const App = () => {
-  const [txt, setTxt] = useState("");
-  const Data = useSelector(state=>state.todo.task);
+function App() {
+  const [val, setVal] = useState('');
+  const Data = useSelector((state) => state.todo.task);
   const dispatch = useDispatch();
 
-  let sno = 0;
-  const ans = Data.map((item)=>{
-    sno++;
-    return(
-      <>
-      <tr>
-        <td>{sno}</td>
-        <td>{item.work}</td>
-      </tr>
-      </>
-    )
-  })
+  const handleAdd = () => {
+    if (val.trim() !== '') {
+      dispatch(
+        addTask({
+          id: Math.floor(Math.random() * 1000),
+          work: val,
+          status: 'incomplete',
+        })
+      );
+      setVal('');
+    }
+  };
+
+  console.log(Data);
 
   return (
     <>
-    <h1> To Do App </h1>
-    Enter Task: <input type="text" value={txt} onChange={(e)=>{
-      setTxt(e.target.value)
-    }} />
-    <button onClick={()=>{
-      dispatch(addtoTask({work:txt}))
-    }}>Add Task</button>
-    <hr />
-    <br />
-    <table>
-      <thead>
-      <tr>
-        <th>#</th>
-        <th>My Task</th>
-      </tr>
-      </thead>
-      <tbody>
-      {ans}
-      </tbody>
-    </table>
+      <input
+        type="text"
+        value={val}
+        onChange={(e) => setVal(e.target.value)}
+      />
+      <button onClick={handleAdd}>Add</button>
+      <table>
+        <tbody>
+          {Data.map((key, index) =>
+            key.status === 'incomplete' ? (
+              <tr key={key.id}>
+                <td>{index + 1}</td>
+                <td>{key.work}</td>
+                <td>
+                  <button onClick={() => dispatch(removeTask(key.id))}>
+                    Delete
+                  </button>
+                </td>
+                <td>
+                  <button onClick={() => dispatch(markAsComplete(key.id))}>
+                    Mark as complete
+                  </button>
+                </td>
+              </tr>
+            ) : null
+          )}
+        </tbody>
+      </table>
     </>
   );
-};
+}
 
 export default App;
