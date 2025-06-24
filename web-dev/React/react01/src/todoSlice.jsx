@@ -1,4 +1,4 @@
-// todoSlice.jax
+// todoSlice.jsx
 import { createSlice } from '@reduxjs/toolkit';
 
 const todoSlice = createSlice({
@@ -16,11 +16,18 @@ const todoSlice = createSlice({
     markAsComplete: (state, action) => {
       const index = state.task.findIndex((t) => t.id === action.payload);
       if (index !== -1) {
-        state.task[index].status = 'complete';
+        state.task[index].status =
+          state.task[index].status === 'complete' ? 'incomplete' : 'complete';
+      }
+    },
+    editTask: (state, action) => {
+      const index = state.task.findIndex((t) => t.id === action.payload.id);
+      if (index !== -1) {
+        state.task[index].work = action.payload.work;
       }
     },
   },
 });
 
-export const { addTask, removeTask, markAsComplete } = todoSlice.actions;
+export const { addTask, removeTask, markAsComplete, editTask } = todoSlice.actions;
 export default todoSlice.reducer;
