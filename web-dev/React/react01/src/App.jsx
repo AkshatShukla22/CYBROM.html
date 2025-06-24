@@ -1,3 +1,4 @@
+// App.jsx
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { addTask, removeTask, markAsComplete } from './todoSlice';
@@ -11,7 +12,7 @@ function App() {
     if (val.trim() !== '') {
       dispatch(
         addTask({
-          id: Math.floor(Math.random() * 1000),
+          id: Math.floor(Math.random() * 1000), 
           work: val,
           status: 'incomplete',
         })
