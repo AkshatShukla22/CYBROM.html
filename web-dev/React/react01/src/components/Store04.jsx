@@ -1,6 +1,6 @@
 // Store04.jsx
 import { configureStore } from "@reduxjs/toolkit";
-import myReducer from "./todoSlice";
+import myReducer from "./todoSlice02";
 
 const store = configureStore({
   reducer: {
