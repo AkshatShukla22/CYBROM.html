@@ -3,7 +3,8 @@ import axios from 'axios';
 
 const Pagination = () => {
   const [mydata, setmydata] = useState([]);
-  const [visibleRows, setVisibleRows] = useState(5);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
 
   const loadData = async () => {
     try {
@@ -11,7 +12,7 @@ const Pagination = () => {
       const response = await axios.get(api);
       setmydata(response.data);
     } catch (error) {
-      console.error("Failed to fetch data:", error);
+      console.error("Error fetching data:", error);
     }
   };
 
@@ -19,9 +20,11 @@ const Pagination = () => {
     loadData();
   }, []);
 
-  const showMore = () => {
-    setVisibleRows(prev => prev + 5);
-  };
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = mydata.slice(indexOfFirstItem, indexOfLastItem);
+
+  const totalPages = Math.ceil(mydata.length / itemsPerPage);
 
   return (
     <>
@@ -37,7 +40,7 @@ const Pagination = () => {
           </tr>
         </thead>
         <tbody>
-          {mydata.slice(0, visibleRows).map((item, index) => (
+          {currentItems.map((item, index) => (
             <tr key={index}>
               <td>{item.rollnum}</td>
               <td>{item.name}</td>
@@ -48,9 +51,13 @@ const Pagination = () => {
         </tbody>
       </table>
 
-      {visibleRows < mydata.length && (
-        <button onClick={showMore} >Show More</button>
-      )}
+      <div style={{ marginTop: "10px" }}>
+        {Array.from({ length: totalPages }, (_, i) => (
+          <button key={i} onClick={() => setCurrentPage(i + 1)}>
+            {i + 1}
+          </button>
+        ))}
+      </div>
     </>
   );
 };
