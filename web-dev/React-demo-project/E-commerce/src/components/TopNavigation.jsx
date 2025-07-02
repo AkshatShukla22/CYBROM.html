@@ -16,7 +16,6 @@ const TopNavigation = () => {
 
   return (
     <>
-      {/* Top Bar */}
       <div className="bg-gradient-to-r from-purple-900 to-blue-900 text-white py-2 px-8">
         <div className="flex justify-between items-center text-sm">
           <div className="flex items-center space-x-6">
@@ -29,11 +28,9 @@ const TopNavigation = () => {
         </div>
       </div>
 
-      {/* Main Navigation */}
       <nav className="bg-gray-900 border-b border-gray-800 sticky top-0 z-50 backdrop-blur-md bg-opacity-95">
         <div className="px-8 py-4">
           <div className="flex items-center justify-between">
-            {/* Logo */}
             <div className="flex items-center">
               <div className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
                 ElectroMart
@@ -43,7 +40,6 @@ const TopNavigation = () => {
               </div>
             </div>
 
-            {/* Navigation Items */}
             <div className="flex items-center space-x-8">
               {navItems.map((item) => {
                 const IconComponent = item.icon;
@@ -64,7 +60,6 @@ const TopNavigation = () => {
               })}
             </div>
 
-            {/* Right Side Actions */}
             <div className="flex items-center space-x-4">
               <button className="p-2 text-gray-300 hover:text-white transition-colors hover:scale-110 transform">
                 <Heart className="w-6 h-6" />
