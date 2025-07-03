@@ -1,0 +1,152 @@
+{
+  "products": [
+    {
+      "id": 1,
+      "name": "MacBook Pro 14-inch",
+      "price": 1999,
+      "category": "Electronics",
+      "brand": "Apple",
+      "description": "Apple MacBook Pro 14-inch with M2 Pro chip, 16GB RAM, 512GB SSD",
+      "image": "https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=400&h=300&fit=crop",
+      "rating": 4.8,
+      "stock": 25
+    },
+    {
+      "id": 2,
+      "name": "iPhone 15 Pro",
+      "price": 1199,
+      "category": "Electronics",
+      "brand": "Apple",
+      "description": "iPhone 15 Pro with A17 Pro chip, 128GB storage, Titanium design",
+      "image": "https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=400&h=300&fit=crop",
+      "rating": 4.9,
+      "stock": 40
+    },
+    {
+      "id": 3,
+      "name": "Samsung Galaxy S24 Ultra",
+      "price": 1299,
+      "category": "Electronics",
+      "brand": "Samsung",
+      "description": "Samsung Galaxy S24 Ultra with S Pen, 256GB storage, 200MP camera",
+      "image": "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400&h=300&fit=crop",
+      "rating": 4.7,
+      "stock": 30
+    },
+    {
+      "id": 4,
+      "name": "Dell XPS 13",
+      "price": 1099,
+      "category": "Electronics",
+      "brand": "Dell",
+      "description": "Dell XPS 13 laptop with Intel Core i7, 16GB RAM, 512GB SSD",
+      "image": "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=400&h=300&fit=crop",
+      "rating": 4.6,
+      "stock": 20
+    },
+    {
+      "id": 5,
+      "name": "Sony WH-1000XM5",
+      "price": 399,
+      "category": "Audio",
+      "brand": "Sony",
+      "description": "Sony WH-1000XM5 Wireless Noise Canceling Headphones",
+      "image": "https://images.unsplash.com/photo-1583394838336-acd977736f90?w=400&h=300&fit=crop",
+      "rating": 4.8,
+      "stock": 50
+    },
+    {
+      "id": 6,
+      "name": "AirPods Pro 2nd Gen",
+      "price": 249,
+      "category": "Audio",
+      "brand": "Apple",
+      "description": "Apple AirPods Pro 2nd Generation with Active Noise Cancellation",
+      "image": "https://images.unsplash.com/photo-1572569511254-d8f925fe2cbb?w=400&h=300&fit=crop",
+      "rating": 4.7,
+      "stock": 60
+    },
+    {
+      "id": 7,
+      "name": "iPad Pro 12.9-inch",
+      "price": 1099,
+      "category": "Electronics",
+      "brand": "Apple",
+      "description": "iPad Pro 12.9-inch with M2 chip, 128GB storage, Liquid Retina XDR display",
+      "image": "https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=400&h=300&fit=crop",
+      "rating": 4.8,
+      "stock": 35
+    },
+    {
+      "id": 8,
+      "name": "Samsung 4K Smart TV 55-inch",
+      "price": 799,
+      "category": "Electronics",
+      "brand": "Samsung",
+      "description": "Samsung 55-inch 4K UHD Smart TV with HDR and Alexa Built-in",
+      "image": "https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=400&h=300&fit=crop",
+      "rating": 4.5,
+      "stock": 15
+    },
+    {
+      "id": 9,
+      "name": "Nike Air Max 270",
+      "price": 150,
+      "category": "Fashion",
+      "brand": "Nike",
+      "description": "Nike Air Max 270 Men's Shoes - Comfortable and stylish sneakers",
+      "image": "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&h=300&fit=crop",
+      "rating": 4.4,
+      "stock": 100
+    },
+    {
+      "id": 10,
+      "name": "Adidas Ultraboost 22",
+      "price": 180,
+      "category": "Fashion",
+      "brand": "Adidas",
+      "description": "Adidas Ultraboost 22 Running Shoes - Premium comfort and performance",
+      "image": "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=400&h=300&fit=crop",
+      "rating": 4.6,
+      "stock": 80
+    },
+    {
+      "id": 11,
+      "name": "Levi's 501 Original Jeans",
+      "price": 89,
+      "category": "Fashion",
+      "brand": "Levi's",
+      "description": "Levi's 501 Original Fit Jeans - Classic straight leg jeans",
+      "image": "https://images.unsplash.com/photo-1542272604-787c3835535d?w=400&h=300&fit=crop",
+      "rating": 4.3,
+      "stock": 120
+    },
+    {
+      "id": 12,
+      "name": "Canon EOS R5",
+      "price": 3899,
+      "category": "Electronics",
+      "brand": "Canon",
+      "description": "Canon EOS R5 Mirrorless Camera with 45MP sensor and 8K video",
+      "image": "https://images.unsplash.com/photo-1606983340126-99ab4feaa64a?w=400&h=300&fit=crop",
+      "rating": 4.9,
+      "stock": 10
+    }
+  ],
+  "users": [
+    {
+      "id": 1,
+      "name": "John Doe",
+      "email": "john@example.com",
+      "password": "password123",
+      "cart": []
+    },
+    {
+      "id": 2,
+      "name": "Jane Smith",
+      "email": "jane@example.com",
+      "password": "password456",
+      "cart": []
+    }
+  ]
+}

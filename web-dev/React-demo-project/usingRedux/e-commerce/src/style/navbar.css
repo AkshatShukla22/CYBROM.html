@@ -1,0 +1,308 @@
+/* Navbar.css */
+
+.navbar {
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+  border-bottom: 1px solid #333;
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.5);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 999;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.navbar-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 70px;
+}
+
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  animation: brandGlow 2s ease-in-out infinite alternate;
+}
+
+@keyframes brandGlow {
+  from {
+    text-shadow: 0 0 10px rgba(102, 126, 234, 0.5);
+  }
+  to {
+    text-shadow: 0 0 20px rgba(102, 126, 234, 0.8);
+  }
+}
+
+.navbar-brand h1 {
+  color: #fff;
+  font-size: 28px;
+  font-weight: 700;
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: -1px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.navbar-brand h1:hover {
+  transform: scale(1.05);
+}
+
+.navbar-menu {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.navbar-nav {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  gap: 40px;
+}
+
+.navbar-nav li {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.navbar-nav a {
+  color: #ccc;
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: 500;
+  padding: 12px 20px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  min-height: 40px;
+}
+
+.navbar-nav a::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.2), transparent);
+  transition: left 0.5s ease;
+}
+
+.navbar-nav a:hover::before {
+  left: 100%;
+}
+
+.navbar-nav a:hover {
+  color: #fff;
+  background: rgba(102, 126, 234, 0.1);
+  transform: translateY(-2px);
+}
+
+.navbar-nav a::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  transition: all 0.3s ease;
+  transform: translateX(-50%);
+}
+
+.navbar-nav a:hover::after {
+  width: 100%;
+}
+
+.navbar-actions {
+  display: flex;
+  align-items: center;
+}
+
+.cart-btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  color: white;
+  padding: 12px 24px;
+  border-radius: 25px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+  overflow: hidden;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.cart-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s ease;
+}
+
+.cart-btn:hover::before {
+  left: 100%;
+}
+
+.cart-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 25px rgba(102, 126, 234, 0.4);
+}
+
+.cart-btn:active {
+  transform: translateY(-1px);
+}
+
+.cart-icon {
+  font-size: 18px;
+  animation: bounce 2s ease-in-out infinite;
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-5px);
+  }
+  60% {
+    transform: translateY(-3px);
+  }
+}
+
+.cart-btn:hover .cart-icon {
+  animation: shake 0.5s ease-in-out;
+}
+
+@keyframes shake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-5px);
+  }
+  75% {
+    transform: translateX(5px);
+  }
+}
+
+/* Focus states for accessibility */
+.navbar-nav a:focus,
+.cart-btn:focus {
+  outline: 2px solid #667eea;
+  outline-offset: 2px;
+}
+
+/* Smooth transitions for all interactive elements */
+* {
+  box-sizing: border-box;
+}
+
+/* Additional professional touches */
+.navbar-container {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Hover effect for the entire navbar */
+.navbar:hover {
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.6);
+}
+
+/* Active state for navigation links */
+.navbar-nav a:active {
+  transform: translateY(0);
+  background: rgba(102, 126, 234, 0.2);
+}
+
+/* Professional gradient overlay */
+.navbar::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+  pointer-events: none;
+}
+
+/* Subtle animation for the entire navbar on load */
+.navbar {
+  animation: slideDown 0.5s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Cart button pulse animation when items are added */
+.cart-btn {
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+  }
+  50% {
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.5);
+  }
+  100% {
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+  }
+}
+
+/* Responsive behavior (even though you mentioned not responsive, adding basic mobile fallback) */
+@media (max-width: 768px) {
+  .navbar-container {
+    padding: 0 16px;
+  }
+  
+  .navbar-nav {
+    gap: 20px;
+  }
+  
+  .navbar-nav a {
+    font-size: 14px;
+    padding: 6px 12px;
+  }
+  
+  .cart-btn {
+    padding: 10px 20px;
+    font-size: 14px;
+  }
+}

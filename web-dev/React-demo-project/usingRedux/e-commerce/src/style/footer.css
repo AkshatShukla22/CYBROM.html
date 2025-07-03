@@ -1,0 +1,317 @@
+/* Footer.css */
+
+.footer {
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+  color: #ccc;
+  padding: 60px 0 0;
+  margin-top: 80px;
+  border-top: 1px solid #333;
+  position: relative;
+  overflow: hidden;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.footer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+  pointer-events: none;
+}
+
+.footer-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1.5fr;
+  gap: 40px;
+  position: relative;
+  z-index: 1;
+}
+
+.footer-section {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.footer-section:nth-child(1) {
+  animation-delay: 0.1s;
+}
+
+.footer-section:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.footer-section:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+.footer-section:nth-child(4) {
+  animation-delay: 0.4s;
+}
+
+.footer-section h3 {
+  color: #fff;
+  font-size: 28px;
+  font-weight: 700;
+  margin: 0 0 20px 0;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: -1px;
+  animation: brandGlow 3s ease-in-out infinite alternate;
+}
+
+@keyframes brandGlow {
+  from {
+    text-shadow: 0 0 10px rgba(102, 126, 234, 0.5);
+  }
+  to {
+    text-shadow: 0 0 20px rgba(102, 126, 234, 0.8);
+  }
+}
+
+.footer-section h4 {
+  color: #fff;
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0 0 20px 0;
+  position: relative;
+  padding-bottom: 8px;
+}
+
+.footer-section h4::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 40px;
+  height: 2px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  animation: expandLine 0.8s ease-out 0.5s both;
+}
+
+@keyframes expandLine {
+  from {
+    width: 0;
+  }
+  to {
+    width: 40px;
+  }
+}
+
+.footer-section p {
+  color: #aaa;
+  font-size: 14px;
+  line-height: 1.6;
+  margin: 0 0 12px 0;
+  transition: color 0.3s ease;
+}
+
+.footer-section p:hover {
+  color: #ccc;
+}
+
+.footer-section:first-child p {
+  font-size: 16px;
+  margin-bottom: 0;
+}
+
+.footer-section ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.footer-section ul li {
+  margin-bottom: 12px;
+  position: relative;
+  padding-left: 20px;
+}
+
+.footer-section ul li::before {
+  content: '▸';
+  position: absolute;
+  left: 0;
+  color: #667eea;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+.footer-section ul li:hover::before {
+  color: #764ba2;
+  transform: translateX(5px);
+}
+
+.footer-section ul li a {
+  color: #aaa;
+  text-decoration: none;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  position: relative;
+  display: inline-block;
+}
+
+.footer-section ul li a::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  transition: width 0.3s ease;
+}
+
+.footer-section ul li a:hover {
+  color: #fff;
+  transform: translateX(5px);
+}
+
+.footer-section ul li a:hover::after {
+  width: 100%;
+}
+
+.footer-bottom {
+  background: #111;
+  border-top: 1px solid #333;
+  padding: 20px 0;
+  margin-top: 40px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.footer-bottom::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.1), transparent);
+  animation: shimmer 3s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+.footer-bottom p {
+  color: #888;
+  font-size: 14px;
+  margin: 0;
+  position: relative;
+  z-index: 1;
+  animation: fadeIn 1s ease-out 0.8s both;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Hover effect for the entire footer */
+.footer:hover {
+  box-shadow: 0 -4px 30px rgba(0, 0, 0, 0.3);
+}
+
+/* Contact info hover effects */
+.footer-section:last-child p {
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 4px 0;
+  border-radius: 4px;
+}
+
+.footer-section:last-child p:hover {
+  color: #fff;
+  background: rgba(102, 126, 234, 0.1);
+  padding-left: 8px;
+  transform: translateX(5px);
+}
+
+/* Focus states for accessibility */
+.footer-section ul li a:focus {
+  outline: 2px solid #667eea;
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* Responsive grid adjustments */
+@media (max-width: 768px) {
+  .footer-container {
+    grid-template-columns: 1fr;
+    gap: 30px;
+    padding: 0 20px;
+  }
+  
+  .footer {
+    padding: 40px 0 0;
+    margin-top: 60px;
+  }
+  
+  .footer-section h3 {
+    font-size: 24px;
+  }
+  
+  .footer-section h4 {
+    font-size: 16px;
+  }
+}
+
+/* Professional touches */
+* {
+  box-sizing: border-box;
+}
+
+/* Smooth transitions for all interactive elements */
+.footer-section * {
+  transition: all 0.3s ease;
+}
+
+/* Additional visual enhancement */
+.footer-section:first-child {
+  padding-right: 20px;
+}
+
+.footer-section:first-child::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: linear-gradient(180deg, transparent, #333, transparent);
+}
+
+/* Subtle animation for footer sections on scroll */
+.footer-section {
+  transform: translateY(20px);
+  opacity: 0;
+  animation: fadeInUp 0.6s ease-out forwards;
+}
