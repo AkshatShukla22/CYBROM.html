@@ -1,23 +1,34 @@
 import React from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { addToCart } from '../store/cartSlice'
 import "../style/productCard.css"
 
 const ProductCard = ({ product }) => {
+  const navigate = useNavigate()
   const dispatch = useDispatch()
   const cartItems = useSelector(state => state.cart.items)
   
   // Check if product is already in cart
   const isInCart = cartItems.some(item => item.id === product.id)
 
-  const handleAddToCart = () => {
+  const handleAddToCart = (e) => {
+    e.stopPropagation() // Prevent navigation when clicking add to cart
     if (!isInCart) {
       dispatch(addToCart(product))
     }
   }
 
+  const handleProductClick = () => {
+    navigate(`/product/${product.id}`)
+  }
+
+  const formatPrice = (price) => {
+    return `₹${(price * 83).toLocaleString('en-IN')}`
+  }
+
   return (
-    <div className="product-card">
+    <div className="product-card" onClick={handleProductClick}>
       <div className="product-image">
         <img src={product.image} alt={product.name} />
       </div>
@@ -33,7 +44,8 @@ const ProductCard = ({ product }) => {
         </div>
         
         <div className="product-price">
-          <span className="price">${product.price}</span>
+          <span className="price">{formatPrice(product.price)}</span>
+          <span className="original-price">{formatPrice(product.price * 1.2)}</span>
         </div>
         
         <div className="product-stock">
@@ -42,13 +54,21 @@ const ProductCard = ({ product }) => {
           </span>
         </div>
         
-        <button 
-          className={`add-to-cart-btn ${isInCart ? 'in-cart' : ''}`}
-          onClick={handleAddToCart}
-          disabled={isInCart || product.stock === 0}
-        >
-          {isInCart ? 'Added to Cart' : 'Add to Cart'}
-        </button>
+        <div className="product-actions">
+          <button 
+            className="view-details-btn"
+            onClick={handleProductClick}
+          >
+            View Details
+          </button>
+          <button 
+            className={`add-to-cart-btn ${isInCart ? 'in-cart' : ''}`}
+            onClick={handleAddToCart}
+            disabled={isInCart || product.stock === 0}
+          >
+            {isInCart ? 'Added' : 'Add to Cart'}
+          </button>
+        </div>
       </div>
     </div>
   )

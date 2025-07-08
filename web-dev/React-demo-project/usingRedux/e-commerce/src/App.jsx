@@ -1,12 +1,71 @@
 import React, { useState, useEffect } from 'react'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { Provider } from 'react-redux'
 import { store } from './store/store'
 import Navbar from './components/Navbar'
 import SearchSort from './components/SearchSort'
 import ProductCard from './components/ProductCard'
+import ProductDetail from './components/ProductDetail'
 import Cart from './components/Cart'
 import Footer from './components/Footer'
 import './App.css'
+
+// Home component for the main product listing
+const Home = ({ 
+  products, 
+  filteredProducts, 
+  searchTerm, 
+  setSearchTerm, 
+  sortBy, 
+  setSortBy, 
+  selectedCategory, 
+  setSelectedCategory, 
+  categories, 
+  loading, 
+  error 
+}) => {
+  if (loading) {
+    return <div className="loading">Loading products...</div>
+  }
+
+  if (error) {
+    return <div className="error">Error: {error}</div>
+  }
+
+  return (
+    <main className="main-content">
+      <div className="hero-section">
+        <h1>Welcome to TechStore</h1>
+        <p>Discover the latest technology and fashion products</p>
+      </div>
+      
+      <SearchSort
+        searchTerm={searchTerm}
+        onSearchChange={setSearchTerm}
+        sortBy={sortBy}
+        onSortChange={setSortBy}
+        selectedCategory={selectedCategory}
+        onCategoryChange={setSelectedCategory}
+        categories={categories}
+      />
+      
+      <div className="products-section">
+        <h2>Our Products</h2>
+        <div className="products-grid">
+          {filteredProducts.length === 0 ? (
+            <div className="no-products">
+              <p>No products found matching your criteria.</p>
+            </div>
+          ) : (
+            filteredProducts.map(product => (
+              <ProductCard key={product.id} product={product} />
+            ))
+          )}
+        </div>
+      </div>
+    </main>
+  )
+}
 
 function App() {
   const [products, setProducts] = useState([])
@@ -86,54 +145,38 @@ function App() {
   // Get unique categories
   const categories = [...new Set(products.map(product => product.category))]
 
-  if (loading) {
-    return <div className="loading">Loading products...</div>
-  }
-
-  if (error) {
-    return <div className="error">Error: {error}</div>
-  }
-
   return (
     <Provider store={store}>
-      <div className="App">
-        <Navbar />
-        <Cart />
-        
-        <main className="main-content">
-          <div className="hero-section">
-            <h1>Welcome to TechStore</h1>
-            <p>Discover the latest technology and fashion products</p>
-          </div>
+      <Router>
+        <div className="App">
+          <Navbar />
+          <Cart />
           
-          <SearchSort
-            searchTerm={searchTerm}
-            onSearchChange={setSearchTerm}
-            sortBy={sortBy}
-            onSortChange={setSortBy}
-            selectedCategory={selectedCategory}
-            onCategoryChange={setSelectedCategory}
-            categories={categories}
-          />
+          <Routes>
+            <Route 
+              path="/" 
+              element={
+                <Home 
+                  products={products}
+                  filteredProducts={filteredProducts}
+                  searchTerm={searchTerm}
+                  setSearchTerm={setSearchTerm}
+                  sortBy={sortBy}
+                  setSortBy={setSortBy}
+                  selectedCategory={selectedCategory}
+                  setSelectedCategory={setSelectedCategory}
+                  categories={categories}
+                  loading={loading}
+                  error={error}
+                />
+              } 
+            />
+            <Route path="/product/:id" element={<ProductDetail />} />
+          </Routes>
           
-          <div className="products-section">
-            <h2>Our Products</h2>
-            <div className="products-grid">
-              {filteredProducts.length === 0 ? (
-                <div className="no-products">
-                  <p>No products found matching your criteria.</p>
-                </div>
-              ) : (
-                filteredProducts.map(product => (
-                  <ProductCard key={product.id} product={product} />
-                ))
-              )}
-            </div>
-          </div>
-        </main>
-        
-        <Footer />
-      </div>
+          <Footer />
+        </div>
+      </Router>
     </Provider>
   )
 }
