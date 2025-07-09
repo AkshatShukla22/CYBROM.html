@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import '../style/categoryGrid.css';
 
 const CategoryGrid = ({ categories }) => {
   const navigate = useNavigate();

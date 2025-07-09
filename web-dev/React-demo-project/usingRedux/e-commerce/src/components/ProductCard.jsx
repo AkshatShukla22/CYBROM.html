@@ -23,10 +23,6 @@ const ProductCard = ({ product }) => {
     navigate(`/product/${product.id}`)
   }
 
-  const formatPrice = (price) => {
-    return `₹${(price * 83).toLocaleString('en-IN')}`
-  }
-
   return (
     <div className="product-card" onClick={handleProductClick}>
       <div className="product-image">
@@ -44,8 +40,8 @@ const ProductCard = ({ product }) => {
         </div>
         
         <div className="product-price">
-          <span className="price">{formatPrice(product.price)}</span>
-          <span className="original-price">{formatPrice(product.price * 1.2)}</span>
+          <span className="price">{product.price}</span>
+          <span className="original-price">{product.price * 1.2}</span>
         </div>
         
         <div className="product-stock">

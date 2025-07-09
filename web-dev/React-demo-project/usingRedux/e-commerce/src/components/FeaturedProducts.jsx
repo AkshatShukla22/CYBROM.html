@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import ProductCard from './ProductCard';
+import '../style/featuredProducts.css';
 
 const FeaturedProducts = ({ products }) => {
   const [visibleCount, setVisibleCount] = useState(4);

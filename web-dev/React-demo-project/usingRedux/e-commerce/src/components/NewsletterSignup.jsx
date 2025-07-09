@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import '../style/newsletter.css';
 
 const NewsletterSignup = () => {
   const [email, setEmail] = useState('');

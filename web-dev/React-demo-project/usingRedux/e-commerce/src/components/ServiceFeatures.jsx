@@ -1,4 +1,5 @@
 import React from 'react';
+import '../style/serviceFeatures.css'
 
 const ServiceFeatures = () => {
   const features = [

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import ProductCard from './ProductCard';
+import '../style/productSlider.css';
 
 const ProductSlider = ({ products, title }) => {
   const [currentIndex, setCurrentIndex] = useState(0);

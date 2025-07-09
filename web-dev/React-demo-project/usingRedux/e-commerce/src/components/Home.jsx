@@ -8,6 +8,7 @@ import TestimonialSlider from './TestimonialSlider';
 import NewsletterSignup from './NewsletterSignup';
 import SearchSort from './SearchSort';
 import ProductCard from './ProductCard';
+import '../style/home.css';
 
 const Home = ({ 
   products, 

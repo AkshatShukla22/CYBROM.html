@@ -1,159 +1,161 @@
-/* Navbar.css */
-
+/* Navbar Container */
 .navbar {
-  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
-  border-bottom: 1px solid #333;
-  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.5);
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
-  z-index: 999;
+  z-index: var(--z-fixed);
+  background: rgba(26, 26, 26, 0.95);
   backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border-dark);
+  transition: all var(--transition-normal);
+  animation: slideInDown 0.6s ease-out;
+}
+
+.navbar::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--accent-gradient);
+  opacity: 0;
+  transition: opacity var(--transition-normal);
+}
+
+.navbar:hover::before {
+  opacity: 1;
 }
 
 .navbar-container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 24px;
+  padding: 0 var(--space-4);
   display: flex;
   align-items: center;
   justify-content: space-between;
   height: 70px;
+  gap: var(--space-6);
 }
 
+/* Brand Section */
 .navbar-brand {
+  flex-shrink: 0;
+  animation: slideInLeft 0.6s ease-out;
+}
+
+.navbar-brand a {
+  text-decoration: none;
   display: flex;
   align-items: center;
-  animation: brandGlow 2s ease-in-out infinite alternate;
+  gap: var(--space-2);
+  transition: all var(--transition-normal);
 }
 
-@keyframes brandGlow {
-  from {
-    text-shadow: 0 0 10px rgba(102, 126, 234, 0.5);
-  }
-  to {
-    text-shadow: 0 0 20px rgba(102, 126, 234, 0.8);
-  }
-}
-
-.navbar-brand h1 {
-  color: #fff;
-  font-size: 28px;
-  font-weight: 700;
-  margin: 0;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  letter-spacing: -1px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.navbar-brand h1:hover {
+.navbar-brand a:hover {
   transform: scale(1.05);
 }
 
+.navbar-brand h1 {
+  font-size: var(--text-2xl);
+  font-weight: 700;
+  background: var(--accent-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+  margin: 0;
+  transition: all var(--transition-normal);
+}
+
+.navbar-brand:hover h1 {
+  filter: brightness(1.2);
+}
+
+/* Navigation Menu */
 .navbar-menu {
   flex: 1;
   display: flex;
   justify-content: center;
+  animation: fadeIn 0.6s ease-out 0.2s both;
 }
 
 .navbar-nav {
   display: flex;
+  align-items: center;
+  gap: var(--space-6);
   list-style: none;
   margin: 0;
   padding: 0;
-  gap: 40px;
 }
 
 .navbar-nav li {
   position: relative;
-  display: flex;
-  align-items: center;
 }
 
 .navbar-nav a {
-  color: #ccc;
+  color: var(--text-secondary);
   text-decoration: none;
-  font-size: 16px;
   font-weight: 500;
-  padding: 12px 20px;
-  border-radius: 8px;
-  transition: all 0.3s ease;
+  font-size: var(--text-base);
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-normal);
   position: relative;
   overflow: hidden;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  min-height: 40px;
 }
 
 .navbar-nav a::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.2), transparent);
-  transition: left 0.5s ease;
-}
-
-.navbar-nav a:hover::before {
-  left: 100%;
-}
-
-.navbar-nav a:hover {
-  color: #fff;
-  background: rgba(102, 126, 234, 0.1);
-  transform: translateY(-2px);
-}
-
-.navbar-nav a::after {
   content: '';
   position: absolute;
   bottom: 0;
   left: 50%;
   width: 0;
   height: 2px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  transition: all 0.3s ease;
+  background: var(--accent-gradient);
+  transition: all var(--transition-normal);
   transform: translateX(-50%);
 }
 
-.navbar-nav a:hover::after {
-  width: 100%;
+.navbar-nav a:hover {
+  color: var(--text-primary);
+  background: var(--hover-overlay);
+  transform: translateY(-2px);
 }
 
+.navbar-nav a:hover::before {
+  width: 80%;
+}
+
+.navbar-nav a:active {
+  transform: translateY(0);
+}
+
+/* Actions Section */
 .navbar-actions {
   display: flex;
   align-items: center;
+  gap: var(--space-4);
+  flex-shrink: 0;
+  animation: slideInRight 0.6s ease-out 0.3s both;
 }
 
+/* Cart Button */
 .cart-btn {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  border: none;
-  color: white;
-  padding: 12px 24px;
-  border-radius: 25px;
-  cursor: pointer;
-  font-size: 16px;
-  font-weight: 600;
-  transition: all 0.3s ease;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  background: var(--card-dark);
+  border: 1px solid var(--border-dark);
+  border-radius: var(--radius-md);
+  color: var(--text-secondary);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-normal);
   position: relative;
   overflow: hidden;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
 }
 
 .cart-btn::before {
@@ -163,8 +165,8 @@
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-  transition: left 0.5s ease;
+  background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.1), transparent);
+  transition: left var(--transition-normal);
 }
 
 .cart-btn:hover::before {
@@ -172,137 +174,391 @@
 }
 
 .cart-btn:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 6px 25px rgba(102, 126, 234, 0.4);
+  background: var(--tertiary-dark);
+  border-color: var(--accent-primary);
+  color: var(--text-primary);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
 }
 
 .cart-btn:active {
-  transform: translateY(-1px);
+  transform: translateY(0);
 }
 
 .cart-icon {
-  font-size: 18px;
-  animation: bounce 2s ease-in-out infinite;
-}
-
-@keyframes bounce {
-  0%, 20%, 50%, 80%, 100% {
-    transform: translateY(0);
-  }
-  40% {
-    transform: translateY(-5px);
-  }
-  60% {
-    transform: translateY(-3px);
-  }
+  font-size: var(--text-lg);
+  transition: transform var(--transition-bounce);
 }
 
 .cart-btn:hover .cart-icon {
-  animation: shake 0.5s ease-in-out;
+  transform: scale(1.1) rotate(5deg);
 }
 
-@keyframes shake {
-  0%, 100% {
-    transform: translateX(0);
-  }
-  25% {
-    transform: translateX(-5px);
-  }
-  75% {
-    transform: translateX(5px);
-  }
+/* User Menu */
+.user-menu {
+  position: relative;
 }
 
-/* Focus states for accessibility */
-.navbar-nav a:focus,
-.cart-btn:focus {
-  outline: 2px solid #667eea;
-  outline-offset: 2px;
+.user-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  background: var(--card-dark);
+  border: 1px solid var(--border-dark);
+  border-radius: var(--radius-md);
+  color: var(--text-secondary);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  max-width: 150px;
+  overflow: hidden;
 }
 
-/* Smooth transitions for all interactive elements */
-* {
-  box-sizing: border-box;
+.user-btn:hover {
+  background: var(--tertiary-dark);
+  border-color: var(--accent-primary);
+  color: var(--text-primary);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
 }
 
-/* Additional professional touches */
-.navbar-container {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+.user-icon {
+  font-size: var(--text-lg);
+  transition: transform var(--transition-bounce);
 }
 
-/* Hover effect for the entire navbar */
-.navbar:hover {
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.6);
+.user-btn:hover .user-icon {
+  transform: scale(1.1);
 }
 
-/* Active state for navigation links */
-.navbar-nav a:active {
-  transform: translateY(0);
-  background: rgba(102, 126, 234, 0.2);
+.user-btn span:last-child {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-/* Professional gradient overlay */
-.navbar::before {
+/* User Dropdown */
+.user-dropdown {
+  position: absolute;
+  top: calc(100% + var(--space-2));
+  right: 0;
+  min-width: 160px;
+  background: var(--card-dark);
+  border: 1px solid var(--border-dark);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+  z-index: var(--z-dropdown);
+  animation: scaleIn 0.2s ease-out;
+  transform-origin: top right;
+}
+
+.user-dropdown::before {
+  content: '';
+  position: absolute;
+  top: -6px;
+  right: 16px;
+  width: 12px;
+  height: 12px;
+  background: var(--card-dark);
+  border-left: 1px solid var(--border-dark);
+  border-top: 1px solid var(--border-dark);
+  transform: rotate(45deg);
+}
+
+.dropdown-item {
+  display: block;
+  width: 100%;
+  padding: var(--space-3) var(--space-4);
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  text-align: left;
+}
+
+.dropdown-item:hover {
+  background: var(--hover-overlay);
+  color: var(--text-primary);
+}
+
+.dropdown-item:active {
+  background: var(--active-overlay);
+}
+
+.logout-btn {
+  border-top: 1px solid var(--border-dark);
+  color: var(--accent-error);
+}
+
+.logout-btn:hover {
+  background: rgba(239, 68, 68, 0.1);
+  color: var(--accent-error);
+}
+
+/* Login Button */
+.login-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-6);
+  background: var(--accent-gradient);
+  color: var(--text-primary);
+  text-decoration: none;
+  font-weight: 600;
+  border-radius: var(--radius-md);
+  transition: all var(--transition-normal);
+  position: relative;
+  overflow: hidden;
+}
+
+.login-btn::before {
   content: '';
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
-  pointer-events: none;
+  background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%);
+  transform: translateX(-100%);
+  transition: transform var(--transition-normal);
 }
 
-/* Subtle animation for the entire navbar on load */
-.navbar {
-  animation: slideDown 0.5s ease-out;
+.login-btn:hover::before {
+  transform: translateX(100%);
 }
 
-@keyframes slideDown {
-  from {
-    transform: translateY(-100%);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
+.login-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-glow);
 }
 
-/* Cart button pulse animation when items are added */
-.cart-btn {
-  animation: pulse 2s ease-in-out infinite;
+.login-btn:active {
+  transform: translateY(0);
 }
 
-@keyframes pulse {
-  0% {
-    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
-  }
-  50% {
-    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.5);
-  }
-  100% {
-    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
-  }
+/* Mobile Menu Button (for future mobile implementation) */
+.mobile-menu-btn {
+  display: none;
+  flex-direction: column;
+  gap: 4px;
+  padding: var(--space-2);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: all var(--transition-normal);
 }
 
-/* Responsive behavior (even though you mentioned not responsive, adding basic mobile fallback) */
-@media (max-width: 768px) {
+.mobile-menu-btn span {
+  width: 24px;
+  height: 2px;
+  background: var(--text-secondary);
+  transition: all var(--transition-normal);
+  transform-origin: center;
+}
+
+.mobile-menu-btn:hover span {
+  background: var(--text-primary);
+}
+
+.mobile-menu-btn.active span:nth-child(1) {
+  transform: rotate(45deg) translateY(6px);
+}
+
+.mobile-menu-btn.active span:nth-child(2) {
+  opacity: 0;
+}
+
+.mobile-menu-btn.active span:nth-child(3) {
+  transform: rotate(-45deg) translateY(-6px);
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
   .navbar-container {
-    padding: 0 16px;
+    padding: 0 var(--space-3);
+    gap: var(--space-4);
   }
   
   .navbar-nav {
-    gap: 20px;
+    gap: var(--space-4);
   }
   
   .navbar-nav a {
-    font-size: 14px;
-    padding: 6px 12px;
+    padding: var(--space-1) var(--space-3);
+  }
+}
+
+@media (max-width: 768px) {
+  .navbar-container {
+    height: 60px;
+    padding: 0 var(--space-2);
   }
   
-  .cart-btn {
-    padding: 10px 20px;
-    font-size: 14px;
+  .navbar-brand h1 {
+    font-size: var(--text-xl);
   }
+  
+  .navbar-menu {
+    display: none; /* Hide desktop menu on mobile */
+  }
+  
+  .mobile-menu-btn {
+    display: flex;
+  }
+  
+  .navbar-actions {
+    gap: var(--space-2);
+  }
+  
+  .cart-btn,
+  .user-btn {
+    padding: var(--space-1) var(--space-3);
+    font-size: var(--text-sm);
+  }
+  
+  .login-btn {
+    padding: var(--space-1) var(--space-4);
+    font-size: var(--text-sm);
+  }
+  
+  .user-dropdown {
+    right: 0;
+    min-width: 140px;
+  }
+}
+
+@media (max-width: 480px) {
+  .navbar-container {
+    height: 50px;
+    gap: var(--space-2);
+  }
+  
+  .navbar-brand h1 {
+    font-size: var(--text-lg);
+  }
+  
+  .cart-btn span:last-child {
+    display: none; /* Hide "Cart" text, show only icon and count */
+  }
+  
+  .user-btn span:last-child {
+    max-width: 80px;
+  }
+  
+  .login-btn {
+    padding: var(--space-1) var(--space-3);
+  }
+}
+
+/* Scroll Effects */
+.navbar.scrolled {
+  background: rgba(26, 26, 26, 0.98);
+  backdrop-filter: blur(15px);
+  border-bottom-color: var(--border-light);
+}
+
+.navbar.scrolled::before {
+  opacity: 0.7;
+}
+
+/* High Performance Mode */
+@media (prefers-reduced-motion: reduce) {
+  .navbar {
+    animation: none;
+  }
+  
+  .navbar-brand,
+  .navbar-menu,
+  .navbar-actions {
+    animation: none;
+  }
+  
+  .cart-btn::before,
+  .login-btn::before {
+    display: none;
+  }
+  
+  .user-dropdown {
+    animation: none;
+  }
+}
+
+/* Focus States */
+.cart-btn:focus,
+.user-btn:focus,
+.login-btn:focus {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+.dropdown-item:focus {
+  outline: none;
+  background: var(--hover-overlay);
+  color: var(--text-primary);
+}
+
+/* Loading State */
+.navbar.loading {
+  opacity: 0.8;
+  pointer-events: none;
+}
+
+.navbar.loading::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--accent-gradient);
+  animation: loading-bar 1.5s infinite;
+}
+
+@keyframes loading-bar {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* Notification Badge */
+.cart-btn .notification-badge {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background: var(--accent-error);
+  color: var(--text-primary);
+  border-radius: var(--radius-full);
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--text-xs);
+  font-weight: 600;
+  animation: pulse 2s infinite;
+}
+
+/* Hover Effects for Better UX */
+.navbar-actions > * {
+  transition: all var(--transition-normal);
+}
+
+.navbar-actions > *:hover {
+  z-index: 1;
+}
+
+/* Glassmorphism Effect */
+.navbar {
+  background: rgba(26, 26, 26, 0.9);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
