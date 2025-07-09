@@ -1,7 +1,7 @@
 {
   "products": [
     {
-      "id": 1,
+      "id": "1",
       "name": "MacBook Pro 14-inch",
       "price": 1999,
       "category": "Electronics",
@@ -12,7 +12,7 @@
       "stock": 25
     },
     {
-      "id": 2,
+      "id": "2",
       "name": "iPhone 15 Pro",
       "price": 1199,
       "category": "Electronics",
@@ -23,7 +23,7 @@
       "stock": 40
     },
     {
-      "id": 3,
+      "id": "3",
       "name": "Samsung Galaxy S24 Ultra",
       "price": 1299,
       "category": "Electronics",
@@ -34,7 +34,7 @@
       "stock": 30
     },
     {
-      "id": 4,
+      "id": "4",
       "name": "Dell XPS 13",
       "price": 1099,
       "category": "Electronics",
@@ -45,7 +45,7 @@
       "stock": 20
     },
     {
-      "id": 5,
+      "id": "5",
       "name": "Sony WH-1000XM5",
       "price": 399,
       "category": "Audio",
@@ -56,7 +56,7 @@
       "stock": 50
     },
     {
-      "id": 6,
+      "id": "6",
       "name": "AirPods Pro 2nd Gen",
       "price": 249,
       "category": "Audio",
@@ -67,7 +67,7 @@
       "stock": 60
     },
     {
-      "id": 7,
+      "id": "7",
       "name": "iPad Pro 12.9-inch",
       "price": 1099,
       "category": "Electronics",
@@ -78,7 +78,7 @@
       "stock": 35
     },
     {
-      "id": 8,
+      "id": "8",
       "name": "Samsung 4K Smart TV 55-inch",
       "price": 799,
       "category": "Electronics",
@@ -89,7 +89,7 @@
       "stock": 15
     },
     {
-      "id": 9,
+      "id": "9",
       "name": "Nike Air Max 270",
       "price": 150,
       "category": "Fashion",
@@ -100,7 +100,7 @@
       "stock": 100
     },
     {
-      "id": 10,
+      "id": "10",
       "name": "Adidas Ultraboost 22",
       "price": 180,
       "category": "Fashion",
@@ -111,7 +111,7 @@
       "stock": 80
     },
     {
-      "id": 11,
+      "id": "11",
       "name": "Levi's 501 Original Jeans",
       "price": 89,
       "category": "Fashion",
@@ -122,7 +122,7 @@
       "stock": 120
     },
     {
-      "id": 12,
+      "id": "12",
       "name": "Canon EOS R5",
       "price": 3899,
       "category": "Electronics",
@@ -135,18 +135,28 @@
   ],
   "users": [
     {
-      "id": 1,
+      "id": "1",
       "name": "John Doe",
       "email": "john@example.com",
+      "phone": "1234567890",
       "password": "password123",
-      "cart": []
+      "createdAt": "2024-01-15T10:30:00.000Z"
     },
     {
-      "id": 2,
+      "id": "2",
       "name": "Jane Smith",
       "email": "jane@example.com",
+      "phone": "0987654321",
       "password": "password456",
-      "cart": []
+      "createdAt": "2024-01-16T14:20:00.000Z"
+    },
+    {
+      "id": "1751998582870",
+      "name": "Akshat Shukla",
+      "email": "akshatshukla8600@gmail.com",
+      "phone": "9340924251",
+      "password": "123456",
+      "createdAt": "2025-07-08T18:16:22.870Z"
     }
   ]
 }

@@ -1,73 +1,36 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
-import { Provider } from 'react-redux'
+import { Provider, useDispatch } from 'react-redux'
 import { store } from './store/store'
+import { loginSuccess } from './store/authSlice'
+import { authService } from './services/authService'
 import Navbar from './components/Navbar'
-import SearchSort from './components/SearchSort'
-import ProductCard from './components/ProductCard'
+import Home from './components/Home'
 import ProductDetail from './components/ProductDetail'
 import Cart from './components/Cart'
 import Footer from './components/Footer'
+import Login from './components/Login'
+import Register from './components/Register'
+import UserProfile from './components/UserProfile'
 import './App.css'
 
-// Home component for the main product listing
-const Home = ({ 
-  products, 
-  filteredProducts, 
-  searchTerm, 
-  setSearchTerm, 
-  sortBy, 
-  setSortBy, 
-  selectedCategory, 
-  setSelectedCategory, 
-  categories, 
-  loading, 
-  error 
-}) => {
-  if (loading) {
-    return <div className="loading">Loading products...</div>
-  }
+// Auth initializer component
+const AuthInitializer = ({ children }) => {
+  const dispatch = useDispatch()
 
-  if (error) {
-    return <div className="error">Error: {error}</div>
-  }
+  useEffect(() => {
+    // Check if user is already logged in
+    const user = authService.getCurrentUser()
+    if (user && authService.isAuthenticated()) {
+      dispatch(loginSuccess(user))
+    }
+  }, [dispatch])
 
-  return (
-    <main className="main-content">
-      <div className="hero-section">
-        <h1>Welcome to TechStore</h1>
-        <p>Discover the latest technology and fashion products</p>
-      </div>
-      
-      <SearchSort
-        searchTerm={searchTerm}
-        onSearchChange={setSearchTerm}
-        sortBy={sortBy}
-        onSortChange={setSortBy}
-        selectedCategory={selectedCategory}
-        onCategoryChange={setSelectedCategory}
-        categories={categories}
-      />
-      
-      <div className="products-section">
-        <h2>Our Products</h2>
-        <div className="products-grid">
-          {filteredProducts.length === 0 ? (
-            <div className="no-products">
-              <p>No products found matching your criteria.</p>
-            </div>
-          ) : (
-            filteredProducts.map(product => (
-              <ProductCard key={product.id} product={product} />
-            ))
-          )}
-        </div>
-      </div>
-    </main>
-  )
+  return children
 }
 
-function App() {
+// Main App component
+const AppContent = () => {
   const [products, setProducts] = useState([])
   const [filteredProducts, setFilteredProducts] = useState([])
   const [searchTerm, setSearchTerm] = useState('')
@@ -142,43 +105,63 @@ function App() {
     setFilteredProducts(filtered)
   }, [products, searchTerm, sortBy, selectedCategory])
 
+  // Handle URL parameters for category filtering
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search)
+    const categoryParam = urlParams.get('category')
+    if (categoryParam) {
+      setSelectedCategory(categoryParam)
+    }
+  }, [])
+
   // Get unique categories
   const categories = [...new Set(products.map(product => product.category))]
 
   return (
+    <div className="App">
+      <Navbar />
+      <Cart />
+      
+      <Routes>
+        <Route 
+          path="/" 
+          element={
+            <Home 
+              products={products}
+              filteredProducts={filteredProducts}
+              searchTerm={searchTerm}
+              setSearchTerm={setSearchTerm}
+              sortBy={sortBy}
+              setSortBy={setSortBy}
+              selectedCategory={selectedCategory}
+              setSelectedCategory={setSelectedCategory}
+              categories={categories}
+              loading={loading}
+              error={error}
+            />
+          } 
+        />
+        <Route path="/product/:id" element={<ProductDetail />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/profile" element={<UserProfile />} />
+      </Routes>
+      
+      <Footer />
+    </div>
+  )
+}
+
+function App() {
+  return (
     <Provider store={store}>
       <Router>
-        <div className="App">
-          <Navbar />
-          <Cart />
-          
-          <Routes>
-            <Route 
-              path="/" 
-              element={
-                <Home 
-                  products={products}
-                  filteredProducts={filteredProducts}
-                  searchTerm={searchTerm}
-                  setSearchTerm={setSearchTerm}
-                  sortBy={sortBy}
-                  setSortBy={setSortBy}
-                  selectedCategory={selectedCategory}
-                  setSelectedCategory={setSelectedCategory}
-                  categories={categories}
-                  loading={loading}
-                  error={error}
-                />
-              } 
-            />
-            <Route path="/product/:id" element={<ProductDetail />} />
-          </Routes>
-          
-          <Footer />
-        </div>
+        <AuthInitializer>
+          <AppContent />
+        </AuthInitializer>
       </Router>
     </Provider>
   )
 }
 
-export default App
+export default App;
