@@ -14,7 +14,7 @@ const HeroBanner = () => {
       description: "Starting at ₹99,900",
       image: "https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=800&h=400&fit=crop",
       cta: "Shop Now",
-      category: "Electronics"
+      category: "Smartphones"
     },
     {
       id: 2,
@@ -23,22 +23,22 @@ const HeroBanner = () => {
       description: "From ₹1,65,900",
       image: "https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=800&h=400&fit=crop",
       cta: "Explore",
-      category: "Electronics"
+      category: "Laptops"
     },
     {
       id: 3,
-      title: "Fashion Collection",
-      subtitle: "Discover your style",
-      description: "Up to 50% off",
-      image: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800&h=400&fit=crop",
-      cta: "Shop Fashion",
-      category: "Fashion"
+      title: "Gaming Desktop PCs",
+      subtitle: "Built for ultimate performance",
+      description: "Starting at ₹45,000",
+      image: "https://images.unsplash.com/photo-1587202372634-32705e3bf49c?w=800&h=400&fit=crop",
+      cta: "Build Your PC",
+      category: "Desktop PC"
     },
     {
       id: 4,
-      title: "Audio Experience",
-      subtitle: "Premium sound quality",
-      description: "Starting at ₹20,700",
+      title: "Premium Audio Experience",
+      subtitle: "Immersive sound quality",
+      description: "Starting at ₹12,999",
       image: "https://images.unsplash.com/photo-1583394838336-acd977736f90?w=800&h=400&fit=crop",
       cta: "Listen Now",
       category: "Audio"

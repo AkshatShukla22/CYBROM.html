@@ -12,6 +12,11 @@ const ProductCard = ({ product }) => {
   // Check if product is already in cart
   const isInCart = cartItems.some(item => item.id === product.id)
 
+  // Format price to remove decimals and add comma separators
+  const formatPrice = (price) => {
+    return Math.round(price).toLocaleString('en-IN')
+  }
+
   const handleAddToCart = (e) => {
     e.stopPropagation() // Prevent navigation when clicking add to cart
     if (!isInCart) {
@@ -40,8 +45,8 @@ const ProductCard = ({ product }) => {
         </div>
         
         <div className="product-price">
-          <span className="price">{product.price}</span>
-          <span className="original-price">{product.price * 1.2}</span>
+          <span className="price">{formatPrice(product.price)}</span>
+          <span className="original-price">{formatPrice(product.price * 1.2)}</span>
         </div>
         
         <div className="product-stock">

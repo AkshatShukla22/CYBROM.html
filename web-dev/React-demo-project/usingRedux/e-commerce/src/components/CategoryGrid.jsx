@@ -7,40 +7,40 @@ const CategoryGrid = ({ categories }) => {
 
   const categoryData = [
     {
-      name: 'Electronics',
-      image: 'https://images.unsplash.com/photo-1498049794561-7780e7231661?w=400&h=300&fit=crop',
-      description: 'Latest gadgets & tech',
+      name: 'Smartphones',
+      image: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400&h=300&fit=crop',
+      description: 'Latest smartphones & accessories',
       color: '#007bff'
     },
     {
-      name: 'Fashion',
-      image: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=400&h=300&fit=crop',
-      description: 'Trendy clothing & accessories',
-      color: '#e91e63'
+      name: 'Laptops',
+      image: 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=400&h=300&fit=crop',
+      description: 'High-performance laptops',
+      color: '#28a745'
     },
     {
       name: 'Audio',
       image: 'https://images.unsplash.com/photo-1583394838336-acd977736f90?w=400&h=300&fit=crop',
-      description: 'Premium audio equipment',
+      description: 'Premium headphones & speakers',
       color: '#ff9800'
     },
     {
-      name: 'Home',
-      image: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=300&fit=crop',
-      description: 'Home & living essentials',
-      color: '#4caf50'
+      name: 'Desktop PC',
+      image: 'https://images.unsplash.com/photo-1587202372634-32705e3bf49c?w=400&h=300&fit=crop',
+      description: 'Gaming & workstation PCs',
+      color: '#dc3545'
     },
     {
-      name: 'Sports',
-      image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=300&fit=crop',
-      description: 'Sports & fitness gear',
-      color: '#9c27b0'
+      name: 'Tablets',
+      image: 'https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=400&h=300&fit=crop',
+      description: 'Tablets & e-readers',
+      color: '#6f42c1'
     },
     {
-      name: 'Books',
-      image: 'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=400&h=300&fit=crop',
-      description: 'Books & educational content',
-      color: '#795548'
+      name: 'Smart Watch',
+      image: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&h=300&fit=crop',
+      description: 'Smartwatches & fitness trackers',
+      color: '#20c997'
     }
   ];
 
@@ -52,7 +52,7 @@ const CategoryGrid = ({ categories }) => {
     <section className="category-grid-section">
       <div className="section-header">
         <h2>Shop by Category</h2>
-        <p>Explore our wide range of product categories</p>
+        <p>Explore our wide range of tech products</p>
       </div>
 
       <div className="category-grid">

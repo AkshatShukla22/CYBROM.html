@@ -106,7 +106,7 @@ const Home = ({
         </section>
       )}
       
-      <section className="home-section">
+      <section id="products" className="home-section">
         <div className="section-header">
           <h2>All Products</h2>
           <p>Browse our complete collection</p>

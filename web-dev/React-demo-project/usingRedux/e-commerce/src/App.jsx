@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route, useLocation, useNavigate } from 'react-router-dom'
 import { Provider, useDispatch } from 'react-redux'
 import { store } from './store/store'
 import { loginSuccess } from './store/authSlice'
@@ -38,6 +38,12 @@ const AppContent = () => {
   const [selectedCategory, setSelectedCategory] = useState('')
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  
+  // Get current location to determine if navbar should be shown
+  const location = useLocation()
+  const navigate = useNavigate()
+  const hideNavbarRoutes = ['/login', '/register']
+  const shouldShowNavbar = !hideNavbarRoutes.includes(location.pathname)
 
   // Fetch products from JSON server
   useEffect(() => {
@@ -117,9 +123,45 @@ const AppContent = () => {
   // Get unique categories
   const categories = [...new Set(products.map(product => product.category))]
 
+  // Handle search from navbar
+  const handleSearch = (term) => {
+    setSearchTerm(term)
+    // Navigate to home if not already there
+    if (location.pathname !== '/') {
+      navigate('/')
+    }
+    // Scroll to products section after navigation
+    setTimeout(() => {
+      const productsSection = document.getElementById('products')
+      if (productsSection) {
+        productsSection.scrollIntoView({ behavior: 'smooth' })
+      }
+    }, 100)
+  }
+
+  // Handle products click from navbar
+  const handleProductsClick = () => {
+    // Navigate to home if not already there
+    if (location.pathname !== '/') {
+      navigate('/')
+    }
+    // Scroll to products section after navigation
+    setTimeout(() => {
+      const productsSection = document.getElementById('products')
+      if (productsSection) {
+        productsSection.scrollIntoView({ behavior: 'smooth' })
+      }
+    }, 100)
+  }
+
   return (
     <div className="App">
-      <Navbar />
+      {shouldShowNavbar && (
+        <Navbar 
+          onSearch={handleSearch}
+          onProductsClick={handleProductsClick}
+        />
+      )}
       <Cart />
       
       <Routes>
@@ -142,9 +184,9 @@ const AppContent = () => {
           } 
         />
         <Route path="/product/:id" element={<ProductDetail />} />
-        <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/profile" element={<UserProfile />} />
+        <Route path="/login" element={<Login />} />
       </Routes>
       
       <Footer />
