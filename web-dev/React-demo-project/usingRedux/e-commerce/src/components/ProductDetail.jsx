@@ -2,8 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { addToCart, increaseQuantity, decreaseQuantity } from '../store/cartSlice'
-import '../style/productDetail.css'
-
+import '../style/ProductDetail.css'
 const ProductDetail = () => {
   const { id } = useParams()
   const navigate = useNavigate()
