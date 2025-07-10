@@ -1,12 +1,17 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { productService } from '../services/productService';
+
+const API_BASE_URL = 'http://localhost:3000';
 
 // Async thunks for product operations
 export const fetchAllProducts = createAsyncThunk(
-  'products/fetchAll',
+  'products/fetchAllProducts',
   async (_, { rejectWithValue }) => {
     try {
-      const products = await productService.getAllProducts();
+      const response = await fetch(`${API_BASE_URL}/products`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch products');
+      }
+      const products = await response.json();
       return products;
     } catch (error) {
       return rejectWithValue(error.message);
@@ -14,11 +19,15 @@ export const fetchAllProducts = createAsyncThunk(
   }
 );
 
-export const fetchProductById = createAsyncThunk(
-  'products/fetchById',
-  async (id, { rejectWithValue }) => {
+export const fetchProducts = createAsyncThunk(
+  'products/fetchProducts',
+  async (productId, { rejectWithValue }) => {
     try {
-      const product = await productService.getProductById(id);
+      const response = await fetch(`${API_BASE_URL}/products/${productId}`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch product');
+      }
+      const product = await response.json();
       return product;
     } catch (error) {
       return rejectWithValue(error.message);
@@ -30,7 +39,11 @@ export const fetchFeaturedProducts = createAsyncThunk(
   'products/fetchFeatured',
   async (limit = 8, { rejectWithValue }) => {
     try {
-      const products = await productService.getFeaturedProducts(limit);
+      const response = await fetch(`${API_BASE_URL}/products?featured=true&limit=${limit}`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch featured products');
+      }
+      const products = await response.json();
       return products;
     } catch (error) {
       return rejectWithValue(error.message);
@@ -42,7 +55,11 @@ export const fetchNewArrivals = createAsyncThunk(
   'products/fetchNewArrivals',
   async (limit = 10, { rejectWithValue }) => {
     try {
-      const products = await productService.getNewArrivals(limit);
+      const response = await fetch(`${API_BASE_URL}/products?newArrivals=true&limit=${limit}`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch new arrivals');
+      }
+      const products = await response.json();
       return products;
     } catch (error) {
       return rejectWithValue(error.message);
@@ -54,7 +71,11 @@ export const fetchBestSellers = createAsyncThunk(
   'products/fetchBestSellers',
   async (limit = 10, { rejectWithValue }) => {
     try {
-      const products = await productService.getBestSellers(limit);
+      const response = await fetch(`${API_BASE_URL}/products?bestSellers=true&limit=${limit}`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch best sellers');
+      }
+      const products = await response.json();
       return products;
     } catch (error) {
       return rejectWithValue(error.message);
@@ -66,7 +87,11 @@ export const fetchTopRatedProducts = createAsyncThunk(
   'products/fetchTopRated',
   async (limit = 10, { rejectWithValue }) => {
     try {
-      const products = await productService.getTopRatedProducts(limit);
+      const response = await fetch(`${API_BASE_URL}/products?topRated=true&limit=${limit}`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch top rated products');
+      }
+      const products = await response.json();
       return products;
     } catch (error) {
       return rejectWithValue(error.message);
@@ -78,13 +103,58 @@ export const fetchCategories = createAsyncThunk(
   'products/fetchCategories',
   async (_, { rejectWithValue }) => {
     try {
-      const categories = await productService.getCategories();
+      const response = await fetch(`${API_BASE_URL}/categories`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch categories');
+      }
+      const categories = await response.json();
       return categories;
     } catch (error) {
       return rejectWithValue(error.message);
     }
   }
 );
+
+// Helper function to filter products
+const filterProducts = (products, filters) => {
+  return products.filter(product => {
+    const matchesSearch = !filters.searchTerm || 
+      product.name.toLowerCase().includes(filters.searchTerm.toLowerCase()) ||
+      product.description.toLowerCase().includes(filters.searchTerm.toLowerCase());
+    
+    const matchesCategory = !filters.category || product.category === filters.category;
+    const matchesBrand = !filters.brand || product.brand === filters.brand;
+    const matchesPrice = (!filters.minPrice || product.price >= filters.minPrice) &&
+                        (!filters.maxPrice || product.price <= filters.maxPrice);
+    const matchesRating = !filters.minRating || product.rating >= filters.minRating;
+    const matchesStock = !filters.inStock || product.stock > 0;
+    
+    return matchesSearch && matchesCategory && matchesBrand && 
+           matchesPrice && matchesRating && matchesStock;
+  });
+};
+
+// Helper function to sort products
+const sortProducts = (products, sortBy) => {
+  const sortedProducts = [...products];
+  
+  switch (sortBy) {
+    case 'price-low-high':
+      return sortedProducts.sort((a, b) => a.price - b.price);
+    case 'price-high-low':
+      return sortedProducts.sort((a, b) => b.price - a.price);
+    case 'rating-high-low':
+      return sortedProducts.sort((a, b) => b.rating - a.rating);
+    case 'name-a-z':
+      return sortedProducts.sort((a, b) => a.name.localeCompare(b.name));
+    case 'name-z-a':
+      return sortedProducts.sort((a, b) => b.name.localeCompare(a.name));
+    case 'newest':
+      return sortedProducts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    default:
+      return sortedProducts;
+  }
+};
 
 const initialState = {
   // Product lists
@@ -144,38 +214,38 @@ const productSlice = createSlice({
     // Filter actions
     setSearchTerm: (state, action) => {
       state.filters.searchTerm = action.payload;
-      state.filteredProducts = productService.filterProducts(state.products, state.filters);
+      state.filteredProducts = filterProducts(state.products, state.filters);
     },
     
     setCategory: (state, action) => {
       state.filters.category = action.payload;
-      state.filteredProducts = productService.filterProducts(state.products, state.filters);
+      state.filteredProducts = filterProducts(state.products, state.filters);
     },
     
     setBrand: (state, action) => {
       state.filters.brand = action.payload;
-      state.filteredProducts = productService.filterProducts(state.products, state.filters);
+      state.filteredProducts = filterProducts(state.products, state.filters);
     },
     
     setPriceRange: (state, action) => {
       state.filters.minPrice = action.payload.min;
       state.filters.maxPrice = action.payload.max;
-      state.filteredProducts = productService.filterProducts(state.products, state.filters);
+      state.filteredProducts = filterProducts(state.products, state.filters);
     },
     
     setMinRating: (state, action) => {
       state.filters.minRating = action.payload;
-      state.filteredProducts = productService.filterProducts(state.products, state.filters);
+      state.filteredProducts = filterProducts(state.products, state.filters);
     },
     
     setInStock: (state, action) => {
       state.filters.inStock = action.payload;
-      state.filteredProducts = productService.filterProducts(state.products, state.filters);
+      state.filteredProducts = filterProducts(state.products, state.filters);
     },
     
     setSortBy: (state, action) => {
       state.filters.sortBy = action.payload;
-      state.filteredProducts = productService.sortProducts(state.filteredProducts, action.payload);
+      state.filteredProducts = sortProducts(state.filteredProducts, action.payload);
     },
     
     // Clear filters
@@ -201,9 +271,16 @@ const productSlice = createSlice({
     
     // Clear errors
     clearError: (state, action) => {
-      const errorType = action.payload;
-      if (errorType && state.error[errorType]) {
-        state.error[errorType] = null;
+      if (action.payload) {
+        const errorType = action.payload;
+        if (state.error[errorType]) {
+          state.error[errorType] = null;
+        }
+      } else {
+        // Clear all errors if no specific type provided
+        Object.keys(state.error).forEach(key => {
+          state.error[key] = null;
+        });
       }
     }
   },
@@ -229,15 +306,15 @@ const productSlice = createSlice({
     
     // Fetch product by ID
     builder
-      .addCase(fetchProductById.pending, (state) => {
+      .addCase(fetchProducts.pending, (state) => {
         state.loading.currentProduct = true;
         state.error.currentProduct = null;
       })
-      .addCase(fetchProductById.fulfilled, (state, action) => {
+      .addCase(fetchProducts.fulfilled, (state, action) => {
         state.loading.currentProduct = false;
         state.currentProduct = action.payload;
       })
-      .addCase(fetchProductById.rejected, (state, action) => {
+      .addCase(fetchProducts.rejected, (state, action) => {
         state.loading.currentProduct = false;
         state.error.currentProduct = action.payload;
       });

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate, Link } from 'react-router-dom'
 import { loginStart, loginSuccess, loginFailure } from '../store/authSlice'
@@ -14,7 +14,19 @@ const Login = () => {
   
   const dispatch = useDispatch()
   const navigate = useNavigate()
-  const { isLoading, error } = useSelector(state => state.auth)
+  const { isLoading, error, isAuthenticated, user } = useSelector(state => state.auth)
+
+  // Add useEffect for admin panel redirection
+  useEffect(() => {
+    // Redirect based on user role after successful login
+    if (isAuthenticated && user) {
+      if (user.role === 'admin') {
+        navigate('/admin')
+      } else {
+        navigate('/')
+      }
+    }
+  }, [isAuthenticated, user, navigate])
 
   const handleInputChange = (e) => {
     const { name, value } = e.target
@@ -36,7 +48,7 @@ const Login = () => {
       dispatch(loginStart())
       const user = await authService.login(formData.email, formData.password)
       dispatch(loginSuccess(user))
-      navigate('/')
+      // Navigation is handled in useEffect based on user role
     } catch (error) {
       dispatch(loginFailure(error.message))
     }
@@ -108,9 +120,10 @@ const Login = () => {
             <Link to="/register"> Register here</Link>
           </p>
         </div>
+
       </div>
     </div>
   )
 }
 
-export default Login;
+export default Login

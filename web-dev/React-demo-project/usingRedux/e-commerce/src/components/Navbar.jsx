@@ -85,7 +85,7 @@ const Navbar = ({ onSearch, onProductsClick }) => {
                 Products
               </a>
             </li>
-            <li><a href="#contact">Contact</a></li>
+            <li><a href="/order">Orders</a></li>
           </ul>
         </div>
 

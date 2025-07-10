@@ -1,0 +1,242 @@
+/* AdminRoute Component Styles */
+
+/* Loading spinner for route transitions */
+.admin-route-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: var(--primary-dark);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: var(--z-modal);
+}
+
+.admin-route-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--border-dark);
+  border-top: 3px solid var(--accent-primary);
+  border-radius: var(--radius-full);
+  animation: spin 1s linear infinite;
+}
+
+/* Error message for unauthorized access */
+.admin-route-error {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: var(--primary-dark);
+  text-align: center;
+  padding: var(--space-8);
+}
+
+.admin-route-error-title {
+  font-size: var(--text-3xl);
+  color: var(--accent-error);
+  margin-bottom: var(--space-4);
+  font-weight: 600;
+}
+
+.admin-route-error-message {
+  font-size: var(--text-lg);
+  color: var(--text-secondary);
+  margin-bottom: var(--space-6);
+  max-width: 500px;
+  line-height: 1.6;
+}
+
+.admin-route-error-button {
+  background: var(--accent-gradient);
+  color: var(--text-primary);
+  padding: var(--space-3) var(--space-6);
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: var(--text-base);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.admin-route-error-button:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+/* Fade in animation for route transitions */
+.admin-route-fade-in {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+/* Access denied overlay */
+.admin-route-access-denied {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: var(--z-modal);
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.admin-route-access-denied-card {
+  background: var(--card-dark);
+  border: 1px solid var(--border-dark);
+  border-radius: var(--radius-lg);
+  padding: var(--space-8);
+  max-width: 400px;
+  width: 90%;
+  text-align: center;
+  animation: scaleIn 0.3s ease-out;
+}
+
+.admin-route-access-denied-icon {
+  width: 60px;
+  height: 60px;
+  margin: 0 auto var(--space-4);
+  border-radius: var(--radius-full);
+  background: var(--accent-error);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: var(--text-2xl);
+  color: var(--text-primary);
+}
+
+.admin-route-access-denied-title {
+  font-size: var(--text-xl);
+  color: var(--text-primary);
+  margin-bottom: var(--space-3);
+  font-weight: 600;
+}
+
+.admin-route-access-denied-message {
+  font-size: var(--text-base);
+  color: var(--text-secondary);
+  margin-bottom: var(--space-6);
+  line-height: 1.5;
+}
+
+/* Breadcrumb for admin routes */
+.admin-route-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-6);
+  padding: var(--space-4);
+  background: var(--surface-dark);
+  border-radius: var(--radius-md);
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+}
+
+.admin-route-breadcrumb-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.admin-route-breadcrumb-separator {
+  color: var(--text-disabled);
+}
+
+.admin-route-breadcrumb-current {
+  color: var(--accent-primary);
+  font-weight: 500;
+}
+
+/* Admin badge */
+.admin-route-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-1) var(--space-3);
+  background: var(--accent-primary);
+  color: var(--text-primary);
+  border-radius: var(--radius-full);
+  font-size: var(--text-xs);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Protection overlay (for sensitive admin sections) */
+.admin-route-protection-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(8px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: var(--z-modal);
+}
+
+.admin-route-protection-message {
+  background: var(--card-dark);
+  border: 1px solid var(--border-dark);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  text-align: center;
+  max-width: 300px;
+  animation: scaleIn 0.3s ease-out;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .admin-route-error {
+    padding: var(--space-4);
+  }
+  
+  .admin-route-error-title {
+    font-size: var(--text-2xl);
+  }
+  
+  .admin-route-error-message {
+    font-size: var(--text-base);
+  }
+  
+  .admin-route-access-denied-card {
+    padding: var(--space-6);
+  }
+  
+  .admin-route-breadcrumb {
+    flex-wrap: wrap;
+    gap: var(--space-1);
+  }
+}
+
+@media (max-width: 480px) {
+  .admin-route-error-title {
+    font-size: var(--text-xl);
+  }
+  
+  .admin-route-error-message {
+    font-size: var(--text-sm);
+  }
+  
+  .admin-route-access-denied-card {
+    padding: var(--space-4);
+    width: 95%;
+  }
+  
+  .admin-route-breadcrumb {
+    padding: var(--space-3);
+  }
+}

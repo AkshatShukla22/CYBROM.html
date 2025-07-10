@@ -12,6 +12,12 @@ import Footer from './components/Footer'
 import Login from './components/Login'
 import Register from './components/Register'
 import UserProfile from './components/UserProfile'
+import OrderPage from './components/OrderPage.jsx'
+// Admin Components
+import AdminPanel from './components/AdminPanel'
+import AdminUserManagement from './components/AdminUserManagement'
+import AdminProductManagement from './components/AdminProductManagement'
+import AdminRoute from './components/AdminRoute'
 import './App.css'
 
 // Auth initializer component
@@ -43,7 +49,9 @@ const AppContent = () => {
   const location = useLocation()
   const navigate = useNavigate()
   const hideNavbarRoutes = ['/login', '/register']
+  const hideFooterRoutes = ['/admin', '/admin/users', '/admin/products']
   const shouldShowNavbar = !hideNavbarRoutes.includes(location.pathname)
+  const shouldShowFooter = !hideFooterRoutes.includes(location.pathname) && !location.pathname.startsWith('/admin')
 
   // Fetch products from JSON server
   useEffect(() => {
@@ -165,6 +173,7 @@ const AppContent = () => {
       <Cart />
       
       <Routes>
+        {/* Regular Routes */}
         <Route 
           path="/" 
           element={
@@ -187,9 +196,27 @@ const AppContent = () => {
         <Route path="/register" element={<Register />} />
         <Route path="/profile" element={<UserProfile />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/order" element={<OrderPage />} />
+        
+        {/* Admin Routes */}
+        <Route path="/admin" element={
+          <AdminRoute>
+            <AdminPanel />
+          </AdminRoute>
+        } />
+        <Route path="/admin/users" element={
+          <AdminRoute>
+            <AdminUserManagement />
+          </AdminRoute>
+        } />
+        <Route path="/admin/products" element={
+          <AdminRoute>
+            <AdminProductManagement />
+          </AdminRoute>
+        } />
       </Routes>
       
-      <Footer />
+      {shouldShowFooter && <Footer />}
     </div>
   )
 }

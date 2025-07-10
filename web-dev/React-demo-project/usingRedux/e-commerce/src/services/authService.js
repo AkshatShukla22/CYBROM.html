@@ -1,10 +1,28 @@
-// Authentication Service
+// Enhanced Authentication Service with Admin Detection
 const API_BASE_URL = 'http://localhost:3000'
 
 export const authService = {
-  // Login user
+  // Login user with admin detection
   login: async (email, password) => {
     try {
+      // Check for admin credentials first
+      if (email === 'admin@gmail.com' && password === '123456') {
+        const adminUser = {
+          id: 'admin',
+          name: 'Admin User',
+          email: 'admin@gmail.com',
+          role: 'admin',
+          createdAt: new Date().toISOString()
+        }
+        
+        // Store admin user in localStorage
+        localStorage.setItem('user', JSON.stringify(adminUser))
+        localStorage.setItem('token', 'admin-token')
+        
+        return adminUser
+      }
+
+      // Regular user login
       const response = await fetch(`${API_BASE_URL}/users?email=${email}&password=${password}`)
       if (!response.ok) {
         throw new Error('Failed to login')
@@ -15,10 +33,10 @@ export const authService = {
         throw new Error('Invalid email or password')
       }
       
-      const user = users[0]
+      const user = { ...users[0], role: 'user' }
       // Store user in localStorage for persistence
       localStorage.setItem('user', JSON.stringify(user))
-      localStorage.setItem('token', user.id) // Simple token simulation
+      localStorage.setItem('token', user.id)
       
       return user
     } catch (error) {
@@ -41,6 +59,7 @@ export const authService = {
       const newUser = {
         id: Date.now().toString(),
         ...userData,
+        role: 'user',
         createdAt: new Date().toISOString()
       }
 
@@ -81,6 +100,12 @@ export const authService = {
   isAuthenticated: () => {
     const token = localStorage.getItem('token')
     return !!token
+  },
+
+  // Check if user is admin
+  isAdmin: () => {
+    const user = authService.getCurrentUser()
+    return user && user.role === 'admin'
   },
 
   // Logout user

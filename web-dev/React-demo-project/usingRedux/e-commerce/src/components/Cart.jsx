@@ -1,3 +1,4 @@
+// src/components/cart/Cart.jsx
 import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { 
@@ -7,10 +8,13 @@ import {
   clearCart, 
   toggleCart 
 } from '../store/cartSlice'
+import { createOrder } from '../store/orderSlice'
 import "../style/cart.css"
 
 const Cart = () => {
   const { items, totalQuantity, totalAmount, isCartOpen } = useSelector(state => state.cart)
+  const { user } = useSelector(state => state.auth)
+  const { loading } = useSelector(state => state.order)
   const dispatch = useDispatch()
 
   const handleRemoveFromCart = (id) => {
@@ -31,6 +35,54 @@ const Cart = () => {
 
   const handleCloseCart = () => {
     dispatch(toggleCart())
+  }
+
+  const handleCheckout = async () => {
+    if (!user) {
+      alert('Please login to place an order')
+      return
+    }
+
+    if (items.length === 0) {
+      alert('Your cart is empty')
+      return
+    }
+
+    const orderData = {
+      userId: user.id,
+      userName: user.name,
+      userEmail: user.email,
+      userPhone: user.phone,
+      items: items.map(item => ({
+        productId: item.id,
+        name: item.name,
+        price: item.price,
+        quantity: item.quantity,
+        image: item.image,
+        totalPrice: item.totalPrice
+      })),
+      totalQuantity,
+      totalAmount,
+      shippingAddress: {
+        street: '',
+        city: '',
+        state: '',
+        zipCode: '',
+        country: 'India'
+      }
+    }
+
+    try {
+      const result = await dispatch(createOrder(orderData))
+      
+      if (result.type === 'order/createOrder/fulfilled') {
+        alert('Order placed successfully!')
+        dispatch(clearCart())
+        dispatch(toggleCart())
+      }
+    } catch (error) {
+      alert('Failed to place order. Please try again.')
+    }
   }
 
   if (!isCartOpen) return null
@@ -61,7 +113,7 @@ const Cart = () => {
                     
                     <div className="cart-item-info">
                       <h4>{item.name}</h4>
-                      <p className="item-price">${item.price}</p>
+                      <p className="item-price">₹{item.price}</p>
                     </div>
                     
                     <div className="cart-item-controls">
@@ -81,14 +133,14 @@ const Cart = () => {
                     </div>
                     
                     <div className="cart-item-total">
-                      <span>${item.totalPrice}</span>
+                      <span>₹{item.totalPrice}</span>
                     </div>
                     
                     <button 
                       className="remove-btn"
                       onClick={() => handleRemoveFromCart(item.id)}
                     >
-                      Remove
+                      X
                     </button>
                   </div>
                 ))}
@@ -99,15 +151,19 @@ const Cart = () => {
                   <span>Total Items: {totalQuantity}</span>
                 </div>
                 <div className="summary-row total">
-                  <span>Total Amount: ${totalAmount}</span>
+                  <span>Total Amount: ₹{totalAmount}</span>
                 </div>
                 
                 <div className="cart-actions">
                   <button className="clear-cart-btn" onClick={handleClearCart}>
                     Clear Cart
                   </button>
-                  <button className="checkout-btn">
-                    Checkout
+                  <button 
+                    className="checkout-btn"
+                    onClick={handleCheckout}
+                    disabled={loading.creating}
+                  >
+                    {loading.creating ? 'Processing...' : 'Checkout'}
                   </button>
                 </div>
               </div>
