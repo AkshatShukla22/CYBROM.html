@@ -2,6 +2,7 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 import OrderList from '../components/OrderList'
+import '../style/ordersPage.css'
 
 const OrdersPage = () => {
   const { user } = useSelector(state => state.auth)

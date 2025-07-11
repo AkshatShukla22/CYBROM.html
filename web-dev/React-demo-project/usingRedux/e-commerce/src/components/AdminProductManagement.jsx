@@ -158,13 +158,6 @@ const AdminProductManagement = () => {
 
   return (
     <div className="admin-product-management">
-      {/* Debug information */}
-      <div className="debug-info">
-        <strong>Debug Info:</strong>
-        <div>Products count: {products.length}</div>
-        <div>Loading: {isLoading ? 'Yes' : 'No'}</div>
-        <div>Error: {productError || adminError || 'None'}</div>
-      </div>
 
       <div className="admin-header">
         <h2>Product Management</h2>

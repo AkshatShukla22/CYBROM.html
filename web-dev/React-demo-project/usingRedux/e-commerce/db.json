@@ -369,7 +369,7 @@
       ],
       "totalQuantity": 1,
       "totalAmount": 164900,
-      "status": "pending",
+      "status": "cancelled",
       "shippingAddress": {
         "street": "456 User Avenue",
         "city": "Mumbai",
@@ -378,7 +378,7 @@
         "country": "India"
       },
       "createdAt": "2024-01-15T10:30:00.000Z",
-      "updatedAt": "2024-01-15T10:30:00.000Z"
+      "updatedAt": "2025-07-11T01:51:45.507Z"
     },
     {
       "id": "1703234567891",
@@ -406,7 +406,7 @@
       ],
       "totalQuantity": 2,
       "totalAmount": 219899,
-      "status": "dispatched",
+      "status": "cancelled",
       "shippingAddress": {
         "street": "456 User Avenue",
         "city": "Mumbai",
@@ -415,7 +415,7 @@
         "country": "India"
       },
       "createdAt": "2024-01-14T14:20:00.000Z",
-      "updatedAt": "2024-01-15T09:15:00.000Z"
+      "updatedAt": "2025-07-11T01:51:41.785Z"
     },
     {
       "id": "1752181096455",
@@ -442,9 +442,10 @@
         "zipCode": "",
         "country": "India"
       },
-      "status": "pending",
+      "status": "cancelled",
       "createdAt": "2025-07-10T20:58:16.455Z",
-      "updatedAt": "2025-07-10T20:58:16.455Z"
+      "updatedAt": "2025-07-11T01:18:26.926Z",
+      "cancelledAt": "2025-07-11T01:18:26.927Z"
     },
     {
       "id": "1752181430685",

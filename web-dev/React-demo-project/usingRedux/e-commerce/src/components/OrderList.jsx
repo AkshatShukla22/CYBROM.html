@@ -1,12 +1,14 @@
 // src/components/orders/OrderList.jsx
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { fetchUserOrders } from '../store/orderSlice'
+import { fetchUserOrders, cancelOrder } from '../store/orderSlice'
+import '../style/orderList.css'
 
 const OrderList = () => {
   const dispatch = useDispatch()
   const { userOrders, loading, error } = useSelector(state => state.order)
   const { user } = useSelector(state => state.auth)
+  const [cancellingOrderId, setCancellingOrderId] = useState(null)
 
   useEffect(() => {
     if (user) {
@@ -39,12 +41,32 @@ const OrderList = () => {
     })
   }
 
+  const canCancelOrder = (order) => {
+    return order.status !== 'delivered' && order.status !== 'cancelled'
+  }
+
+  const handleCancelOrder = async (orderId) => {
+    if (window.confirm('Are you sure you want to cancel this order?')) {
+      setCancellingOrderId(orderId)
+      try {
+        await dispatch(cancelOrder(orderId)).unwrap()
+        // Refresh the orders list
+        dispatch(fetchUserOrders(user.id))
+      } catch (error) {
+        console.error('Failed to cancel order:', error)
+        alert('Failed to cancel order: ' + error)
+      } finally {
+        setCancellingOrderId(null)
+      }
+    }
+  }
+
   if (loading.fetching) {
-    return <div>Loading your orders...</div>
+    return <div className="loading">Loading your orders...</div>
   }
 
   if (error) {
-    return <div>Error: {error}</div>
+    return <div className="error">Error: {error}</div>
   }
 
   return (
@@ -63,6 +85,11 @@ const OrderList = () => {
                 <div className="order-info">
                   <h3>Order #{order.id}</h3>
                   <p className="order-date">Placed on {formatDate(order.createdAt)}</p>
+                  {order.cancelledAt && (
+                    <p className="order-date cancelled">
+                      Cancelled on {formatDate(order.cancelledAt)}
+                    </p>
+                  )}
                 </div>
                 <div className="order-status">
                   <span 
@@ -95,6 +122,19 @@ const OrderList = () => {
                   <p>Total Items: {order.totalQuantity}</p>
                   <p className="order-total">Total Amount: ₹{order.totalAmount}</p>
                 </div>
+                
+                {/* Cancel Order Button */}
+                {canCancelOrder(order) && (
+                  <div className="order-actions">
+                    <button
+                      className="cancel-btn"
+                      onClick={() => handleCancelOrder(order.id)}
+                      disabled={cancellingOrderId === order.id || loading.cancelling}
+                    >
+                      {cancellingOrderId === order.id ? 'Cancelling...' : 'Cancel Order'}
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
           ))}

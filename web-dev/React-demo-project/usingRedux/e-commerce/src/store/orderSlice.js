@@ -47,6 +47,18 @@ export const updateOrderStatus = createAsyncThunk(
   }
 );
 
+// New async thunk for canceling orders
+export const cancelOrder = createAsyncThunk(
+  'order/cancelOrder',
+  async (orderId, { rejectWithValue }) => {
+    try {
+      return await orderService.cancelOrder(orderId);
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
 const orderSlice = createSlice({
   name: 'order',
   initialState: {
@@ -56,6 +68,7 @@ const orderSlice = createSlice({
       creating: false,
       fetching: false,
       updating: false,
+      cancelling: false,
     },
     error: null,
     success: false,
@@ -143,6 +156,34 @@ const orderSlice = createSlice({
       })
       .addCase(updateOrderStatus.rejected, (state, action) => {
         state.loading.updating = false;
+        state.error = action.payload;
+      })
+      
+      // Cancel Order
+      .addCase(cancelOrder.pending, (state) => {
+        state.loading.cancelling = true;
+        state.error = null;
+      })
+      .addCase(cancelOrder.fulfilled, (state, action) => {
+        state.loading.cancelling = false;
+        const cancelledOrder = action.payload;
+        
+        // Update in allOrders
+        const orderIndex = state.allOrders.findIndex(order => order.id === cancelledOrder.id);
+        if (orderIndex !== -1) {
+          state.allOrders[orderIndex] = cancelledOrder;
+        }
+        
+        // Update in userOrders
+        const userOrderIndex = state.userOrders.findIndex(order => order.id === cancelledOrder.id);
+        if (userOrderIndex !== -1) {
+          state.userOrders[userOrderIndex] = cancelledOrder;
+        }
+        
+        state.success = true;
+      })
+      .addCase(cancelOrder.rejected, (state, action) => {
+        state.loading.cancelling = false;
         state.error = action.payload;
       });
   },
