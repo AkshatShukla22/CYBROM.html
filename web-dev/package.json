@@ -1,7 +1,8 @@
 {
   "dependencies": {
     "@tailwindcss/vite": "^4.1.11",
-    "create-react-app": "^5.1.0"
+    "create-react-app": "^5.1.0",
+    "nodemon": "^3.1.10"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.21",
