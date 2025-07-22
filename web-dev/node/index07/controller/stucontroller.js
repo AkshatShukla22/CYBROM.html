@@ -1,3 +1,5 @@
+const stuModel = require('../models/stuModel');
+
 
 const homePage = (req,res)=>{ res.send("</h1>Welcome to my student Home Page!</h1>"); }
 const aboutPage = (req,res)=>{ res.send("</h1>Welcome to my student About Page!</h1>"); }

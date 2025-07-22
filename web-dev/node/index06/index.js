@@ -1,3 +1,5 @@
+// Routes
+
 const express = require('express');
 const app = express();
 const StuRoutes = require('./routes/stuRoutes');
