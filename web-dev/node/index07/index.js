@@ -4,6 +4,8 @@ const express = require('express');
 const mongoose = require('mongoose');
 const app = express();
 
+app.set('view engine', 'ejs');
+
 mongoose.connect('mongodb://localhost:27017/student').then(() => {
   console.log('Connected to MongoDB');  
 }).catch(err => {
