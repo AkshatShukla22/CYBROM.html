@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thali App Panel</title>
+    
+    <!-- External Dependencies -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    
+    <style>
+        /* Custom CSS matching Thali app styling */
+        * {
+            font-family: Arial, sans-serif;
+        }
+        
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #fff;
+        }
+        
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 60px;
+            height: 100vh;
+            background-color: #f4f4f4;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 20px;
+            z-index: 1000;
+        }
+        
+        .sidebar-icon {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 10px 0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background-color: transparent;
+            border: 2px solid transparent;
+            color: #666;
+        }
+        
+        .sidebar-icon:hover {
+            background-color: #e8e8e8;
+            color: #333;
+        }
+        
+        .sidebar-icon.active {
+            border-color: #4CAF50;
+            background-color: #4CAF50;
+            color: white;
+        }
+        
+        .sidebar-icon:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px #4CAF50;
+        }
+        
+        .main-content {
+            margin-left: 60px;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .section-container {
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+        }
+        
+        .section-container h2 {
+            color: #333;
+            font-size: 2rem;
+            margin-bottom: 30px;
+            font-weight: bold;
+        }
+        
+        .section-button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            font-family: Arial, sans-serif;
+            transition: all 0.3s ease;
+        }
+        
+        .section-button:hover {
+            background-color: #45a049;
+        }
+        
+        .section-button:active {
+            background-color: #3e8e41;
+        }
+        
+        .section-button:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px #4CAF50;
+        }
+        
+        /* Mobile responsive styles */
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                width: 100%;
+                height: 60px;
+                flex-direction: row;
+                justify-content: center;
+                padding: 0;
+                gap: 40px;
+            }
+            
+            .main-content {
+                margin-left: 0;
+                margin-bottom: 60px;
+                padding: 10px;
+            }
+            
+            .section-container h2 {
+                font-size: 1.5rem;
+                margin-bottom: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <!-- React Dependencies -->
+    <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.20.6/babel.min.js"></script>
+
+    <script type="text/babel">
+        const { useState } = React;
+
+        // Sidebar Component
+        function Sidebar({ activeSection, onSectionChange }) {
+            return (
+                <div className="sidebar">
+                    <button
+                        className={`sidebar-icon ${activeSection === 'notifications' ? 'active' : ''}`}
+                        onClick={() => onSectionChange('notifications')}
+                        aria-label="Open Notifications"
+                        tabIndex="0"
+                    >
+                        <i className="fas fa-bell"></i>
+                    </button>
+                    <button
+                        className={`sidebar-icon ${activeSection === 'messages' ? 'active' : ''}`}
+                        onClick={() => onSectionChange('messages')}
+                        aria-label="Open Messages"
+                        tabIndex="0"
+                    >
+                        <i className="fas fa-envelope"></i>
+                    </button>
+                </div>
+            );
+        }
+
+        // Notification Section Component
+        function NotificationSection() {
+            const handleViewNotifications = () => {
+                console.log('View Notifications clicked');
+            };
+
+            return (
+                <div className="section-container">
+                    <h2>Notifications</h2>
+                    <button 
+                        className="section-button"
+                        onClick={handleViewNotifications}
+                    >
+                        View Notifications
+                    </button>
+                </div>
+            );
+        }
+
+        // Message Section Component
+        function MessageSection() {
+            const handleViewMessages = () => {
+                console.log('View Messages clicked');
+            };
+
+            return (
+                <div className="section-container">
+                    <h2>Messages</h2>
+                    <button 
+                        className="section-button"
+                        onClick={handleViewMessages}
+                    >
+                        View Messages
+                    </button>
+                </div>
+            );
+        }
+
+        // Main App Component
+        function App() {
+            const [activeSection, setActiveSection] = useState('notifications');
+
+            const handleSectionChange = (section) => {
+                setActiveSection(section);
+            };
+
+            const renderMainContent = () => {
+                switch (activeSection) {
+                    case 'notifications':
+                        return <NotificationSection />;
+                    case 'messages':
+                        return <MessageSection />;
+                    default:
+                        return <NotificationSection />;
+                }
+            };
+
+            return (
+                <div className="app">
+                    <Sidebar 
+                        activeSection={activeSection} 
+                        onSectionChange={handleSectionChange} 
+                    />
+                    <div className="main-content">
+                        {renderMainContent()}
+                    </div>
+                </div>
+            );
+        }
+
+        // Render the App
+        ReactDOM.render(<App />, document.getElementById('root'));
+    </script>
+</body>
+</html>
