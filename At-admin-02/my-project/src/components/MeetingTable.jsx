@@ -1,9 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Search, ChevronDown, Plus, Download, Eye, Edit, Activity, X, MoreHorizontal } from 'lucide-react';
 
-const MeetingTable = ({ 
-  onShowActionItems
-}) => {
+const MeetingTable = () => {
   const [activeTab, setActiveTab] = useState('All');
   const [showRowActions, setShowRowActions] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
@@ -11,13 +9,19 @@ const MeetingTable = ({
   const [itemsPerPage, setItemsPerPage] = useState(50);
   const [selectedItems, setSelectedItems] = useState([]);
   const [pageInput, setPageInput] = useState('1');
+  const [showActionItems, setShowActionItems] = useState(false);
+  const [actionItemsRowActions, setActionItemsRowActions] = useState(null);
   const dropdownRef = useRef(null);
+  const actionItemsDropdownRef = useRef(null);
 
   // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setShowRowActions(null);
+      }
+      if (actionItemsDropdownRef.current && !actionItemsDropdownRef.current.contains(event.target)) {
+        setActionItemsRowActions(null);
       }
     };
 
@@ -167,6 +171,34 @@ const MeetingTable = ({
     }
   ];
 
+  // Action Items Data
+  const actionItems = [
+    {
+      id: 1,
+      task: 'Share revised costing with the Buyer and get it approved.',
+      status: 'In Progress',
+      dueDate: '01 May, 2025',
+      assignedTo: 'Mohd Saleem',
+      role: 'Merchandiser'
+    },
+    {
+      id: 2,
+      task: 'Send fabric swatches',
+      status: 'Pending',
+      dueDate: '01 May, 2025',
+      assignedTo: 'Mohd Saleem',
+      role: 'Merchandiser'
+    },
+    {
+      id: 3,
+      task: 'Confirm delivery window',
+      status: 'Completed',
+      dueDate: '01 May, 2025',
+      assignedTo: 'Mohd Saleem',
+      role: 'Merchandiser'
+    }
+  ];
+
   const filteredMeetings = meetings.filter(meeting => {
     const matchesTab = activeTab === 'All' || 
                       (activeTab === 'Draft' && meeting.status === 'Draft') ||
@@ -205,10 +237,15 @@ const MeetingTable = ({
 
   const handleRowAction = (action, meetingId) => {
     console.log(`${action} action for meeting ${meetingId}`);
-    if (action === 'Action Items' && onShowActionItems) {
-      onShowActionItems();
+    if (action === 'Action Items') {
+      setShowActionItems(true);
     }
     setShowRowActions(null);
+  };
+
+  const handleActionItemRowAction = (action, itemId) => {
+    console.log(`${action} action for action item ${itemId}`);
+    setActionItemsRowActions(null);
   };
 
   const handlePageInputChange = (e) => {
@@ -235,14 +272,12 @@ const MeetingTable = ({
         pages.push(i);
       }
     } else {
-      // Always show first page
       pages.push(1);
       
       if (currentPage > 4) {
         pages.push('...');
       }
       
-      // Show pages around current page
       const start = Math.max(2, currentPage - 1);
       const end = Math.min(totalPages - 1, currentPage + 1);
       
@@ -256,7 +291,6 @@ const MeetingTable = ({
         pages.push('...');
       }
       
-      // Always show last page
       if (!pages.includes(totalPages)) {
         pages.push(totalPages);
       }
@@ -264,6 +298,320 @@ const MeetingTable = ({
     
     return pages;
   };
+
+  const getActionItemStatusStyles = (status) => {
+    const statusStyles = {
+      'In Progress': { background: '#ea580c', color: 'white' },
+      'Pending': { background: '#ca8a04', color: 'white' },
+      'Completed': { background: '#16a34a', color: 'white' },
+      'Overdue': { background: '#dc2626', color: 'white' }
+    };
+    return statusStyles[status] || { background: '#6b7280', color: 'white' };
+  };
+
+  if (showActionItems) {
+    return (
+      <div style={{ 
+        marginLeft: '260px', 
+        marginTop: '70px',
+        padding: '24px', 
+        backgroundColor: '#f8f9fa', 
+        minHeight: '100vh',
+        fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", sans-serif'
+      }}>
+        {/* Back Button */}
+        <button
+          onClick={() => setShowActionItems(false)}
+          style={{
+            padding: '8px 16px',
+            background: '#6b7280',
+            border: 'none',
+            borderRadius: '6px',
+            color: 'white',
+            fontSize: '14px',
+            cursor: 'pointer',
+            marginBottom: '24px'
+          }}
+        >
+          ← Back to Meetings
+        </button>
+
+        {/* Action Items Header */}
+        <div style={{
+          marginBottom: '24px'
+        }}>
+          <h2 style={{
+            fontSize: '18px',
+            fontWeight: 600,
+            color: '#6b7280',
+            margin: 0,
+            padding: '16px 0',
+            borderBottom: '1px solid #e5e7eb'
+          }}>Action Items (3)</h2>
+        </div>
+
+        {/* Action Items Table */}
+        <div style={{
+          background: 'white',
+          borderRadius: '12px',
+          overflow: 'hidden',
+          boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+          maxWidth: 'calc(100vw - 300px)'
+        }}>
+          <div style={{ 
+            overflowX: 'auto',
+            overflowY: 'visible'
+          }}>
+            <table style={{ 
+              width: '100%',
+              minWidth: '800px',
+              borderCollapse: 'collapse'
+            }}>
+              <thead style={{ 
+                background: '#f8f9fa'
+              }}>
+                <tr>
+                  <th style={{
+                    padding: '16px 20px',
+                    textAlign: 'left',
+                    fontSize: '14px',
+                    fontWeight: 600,
+                    color: '#6b7280',
+                    width: '40%'
+                  }}>Action Items</th>
+                  <th style={{
+                    padding: '16px 20px',
+                    textAlign: 'left',
+                    fontSize: '14px',
+                    fontWeight: 600,
+                    color: '#6b7280',
+                    width: '15%'
+                  }}>Status</th>
+                  <th style={{
+                    padding: '16px 20px',
+                    textAlign: 'left',
+                    fontSize: '14px',
+                    fontWeight: 600,
+                    color: '#6b7280',
+                    width: '15%'
+                  }}>Due Date</th>
+                  <th style={{
+                    padding: '16px 20px',
+                    textAlign: 'left',
+                    fontSize: '14px',
+                    fontWeight: 600,
+                    color: '#6b7280',
+                    width: '20%'
+                  }}>Assigned to</th>
+                  <th style={{
+                    padding: '16px 20px',
+                    textAlign: 'left',
+                    fontSize: '14px',
+                    fontWeight: 600,
+                    color: '#6b7280',
+                    width: '10%'
+                  }}>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {actionItems.map((item, index) => (
+                  <tr key={item.id} style={{ 
+                    borderBottom: index < actionItems.length - 1 ? '1px solid #f3f4f6' : 'none'
+                  }}>
+                    <td style={{ 
+                      padding: '20px',
+                      fontSize: '14px',
+                      color: '#374151',
+                      lineHeight: '1.4'
+                    }}>
+                      {item.task}
+                    </td>
+                    <td style={{ padding: '20px' }}>
+                      <span style={{
+                        padding: '6px 16px',
+                        borderRadius: '20px',
+                        fontSize: '12px',
+                        fontWeight: 600,
+                        textTransform: 'capitalize',
+                        whiteSpace: 'nowrap',
+                        ...getActionItemStatusStyles(item.status)
+                      }}>
+                        {item.status}
+                      </span>
+                    </td>
+                    <td style={{ 
+                      padding: '20px',
+                      fontSize: '14px',
+                      color: '#6b7280'
+                    }}>
+                      {item.dueDate}
+                    </td>
+                    <td style={{ padding: '20px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                        <div style={{
+                          width: '32px',
+                          height: '32px',
+                          borderRadius: '50%',
+                          background: '#10b981',
+                          color: 'white',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          fontSize: '12px',
+                          fontWeight: 600,
+                          flexShrink: 0
+                        }}>
+                          M
+                        </div>
+                        <div style={{ display: 'flex', flexDirection: 'column' }}>
+                          <span style={{ 
+                            fontSize: '14px', 
+                            color: '#374151',
+                            fontWeight: 500
+                          }}>
+                            {item.assignedTo}
+                          </span>
+                          <span style={{ 
+                            fontSize: '12px', 
+                            color: '#9ca3af'
+                          }}>
+                            {item.role}
+                          </span>
+                        </div>
+                      </div>
+                    </td>
+                    <td style={{ 
+                      padding: '20px',
+                      position: 'relative'
+                    }}>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setActionItemsRowActions(actionItemsRowActions === item.id ? null : item.id);
+                        }}
+                        style={{
+                          padding: '8px',
+                          background: 'transparent',
+                          border: 'none',
+                          borderRadius: '6px',
+                          cursor: 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center'
+                        }}
+                      >
+                        <MoreHorizontal style={{ width: '16px', height: '16px', color: '#6b7280' }} />
+                      </button>
+                      
+                      {actionItemsRowActions === item.id && (
+                        <div
+                          ref={actionItemsDropdownRef}
+                          style={{
+                            position: 'absolute',
+                            top: '100%',
+                            right: '8px',
+                            background: 'white',
+                            border: '1px solid #e5e7eb',
+                            borderRadius: '8px',
+                            boxShadow: '0 10px 25px rgba(0, 0, 0, 0.15)',
+                            zIndex: 1000,
+                            minWidth: '120px',
+                            padding: '4px',
+                            marginTop: '4px'
+                          }}
+                        >
+                          <button
+                            onClick={() => handleActionItemRowAction('Edit', item.id)}
+                            style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '8px',
+                              width: '100%',
+                              padding: '8px 12px',
+                              background: 'transparent',
+                              border: 'none',
+                              borderRadius: '6px',
+                              cursor: 'pointer',
+                              fontSize: '14px',
+                              color: '#374151',
+                              textAlign: 'left'
+                            }}
+                            onMouseEnter={(e) => e.target.style.background = '#f3f4f6'}
+                            onMouseLeave={(e) => e.target.style.background = 'transparent'}
+                          >
+                            <Edit style={{ width: '14px', height: '14px' }} />
+                            <span>Edit</span>
+                          </button>
+                          <button
+                            onClick={() => handleActionItemRowAction('Delete', item.id)}
+                            style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '8px',
+                              width: '100%',
+                              padding: '8px 12px',
+                              background: 'transparent',
+                              border: 'none',
+                              borderRadius: '6px',
+                              cursor: 'pointer',
+                              fontSize: '14px',
+                              color: '#dc2626',
+                              textAlign: 'left'
+                            }}
+                            onMouseEnter={(e) => e.target.style.background = '#fef2f2'}
+                            onMouseLeave={(e) => e.target.style.background = 'transparent'}
+                          >
+                            <X style={{ width: '14px', height: '14px' }} />
+                            <span>Delete</span>
+                          </button>
+                        </div>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        {/* Status Legend */}
+        <div style={{
+          position: 'fixed',
+          bottom: '100px',
+          right: '100px',
+          background: 'white',
+          border: '1px solid #e5e7eb',
+          borderRadius: '8px',
+          padding: '16px',
+          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+          minWidth: '160px'
+        }}>
+          <div style={{
+            fontSize: '14px',
+            fontWeight: 600,
+            color: '#374151',
+            marginBottom: '12px'
+          }}>
+            Statuses in dropdown
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+            {['Pending', 'In Progress', 'Completed', 'Overdue'].map(status => (
+              <span key={status} style={{
+                padding: '4px 12px',
+                borderRadius: '16px',
+                fontSize: '12px',
+                fontWeight: 600,
+                textAlign: 'center',
+                ...getActionItemStatusStyles(status)
+              }}>
+                {status}
+              </span>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div style={{ 
@@ -470,7 +818,7 @@ const MeetingTable = ({
           maxWidth: '100%'
         }}>
           <table style={{ 
-            width: '1400px', // Fixed width to ensure scrolling
+            width: '1400px',
             borderCollapse: 'collapse',
             tableLayout: 'fixed'
           }}>
@@ -774,7 +1122,6 @@ const MeetingTable = ({
                 return <span key={index} style={{ padding: '8px 4px', color: '#9ca3af' }}>...</span>;
               }
               
-              // Show page input for current page
               if (page === currentPage) {
                 return (
                   <input
