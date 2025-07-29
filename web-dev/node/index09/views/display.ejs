@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+
+    <nav>
+        <a href="/">Home</a>
+        <a href="/insert">Insert</a>
+        <a href="/display">Display</a>
+    </nav>
+    
+    <table>
+    <tr>
+      <th>Roll No</th>
+      <th>Name</th>
+      <th>Class</th>
+      <th>Subject</th>
+      <th>Actions</th>
+    </tr>
+
+    <% students.forEach((student) => { %>
+      <tr>
+        <td><%= student.rollno %></td>
+        <td><%= student.name %></td>
+        <td><%= student.classname %></td>
+        <td><%= student.subject %></td>
+        <td>
+          <a href="/edit/<%= student._id %>"> Edit</a>
+          <a href="/delete/<%= student._id %> " onclick="return confirm('Are you sure u want to delete is student data ? ');">Delete</a>
+        </td>
+      </tr>
+    <% }) %>
+  </table>
+</body>
+</html>

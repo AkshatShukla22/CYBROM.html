@@ -8,12 +8,16 @@ const insertPage = (req, res) => {
     res.render("insert");
 };
 
+const displayPage = (req, res) => {
+    res.render("display");
+};
+
 const stuSave = (req, res) => {
     const { rollno, Studentname, classname, subject } = req.body;  
 
     const data = new stuModel({
         rollno,
-        Studentname,
+        name: Studentname,
         classname,
         subject
     });
@@ -26,5 +30,63 @@ const stuSave = (req, res) => {
         });
 };
 
+const displayStu = (req, res) => {
+    stuModel.find()
+        .then((data) => {
+            res.render("display", { students: data });
+        })
+        .catch((err) => {
+            console.log(err);
+            res.send("Error retrieving data.");
+        });
+};  
 
-module.exports = { homePage, insertPage, stuSave };
+const deleteStu = (req, res) => {
+    const id = req.params.id;
+
+    stuModel.findByIdAndDelete(id)
+
+    .then(() => {
+        res.redirect("/display");
+    })
+    .catch((err) => {
+        console.log(err);
+        res.send("Error deleting data.");
+    });
+};    
+
+const editPage = (req, res) => {
+    const id = req.params.id;
+
+    stuModel.findById(id)
+        .then(student => {
+            res.render("edit", { student });
+        })
+        .catch(err => {
+            console.log(err);
+            res.send("Error fetching student for edit.");
+        });
+};
+
+const updateStu = (req, res) => {
+    const id = req.params.id;
+    const { rollno, Studentname, classname, subject } = req.body;
+
+    stuModel.findByIdAndUpdate(id, {
+        rollno,
+        name: Studentname,
+        classname,
+        subject
+    })
+    .then(() => {
+        res.redirect("/display");
+    })
+    .catch(err => {
+        console.log(err);
+        res.send("Error updating student.");
+    });
+}
+
+
+
+module.exports = { homePage, insertPage, displayPage, stuSave, displayStu, deleteStu, editPage, updateStu };
