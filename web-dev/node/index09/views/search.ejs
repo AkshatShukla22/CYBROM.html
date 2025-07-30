@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+
+    <a href="/">Home</a>
+    <a href="/insert">Insert</a>
+    <a href="/display">Display</a>
+    <a href="/search">Search</a>
+
+    <h2>Search Student</h2>
+    <form action="/searchData" method="post">    
+        <label for="rollno">Roll No:</label><br>
+        <input type="text" id="rollno" name="rollno" required><br><br>
+
+        <button type="submit">Search</button>   
+    </form>
+
+    <% if (typeof students !== 'undefined' && students.length > 0) { %>
+    <% students.forEach(function(item) { %>
+        <div>
+            <p>Roll No: <%= item.rollno %></p>
+            <p>Name: <%= item.name %></p>
+            <p>Class: <%= item.classname %></p>
+            <p>Subject: <%= item.subject %></p>
+        </div>
+    <% }); %>
+<% } else if (typeof students !== 'undefined') { %>
+    <p>No student found with that roll number.</p>
+<% } %>
+
+
+
+    
+</body>
+</html>

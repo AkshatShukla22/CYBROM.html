@@ -12,6 +12,10 @@ const displayPage = (req, res) => {
     res.render("display");
 };
 
+const stuSearch = (req, res) => {
+    res.render("search");
+};
+
 const stuSave = (req, res) => {
     const { rollno, Studentname, classname, subject } = req.body;  
 
@@ -87,6 +91,22 @@ const updateStu = (req, res) => {
     });
 }
 
+const searchData = async (req, res) => {
+    const { rollno } = req.body;
+    try {
+        const data = await stuModel.find({ rollno: rollno });
+        if (data.length > 0) {
+            res.render("search", { students: data });
+        } else {
+            res.render("search", { students: [] });
+        }
+    } catch (err) {
+        console.log(err);
+        res.send("Error during search.");
+    }
+}
+ 
 
 
-module.exports = { homePage, insertPage, displayPage, stuSave, displayStu, deleteStu, editPage, updateStu };
+
+module.exports = { homePage, insertPage, displayPage, stuSave, displayStu, deleteStu, editPage, updateStu, stuSearch, searchData };
