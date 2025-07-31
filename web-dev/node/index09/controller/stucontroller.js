@@ -9,7 +9,7 @@ const insertPage = (req, res) => {
 };
 
 const displayPage = (req, res) => {
-    res.render("display");
+    res.send("display");
 };
 
 const stuSearch = (req, res) => {

@@ -1,0 +1,32 @@
+/* footer.css */
+
+footer {
+  background: linear-gradient(90deg, #2a2c3e, #4b4e6d);
+  color: #ffffffcc;
+  padding: 20px 0;
+  text-align: center;
+  font-size: 1rem;
+  position: relative;
+  bottom: 0;
+  width: 100%;
+  border-radius: 12px 12px 0 0;
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.3);
+  margin-top: 50px;
+}
+
+footer p {
+  margin: 0;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  transition: color 0.3s;
+}
+
+footer p:hover {
+  color: #BB86FC;
+}
+
+hr {
+  margin: 0;
+  border: none;
+  border-top: 1px solid #BB86FC33;
+}

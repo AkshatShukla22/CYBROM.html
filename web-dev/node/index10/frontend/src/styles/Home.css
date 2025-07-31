@@ -1,0 +1,26 @@
+/* Home.css */
+
+.home-container {
+  height: 70.5vh;
+  text-align: center;
+  padding: 80px 20px;
+  animation: fadeIn 1s ease-in-out;
+}
+
+.home-title {
+  font-size: 3rem;
+  color: #BB86FC;
+  margin-bottom: 20px;
+}
+
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
