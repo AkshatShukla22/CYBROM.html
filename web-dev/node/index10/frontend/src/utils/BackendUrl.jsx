@@ -1,2 +1,2 @@
-const BackendUrl = `mongodb://localhost:27017/`;
+const BackendUrl = 'http://localhost:8000/';
 export default BackendUrl;

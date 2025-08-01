@@ -1,9 +1,7 @@
 const express = require('express');
-const app = express();
-const route = express.Router();
-
+const router = express.Router();
 const stuController = require('../controller/stuController');
 
-route.post('/save', stuController.stuSave);
+router.post('/save', stuController.stuSave);
 
-module.exports = route;
+module.exports = router;

@@ -1,5 +1,6 @@
-import React from 'react';
-import { useState } from 'react';
+import React, { useState } from 'react';
+import axios from 'axios';
+import BackendUrl from '../utils/BackendUrl';
 
 const Insert = () => {
   const [input, setInput] = useState({
@@ -8,40 +9,48 @@ const Insert = () => {
     city: '',
     fees: ''
   });
+
   const handleInput = (e) => {
-    let name = e.target.name;
-    let input = e.target.value;
-    setInput(prevState => ({
-      ...prevState,
-      [name]: input
-    }));
-  }
+    const { name, value } = e.target;
+    setInput(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const api = `${BackendUrl}students/save`;
+      const payload = { ...input, fees: Number(input.fees) };
+      const res = await axios.post(api, payload);
+      alert(res.data);
+    } catch (error) {
+      alert('Something went wrong: ' + error.message);
+    }
+  };
+
   return (
-    <>
-      <div className="container">
-        <h1>Insert Data</h1>
-        <form>
-          <div className="mb-3">
-            <label htmlFor="name" className="form-label">Name</label>
-            <input type="text" className="form-control" id="name" name="name" value={input.name} onChange={handleInput} />  
-          </div>
-          <div className="mb-3">
-            <label htmlFor="rollno" className="form-label">Roll No</label>
-            <input type="text" className="form-control" id="rollno" name="rollno" value={input.rollno} onChange={handleInput} />
-          </div>
-          <div className="mb-3">
-            <label htmlFor="city" className="form-label">City</label> 
-            <input type="text" className="form-control" id="city" name="city" value={input.city} onChange={handleInput} />
-          </div>
-          <div className="mb-3">
-            <label htmlFor="fees" className="form-label">Fees</label>
-            <input type="text" className="form-control" id="fees" name="fees" value={input.fees} onChange={handleInput} />
-          </div>  
-          <button type="submit" className="btn btn-primary">Submit</button>
-        </form>
-      </div>
-    </>
+    <div className="container" style={{ maxWidth: '500px', marginTop: '30px' }}>
+      <h2>Insert Student</h2>
+      <form onSubmit={handleSubmit}>
+        <div className="mb-3">
+          <label>Name</label>
+          <input type="text" name="name" value={input.name} onChange={handleInput} className="form-control" required />
+        </div>
+        <div className="mb-3">
+          <label>Roll No</label>
+          <input type="text" name="rollno" value={input.rollno} onChange={handleInput} className="form-control" required />
+        </div>
+        <div className="mb-3">
+          <label>City</label>
+          <input type="text" name="city" value={input.city} onChange={handleInput} className="form-control" required />
+        </div>
+        <div className="mb-3">
+          <label>Fees</label>
+          <input type="number" name="fees" value={input.fees} onChange={handleInput} className="form-control" required />
+        </div>
+        <button type="submit" className="btn btn-primary">Save</button>
+      </form>
+    </div>
   );
-}
+};
 
 export default Insert;
