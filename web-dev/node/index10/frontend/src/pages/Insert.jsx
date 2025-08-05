@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import BackendUrl from '../utils/BackendUrl';
+import '../styles/Insert.css';
 
 const Insert = () => {
   const [input, setInput] = useState({
@@ -28,26 +29,26 @@ const Insert = () => {
   };
 
   return (
-    <div className="container" style={{ maxWidth: '500px', marginTop: '30px' }}>
-      <h2>Insert Student</h2>
-      <form onSubmit={handleSubmit}>
-        <div className="mb-3">
+    <div className="insert-container">
+      <h2 className="insert-heading">Insert Student</h2>
+      <form onSubmit={handleSubmit} className="insert-form">
+        <div className="form-group">
           <label>Name</label>
-          <input type="text" name="name" value={input.name} onChange={handleInput} className="form-control" required />
+          <input type="text" name="name" value={input.name} onChange={handleInput} required />
         </div>
-        <div className="mb-3">
+        <div className="form-group">
           <label>Roll No</label>
-          <input type="text" name="rollno" value={input.rollno} onChange={handleInput} className="form-control" required />
+          <input type="text" name="rollno" value={input.rollno} onChange={handleInput} required />
         </div>
-        <div className="mb-3">
+        <div className="form-group">
           <label>City</label>
-          <input type="text" name="city" value={input.city} onChange={handleInput} className="form-control" required />
+          <input type="text" name="city" value={input.city} onChange={handleInput} required />
         </div>
-        <div className="mb-3">
+        <div className="form-group">
           <label>Fees</label>
-          <input type="number" name="fees" value={input.fees} onChange={handleInput} className="form-control" required />
+          <input type="number" name="fees" value={input.fees} onChange={handleInput} required />
         </div>
-        <button type="submit" className="btn btn-primary">Save</button>
+        <button type="submit" className="btn-submit">Save</button>
       </form>
     </div>
   );

@@ -23,4 +23,45 @@ const getAllStudents = async (req, res) => {
   }
 };
 
-module.exports = { stuSave, getAllStudents };
+const updateStudent = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updated = await stuModel.findByIdAndUpdate(id, req.body, { new: true });
+    res.status(200).json(updated);
+  } catch (err) {
+    res.status(500).send('Failed to update student');
+  }
+};
+
+const deleteStudent = async (req, res) => {
+  try {
+    const { id } = req.params;
+    await stuModel.findByIdAndDelete(id);
+    res.status(200).send('Student deleted successfully');
+  } catch (err) {
+    res.status(500).send('Failed to delete student');
+  }
+};
+
+const updateStu = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updated = await stuModel.findByIdAndUpdate(id, req.body, { new: true });
+    res.status(200).json(updated);
+  } catch (err) {
+    res.status(500).send('Failed to update student');
+  }
+};
+
+const deleteStu = async (req, res) => {
+  try {
+    const { id } = req.params;
+    await stuModel.findByIdAndDelete(id);
+    res.status(200).send('Student deleted successfully');
+  } catch (err) {
+    res.status(500).send('Failed to delete student');
+  }
+};
+
+
+module.exports = { stuSave, getAllStudents, updateStu, deleteStu };

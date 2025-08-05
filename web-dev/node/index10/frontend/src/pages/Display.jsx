@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import BackendUrl from '../utils/BackendUrl';
+import '../styles/Display.css'; 
 
 const Display = () => {
   const [students, setStudents] = useState([]);
@@ -18,12 +19,12 @@ const Display = () => {
   }, []);
 
   return (
-    <div className="container" style={{ marginTop: '30px' }}>
-      <h2>Student Records</h2>
-      <table className="table table-bordered">
+    <div className="display-container">
+      <h2 className="display-heading">Student Records</h2>
+      <table className="display-table">
         <thead>
           <tr>
-            <th>#</th>
+            <th>S.No</th>
             <th>Name</th>
             <th>Roll No</th>
             <th>City</th>
@@ -33,7 +34,7 @@ const Display = () => {
         <tbody>
           {students.length === 0 ? (
             <tr>
-              <td colSpan="5" className="text-center">No data found</td>
+              <td colSpan="5" className="no-data">No data found</td>
             </tr>
           ) : (
             students.map((stu, index) => (

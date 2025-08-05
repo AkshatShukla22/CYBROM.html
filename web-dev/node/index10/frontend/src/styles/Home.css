@@ -1,16 +1,23 @@
 
 
+
 .home-container {
-  height: 73vh;
-  text-align: center;
-  padding: 80px 20px;
-  animation: fadeIn 1s ease-in-out;
+  background-color: #1f1f2e;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: 'Segoe UI', sans-serif;
+  color: #ffffffcc;
 }
 
 .home-title {
-  font-size: 3rem;
+  font-size: 2.5rem;
   color: #BB86FC;
-  margin-bottom: 20px;
+  text-align: center;
+  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+  animation: fadeIn 1s ease-in-out;
+
 }
 
 

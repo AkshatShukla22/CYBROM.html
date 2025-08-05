@@ -1,4 +1,4 @@
-/* footer.css */
+
 
 footer {
   background: linear-gradient(90deg, #2a2c3e, #4b4e6d);
@@ -10,7 +10,6 @@ footer {
   bottom: 0;
   width: 100%;
   box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.3);
-  margin-top: 5vh;
 }
 
 footer p {
@@ -22,10 +21,4 @@ footer p {
 
 footer p:hover {
   color: #BB86FC;
-}
-
-hr {
-  margin: 0;
-  border: none;
-  border-top: 1px solid #BB86FC33;
 }
