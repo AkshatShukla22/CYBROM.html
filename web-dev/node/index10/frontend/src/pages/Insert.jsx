@@ -20,7 +20,7 @@ const Insert = () => {
     e.preventDefault();
     try {
       const api = `${BackendUrl}students/save`;
-      const payload = { ...input, fees: Number(input.fees) };
+      const payload = { ...input};
       const res = await axios.post(api, payload);
       alert(res.data);
     } catch (error) {
@@ -46,7 +46,7 @@ const Insert = () => {
         </div>
         <div className="form-group">
           <label>Fees</label>
-          <input type="number" name="fees" value={input.fees} onChange={handleInput} required />
+          <input type="text" name="fees" value={input.fees} onChange={handleInput} required />
         </div>
         <button type="submit" className="btn-submit">Save</button>
       </form>
