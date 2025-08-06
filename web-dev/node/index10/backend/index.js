@@ -5,7 +5,7 @@ const StuRoutes = require('./routes/stuRoutes');
 
 const app = express();
 
-mongoose.connect('mongodb://localhost:27017/student')
+mongoose.connect('mongodb+srv://akshatshukla8600:R6jcuSHNkSEvGGeA@cluster0.czcv5pw.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0')
   .then(() => console.log(' Connected to MongoDB'))
   .catch(err => console.error(' MongoDB connection error:', err));
 
