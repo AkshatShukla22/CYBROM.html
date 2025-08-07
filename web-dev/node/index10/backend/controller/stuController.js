@@ -43,5 +43,6 @@ const deleteStu = async (req, res) => {
   }
 };
 
+// Controlling search operations from the frontend/search.jsx
 
 module.exports = { stuSave, getAllStudents, updateStu, deleteStu };
