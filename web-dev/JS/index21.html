@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Age</th>
+                <th>Check-in</th>
+                <th>Check-out</th>
+                <th>Person</th>
+                <th>City</th>
+            </tr>
+        </thead>
+        <tbody id="datashow">
+        </tbody>
+    </table>
+
+    <script>
+        // fetch method -- CRUD operations. 
+        // Java Script Object Notation (JSON).
+        // It works as a database for js by storing mock files.
+        // Create Read Update Delete methods can be performed on JSON.
+        // fetch methods - Get Push Put Delete.
+
+        // to use JSON you have to install node.js in your system and then run npm i -g json-server in your cmd.
+        let fetchData = async () => {
+            let url = "http://localhost:3000/hotel";
+
+            let res = await fetch(url);
+            let data = await res.json();
+
+            let dataShow = document.querySelector("#datashow");
+
+            data.map((e) => {
+                dataShow.innerHTML += `
+                <tr>
+                    <td>${e.Name}</td>
+                    <td>${e.Age}</td>
+                    <td>${e["Check-in"]}</td>
+                    <td>${e["Check-out"]}</td>
+                    <td>${e.Person}</td>
+                    <td>${e.City}</td>
+                </tr>
+                `;
+            });
+        };
+        
+        fetchData();
+    </script>
+</body>
+</html>

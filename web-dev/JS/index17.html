@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <style>
+        h1{
+            display: inline;
+        }
+    </style>
+</head>
+<body>
+    <h1 id="heading"></h1>
+    <h1 id="time"></h1>
+    <script>
+        //Date
+        let heading = document.querySelector("#heading");
+        let time = document.querySelector("#time");
+
+        let myDate = new Date();
+        console.log(myDate.toTimeString());
+
+        dayArr = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
+
+        let a = new Date();
+        let day = a.getDay();
+        // heading.innerHTML = dayArr[day];
+
+        setInterval( () =>{
+            let a = new Date();
+            time.innerHTML=`${a.getHours()}:${a.getMinutes()}:${a.getSeconds()}`
+        }, 1000)   
+
+        console.log(1000+(Math.trunc(Math.random()*9000)));  
+
+    </script>
+</body>
+</html>

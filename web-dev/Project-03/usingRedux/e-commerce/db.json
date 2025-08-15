@@ -1,0 +1,545 @@
+{
+  "products": [
+    {
+      "id": "1",
+      "name": "MacBook Pro 14-inch",
+      "price": 164900,
+      "category": "Laptops",
+      "brand": "Apple",
+      "description": "Apple MacBook Pro 14-inch with M2 Pro chip, 16GB RAM, 512GB SSD",
+      "image": "https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=400&h=300&fit=crop",
+      "rating": 4.8,
+      "stock": 25
+    },
+    {
+      "id": "2",
+      "name": "iPhone 15 Pro",
+      "price": 99900,
+      "category": "Smartphones",
+      "brand": "Apple",
+      "description": "iPhone 15 Pro with A17 Pro chip, 128GB storage, Titanium design",
+      "image": "https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=400&h=300&fit=crop",
+      "rating": 4.9,
+      "stock": 40
+    },
+    {
+      "id": "3",
+      "name": "Samsung Galaxy S24 Ultra",
+      "price": 107999,
+      "category": "Smartphones",
+      "brand": "Samsung",
+      "description": "Samsung Galaxy S24 Ultra with S Pen, 256GB storage, 200MP camera",
+      "image": "https://images.unsplash.com/photo-1705585174953-9b2aa8afc174?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8czI0JTIwdWx0cmF8ZW58MHx8MHx8fDA%3D",
+      "rating": 4.7,
+      "stock": 30
+    },
+    {
+      "id": "4",
+      "name": "Dell XPS 13",
+      "price": 90999,
+      "category": "Laptops",
+      "brand": "Dell",
+      "description": "Dell XPS 13 laptop with Intel Core i7, 16GB RAM, 512GB SSD",
+      "image": "https://www.cnet.com/a/img/resize/e60b1facaa670ae3a02767ecf9d3b4f3a462186c/hub/2023/11/10/0215bc00-509a-4f40-a258-487d8a9cf0be/dell-xps-13-plus-lid.jpg?auto=webp&fit=crop&height=1200&width=1200",
+      "rating": 4.6,
+      "stock": 20
+    },
+    {
+      "id": "5",
+      "name": "Sony WH-1000XM5",
+      "price": 32999,
+      "category": "Audio",
+      "brand": "Sony",
+      "description": "Sony WH-1000XM5 Wireless Noise Canceling Headphones",
+      "image": "https://www.sony.co.in/image/6145c1d32e6ac8e63a46c912dc33c5bb?fmt=pjpeg&wid=330&bgcolor=FFFFFF&bgc=FFFFFF",
+      "rating": 4.8,
+      "stock": 50
+    },
+    {
+      "id": "6",
+      "name": "AirPods Pro 2nd Gen",
+      "price": 20600,
+      "category": "Audio",
+      "brand": "Apple",
+      "description": "Apple AirPods Pro 2nd Generation with Active Noise Cancellation",
+      "image": "https://images.unsplash.com/photo-1572569511254-d8f925fe2cbb?w=400&h=300&fit=crop",
+      "rating": 4.7,
+      "stock": 60
+    },
+    {
+      "id": "7",
+      "name": "iPad Pro 12.9-inch",
+      "price": 90999,
+      "category": "Tablets",
+      "brand": "Apple",
+      "description": "iPad Pro 12.9-inch with M2 chip, 128GB storage, Liquid Retina XDR display",
+      "image": "https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=400&h=300&fit=crop",
+      "rating": 4.8,
+      "stock": 35
+    },
+    {
+      "id": "8",
+      "name": "Samsung 4K Smart TV 55-inch",
+      "price": 66199,
+      "category": "Smart TV",
+      "brand": "Samsung",
+      "description": "Samsung 55-inch 4K UHD Smart TV with HDR and Alexa Built-in",
+      "image": "https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=400&h=300&fit=crop",
+      "rating": 4.5,
+      "stock": 15
+    },
+    {
+      "id": "9",
+      "name": "Canon EOS R5",
+      "price": 322999,
+      "category": "Camera",
+      "brand": "Canon",
+      "description": "Canon EOS R5 Mirrorless Camera with 45MP sensor and 8K video",
+      "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQQjmMZbJXcQ3nXPMyMUT1BteaGCyhLmzHm2Q&s",
+      "rating": 4.9,
+      "stock": 10
+    },
+    {
+      "id": "10",
+      "name": "ASUS ROG Strix Gaming PC",
+      "price": 119999,
+      "category": "Desktop PC",
+      "brand": "ASUS",
+      "description": "ASUS ROG Gaming Desktop with RTX 4070, AMD Ryzen 7, 16GB RAM",
+      "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQPsQGFUwJuS5S2rIM9nmYnxWbi3h-Hm1JqUA&s",
+      "rating": 4.7,
+      "stock": 12
+    },
+    {
+      "id": "11",
+      "name": "Apple Watch Series 9",
+      "price": 41900,
+      "category": "Smart Watch",
+      "brand": "Apple",
+      "description": "Apple Watch Series 9 GPS + Cellular, 45mm, Health & Fitness tracking",
+      "image": "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&h=300&fit=crop",
+      "rating": 4.6,
+      "stock": 45
+    },
+    {
+      "id": "12",
+      "name": "Samsung Galaxy Tab S9",
+      "price": 76999,
+      "category": "Tablets",
+      "brand": "Samsung",
+      "description": "Samsung Galaxy Tab S9 11-inch with S Pen, 128GB storage",
+      "image": "https://images.samsung.com/is/image/samsung/assets/in/galaxy-tab-s9/feature/galaxy-tab-s9-overview-feature01-startframe-pc.jpg",
+      "rating": 4.5,
+      "stock": 28
+    },
+    {
+      "id": "13",
+      "name": "OnePlus 12",
+      "price": 64999,
+      "category": "Smartphones",
+      "brand": "OnePlus",
+      "description": "OnePlus 12 with Snapdragon 8 Gen 3, 12GB RAM, 256GB storage",
+      "image": "https://imageio.forbes.com/specials-images/imageserve/65cead7b8295afb07b70cab4/0x0.jpg?format=jpg&height=900&width=1600&fit=bounds",
+      "rating": 4.6,
+      "stock": 55
+    },
+    {
+      "id": "14",
+      "name": "HP Pavilion Gaming Laptop",
+      "price": 67999,
+      "category": "Laptops",
+      "brand": "HP",
+      "description": "HP Pavilion Gaming with RTX 3060, Intel i5, 16GB RAM, 512GB SSD",
+      "image": "https://rukminim2.flixcart.com/image/850/1000/kbqu4cw0/computer/q/x/r/hp-original-imaftyzachgrav8f.jpeg?q=90&crop=false",
+      "rating": 4.4,
+      "stock": 32
+    },
+    {
+      "id": "15",
+      "name": "JBL Charge 5 Speaker",
+      "price": 16999,
+      "category": "Audio",
+      "brand": "JBL",
+      "description": "JBL Charge 5 Portable Bluetooth Speaker with Powerbank",
+      "image": "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=400&h=300&fit=crop",
+      "rating": 4.5,
+      "stock": 70
+    },
+    {
+      "id": "16",
+      "name": "Corsair Gaming Desktop",
+      "price": 89999,
+      "category": "Desktop PC",
+      "brand": "Corsair",
+      "description": "Corsair Gaming PC with RTX 4060, AMD Ryzen 5, 16GB RAM",
+      "image": "https://images.unsplash.com/photo-1587202372634-32705e3bf49c?w=400&h=300&fit=crop",
+      "rating": 4.6,
+      "stock": 18
+    },
+    {
+      "id": "17",
+      "name": "Xiaomi Mi 14 Ultra",
+      "price": 79999,
+      "category": "Smartphones",
+      "brand": "Xiaomi",
+      "description": "Xiaomi Mi 14 Ultra with Leica cameras, Snapdragon 8 Gen 3",
+      "image": "https://www.dxomark.com/wp-content/uploads/medias/post-167787/Xiaomi-14-Ultra_featured-image-packshot-review.jpg",
+      "rating": 4.7,
+      "stock": 40
+    },
+    {
+      "id": "18",
+      "name": "Lenovo ThinkPad X1 Carbon",
+      "price": 134999,
+      "category": "Laptops",
+      "brand": "Lenovo",
+      "description": "Lenovo ThinkPad X1 Carbon with Intel i7, 16GB RAM, 1TB SSD",
+      "image": "https://cdn1.smartprix.com/rx-iMPfZPe6M-w420-h420/lenovo-thinkpad-x1-c.webp",
+      "rating": 4.7,
+      "stock": 22
+    },
+    {
+      "id": "19",
+      "name": "Bose QuietComfort 45",
+      "price": 29999,
+      "category": "Audio",
+      "brand": "Bose",
+      "description": "Bose QuietComfort 45 Wireless Noise Cancelling Headphones",
+      "image": "https://akm-img-a-in.tosshub.com/indiatoday/images/story/202109/Screenshot_2021-09-01_at_9.05._1200x768.png",
+      "rating": 4.6,
+      "stock": 42
+    },
+    {
+      "id": "20",
+      "name": "Surface Pro 9",
+      "price": 98999,
+      "category": "Tablets",
+      "brand": "Microsoft",
+      "description": "Microsoft Surface Pro 9 with Intel i7, 16GB RAM, 256GB SSD",
+      "image": "https://www.cnet.com/a/img/resize/0d3c6955241d2544e6690dbd36540cee5860ac7e/hub/2022/10/24/5121ca90-804c-4c8c-bf37-88ee91c4bdf0/surface-pro-9-1.jpg?auto=webp&fit=crop&height=900&width=1200",
+      "rating": 4.5,
+      "stock": 25
+    },
+    {
+      "id": "21",
+      "name": "Samsung Galaxy Watch 6",
+      "price": 31999,
+      "category": "Smart Watch",
+      "brand": "Samsung",
+      "description": "Samsung Galaxy Watch 6 with health monitoring and GPS",
+      "image": "https://images.samsung.com/is/image/samsung/assets/us/watches/galaxy-watch6-classic/images/galaxy-watch6-classic-screen-scene03-startframe-mo.jpg",
+      "rating": 4.4,
+      "stock": 38
+    },
+    {
+      "id": "22",
+      "name": "Alienware Aurora R15",
+      "price": 189999,
+      "category": "Desktop PC",
+      "brand": "Dell",
+      "description": "Alienware Aurora R15 Gaming Desktop with RTX 4080, Intel i9",
+      "image": "https://os-wordpress-media.s3.ap-south-1.amazonaws.com/blog/wp-content/uploads/2022/09/29112344/Dell-Alienware-Aurora-R15.jpg",
+      "rating": 4.8,
+      "stock": 8
+    },
+    {
+      "id": "23",
+      "name": "Sony Alpha A7 IV",
+      "price": 204999,
+      "category": "Camera",
+      "brand": "Sony",
+      "description": "Sony Alpha A7 IV Mirrorless Camera with 33MP sensor",
+      "image": "https://i.rtings.com/assets/products/sOhur1yF/sony-a7-iv/design-medium.jpg?format=auto",
+      "rating": 4.8,
+      "stock": 15
+    },
+    {
+      "id": "24",
+      "name": "Google Pixel 8 Pro",
+      "price": 84999,
+      "category": "Smartphones",
+      "brand": "Google",
+      "description": "Google Pixel 8 Pro with Tensor G3 chip, AI photography",
+      "image": "https://shopflix.co.tz/public/uploads/all/TeaZpU6oB2rwBa3l22I8evbqYFgdx6JBT8cKLs21.jpg",
+      "rating": 4.5,
+      "stock": 33
+    },
+    {
+      "id": "25",
+      "name": "MacBook Air M2",
+      "price": 114900,
+      "category": "Laptops",
+      "brand": "Apple",
+      "description": "MacBook Air 13-inch with M2 chip, 8GB RAM, 256GB SSD",
+      "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT1xdclQ2hq1gGxlY1bXNL1-KdXDLF30IaBAQ&s",
+      "rating": 4.7,
+      "stock": 50
+    },
+    {
+      "id": "26",
+      "name": "Sennheiser Momentum 4",
+      "price": 34999,
+      "category": "Audio",
+      "brand": "Sennheiser",
+      "description": "Sennheiser Momentum 4 Wireless Headphones with 60-hour battery",
+      "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT5Z4sT-2TapJ0SfTOOHWiX_0jlVWT0tJOkpQ&s",
+      "rating": 4.6,
+      "stock": 35
+    },
+    {
+      "id": "27",
+      "name": "LG OLED 65-inch 4K TV",
+      "price": 144999,
+      "category": "Smart TV",
+      "brand": "LG",
+      "description": "LG OLED65C3PSA 65-inch 4K Smart TV with webOS",
+      "image": "https://www.lg.com/content/dam/channel/wcms/in/images/tvs/oled65b3psa_atr_eail_in_c/gallery/OLED65B3PSA-DZ-2.jpg",
+      "rating": 4.8,
+      "stock": 12
+    },
+    {
+      "id": "28",
+      "name": "Fitbit Versa 4",
+      "price": 23999,
+      "category": "Smart Watch",
+      "brand": "Fitbit",
+      "description": "Fitbit Versa 4 Fitness Smartwatch with GPS and health tracking",
+      "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQMSX0pP0dfL7ta0sZyQa4f9mYK_T97GKwl9g&s",
+      "rating": 4.3,
+      "stock": 55
+    },
+    {
+      "id": "29",
+      "name": "Nothing Phone 2",
+      "price": 44999,
+      "category": "Smartphones",
+      "brand": "Nothing",
+      "description": "Nothing Phone 2 with unique Glyph interface, Snapdragon 8+ Gen 1",
+      "image": "https://akm-img-a-in.tosshub.com/businesstoday/images/story/202404/662f4f2070947-nothing-launches-new-india-exclusive-colour-variant-of-nothing-phone-2-a-294118640-16x9.jpg?size=948:533",
+      "rating": 4.4,
+      "stock": 48
+    },
+    {
+      "id": "1752177350859",
+      "name": "Asus TUF F15",
+      "price": 60000,
+      "description": "\n13th Gen Intel® Core™ i7-13700H Processor 2.4 GHz (24M Cache, up to 5 GHz, 14 cores: 6 P-cores and 8 E-cores)\n13th Gen Intel® Core™ i7-13620H Processor 2.4 GHz (24M Cache, up to 4.9 GHz, 10 cores: 6 P-cores and 4 E-cores)\n13th Gen Intel® Core™ i9-13900H Processor 2.6 GHz (24M Cache, up to 5.4 GHz, 14 cores: 6 P-cores and 8 E-cores)",
+      "category": "Laptops",
+      "stock": 40,
+      "image": "https://bizweb.dktcdn.net/thumb/large/100/372/934/products/asus-tuf-gaming-f15-fx507-2022-5-403b59b9-e8e9-4294-b863-f5848e27e980-798f1786-00d6-4807-84d6-b5c343f561c5.jpg?v=1741061182247",
+      "rating": 4.4,
+      "brand": "Asus",
+      "createdAt": "2025-07-10T19:55:50.859Z"
+    }
+  ],
+  "users": [
+    {
+      "id": "1",
+      "name": "John Doe",
+      "email": "john@example.com",
+      "phone": "1234567890",
+      "password": "password123",
+      "createdAt": "2024-01-15T10:30:00.000Z"
+    },
+    {
+      "id": "1751998582870",
+      "name": "Akshat Shukla",
+      "email": "akshatshukla8600@gmail.com",
+      "phone": "9340924251",
+      "password": "123456",
+      "createdAt": "2025-07-08T18:16:22.870Z"
+    }
+  ],
+  "orders": [
+    {
+      "id": "1703234567890",
+      "userId": "2",
+      "userName": "John Doe",
+      "userEmail": "john@example.com",
+      "userPhone": "9876543210",
+      "items": [
+        {
+          "productId": "1",
+          "name": "MacBook Pro 14-inch",
+          "price": 164900,
+          "quantity": 1,
+          "image": "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=500&h=400&fit=crop",
+          "totalPrice": 164900
+        }
+      ],
+      "totalQuantity": 1,
+      "totalAmount": 164900,
+      "status": "cancelled",
+      "shippingAddress": {
+        "street": "456 User Avenue",
+        "city": "Mumbai",
+        "state": "Maharashtra",
+        "zipCode": "400001",
+        "country": "India"
+      },
+      "createdAt": "2024-01-15T10:30:00.000Z",
+      "updatedAt": "2025-07-11T01:51:45.507Z"
+    },
+    {
+      "id": "1703234567891",
+      "userId": "2",
+      "userName": "John Doe",
+      "userEmail": "john@example.com",
+      "userPhone": "9876543210",
+      "items": [
+        {
+          "productId": "2",
+          "name": "iPhone 14 Pro",
+          "price": 129900,
+          "quantity": 1,
+          "image": "https://images.unsplash.com/photo-1592899677977-9c10ca588bbd?w=500&h=400&fit=crop",
+          "totalPrice": 129900
+        },
+        {
+          "productId": "3",
+          "name": "Samsung Galaxy S23",
+          "price": 89999,
+          "quantity": 1,
+          "image": "https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?w=500&h=400&fit=crop",
+          "totalPrice": 89999
+        }
+      ],
+      "totalQuantity": 2,
+      "totalAmount": 219899,
+      "status": "cancelled",
+      "shippingAddress": {
+        "street": "456 User Avenue",
+        "city": "Mumbai",
+        "state": "Maharashtra",
+        "zipCode": "400001",
+        "country": "India"
+      },
+      "createdAt": "2024-01-14T14:20:00.000Z",
+      "updatedAt": "2025-07-11T01:51:41.785Z"
+    },
+    {
+      "id": "1752181096455",
+      "userId": "1751998582870",
+      "userName": "Akshat Shukla",
+      "userEmail": "akshatshukla8600@gmail.com",
+      "userPhone": "9340924251",
+      "items": [
+        {
+          "productId": "2",
+          "name": "iPhone 15 Pro",
+          "price": 99900,
+          "quantity": 1,
+          "image": "https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=400&h=300&fit=crop",
+          "totalPrice": 99900
+        }
+      ],
+      "totalQuantity": 1,
+      "totalAmount": 99900,
+      "shippingAddress": {
+        "street": "",
+        "city": "",
+        "state": "",
+        "zipCode": "",
+        "country": "India"
+      },
+      "status": "cancelled",
+      "createdAt": "2025-07-10T20:58:16.455Z",
+      "updatedAt": "2025-07-11T01:18:26.926Z",
+      "cancelledAt": "2025-07-11T01:18:26.927Z"
+    },
+    {
+      "id": "1752181430685",
+      "userId": "1751998582870",
+      "userName": "Akshat Shukla",
+      "userEmail": "akshatshukla8600@gmail.com",
+      "userPhone": "9340924251",
+      "items": [
+        {
+          "productId": "2",
+          "name": "iPhone 15 Pro",
+          "price": 99900,
+          "quantity": 1,
+          "image": "https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=400&h=300&fit=crop",
+          "totalPrice": 99900
+        }
+      ],
+      "totalQuantity": 1,
+      "totalAmount": 99900,
+      "shippingAddress": {
+        "street": "",
+        "city": "",
+        "state": "",
+        "zipCode": "",
+        "country": "India"
+      },
+      "status": "dispatched",
+      "createdAt": "2025-07-10T21:03:50.685Z",
+      "updatedAt": "2025-07-19T11:54:44.846Z"
+    },
+    {
+      "id": "1752182522364",
+      "userId": "1751998582870",
+      "userName": "Akshat Shukla",
+      "userEmail": "akshatshukla8600@gmail.com",
+      "userPhone": "9340924251",
+      "items": [
+        {
+          "productId": "3",
+          "name": "Samsung Galaxy S24 Ultra",
+          "price": 107999,
+          "quantity": 1,
+          "image": "https://images.unsplash.com/photo-1705585174953-9b2aa8afc174?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8czI0JTIwdWx0cmF8ZW58MHx8MHx8fDA%3D",
+          "totalPrice": 107999
+        }
+      ],
+      "totalQuantity": 1,
+      "totalAmount": 107999,
+      "shippingAddress": {
+        "street": "",
+        "city": "",
+        "state": "",
+        "zipCode": "",
+        "country": "India"
+      },
+      "status": "cancelled",
+      "createdAt": "2025-07-10T21:22:02.364Z",
+      "updatedAt": "2025-07-19T11:55:09.179Z"
+    },
+    {
+      "id": "1752925982546",
+      "userId": "admin",
+      "userName": "Admin User",
+      "userEmail": "admin@gmail.com",
+      "items": [
+        {
+          "productId": "2",
+          "name": "iPhone 15 Pro",
+          "price": 99900,
+          "quantity": 2,
+          "image": "https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=400&h=300&fit=crop",
+          "totalPrice": 199800
+        },
+        {
+          "productId": "3",
+          "name": "Samsung Galaxy S24 Ultra",
+          "price": 107999,
+          "quantity": 1,
+          "image": "https://images.unsplash.com/photo-1705585174953-9b2aa8afc174?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8czI0JTIwdWx0cmF8ZW58MHx8MHx8fDA%3D",
+          "totalPrice": 107999
+        }
+      ],
+      "totalQuantity": 3,
+      "totalAmount": 307799,
+      "shippingAddress": {
+        "street": "",
+        "city": "",
+        "state": "",
+        "zipCode": "",
+        "country": "India"
+      },
+      "status": "pending",
+      "createdAt": "2025-07-19T11:53:02.546Z",
+      "updatedAt": "2025-07-19T11:53:02.546Z"
+    }
+  ]
+}

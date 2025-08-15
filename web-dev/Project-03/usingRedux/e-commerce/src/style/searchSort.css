@@ -1,0 +1,293 @@
+/* SearchSort Component Styles */
+.search-sort-container {
+  background: var(--card-dark);
+  border: 1px solid var(--border-dark);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  margin-bottom: var(--space-8);
+  box-shadow: var(--shadow-md);
+  transition: all var(--transition-normal);
+  position: sticky;
+}
+
+.search-sort-container:hover {
+  border-color: var(--border-light);
+  box-shadow: var(--shadow-lg);
+}
+
+.filter-section {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+/* Base Select Styles */
+.category-select,
+.sort-select {
+  background: var(--surface-dark);
+  border: 1px solid var(--border-dark);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  font-family: var(--font-primary);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  padding: var(--space-3) var(--space-4);
+  min-width: 160px;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23d1d5db' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right var(--space-3) center;
+  background-size: 16px;
+  padding-right: var(--space-10);
+}
+
+.category-select:hover,
+.sort-select:hover {
+  border-color: var(--border-light);
+  background-color: var(--tertiary-dark);
+}
+
+.category-select:focus,
+.sort-select:focus {
+  outline: none;
+  border-color: var(--accent-primary);
+  box-shadow: var(--focus-ring);
+  background-color: var(--tertiary-dark);
+}
+
+/* Option Styles */
+.category-select option,
+.sort-select option {
+  background: var(--surface-dark);
+  color: var(--text-primary);
+  padding: var(--space-2);
+}
+
+.category-select option:hover,
+.sort-select option:hover {
+  background: var(--tertiary-dark);
+}
+
+.category-select option:checked,
+.sort-select option:checked {
+  background: var(--accent-primary);
+  color: var(--text-primary);
+}
+
+/* Individual Select Styling */
+.category-select {
+  position: relative;
+}
+
+.sort-select {
+  position: relative;
+}
+
+/* Add labels for better UX */
+.filter-section::before {
+  content: "Filter & Sort:";
+  color: var(--text-secondary);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  margin-right: var(--space-2);
+}
+
+/* Enhanced dropdown arrow styling */
+.category-select::after,
+.sort-select::after {
+  content: '';
+  position: absolute;
+  right: var(--space-3);
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 6px solid var(--text-muted);
+  pointer-events: none;
+  transition: all var(--transition-fast);
+}
+
+.category-select:focus::after,
+.sort-select:focus::after {
+  border-top-color: var(--accent-primary);
+  transform: translateY(-50%) rotate(180deg);
+}
+
+/* Alternative layout for better mobile experience */
+@media (max-width: 768px) {
+  .filter-section {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-3);
+  }
+  
+  .filter-section::before {
+    align-self: flex-start;
+    margin-bottom: var(--space-2);
+  }
+  
+  .category-select,
+  .sort-select {
+    width: 100%;
+    min-width: unset;
+  }
+}
+
+/* Active state styling */
+.category-select:not([value=""]),
+.sort-select:not([value=""]) {
+  border-color: var(--accent-primary);
+  background-color: var(--tertiary-dark);
+}
+
+/* Custom styling for when filters are active */
+.filter-section.has-active-filters {
+  background: linear-gradient(135deg, var(--tertiary-dark), var(--card-dark));
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  margin: var(--space-2) 0;
+}
+
+/* Reset/Clear filters button (optional) */
+.clear-filters-btn {
+  background: transparent;
+  border: 1px solid var(--border-dark);
+  border-radius: var(--radius-md);
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: var(--text-xs);
+  padding: var(--space-2) var(--space-3);
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+}
+
+.clear-filters-btn:hover {
+  background: var(--hover-overlay);
+  border-color: var(--border-light);
+  color: var(--text-primary);
+}
+
+.clear-filters-btn:focus {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+/* Loading state */
+.search-sort-container.loading {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.search-sort-container.loading .category-select,
+.search-sort-container.loading .sort-select {
+  background-image: none;
+}
+
+/* Results counter styling (optional) */
+.results-count {
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+  margin-left: auto;
+  white-space: nowrap;
+}
+
+.results-count strong {
+  color: var(--accent-primary);
+  font-weight: 600;
+}
+
+/* Compact version for tight spaces */
+.search-sort-container.compact {
+  padding: var(--space-4);
+  margin-bottom: var(--space-4);
+}
+
+.search-sort-container.compact .filter-section {
+  gap: var(--space-3);
+}
+
+.search-sort-container.compact .category-select,
+.search-sort-container.compact .sort-select {
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--text-xs);
+  min-width: 140px;
+}
+
+/* Animation for smooth transitions */
+@keyframes filterChange {
+  0% {
+    opacity: 0.7;
+    transform: translateY(-2px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.search-sort-container.filter-changed {
+  animation: filterChange 0.3s ease-out;
+}
+
+/* Custom scrollbar for select options (webkit browsers) */
+.category-select::-webkit-scrollbar,
+.sort-select::-webkit-scrollbar {
+  width: 6px;
+}
+
+.category-select::-webkit-scrollbar-track,
+.sort-select::-webkit-scrollbar-track {
+  background: var(--surface-dark);
+}
+
+.category-select::-webkit-scrollbar-thumb,
+.sort-select::-webkit-scrollbar-thumb {
+  background: var(--border-light);
+  border-radius: var(--radius-full);
+}
+
+/* Enhanced focus styles for accessibility */
+@supports selector(:focus-visible) {
+  .category-select:focus,
+  .sort-select:focus {
+    outline: none;
+  }
+  
+  .category-select:focus-visible,
+  .sort-select:focus-visible {
+    outline: 2px solid var(--accent-primary);
+    outline-offset: 2px;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .category-select,
+  .sort-select {
+    border-width: 2px;
+  }
+  
+  .category-select:focus,
+  .sort-select:focus {
+    border-width: 3px;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .search-sort-container,
+  .category-select,
+  .sort-select,
+  .clear-filters-btn {
+    transition: none;
+  }
+  
+  .search-sort-container.filter-changed {
+    animation: none;
+  }
+}

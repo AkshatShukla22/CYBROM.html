@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Document</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: sans-serif;
+    }
+
+    body {
+      background-color: #0a0f1f;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    form {
+      background-color: #111c35;
+      padding: 60px 60px;
+      border-radius: 16px;
+      box-shadow: 0 0 40px #00aaff;
+      width: 600px;
+      display: flex;
+      flex-direction: column;
+      gap: 4vh;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 10px;
+      color: #00aaff;
+      letter-spacing: 1px;
+      font-size: 4vh;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      gap: 1vh;
+    }
+    
+    .form-group label{
+      color: #0099ff;
+      font-size: 1.1em;
+      letter-spacing: 3px;
+      margin-left: 1vw;
+    }
+
+    input {
+      padding: 14px;
+      font-size: 18px;
+      border: 0px solid transparent;
+      border-bottom: 3px solid #0099ff;
+      background-color: transparent;
+      color: white;
+      transition: border 0.2s;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: #0099ff;
+    }
+
+    .corrector{
+      font-size: 3vh;
+      position: absolute;
+      top: 35px;
+      right: 10px;
+    }
+
+    .correct{
+      color: #0ac204;
+      display: none;
+    }
+
+    .incorrect{
+      color: #ff4d4d;
+      display: none;
+    }
+
+    #showPass{
+      color: #0099ff;
+      position: absolute;
+      display: block;
+      top: -10px;
+      right: 40px;
+      font-size: 2.5vh;
+      background-color: transparent;
+    }
+
+    .error {
+      color: #ff4d4d;
+      font-size: 17px;
+      position: absolute;
+      bottom: -20px;
+      left: 0;
+      height: 18px;
+    }
+
+    input.error-input {
+      border-color: #ff4d4d;
+      box-shadow: 0px 0px 15px #ff4d4d;
+      animation: shake 0.1s linear;
+    }
+
+    input.error-input-2 {
+      border-color: #ff4d4d;
+      box-shadow: 0px 0px 15px #ff4d4d;
+    }
+
+    input.correct-input{
+      border-color: #0ac204;
+      box-shadow: 0px 0px 15px #0ac204;
+    }
+
+    @keyframes shake {
+      0%{
+        transform: translateX(0px);
+      }
+      25%{
+        transform: translateX(-20px);
+      }
+      50%{
+        transform: translateX(0px);
+      }
+      75%{
+        transform: translateX(20px);
+      }
+      100%{
+        transform: translateX(0px);
+      }
+    }
+
+    button {
+      padding: 14px;
+      font-size: 24px;
+      background-color: #0099ff;
+      border: none;
+      border-radius: 8px;
+      color: white;
+      cursor: pointer;
+      width: 50%;
+      align-self: center;
+      transition: all 0.2s;
+    }
+
+    button:hover {
+      background-color: white;
+      color: #0099ff;
+      transform: scale(1.2);
+    }
+  </style>
+</head>
+<body>
+  <form>
+    <h2>Register Now</h2>
+    <div class="form-group">
+      <label for="name">Name: </label>
+      <input type="text" id="name" placeholder="Enter your name" />
+      <span class="error" id="err-name"></span>
+      <span class="corrector correct" id="c1"><i class="fa-solid fa-check"></i></span>
+      <span class="corrector incorrect" id="inc1"><i class="fa-solid fa-xmark"></i></span>
+    </div>
+    <div class="form-group">
+      <label for="email">Email: </label>
+      <input type="text" id="email" placeholder="Enter your email" />
+      <span class="error" id="err-email"></span>
+      <span class="corrector correct" id="c2"><i class="fa-solid fa-check"></i></span>
+      <span class="corrector incorrect" id="inc2"><i class="fa-solid fa-xmark"></i></span>
+    </div>
+    <div class="form-group">
+      <label for="name">Phone number: </label>
+      <input type="text" id="number" placeholder="Enter your number" />
+      <span class="error" id="err-number"></span>
+      <span class="corrector correct" id="c3"><i class="fa-solid fa-check"></i></span>
+      <span class="corrector incorrect" id="inc3"><i class="fa-solid fa-xmark"></i></span>
+    </div>
+    <div class="form-group">
+      <label for="name">Password: </label>
+      <input type="text" id="pass" placeholder="Enter password" />
+      <span class="corrector"><button  id="showPass" onclick="return hideShow()"><i class="fa-solid fa-eye"></i></button></i></span>
+      <span class="error" id="err-pass"></span>
+      <span class="corrector correct" id="c4"><i class="fa-solid fa-check"></i></span>
+      <span class="corrector incorrect" id="inc4"><i class="fa-solid fa-xmark"></i></span>
+    </div>
+    <div class="form-group">
+      <label for="name">Confirm password: </label>
+      <input type="password" id="co-pass" placeholder="Confirm password" />
+      <span class="error" id="err-copass"></span>
+      <span class="corrector correct" id="c5"><i class="fa-solid fa-check"></i></span>
+      <span class="corrector incorrect" id="inc5"><i class="fa-solid fa-xmark"></i></span>
+    </div>
+    <button type="submit" onclick="return validate()">Submit</button>
+  </form>
+
+  <script>
+    let name = document.getElementById("name");
+    let email = document.getElementById("email");
+    let number = document.getElementById("number");
+    let pass = document.getElementById("pass");
+    let copass = document.getElementById("co-pass");
+
+    let errName = document.getElementById("err-name");
+    let errEmail = document.getElementById("err-email");
+    let errNumber = document.getElementById("err-number");
+    let errPass = document.getElementById("err-pass");
+    let errCopass = document.getElementById("err-copass");
+
+    let c1 = document.getElementById("c1");
+    let inc1 = document.getElementById("inc1");
+
+    let c2 = document.getElementById("c2");
+    let inc2 = document.getElementById("inc2");
+
+    let c3 = document.getElementById("c3");
+    let inc3 = document.getElementById("inc3");
+
+    let c4 = document.getElementById("c4");
+    let inc4 = document.getElementById("inc4");
+
+    let c5 = document.getElementById("c5");
+    let inc5 = document.getElementById("inc5");
+
+    let showPass = document.querySelector("#showPass")
+
+    hideShow = () =>{
+      if(pass.type == 'text'){
+        pass.type = 'password';
+        showPass.innerHTML = '<i class="fa-solid fa-eye-slash"></i>';
+      }
+      else{
+        pass.type = 'text';
+        showPass.innerHTML = '<i class="fa-solid fa-eye"></i>';
+      }
+      return false;
+    }
+
+    checker = () => {
+
+    if (name.value.trim() != "") {
+      errName.textContent = "";
+      name.classList.remove("error-input");
+      name.classList.add("correct-input");
+      c1.style.display = 'block';
+      inc1.style.display = 'none';
+    } 
+    else {
+      errName.textContent = "";
+      name.classList.remove("correct-input");
+      name.classList.remove("error-input");
+      c1.style.display = 'none';
+      inc1.style.display = 'none';
+    }
+
+    if (email.value.trim() != "") {
+      if (!(email.value.includes("@") && email.value.includes(".com"))) {
+        email.classList.remove("correct-input");
+        email.classList.add("error-input");
+        c2.style.display = 'none';
+        inc2.style.display = 'block';
+        errEmail.textContent = "";
+      } else {
+        errEmail.textContent = "";
+        email.classList.add("correct-input");
+        email.classList.remove("error-input");
+        c2.style.display = 'block';
+        inc2.style.display = 'none';
+        errEmail.textContent = "";
+      }
+    } else {
+      email.classList.remove("correct-input");
+      email.classList.remove("error-input");
+      c2.style.display = 'none';
+      inc2.style.display = 'none';
+      errEmail.textContent = "";
+    }
+
+    if (number.value.trim() != "") {
+      if (isNaN(number.value)) {
+        errNumber.textContent = "Invalid number";
+        number.classList.remove("correct-input");
+        number.classList.add("error-input");
+        c3.style.display = 'none';
+        inc3.style.display = 'block';
+      } 
+      else if (number.value.length !== 10) {
+        errNumber.textContent = "Number must be 10 digits";
+        number.classList.remove("correct-input");
+        number.classList.add("error-input");
+        c3.style.display = 'none';
+        inc3.style.display = 'block';
+      } 
+      else {
+        errNumber.textContent = "";
+        number.classList.remove("error-input");
+        number.classList.add("correct-input");
+        c3.style.display = 'block';
+        inc3.style.display = 'none';
+      }
+    }
+    else{
+      errNumber.textContent = "";
+      number.classList.remove("error-input");
+      number.classList.remove("correct-input");
+      c3.style.display = 'none';
+      inc3.style.display = 'none';
+    }
+
+    if (pass.value.trim() != "") {
+      if(pass.value.length>=6){
+        errPass.textContent = "";
+        pass.classList.remove("error-input");
+        pass.classList.add("correct-input");
+        c4.style.display = 'block';
+        inc4.style.display = 'none';
+      }
+      else{
+        errPass.textContent = "";
+        pass.classList.add("error-input");
+        pass.classList.remove("correct-input");
+        c4.style.display = 'none';
+        inc4.style.display = 'block';
+      }
+    }
+    else{
+      errPass.textContent = "";
+      pass.classList.remove("error-input");
+      pass.classList.remove("correct-input");
+      c4.style.display = 'none';
+      inc4.style.display = 'none';
+    }
+
+    if (copass.value.trim() != "") {
+      if(copass.value==pass.value){
+        errCopass.textContent = "";
+        copass.classList.remove("error-input");
+        copass.classList.add("correct-input");
+        c5.style.display = 'block';
+        inc5.style.display = 'none';
+      }
+      if(copass.value!=pass.value){
+        errCopass.textContent = "";
+        copass.classList.add("error-input");
+        copass.classList.remove("correct-input");
+        c5.style.display = 'none';
+        inc5.style.display = 'block';
+      }
+    }
+    else{
+      errCopass.textContent = "";
+      copass.classList.remove("error-input");
+      copass.classList.remove("correct-input");
+      c5.style.display = 'none';
+      inc5.style.display = 'none';
+    }
+  };
+
+    name.addEventListener('input', checker);
+    email.addEventListener('input', checker);
+    number.addEventListener('input', checker);
+    pass.addEventListener('input', checker);
+    copass.addEventListener('input', checker);
+
+    function validate() {
+      let isValid = true;
+
+      if (name.value.trim() === "") {
+        errName.textContent = "Name is required";
+        name.classList.add("error-input");
+        inc1.style.display = 'block';
+        isValid = false;
+      }
+       else {
+        errName.textContent = "";
+        name.classList.remove("error-input");
+        name.classList.add("correct-input");
+        c1.style.display = 'block';
+        inc1.style.display = 'none';
+      }
+
+      if (email.value.trim() === "") {
+        errEmail.textContent = "Email is required";
+        email.classList.remove("error-input");
+        email.classList.add("error-input");
+        inc2.style.display = 'block';
+        isValid = false;
+      } 
+      else if (!(email.value.includes("@") && email.value.includes(".com"))) {
+        errEmail.textContent = "Invalid email";
+        email.classList.add("error-input");
+        inc2.style.display = 'block';
+        isValid = false;
+      } 
+      else {
+        errEmail.textContent = "";
+        email.classList.add("correct-input");
+        email.classList.remove("error-input");
+        c2.style.display = 'block';
+        inc2.style.display = 'none';
+      }
+
+      if (number.value.trim() === "") {
+        errNumber.textContent = "Number is required";
+        number.classList.add("error-input");
+        inc3.style.display = 'block';
+        isValid = false;
+      } 
+      else if (isNaN(number.value)) {
+        errNumber.textContent = "Invalid number";
+        number.classList.add("error-input");
+        inc3.style.display = 'block';
+        isValid = false;
+      } 
+      else if (number.value.length !== 10) {
+        errNumber.textContent = "Invalid length of number";
+        number.classList.add("error-input");
+        inc3.style.display = 'block';
+        isValid = false;
+      } 
+      else {
+        errNumber.textContent = "";
+        number.classList.add("correct-input");
+        number.classList.remove("error-input");
+        c3.style.display = 'block';
+        inc3.style.display = 'none';
+      }
+
+      if (pass.value.trim() === "") {
+        errPass.textContent = "Password is required";
+        pass.classList.add("error-input");
+        inc4.style.display = 'block';
+        isValid = false;
+      } 
+      else if(pass.length>8){
+        errPass.textContent = "Password should be atleast 6 character long";
+        pass.classList.add("error-input");
+        inc4.style.display = 'block';
+        isValid = false;
+      }
+      else if(!(pass.value.match([/0123456789/])) && !(pass.value.match([/!@#$%^&*()_-/])) && !(pass.value.match([/A-Z/])) && !(pass.value.match([/a-z/]))){
+        errPass.textContent = "Password is too week";
+        pass.classList.add("error-input");
+        inc4.style.display = 'block';
+        isValid = false;
+      }
+      else {
+        errPass.textContent = "";
+        pass.classList.remove("error-input");
+        pass.classList.add("correct-input");
+        c4.style.display = 'block';
+        inc4.style.display = 'none';
+      }
+
+      if (copass.value.trim() === "") {
+        errCopass.textContent = "Please confirm password";
+        copass.classList.add("error-input");
+        inc5.style.display = 'block';
+        isValid = false;
+      } 
+      else if (copass.value !== pass.value) {
+        errCopass.textContent = "Passwords does not match";
+        copass.classList.add("error-input");
+        inc5.style.display = 'block';
+        copass.value = "";
+        copass.focus();
+        isValid = false;
+      } 
+      else {
+        errCopass.textContent = "";
+        copass.classList.remove("error-input");
+        copass.classList.add("correct-input");
+        c5.style.display = 'block';
+        inc5.style.display = 'none';
+      }
+
+      if (isValid) {
+        alert("Form submitted successfully!");
+      }
+      return isValid;
+    }
+  </script>
+</body>
+</html>

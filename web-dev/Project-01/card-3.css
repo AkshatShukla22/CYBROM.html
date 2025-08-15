@@ -1,0 +1,123 @@
+/* card-3.css */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.recomended {
+    width: 100%;
+    overflow-x: auto;
+    display: flex;
+    justify-content: center;
+    margin: 10vh auto;
+}
+
+.recomended-dv {
+    border-left: 5px solid #09152b;
+    border-right: 5px solid #09152b;
+    width: 90%;
+    height: 50vh;
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.632);
+    overflow-x: auto;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    scroll-snap-type: x mandatory;
+    padding: 10px 10px;
+}
+
+.recomended-dv a {
+    height: 30vh;
+    width: 17vw;
+    background-color: #09152b;
+    box-shadow: 5px 10px 20px #09152b;
+    margin: 0 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    scroll-snap-align: start;
+}
+
+.card-3{
+    transition: transform 0.5s ease;
+    overflow: hidden;
+}
+
+.card-3:hover{
+    transform: translateY(-40px);
+}
+
+.card-3 a{
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+.recomended-dv img {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    transition: transform 1s ease;
+}
+
+.recomended-dv img:hover {
+    transform: scale(1.2);
+}
+
+.recomended-dv::-webkit-scrollbar {
+    display: none; 
+}
+
+.recomended-dv {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+
+@media (max-width: 500px) {
+    
+    .recomended-dv {
+        height: 30vh;
+        padding: 7px;
+    }
+
+    .recomended-dv a {
+        height: 22vh;
+        width: 19vw;
+        margin: 0 7px;
+    }
+
+}
+
+@media (max-width: 300px) {
+    
+    .recomended-dv {
+        height: 25vh;
+        padding: 5px;
+    }
+
+    .recomended-dv a {
+        height: 15vh;
+        width: 18vw;
+        margin: 0 5px;
+    }
+
+}
+
+@media (max-width: 200px) {
+    
+    .recomended-dv {
+        height: 20vh;
+        padding: 5px;
+    }
+
+    .recomended-dv a {
+        height: 10vh;
+        box-shadow: 5px 3px 5x black;
+        width: 18vw;
+        margin: 0 5px;
+    }
+
+}

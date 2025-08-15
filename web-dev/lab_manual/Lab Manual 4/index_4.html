@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1 id="head1">0</h1>
+    <h1 id="head2">0</h1>
+    <h1 id="head3">0</h1>
+    <button id="btn" onclick="random()">Random</button>
+
+    <script>
+        let head1 = document.querySelector("#head1");
+        let head2 = document.querySelector("#head2");
+        let head3 = document.querySelector("#head3");
+        let btn = document.querySelector("#btn");
+
+        random = () =>{
+            let a = Math.trunc(Math.random()*1000);
+            let b = Math.trunc(Math.random()*1000);
+            let c = Math.trunc(Math.random()*1000);
+
+            head1.innerHTML = a;
+            head2.innerHTML = b;
+            head3.innerHTML = c;
+        }
+
+    </script>
+</body>
+</html>

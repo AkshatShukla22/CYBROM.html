@@ -1,0 +1,166 @@
+<!-- anime_info.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anime Details - AnimeStream</title>
+    <link rel="icon" type="image/png" href="./assets/logo.png">
+    <link rel="stylesheet" href="./anime_info.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav>
+        <div class="logo">
+            <a href="index.html">
+                <img src="./assets/logo.png" alt="AnimeStream Logo">
+                <span>AnimeStream</span>
+            </a>
+        </div>
+        
+        <div class="nav-right">
+            <div class="search-container">
+                <input type="search" id="searchInput" placeholder="Search anime...">
+                <button id="searchBtn"><i class="fa-solid fa-magnifying-glass"></i></button>
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            
+            <div class="nav-buttons">
+                <div class="notification-container">
+                    <button id="notificationBtn"><i class="fa-solid fa-bell"></i>
+                        <span class="notification-count">0</span>
+                    </button>
+                    <div id="notificationPanel" class="notification-panel">
+                        <h3>Notifications</h3>
+                        <div class="notification-list" id="notificationList">
+                            <p class="no-notifications">No new notifications</p>
+                        </div>
+                    </div>
+                </div>
+                <button id="userBtn" class="user-btn"><i class="fa-solid fa-user"></i></button>
+                <button id="loginBtn" class="login-btn">Login</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main>
+        <div class="anime-container">
+            <!-- Anime Details Section -->
+            <section class="anime-details">
+                <div class="anime-backdrop">
+                    <div class="backdrop-overlay"></div>
+                </div>
+                
+                <div class="content-wrapper">
+                    <div class="anime-poster">
+                        <img id="animePoster" src="" alt="Anime Poster">
+                        <div class="rating">
+                            <i class="fas fa-star"></i>
+                            <span id="animeRating">0.0</span>
+                        </div>
+                    </div>
+                    
+                    <div class="anime-info">
+                        <h1 id="animeTitle">Loading anime...</h1>
+                        
+                        <div class="meta-info">
+                            <div class="meta-item">
+                                <i class="fas fa-list"></i>
+                                <span id="episodeCount">0 Episodes</span>
+                            </div>
+                            <div class="meta-item">
+                                <i class="fas fa-tag"></i>
+                                <span id="animeGenres">Loading genres...</span>
+                            </div>
+                        </div>
+                        
+                        <div class="description">
+                            <p id="animeDescription">Loading description...</p>
+                        </div>
+                        
+                        <div class="action-buttons">
+                            <button id="watchNowBtn" class="primary-btn">
+                                <i class="fas fa-play"></i> Watch Now
+                            </button>
+                            <button id="addToWatchlistBtn" class="secondary-btn">
+                                <i class="fas fa-plus"></i> Add to Watchlist
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Recommendations Section -->
+            <section class="recommendations">
+                <h2>Similar Anime</h2>
+                <div class="anime-grid" id="similarAnimeGrid">
+                    <!-- Similar anime cards will be inserted here by JavaScript -->
+                </div>
+            </section>
+            
+            <!-- More from this Genre Section -->
+            <section class="more-from-genre">
+                <h2 id="genreTitle">More Action Anime</h2>
+                <div class="anime-grid" id="genreAnimeGrid">
+                    <!-- Genre anime cards will be inserted here by JavaScript -->
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-logo">
+                <img src="./assets/logo.png" alt="AnimeStream Logo">
+                <h2>AnimeStream</h2>
+                <p>Your ultimate anime streaming destination</p>
+            </div>
+            
+            <div class="footer-links">
+                <div class="footer-section">
+                    <h3>Explore</h3>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="#">Genres</a></li>
+                        <li><a href="#">New Releases</a></li>
+                        <li><a href="#">Popular</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>About</h3>
+                    <ul>
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">Contact</a></li>
+                        <li><a href="#">FAQ</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Connect</h3>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-discord"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>&copy; 2025 AnimeStream. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="./db.js"></script>
+    <script src="./common.js"></script>
+    <script src="./anime_info.js"></script>
+    
+</body>
+</html>

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Edit Student</title>
+  <style>
+    body { font-family: Arial; background-color: #f4f4f4; padding: 20px; }
+    form { background: white; padding: 20px; border-radius: 10px; width: 300px; margin: auto; }
+    h2 { text-align: center; color: #2a2c3e; }
+    input, button { width: 100%; margin: 10px 0; padding: 10px; }
+    button { background-color: #BB86FC; color: white; border: none; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <h2>Edit Student</h2>
+  <form action="/update/<%= student._id %>" method="POST">
+    <input type="text" name="rollno" value="<%= student.rollno %>" required>
+    <input type="text" name="Studentname" value="<%= student.name %>" required>
+    <input type="text" name="classname" value="<%= student.classname %>" required>
+    <input type="text" name="subject" value="<%= student.subject %>" required>
+    <button type="submit">Update</button>
+  </form>
+</body>
+</html>

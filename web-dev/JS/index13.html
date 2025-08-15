@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        // onject
+        let obj = {
+            //key: value
+            Name: "Akshat Shukla",
+            Age: 20,
+            City: "Bhopal"
+        }
+
+        console.log(obj);
+        console.log(obj.Age);
+
+        obj.College='BCE';//to insert an object => object_name.new_key=value
+        console.log(obj);
+
+        obj.Age=21//update existing key
+        console.log(obj);
+
+        delete obj.City; // delete key from an object
+        console.log(obj);
+
+        //destucturing = convert it into variable,
+        //  const student = {name: "akshat", age:25, city:"bhopal"}
+        // const {name, age} = student;
+        const {Name, Age} = obj;
+        console.log(Name);
+
+        //Spread Operator =>spread operator (...) allows us to quickly copy all or part of an existing array or object into another array or object.
+        const myVehicle = {
+        brand: 'Ford',
+        model: 'Mustang',
+        color: 'red'
+        }
+
+        const updateMyVehicle = {
+        type: 'car',
+        year: 2021, 
+        color: 'yellow'
+        }
+
+        const myUpdatedVehicle = {...myVehicle, ...updateMyVehicle};
+        console.log(myUpdatedVehicle);
+
+
+
+    </script>
+</body>
+</html>

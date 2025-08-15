@@ -1,0 +1,245 @@
+ /*login.css */ 
+ 
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.login-page {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    font-family: "Orbitron", sans-serif;
+}
+
+.login-page video {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.login-page .login-page-dv {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.login-page .login-form {
+    width: 60vh;
+    min-height: 70vh; 
+    backdrop-filter: blur(8px);
+    border: 1px solid snow;
+    border-radius: 4%;
+    display: flex;
+    flex-direction: column;
+    padding: 4vh 1vw;
+    gap: 5vh;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    z-index: 1;
+}
+
+.login-page .login-form h1 {
+    font-size: 3vh;
+    color: #fff;
+    text-decoration: underline;
+    font-family: "Press Start 2P", system-ui;
+    font-weight: 400;
+    position: absolute;
+    top: 4vh;
+}
+
+.login-page .login-form a {
+    text-decoration: none;
+    color: #fff;
+    font-size: 2vh;
+}
+
+.login-page .login-form input {
+    width: 80%; 
+    height: 4vh;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid white;
+    font-size: 2vh;
+    color: #fff;
+    padding: 0 1vw;
+    outline: none;
+}
+
+.login-page .login-form input::placeholder {
+    color: #fff;
+    opacity: 0.8;
+    font-size: 2vh;
+}
+
+.login-page .login-form div {
+    width: 80%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.login-page .login-form div label {
+    color: #fff;
+    font-size: 2vh;
+}
+
+.login-page .login-form div #remember-me {
+    height: 2vh;
+    width: 2vh;
+}
+
+.login-page .login-form div #remember-me:checked {
+    accent-color: #09152b;
+}
+
+.login-page .login-form #login-btn {
+    height: 5vh;
+    width: 80%;
+    font-size: 2vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    border: none;
+    border-radius: 10px;
+    transition: transform 0.3s ease;
+}
+
+.login-page .login-form #login-btn:hover {
+    background-color: #09152b;
+    transform: scale(1.05);
+}
+
+.login-page .login-form #login-btn a {
+    text-decoration: none;
+    color: #fff;
+}
+
+.login-page .login-page-dv .switch {
+    display: none;
+}
+
+.login-page .login-form label {
+    color: #fff;
+    font-size: 1.5vh;
+    cursor: pointer;
+}
+
+.login-frm {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(0);
+    transition: transform 0.5s ease, opacity 0.5s ease, visibility 0.5s;
+}
+
+.signup-form {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateX(120%);
+    transition: transform 0.5s ease, opacity 0.5s ease, visibility 0.5s;
+}
+
+.switch:checked ~ .signup-form {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(0);
+}
+
+.switch:checked ~ .login-frm {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateX(-120%);
+}
+
+@media (max-width: 768px) {
+    .login-page .login-form {
+        width: 60vw;
+        min-height: 70vh;
+    }
+
+    .login-page .login-form h1 {
+        font-size: 3vh;
+        margin-top: -1.5vh;
+    }
+
+    .login-page .login-form input {
+        font-size: 2vh;
+        height: 3.5vh;
+    }
+
+    .login-page .login-form div label {
+        font-size: 2vh;
+    }
+
+    .login-page .login-form #login-btn {
+        font-size: 2vh;
+        height: 4vh;
+    }
+}
+
+@media (max-width: 480px) {
+    .login-page .login-form {
+        width: 60vw;
+        min-height: 70vh;
+    }
+
+    .login-page .login-form h1 {
+        font-size: 3vh;
+        margin-top: -1vh;
+    }
+
+    .login-page .login-form input {
+        font-size: 2vh;
+        height: 3vh;
+    }
+
+    .login-page .login-form div label {
+        font-size: 2vh;
+    }
+
+    .login-page .login-form #login-btn {
+        font-size: 2vh;
+        height: 3.5vh;
+    }
+}
+
+@media (max-width: 200px) {
+    .login-page .login-form {
+        width: 70vw;
+        min-height: 60vh;
+        padding: 0px;
+    }
+
+    .login-page .login-form h1 {
+        font-size: 2.5vh;
+        margin-top: -1vh;
+    }
+
+    .login-page .login-form input {
+        font-size: 1.5vh;
+        height: 3vh;
+    }
+
+    .login-page .login-form div label {
+        font-size: 1.5vh;
+    }
+
+    .login-page .login-form a {
+        font-size: 1.3vh;
+    }
+
+    .login-page .login-form #login-btn {
+        font-size: 1.5vh;
+        height: 2.7vh;
+        border-radius: 3px;
+    }
+}

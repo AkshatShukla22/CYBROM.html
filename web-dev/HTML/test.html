@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+    * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+/* === Navbar Container === */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1vh 4vw;
+    background-color: #09152b;
+    color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 10;
+}
+
+/* === Logo === */
+.logo {
+    font-size: 3vh;
+    font-weight: bold;
+    color: #beee11;
+    cursor: pointer;
+}
+
+/* === Nav Links (Centering) === */
+.nav-links {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 2vw;
+    align-items: center;
+}
+
+.nav-links a {
+    color: white;
+    text-decoration: none;
+    font-size: 2vh;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.nav-links a:hover {
+    color: #beee11;
+}
+
+/* === Search Styling === */
+.search-container {
+    position: absolute;
+    right: 8vw;
+    display: flex;
+    align-items: center;
+    gap: 1vw;
+    z-index: 20; /* Ensure search container is clickable */
+}
+
+.search-label {
+    font-size: 2vh;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+    z-index: 25; /* Higher than side-panel */
+}
+
+.search-input {
+    width: 0;
+    padding: 1vh;
+    font-size: 2vh;
+    border: none;
+    border-radius: 4px;
+    background-color: #ffffff;
+    color: #333;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    opacity: 0;
+    visibility: hidden;
+    transition: width 0.3s ease, opacity 0.3s ease;
+    outline: none;
+    z-index: 25;
+}
+
+.search-checkbox {
+    display: none;
+}
+
+/* === Hamburger Icon === */
+.menu-toggle {
+    display: none;
+    width: 16px;
+    height: 12px;
+    flex-direction: column;
+    justify-content: space-between;
+    cursor: pointer;
+    z-index: 15;
+}
+
+.menu-toggle span {
+    display: block;
+    height: 2px;
+    width: 100%;
+    background-color: white;
+    border-radius: 2px;
+    transition: transform 0.3s ease, opacity 0.3s ease, width 0.3s ease;
+}
+
+.menu-checkbox {
+    display: none;
+}
+
+/* === Slide-In Panel === */
+.side-panel {
+    position: fixed;
+    top: 0;
+    right: -25%; /* Hidden by default */
+    width: 25%; /* Cover 25% of the screen */
+    height: 100vh;
+    background-color: #09152b;
+    box-shadow: -4px 0 8px rgba(0, 0, 0, 0.2);
+    padding: 4vh 4vw;
+    display: flex;
+    flex-direction: column;
+    gap: 3vh;
+    transition: right 0.4s ease;
+    z-index: 5;
+}
+
+/* === Small Screens Behavior === */
+@media (max-width: 768px) {
+    /* Hide main nav links on small screens */
+    .nav-links {
+        display: none;
+    }
+
+    /* Display nav links inside side panel */
+    .side-panel .nav-links {
+        display: flex;
+        flex-direction: column;
+        gap: 2vh;
+    }
+
+    /* Search and Hamburger in Small Screen */
+    .search-container {
+        position: absolute;
+        right: 8vw;
+        display: flex;
+        align-items: center;
+        gap: 1vw;
+    }
+
+    /* Search label and input */
+    .search-label {
+        font-size: 2vh;
+        transition: transform 0.3s ease;
+        order: 1;
+    }
+
+    .search-input {
+        width: 0;
+        opacity: 0;
+        visibility: hidden;
+        transition: width 0.3s ease, opacity 0.3s ease;
+    }
+
+    /* Hamburger icon */
+    .menu-toggle {
+        display: flex;
+    }
+
+    /* === Search Animation on Small Screen === */
+    .search-checkbox:checked + .search-label {
+        transform: translateX(-8vw); /* Move left on small screen */
+    }
+
+    .search-checkbox:checked + .search-label + .search-input {
+        width: 40vw;
+        opacity: 1;
+        visibility: visible;
+    }
+
+    /* === When menu is checked === */
+    .menu-checkbox:checked ~ .side-panel {
+        right: 0;
+    }
+
+    /* === Hamburger animation when checked === */
+    .menu-checkbox:checked + .menu-toggle span:nth-child(1) {
+        transform: translateY(5px) rotate(45deg);
+        width: 18px; /* Increase width to form a perfect cross */
+    }
+
+    .menu-checkbox:checked + .menu-toggle span:nth-child(2) {
+        opacity: 0;
+    }
+
+    .menu-checkbox:checked + .menu-toggle span:nth-child(3) {
+        transform: translateY(-5px) rotate(-45deg);
+        width: 18px; /* Increase width to form a perfect cross */
+    }
+}
+
+/* === Search Animation on Large Screens === */
+@media (min-width: 769px) {
+    .search-checkbox:checked + .search-label {
+        transform: translateX(-6vw); /* Move left on large screen */
+    }
+
+    .search-checkbox:checked + .search-label + .search-input {
+        width: 20vw;
+        opacity: 1;
+        visibility: visible;
+    }
+}
+
+
+    </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<div class="navbar">
+    <!-- Logo -->
+    <div class="logo">MyLogo</div>
+
+    <!-- Nav Links (Visible on larger screens) -->
+    <div class="nav-links">
+        <a href="#">Home</a>
+        <a href="#">Product</a>
+        <a href="#">News</a>
+        <a href="#">Support</a>
+    </div>
+
+    <!-- Search and Hamburger -->
+    <div class="search-container">
+        <!-- Search Checkbox -->
+        <input type="checkbox" id="search-toggle" class="search-checkbox" />
+        <label for="search-toggle" class="search-label">🔍</label>
+        <input type="text" class="search-input" placeholder="Search..." />
+    </div>
+
+    <!-- Hamburger Icon -->
+    <input type="checkbox" id="menu-toggle" class="menu-checkbox" />
+    <label for="menu-toggle" class="menu-toggle">
+        <span></span>
+        <span></span>
+        <span></span>
+    </label>
+
+    <!-- Side Panel -->
+    <div class="side-panel">
+        <!-- Nav Links (Hidden in Large Screens) -->
+        <div class="nav-links">
+            <a href="#">Home</a>
+            <a href="#">Product</a>
+            <a href="#">News</a>
+            <a href="#">Support</a>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <style>
+        body{
+            background-color: aqua;
+        }
+
+        .animation{
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .box{
+            height: 30%;
+            width: 30%;
+            border: 5px solid black;
+            animation: bounce 5s ease infinite;
+        }
+
+        @keyframes bounce {
+        0%{
+        transform: translateY(-250);
+        background-image: url(https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRnkGARQwuyaleLrGvB69sb_iey0utnSw3UIw&s);
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+        }
+        25%{
+        transform: translateX(250px);
+        background-image: url(https://cdn.images.express.co.uk/img/dynamic/143/590x/1990558_1.jpg);
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+        }
+        50% {
+        background-image: url(https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQnBnFXBhkSJZokybVDKkgbjlNc0FGXi2qd7Q&s);
+        transform: translateY(250px);
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+        }
+        75% {
+        background-image: url(https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSrYTqkh6R8c42_aiOdEkGK7_Z51jSJT_9qYw&s);
+        transform: translateX(-250px);
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+        }
+        100%, 0%{
+        background-image: url(https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTEJhurbyZR04OkHAeM0KGGna1z3tMoFs3WmQ&s);
+        transform: translateY(-250px);
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+        }
+}
+
+
+    </style>
+</head>
+<body>
+    <section class="animation">
+        <div class="box">
+        </div>
+    </section>
+</body>
+</html>

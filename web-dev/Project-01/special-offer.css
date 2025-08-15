@@ -1,0 +1,313 @@
+/* special-offer.css */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.special-offer a {
+    text-decoration: none;
+}
+
+.special-offer {
+    width: 100%;
+    height: 60vh;
+    font-size: 4vh;
+    text-align: center;
+    color: white;
+    margin: 2vh 0px;
+}
+
+.special-offer h1{
+    margin-bottom: 5vh;
+    font-family: "Bebas Neue", sans-serif;
+    font-weight: 400;
+    letter-spacing: 0.25vw;
+    word-spacing: 1vw;
+}
+
+.special-offer .spo-div {
+    gap: 1vw;
+    width: 60vw;
+    height: 60vh;
+    margin: auto;
+    display: flex;
+}
+
+.special-offer .spo-div .big-spo {
+    width: 33.33%;
+    height: 100%;
+    box-shadow: 6px 8px 20px rgba(0, 0, 0, 0.5);
+}
+
+.special-offer .spo-div .big-spo-div {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.special-offer .spo-div .big-spo-div-1 {
+    width: 100%;
+    height: 80%;
+    overflow: hidden; 
+}
+
+.special-offer .spo-div .big-spo-div-1 img {
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.3s ease-in-out;
+}
+
+.special-offer .spo-div .big-spo-div-1:hover img {
+    transform: scale(1.2);
+}
+
+.special-offer .spo-div .big-spo-div-2 {
+    width: 100%;
+    height: 20%;
+    padding: 0px 1vh;
+    background-color: #09152b;
+    display: flex;
+    align-items: center;
+    justify-content: right;
+}
+
+.special-offer .spo-div .big-spo-div-2 .big-spo-discount {
+    font-size: 4vh;
+    color: #BEEE11;
+    background-color: #4c6b22;
+    padding: 5px;
+}
+
+.special-offer .spo-div .big-spo-div-2 .big-spo-price {
+    font-size: 3vh;
+    padding: 10px 5px;
+    color: #fff;
+    position: relative;
+}
+
+.special-offer .spo-div .big-spo-div-2 .big-spo-price .big-spo-previous-prc {
+    font-size: 2vh;
+    top: -5px;
+    left: 15px;
+    color: gray;
+    text-decoration: line-through;
+    position: absolute;
+}
+
+.special-offer .small-spo {
+    width: 66.67%;
+    height: 100%;
+    display: flex;
+    flex-direction: row; 
+    justify-content: space-between; 
+    align-items: stretch; 
+}
+
+.special-offer .small-spo-div {
+    width: 32%;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 0;
+    height: 100%;
+}
+
+.special-offer .small-spo-div a {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%; 
+    box-sizing: border-box;
+    box-shadow: 4px 8px 20px rgba(0, 0, 0, 0.5);
+    align-items: stretch; 
+    overflow: hidden;
+}
+
+.special-offer .small-spo-div a .small-spo-div-img {
+    height: 75%;
+    width: 100%;
+    position: relative;
+}
+
+.special-offer .small-spo-div a .small-spo-div-img img {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease-in-out;
+}
+
+.special-offer .small-spo-div a:hover .small-spo-div-img img {
+    transform: scale(1.2);
+}
+
+.special-offer .small-spo-div a .small-spo-div-prc {
+    height: 25%; 
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: right;
+    background-color: #09152b;
+}
+
+.special-offer .small-spo-div .small-spo-discount {
+    font-size: 2vh;
+    color: #BEEE11;
+    background-color: #4c6b22;
+    padding: 5px;
+}
+
+.special-offer .small-spo-div .small-spo-price {
+    font-size: 2.5vh;
+    padding: 10px 5px;
+    color: #fff;
+    position: relative;
+}
+
+.special-offer .small-spo-div .small-spo-price .small-spo-previous-prc {
+    font-size: 1.5vh;
+    top: -5px;
+    left: 15px;
+    color: gray;
+    text-decoration: line-through;
+    position: absolute;
+}
+
+.special-offer .small-spo-div a {
+    height: 250px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.special-offer .small-spo-div {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+@media (max-width: 550px) {
+
+    .special-offer {
+        height: 55vh;
+    }
+    
+    .special-offer .spo-div {
+        height: 50vh;
+    }
+
+    .special-offer .spo-div .big-spo-div-2 .big-spo-discount {
+        font-size: 3vh;
+        padding: 3px;
+    }
+
+    .special-offer .spo-div .big-spo-div-2 .big-spo-price {
+        font-size: 2.5vh;
+    }
+
+    .special-offer .spo-div .big-spo-div-2 .big-spo-price .big-spo-previous-prc {
+        font-size: 2vh;
+        top: 0px;
+        left: 10px;
+    }
+
+    .special-offer .small-spo-div .small-spo-price {
+        font-size: 2vh;
+    }
+
+    .special-offer .small-spo-div .small-spo-discount {
+        font-size: 2vh;
+        padding: 3px;
+    }
+
+    .special-offer .small-spo-div .small-spo-price .small-spo-previous-prc {
+        top: 0px;
+    }
+
+}
+
+@media (max-width: 400px) {
+
+    .special-offer {
+        height: 35vh;
+    }
+    
+    .special-offer .spo-div {
+        height: 30vh;
+    }
+
+    .special-offer .spo-div .big-spo-div-2 .big-spo-discount {
+        font-size: 1.5vh;
+        padding: 1px;
+    }
+
+    .special-offer .spo-div .big-spo-div-2 .big-spo-price {
+        font-size: 2vh;
+    }
+
+    .special-offer .spo-div .big-spo-div-2 .big-spo-price .big-spo-previous-prc {
+        font-size: 1.5vh;
+        top: 5px;
+        left: 10px;
+    }
+
+    .special-offer .small-spo-div .small-spo-price {
+        font-size: 1.5vh;
+        padding: 5px 2px;
+    }
+
+    .special-offer .small-spo-div .small-spo-discount {
+        font-size: 1.5vh;
+        padding: 1px;
+    }
+
+    .special-offer .small-spo-div .small-spo-price .small-spo-previous-prc {
+        font-size: 1vh;
+        top: 1px;
+        left: 4px;
+    }
+
+}
+
+@media (max-width: 300px) {
+
+    .special-offer {
+        height: 35vh;
+    }
+    
+    .special-offer .spo-div {
+        height: 30vh;
+    }
+
+    .special-offer .spo-div .big-spo-div-2 .big-spo-discount {
+        font-size: 1.5vh;
+        padding: 1px;
+    }
+
+    .special-offer .spo-div .big-spo-div-2 .big-spo-price {
+        font-size: 2vh;
+    }
+
+    .special-offer .spo-div .big-spo-div-2 .big-spo-price .big-spo-previous-prc {
+        font-size: 1.5vh;
+        top: 5px;
+        left: 10px;
+    }
+
+    .special-offer .small-spo-div .small-spo-price {
+        font-size: 1.5vh;
+        padding: 5px 2px;
+    }
+
+    .special-offer .small-spo-div .small-spo-discount {
+        font-size: 1.5vh;
+        padding: 1px;
+    }
+
+    .special-offer .small-spo-div .small-spo-price .small-spo-previous-prc {
+        font-size: 1vh;
+        top: 1px;
+        left: 4px;
+    }
+
+}

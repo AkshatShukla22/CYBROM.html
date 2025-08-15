@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AnimeStream - Login/Register</title>
+    <link rel="icon" type="image/png" href="./assets/logo.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="./auth.css">
+</head>
+<body>
+    <div class="auth">
+        <div class="login container">
+            <h1>Login</h1>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="login_email">Email: </label>
+                    <input type="text" id="login_email" placeholder="Enter your email" />
+                </div>
+                <div class="form-group">
+                    <label for="login_pass">Password: </label>
+                    <input type="password" id="login_pass" placeholder="Enter password" />
+                    <span class="corrector">
+                        <button type="button" id="showPass_login" class="showPass" onclick="hideShow_login()">
+                            <i class="fa-solid fa-eye"></i>
+                        </button>
+                    </span>
+                </div>
+                <button type="button" onclick="return validateLogin()">Login</button>
+            </form>
+        </div>
+
+        <div class="signup container">
+            <h1>Sign up</h1>
+            <form id="signupForm">
+                <div class="form-group">
+                    <label for="name">Name: </label>
+                    <input type="text" id="name" placeholder="Enter your name" />
+                </div>
+                <div class="form-group">
+                    <label for="email">Email: </label>
+                    <input type="text" id="email" placeholder="Enter your email" />
+                </div>
+                <div class="form-group">
+                    <label for="number">Phone number: </label>
+                    <input type="text" id="number" placeholder="Enter your number" />
+                </div>
+                <div class="form-group">
+                    <label for="pass">Password: </label>
+                    <input type="password" id="pass" placeholder="Enter password" />
+                    <span class="corrector">
+                        <button type="button" id="showPass_signup" class="showPass" onclick="hideShow_signup()">
+                            <i class="fa-solid fa-eye"></i>
+                        </button>
+                    </span>
+                </div>
+                <div class="form-group">
+                    <label for="co-pass">Confirm password: </label>
+                    <input type="password" id="co-pass" placeholder="Confirm password" />
+                </div>
+                <button type="button" onclick="return validate()">Register</button>
+            </form>
+        </div>
+        <div id="slider" class="right_slider">
+            <h1>Welcome Back!</h1>
+            <span>Log in to continue your anime adventure.</span>
+            <div>
+                <span>New here? Sign up to discover amazing anime!</span>
+                <button onclick="Slider()">Sign Up</button>
+            </div>
+        </div>
+        
+    </div>
+    <div class="msg">
+        <span class="error" id="error-1">
+            <span class="error-msg" id="err-login-email"></span>
+            <span class="error-timer"></span>
+        </span>
+        <span class="error" id="error-2">
+            <span class="error-msg" id="err-login-pass"></span>
+            <span class="error-timer"></span>
+        </span>
+        <span class="error" id="error-3">
+            <span class="error-msg" id="err-name"></span>
+            <span class="error-timer"></span>
+        </span>
+        <span class="error" id="error-4">
+            <span class="error-msg" id="err-email"></span>
+            <span class="error-timer"></span>
+        </span>
+        <span class="error" id="error-5">
+            <span class="error-msg" id="err-number"></span>
+            <span class="error-timer"></span>
+        </span>
+        <span class="error" id="error-6">
+            <span class="error-msg" id="err-pass"></span>
+            <span class="error-timer"></span>
+        </span>
+        <span class="error" id="error-7">
+            <span class="error-msg" id="err-copass"></span>
+            <span class="error-timer"></span>
+        </span>
+    </div>
+    <!-- Load database script first, then auth.js -->
+    <script src="./db.js"></script>
+    <script src="./auth.js"></script>
+</body>
+</html>

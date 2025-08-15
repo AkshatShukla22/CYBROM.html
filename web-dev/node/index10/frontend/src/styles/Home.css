@@ -1,0 +1,33 @@
+
+
+
+.home-container {
+  background-color: #1f1f2e;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: 'Segoe UI', sans-serif;
+  color: #ffffffcc;
+}
+
+.home-title {
+  font-size: 2.5rem;
+  color: #BB86FC;
+  text-align: center;
+  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+  animation: fadeIn 1s ease-in-out;
+
+}
+
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

@@ -1,0 +1,264 @@
+<!-- index26.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <!-- Q.21 -->
+    <!-- <p id="text">Something Something</p>
+    <button onclick="styl()">Style</button> -->
+
+    <!-- Q.22 -->
+    <!-- <form id="form1" onsubmit="getFormValue(event)">
+        First name: <input type="text" name="fname" value="Akshat"><br>
+        Last name: <input type="text" name="lname" value="Shukla"><br>
+        <input type="submit" value="Submit">
+    </form> -->
+
+    <!-- Q.23 -->
+    <!-- <table id="tbl" border="1">
+    <tr><td>Row1 cell1</td> <td>Row1 cell2</td></tr>
+    <tr><td>Row2 cell1</td> <td>Row2 cell2</td></tr>
+    </table>
+    <br>
+    <input type="button" onclick="insrt()" value="Insert row"> -->
+
+    <script>
+
+        // Q1
+        // let a = "dog";
+        // let len = a.length;
+        // for(let i= 0; i<=len; i++){
+        //     for(let j = i+1; j<=len; j++){
+        //         console.log(a.slice(i,j));
+        //     }
+        // }
+
+        // Q2
+        // let a = "The quick brown fox";
+        // let len = a.length;
+        // let count = 0;
+        // for(let i = 0; i<=len; i++){
+        //     let j = i+1;
+        //     let b = a.slice(i,j);
+        //     if(b==="a" || b==="e" || b==="i" || b==="o" || b==="u"){
+        //         count ++;
+        //     }
+        // }
+        // console.log(count);
+
+        // Q3
+        // fun1 = () => {
+        //     let a = "Hello";
+        //     console.log(a);
+        // }
+        // fun2 = (fun1) => {
+        //     setTimeout(fun1,2000);
+        // }
+        // fun2(fun1);
+
+        // Q.10
+        // let myColor = ["Red", "Green", "White", "Black"];
+        // let result = myColor.join(",");
+        // console.log(result);
+
+        // Q.11
+        // let arr1 = [1,0,2,3,4];
+        // let arr2 = [3,5,6,7,8,13];
+        // let arr3 = [];
+        // let a = arr1.length;
+        // let b = arr2.length;
+        // let val1;
+        // let val2;
+        // let c;
+        // if(a>b){
+        //         c = a;
+        // }
+        // else{
+        //         c = b;
+        // }
+        // for(let i = 0; i<=c; i++){
+        //         val1 = arr1[i] || 0;
+        //         val2 = arr2[i] || 0;
+        //         arr3[i] = val1+val2;
+        // }
+        // console.log(arr3);
+
+        // Q.12
+        // let arr = [1,2,1,3,3];
+        // let c = arr.length;
+        // for(let i = 0; i<=c; i++){
+        //     for(let j = i+1; j<=c; j++){
+        //         if(arr[i]==arr[j]){
+        //             console.log(`Duplicate at intx ${i} and ${j}`)
+        //         }
+        //     }
+        // }
+
+        // Q.13
+        // let arr = [NaN, 0, 15, false, -22, undefined, 47, null];
+        // let arr2 = [];
+        // let b = 0;
+
+        // for (let i = 0; i < arr.length; i++) {
+        //     if (arr[i]) {
+        //     arr2[b] = arr[i];
+        //     b++;
+        //     }
+        // }
+
+        // console.log(arr2);
+
+        // Q.14
+        // let str = "String";
+        // let a = str.slice(0,1);
+        // if(/[A-Z]/.test(a)){
+        //     console.log(true);
+        // }
+        // else{
+        //     console.log(false);
+        // }
+
+        // // Q.15
+        // let number = "4111111111111111";
+        // let message = "";
+
+        // if (number.length === 15 && (number.startsWith("34") || number.startsWith("37"))) {
+        // message = "American Express card detected.";
+        // } else if ((number.length === 13 || number.length === 16) && number.startsWith("4")) {
+        // message = "Visa card detected.";
+        // } else if (number.length === 16 && number.slice(0, 2) >= "51" && number.slice(0, 2) <= "55") {
+        // message = "MasterCard card detected.";
+        // } else if ((number.length === 16 && number.startsWith("6011")) || (number.length === 16 && number.startsWith("5"))) {
+        // message = "Discover card detected.";
+        // } else if (number.length === 14 && (
+        //     number.startsWith("300") || number.startsWith("301") || number.startsWith("302") || 
+        //     number.startsWith("303") || number.startsWith("304") || number.startsWith("305") || 
+        //     number.startsWith("36") || number.startsWith("38"))) {
+        // message = "Diners Club card detected.";
+        // } else if ((number.length === 15 && (number.startsWith("2131") || number.startsWith("1800"))) || 
+        //         (number.length === 16 && number.startsWith("35"))) {
+        // message = "JCB card detected.";
+        // } else {
+        // message = "Invalid card number.";
+        // }
+
+        // console.log(message);
+
+        // Q.16
+        // const emailPattern = /^[A-Za-z0-9!#$%&'*+\-/=?^_`{|}~]+(\.[A-Za-z0-9!#$%&'*+\-/=?^_`{|}~]+)*@[A-Za-z0-9]+(\.[A-Za-z0-9]+)*\.[A-Za-z]{2,}$/;
+        // console.log(emailPattern.test("test.email@example.com"));
+        // console.log(emailPattern.test(".test@example.com"));
+        // console.log(emailPattern.test("test..email@example.com"));
+
+        // Q.17
+        // function findDate(text) {
+        // const words = text.split(" ");
+        // const dates = [];
+
+        // for (let word of words) {
+        //     if (word.includes("/") || word.includes("-")) {
+        //     let parts = word.split(/\/|-/); 
+        //     if (
+        //         parts.length === 3 &&
+        //         parts[0].length <= 2 &&
+        //         parts[1].length <= 2 &&
+        //         (parts[2].length === 2 || parts[2].length === 4)
+        //     ) {
+        //         dates.push(word);
+        //     }
+        //     }
+        // }
+
+        // return dates;
+        // }
+        // console.log(findDate("Today is 16/05/2025 and tomorrow is 17-05-2025."));
+
+        // // Q.18
+        // let sentence = "Count the number of words in this sentence.";
+        // let trimmed = sentence.trim();
+        // let words = trimmed.split(" ");
+        // let count = 0;
+
+        // for (let word of words) {
+        // if (word !== "") {
+        //     count++;
+        // }
+        // }
+
+        // console.log(count);
+
+        // Q.19
+        // function isAlphanumeric(value) {
+        // return /^[a-z0-9]+$/i.test(value);
+        // }
+
+        // console.log(isAlphanumeric("abc123"));
+        // console.log(isAlphanumeric("abc-123"));
+
+        // Q.20
+        // let value = "<div>Hello</div>";
+        // let isHtml = value.includes("<") && value.includes(">") && value.indexOf("<") < value.indexOf(">");
+        // console.log(isHtml);
+
+        // Q.21
+        // function styl() {
+        // const p = document.getElementById('text');
+        // p.style.color = 'blue';
+        // p.style.fontSize = '40px';
+        // p.style.fontWeight = 'bold';
+        // }
+
+        // Q.22
+        // function getFormValue(e) {
+        // e.preventDefault();
+        // const form = document.getElementById('form1');
+        // const fname = form.fname.value;
+        // const lname = form.lname.value;
+        // alert(`First Name: ${fname}, Last Name: ${lname}`);
+        // }
+
+        // Q.23
+        // function insrt() {
+        // const table = document.getElementById('tbl');
+        // const newRow = table.insertRow();
+        // const cell1 = newRow.insertCell(0);
+        // const cell2 = newRow.insertCell(1);
+        // cell1.innerHTML = 'New cell1';
+        // cell2.innerHTML = 'New cell2';
+        // }
+
+        // Q.24
+        // function insrt(num) {
+        // if (!Number.isInteger(num)) {
+        //     throw new Error('Error: Number is not an integer');
+        // }
+        // return 'Number is integer';
+        // }
+        // try {
+        // console.log(insrt(4.5));
+        // } catch(e) {
+        // console.error(e.message);
+        // }
+
+        // Q.25
+        // function checkSecondNumber(num1, num2) {
+        // if (num2 === 0) {
+        //     throw new Error('Error: Second number cannot be zero');
+        // }
+        // return num1 / num2;
+        // }
+        // try {
+        // console.log(checkSecondNumber(10, 0));
+        // } catch(e) {
+        // console.error(e.message);
+        // }
+
+
+
+    </script>
+</body>
+</html>

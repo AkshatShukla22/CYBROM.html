@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Age</th>
+                <th>Check-in</th>
+                <th>Check-out</th>
+                <th>Person</th>
+                <th>City</th>
+                <th>Price</th>
+                <th>Delete</th>
+
+
+            </tr>
+        </thead>
+        <tbody id="datashow">
+        </tbody>
+    </table>
+
+    <script>
+        let fetchData = async () => {                      
+            let url = "http://localhost:3000/hotel";
+
+            let res = await fetch(url);
+            let data = await res.json();
+
+            let dataShow = document.querySelector("#datashow");    
+
+            data.map((e) => {
+                dataShow.innerHTML += `
+                <tr>
+                    <td>${e.Name}</td>
+                    <td>${e.Age}</td>
+                    <td>${e.Check_in}</td>
+                    <td>${e.Check_out}</td>
+                    <td>${e.Person}</td>
+                    <td>${e.City}</td>
+                    <td>${e.Price}</td>
+                    <td onclick="Del('${e.id}')"> Delete </td>
+                </tr>
+                `;
+            });
+        };
+
+        fetchData();
+
+
+        //How to delete data by particular id ---->>>
+        let Del = (id) =>{
+            // alert (id);
+            let url = `http://localhost:3000/hotel/${id}`;
+            fetch (url,{method:"DELETE"})                         //url ko fetch kiye or DELETE method lgaya , or ye json se bhi data delete kr dega
+        }
+    </script>
+</body>
+</html>

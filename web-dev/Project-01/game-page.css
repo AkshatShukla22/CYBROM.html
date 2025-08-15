@@ -1,0 +1,554 @@
+/* game-page.css */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.game-page {
+    margin-top: 10vh;
+    width: 100%;
+    height: 85vh;
+    position: relative;
+}
+
+.game-page h1{
+    color: white;
+    text-align: center;
+    font-size: 4vh;
+    display: inline;
+    position: absolute;
+    top: 9vh;
+    left: 20vw;
+}
+
+.game-page img {
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    object-fit: cover;
+    z-index: 5;
+}
+
+.game-page .game-page-filter {
+    position: relative;
+    width: 100%;
+    z-index: 6;
+    background-image: linear-gradient(rgba(0, 0, 0, 0), #06397703, #06397731, #063977);
+}
+
+.game-page .game-page-sec1 {
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    padding-top: 15vh;
+    width: 60%;
+    max-height: 100%;
+    gap: 0.5vw;
+    z-index: 7;
+}
+
+/* Game Assets Section */
+.game-page .game-assets {
+    width: 70%;
+    height: 70vh;
+}
+
+.game-page .game-assets .game-trailer {
+    width: 100%;
+    height: 75%;
+    position: relative;
+}
+
+.game-page .game-assets .game-trailer video {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    object-fit: cover;
+}
+
+.game-page .game-assets .game-img {
+    margin-top: 2vh;
+    width: 100%;
+    height: 25%;
+    display: flex;
+    gap: 0.5vw;
+}
+
+.game-page .game-assets .game-img div {
+    width: 24%;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+}
+
+.game-page .game-assets .game-img div img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease-in-out;
+}
+
+.game-page .game-assets .game-img div:hover img {
+    transform: scale(1.1);
+}
+
+.game-page .about-game {
+    width: 30%;
+    height: 70vh;
+    margin: 0 auto;
+    background-color: #0639771a;
+}
+
+.game-page .about-game .games-poster {
+    width: 100%;
+    height: 25%;
+    position: relative;
+}
+
+.game-page .about-game .games-poster img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.game-page .about-game .game-discription {
+    font-size: 1.8vh;
+    height: 75%;
+    padding: 2vh 0vw;
+    color: white;
+    font-family: "Poppins", sans-serif;
+    font-weight: 200;
+}
+
+.game-page .about-game .game-discription .game-dta {
+    margin: 2vh 0px;
+    display: flex;
+    flex-direction: column;
+    gap: 2vh;
+}
+
+.game-page .about-game .game-discription .game-dta .highlited-dta span {
+    display: flex;
+    font-size: 1.5vh;
+    color: gray;
+    gap: 1vw;
+}
+
+.game-page .about-game .game-discription .game-dta .highlited-dta span .highlited-txt {
+    color: #76d5fe;
+}
+
+.game-page .about-game .game-discription .game-tags {
+    font-size: 1.5vh;
+    color: gray;
+}
+
+.game-page .about-game .game-tags span {
+    display: inline-block;
+    font-size: 1.5vh;
+    background-color: #76d5fe;
+    border-radius: 5px;
+    padding: 4px;
+    margin: 0.5vh 1px;
+    color: black;
+}
+
+/* Other Sections */
+.other-section {
+    height: 50vh;
+    width: 80%;
+    display: flex;
+    justify-content: center;
+    margin: 5vh auto;
+    margin-top: 10vh;
+    gap: 5vw;
+    color: #acb2b8;
+    margin-bottom: 20vh;
+}
+
+.other-section .other-data-1 {
+    height: 100%;
+    width: 60%;
+}
+
+.other-section .other-data-1 #sys_req_heading {
+    color: white;
+    border-bottom: 1px solid white;
+    margin: 2vh 0px;
+    font-size: 4vh;
+    text-align: center;
+}
+
+.other-section table tr:not(:first-child) td:first-child {
+    color: #76d5fe;
+}
+
+.other-section .other-data-1 .req {
+    width: 100%;
+    display: flex;
+    justify-content: space-evenly;
+    font-size: 2.5vh;
+}
+
+.other-section .other-data-1 .req div{
+    width: 50%;
+}
+
+.other-section .other-data-2 {
+    height: 100%;
+    width: 40%;
+    background-color: #09152b;
+    font-size: 3vh;
+    padding: 2vh;
+    display: flex;
+}
+
+.other-section .other-data-2 div {
+    height: 100%;
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3vh;
+}
+
+.other-section .other-data-2 div img{
+    height: 10vh;
+}
+
+.other-section .other-data-2 div span img{
+    height: 4vh;
+}
+
+.buy-game {
+    height: 40vh;
+    width: 80%;
+    display: flex;
+    justify-content: center;
+    margin: 15vh auto;
+    gap: 5vw;
+}
+
+.buy-game .edition {
+    width: 60%;
+    padding: 1vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.buy-game .edition .more-game-of-compony {
+    position: relative;
+    overflow: hidden;
+    border-radius: 10px;
+    height: 8vh;
+    width: 100%;
+    transition: transform 0.3s ease-in-out;
+}
+
+
+.buy-game .edition .more-game-of-compony div {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    padding: 1vh 3vw;
+    font-size: 3vh;
+    color: white;
+    background-image: url(https://clan.fastly.steamstatic.com/images/1541443/fb4af705f9b9e9d14640e48258d6ee11b8ad15a6.jpg);
+    background-size: cover;
+    background-position: center;
+    border-radius: inherit;
+    transition: transform 0.3s ease-in-out;
+}
+
+.buy-game .edition .more-game-of-compony:hover div {
+    transform: scale(1.1);
+    box-shadow: inset 0 0 20px rgb(255, 255, 255);
+}
+
+.buy-game .about-game-info {
+    height: 100%;
+    width: 40%;
+    padding: 2vh;
+    background-color: #09152b;
+    color: #fff;
+    font-size: 3vh;
+    text-align: center;
+    transition: transform 0.5s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2vh;
+}
+
+.buy-game .about-game-info .tags{
+    width: 60%;
+    height: 20%;
+    display: inline-block;
+    padding: 0px 2vw;
+    border-bottom: 1px solid white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-radius: 5px;
+}
+
+.buy-game .about-game-info .tags:hover{
+    background-image: linear-gradient(to right, #09152b,#76d5fe,#76d5fe,#76d5fe,#09152b);
+    /* background-image: linear-gradient(to right, red ,blue); */
+}
+
+.buy-game .edition .buy-dv{
+    width: 100%;
+    height: 10vh;
+    border-radius: 5px;
+    background-image: linear-gradient(to bottom right, #09152b, #09152b13);
+    color: white;
+    font-size: 3vh;
+    display: flex;
+    align-items: start;
+    justify-content: space-between;
+    padding: 2vh 3vw;
+    position: relative;
+}
+
+.buy-game .edition .buy-dv .price-add-to-cart{
+    display: flex;
+    align-items: center;
+    padding: 0.5vw;
+    justify-content: space-between;
+    position: absolute;
+    gap: 1vw;
+    background-color: black;
+    top: 65%;
+    left: 58%;
+}
+
+.buy-game .edition .buy-dv .price-add-to-cart .add-to-cart{
+    color: #fff;
+    background-color: #6fa720;
+    padding: 0.25vw;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.buy-game .edition .buy-dv .price-add-to-cart .add-to-cart:hover{
+    color: rgb(209, 205, 205);
+    background-color: #638f25;
+}
+
+.buy-game .edition .buy-dv .discount{
+    position: absolute;
+    top: 65%;
+    left: 45%;
+    font-size: 4vh;
+    background-color: black;
+    padding: 0.5vw;
+    color: grey;
+}
+
+@media (max-width: 800px) {
+    
+    .game-page .game-page-sec1 {
+        width: 75%;
+    }
+
+    .other-section .other-data-1 .req {
+        font-size: 2.3vh;
+    }
+
+    .buy-game .edition .more-game-of-compony {
+        border-radius: 7px;
+    }
+    
+
+    .buy-game .edition .more-game-of-compony div {
+        font-size: 2.5vh;
+    }
+
+}
+
+
+@media (max-width: 700px) {
+
+    .other-section .other-data-1 .req {
+        font-size: 2vh;
+    }
+
+    .other-section .other-data-2 {
+        font-size: 2vh;
+    }
+
+    .other-section .other-data-2 div img{
+        height: 7vh;
+    }
+
+    .other-section .other-data-2 div span img {
+        height: 3vh;
+    }
+
+}
+
+@media (max-width: 600px) {
+    
+    .game-page {
+        height: 75vh;
+    }
+
+    .game-page .game-assets {
+        height: 60vh;
+    }
+
+    .game-page .about-game {
+        height: 60vh;
+    }
+
+    .game-page .about-game .game-discription .game-dta {
+        gap: 1.1vh;
+    }
+
+    .game-page .about-game .game-discription .game-dta .highlited-dta span {
+        font-size: 1.1vh;
+    }
+
+    .game-page .about-game .game-discription .game-tags {
+        font-size: 1.1vh;
+        padding: 1px;
+    }
+
+    .game-page .about-game .game-tags span {
+        font-size: 1.5vh;
+        border-radius: 2px;
+        padding: 2px;
+        margin: 0.25vh 1px;
+    }
+
+    .buy-game .about-game-info {
+        padding: 1.5vh;
+        font-size: 2vh;
+        gap: 1.5vh;
+    }
+
+    .buy-game .about-game-info .tags{
+        border-radius: 3px;
+    }
+
+    .buy-game .edition .more-game-of-compony div {
+        font-size: 2vh;
+    }
+
+    .buy-game .edition .buy-dv{
+        height: 10vh;
+        border-radius: 4px;
+        font-size: 2vh;
+        padding: 1.5vh 3vw;
+    }
+
+    .buy-game .edition .buy-dv .price-add-to-cart .add-to-cart{
+        border-radius: 3px;
+    }
+
+    .buy-game .edition .buy-dv .discount{
+        font-size: 2.5vh;
+    }
+
+    .other-section {
+        height: 45vh;
+    }
+
+    .other-section .other-data-1 .req {
+        font-size: 1.7vh;
+    }
+
+}
+
+@media (max-width: 400px) {
+    
+    .game-page {
+        height: 65vh;
+    }
+
+    .game-page .game-assets {
+        height: 50vh;
+    }
+
+    .game-page .about-game {
+        height: 50vh;
+    }
+
+    .game-page .about-game .game-discription {
+        font-size: 1.1vh;    }
+
+    .game-page .about-game .game-discription .game-dta {
+        gap: 1vh;
+    }
+
+    .game-page .about-game .game-discription .game-dta .highlited-dta span {
+        font-size: 1vh;
+    }
+
+    .game-page .about-game .game-discription .game-tags {
+        font-size: 1vh;
+        padding: 0.5px;
+    }
+
+    .game-page .about-game .game-tags span {
+        font-size: 1vh;
+        border-radius: 1px;
+        padding: 2px;
+        margin: 0.25vh 1px;
+    }
+
+    .buy-game .about-game-info {
+        padding: 1vh;
+        font-size: 1.5vh;
+    }
+
+    .buy-game .about-game-info .tags{
+        border-radius: 2px;
+    }
+
+    .buy-game .edition .more-game-of-compony div {
+        font-size: 1.5vh;
+    }
+
+    .buy-game .edition .buy-dv{
+        height: 10vh;
+        border-radius: 4px;
+        font-size: 2vh;
+        padding: 1.5vh 3vw;
+    }
+
+    .buy-game .edition .buy-dv .price-add-to-cart .add-to-cart{
+        border-radius: 2px;
+    }
+
+    .buy-game .edition .buy-dv .discount{
+        font-size: 2.4vh;
+    }
+
+    .other-section .other-data-1 .req {
+        font-size: 1.5vh;
+    }
+
+    .buy-game{
+        height: 35vh;
+    }
+
+    .other-section {
+        height: 35vh;
+    }
+
+    .other-section .other-data-2 {
+        font-size: 1.5vh;
+    }
+
+    .other-section .other-data-2 div img{
+        height: 5vh;
+    }
+
+}

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Hello</h1>
+    <script>
+        // using strict mode- while using it you have to use keyword like var, let, const for every variable.
+        'use strict'
+
+        // Data types
+        var a = 7;
+        var b = 5; //number
+        console.log(a+b);
+        console.log(a,b);
+
+        // operator=> typeof(variable) it let u check data type of variable.c
+        console.log(typeof(a)); 
+
+        var c = 'hello'; //string
+        console.log(typeof(c));
+
+        var d = true;//boolean
+        console.log(typeof(d));
+
+        var e = null; //null
+        var f; //undifined
+        console.log(typeof(e));
+        console.log(f);
+        console.log(typeof(f));
+
+
+        //type coercion (type conversion)
+
+            //it workes on priority basis
+            // 1.string(it has most priority)
+            // 2.number(second highest priority)
+
+        var g = "16";
+        var f = 4;
+        console.log(g+f);
+    </script>
+</body>
+</html>

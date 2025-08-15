@@ -1,0 +1,60 @@
+{
+  "student": [
+    {
+      "rollnum": "0127CS211008",
+      "name": "Akshat Shukla",
+      "city": "Narmadapuram ",
+      "fees": "38000",
+      "id": "e279"
+    },
+    {
+      "id": "ac82",
+      "rollnum": "0127CS211036",
+      "name": "Hritik Shukla",
+      "city": "Budni",
+      "fees": "40000"
+    },
+    {
+      "id": "0a40",
+      "rollnum": "0127CS211024",
+      "name": "Chetan Doniwal",
+      "city": "Suhag Pur",
+      "fees": "45000"
+    },
+    {
+      "id": "f08c",
+      "rollnum": "0127CS211050",
+      "name": "Mohit Kumar Patel",
+      "city": "Budni",
+      "fees": "40000"
+    },
+    {
+      "id": "f8c2",
+      "rollnum": "0127CS211049",
+      "name": "Irfan Lohar",
+      "city": "Itarsi",
+      "fees": "40000"
+    },
+    {
+      "rollnum": "0127CS211037",
+      "name": "Ishan Khan",
+      "city": "Itarsi",
+      "fees": "50000",
+      "id": "14f1"
+    },
+    {
+      "id": "1a00",
+      "rollnum": "0127CS211069",
+      "name": "Prem Verma",
+      "city": "Itarsi",
+      "fees": "45000"
+    },
+    {
+      "id": "787e",
+      "rollnum": "0127CS211067",
+      "name": "Pyush Pandya",
+      "city": "Itarsi",
+      "fees": "48000"
+    }
+  ]
+}

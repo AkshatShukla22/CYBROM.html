@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | AnimeStream</title>
+    <link rel="icon" type="image/png" href="./assets/logo.png">
+    <link rel="stylesheet" href="admin.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <h1>Anime<span>Stream</span></h1>
+            </div>
+            <div class="search-container">
+                <input type="text" id="search-input" placeholder="Search anime...">
+                <button id="search-btn"><i class="fas fa-search"></i></button>
+                <div id="search-results" class="search-results"></div>
+            </div>
+            <div class="nav-right">
+                <div class="notification">
+                    <button id="notification-btn"><i class="fas fa-bell"></i></button>
+                    <div id="notification-panel" class="notification-panel hidden">
+                        <h3>Notifications</h3>
+                        <div id="notification-list">
+                            <!-- Notifications will appear here -->
+                        </div>
+                    </div>
+                </div>
+                <div class="user-profile">
+                    <button id="user-btn"><i class="fas fa-user"></i> Admin</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="admin-container">
+        <div class="admin-sidebar">
+            <h2>Admin Panel</h2>
+            <ul class="admin-menu">
+                <li class="active" data-tab="dashboard">Dashboard</li>
+                <li data-tab="add-anime">Add New Anime</li>
+                <li data-tab="manage-anime">Manage Anime</li>
+                <li data-tab="manage-users">Manage Users</li>
+            </ul>
+            <button id="logout-btn">Logout</button>
+        </div>
+
+        <div class="admin-content">
+            <!-- Dashboard Tab -->
+            <div id="dashboard" class="admin-tab active">
+                <h2>Dashboard</h2>
+                <div class="dashboard-stats">
+                    <div class="stat-card">
+                        <i class="fas fa-film"></i>
+                        <div class="stat-info">
+                            <h3>Total Anime</h3>
+                            <p id="total-anime">0</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-video"></i>
+                        <div class="stat-info">
+                            <h3>Total Episodes</h3>
+                            <p id="total-episodes">0</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-users"></i>
+                        <div class="stat-info">
+                            <h3>Registered Users</h3>
+                            <p id="total-users">0</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-list"></i>
+                        <div class="stat-info">
+                            <h3>Genres</h3>
+                            <p id="total-genres">0</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="recent-anime">
+                    <h3>Recently Added Anime</h3>
+                    <div id="recent-anime-list" class="anime-list">
+                        <!-- Recent anime will be displayed here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Add New Anime Tab -->
+            <div id="add-anime" class="admin-tab">
+                <h2>Add New Anime</h2>
+                <form id="add-anime-form">
+                    <div class="form-group">
+                        <label for="anime-name">Anime Name</label>
+                        <input type="text" id="anime-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="anime-description">Description</label>
+                        <textarea id="anime-description" rows="5" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="anime-rating">Rating (1-10)</label>
+                        <input type="number" id="anime-rating" min="1" max="10" step="0.1" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="anime-genres">Genres (comma separated)</label>
+                        <input type="text" id="anime-genres" placeholder="action, adventure, fantasy" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="anime-release-year">Release Year</label>
+                        <input type="number" id="anime-release-year" min="1900" max="2025" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="anime-image">Cover Image URL</label>
+                        <input type="text" id="anime-image" placeholder="Path to image (e.g., images/anime/name.jpg)" required>
+                    </div>
+                    <div class="form-group image-preview">
+                        <label>Image Preview</label>
+                        <div id="image-preview-container">
+                            <img id="preview-image" src="/api/placeholder/300/400" alt="Preview">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-primary">Add Anime</button>
+                </form>
+            </div>
+
+            <!-- Manage Anime Tab -->
+            <div id="manage-anime" class="admin-tab">
+                <h2>Manage Anime</h2>
+                <div class="search-bar">
+                    <input type="text" id="anime-search" placeholder="Search anime to manage...">
+                </div>
+                <div id="anime-management-list" class="anime-management-list">
+                    <!-- Anime list will be loaded here -->
+                </div>
+            </div>
+
+            <!-- Anime Details Modal -->
+            <div id="anime-details-modal" class="modal">
+                <div class="modal-content">
+                    <span class="close-modal">&times;</span>
+                    <h2 id="modal-anime-title">Anime Title</h2>
+                    
+                    <div class="tabs">
+                        <button class="tab-button active" data-tab="anime-info">Anime Info</button>
+                        <button class="tab-button" data-tab="episodes-list">Episodes</button>
+                        <button class="tab-button" data-tab="add-episode">Add Episode</button>
+                    </div>
+                    
+                    <div id="anime-info" class="tab-content active">
+                        <form id="edit-anime-form">
+                            <input type="hidden" id="edit-anime-id">
+                            <div class="form-group">
+                                <label for="edit-anime-name">Anime Name</label>
+                                <input type="text" id="edit-anime-name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="edit-anime-description">Description</label>
+                                <textarea id="edit-anime-description" rows="5" required></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="edit-anime-rating">Rating (1-10)</label>
+                                <input type="number" id="edit-anime-rating" min="1" max="10" step="0.1" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="edit-anime-genres">Genres (comma separated)</label>
+                                <input type="text" id="edit-anime-genres" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="edit-anime-release-year">Release Year</label>
+                                <input type="number" id="edit-anime-release-year" min="1900" max="2025" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="edit-anime-image">Cover Image URL</label>
+                                <input type="text" id="edit-anime-image" required>
+                            </div>
+                            <div class="form-group image-preview">
+                                <label>Image Preview</label>
+                                <div id="edit-image-preview-container">
+                                    <img id="edit-preview-image" src="/api/placeholder/300/400" alt="Preview">
+                                </div>
+                            </div>
+                            <div class="form-buttons">
+                                <button type="submit" class="btn-primary">Save Changes</button>
+                                <button type="button" id="delete-anime-btn" class="btn-danger">Delete Anime</button>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <div id="episodes-list" class="tab-content">
+                        <div class="episodes-container">
+                            <table id="episodes-table">
+                                <thead>
+                                    <tr>
+                                        <th>Episode #</th>
+                                        <th>Title</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="episodes-tbody">
+                                    <!-- Episodes will be loaded here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <div id="add-episode" class="tab-content">
+                        <form id="add-episode-form">
+                            <input type="hidden" id="episode-anime-id">
+                            <div class="form-group">
+                                <label for="episode-number">Episode Number</label>
+                                <input type="number" id="episode-number" min="1" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="episode-title">Episode Title</label>
+                                <input type="text" id="episode-title" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="episode-video">Video URL</label>
+                                <input type="text" id="episode-video" placeholder="Path to video (e.g., videos/anime/ep01.mp4)" required>
+                            </div>
+                            <button type="submit" class="btn-primary">Add Episode</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Manage Users Tab -->
+            <div id="manage-users" class="admin-tab">
+                <h2>Manage Users</h2>
+                <div class="search-bar">
+                    <input type="text" id="user-search" placeholder="Search users...">
+                </div>
+                <div class="users-table-container">
+                    <table id="users-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Watchlist Count</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="users-tbody">
+                            <!-- Users will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-logo">
+                <h2>Anime<span>Stream</span></h2>
+                <p>Your ultimate anime streaming platform</p>
+            </div>
+            <div class="footer-links">
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">Contact</a></li>
+                        <li><a href="#">FAQ</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Genres</h3>
+                    <ul>
+                        <li><a href="#">Action</a></li>
+                        <li><a href="#">Adventure</a></li>
+                        <li><a href="#">Comedy</a></li>
+                        <li><a href="#">Drama</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Follow Us</h3>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-discord"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 AnimeStream. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="admin.js"></script>
+</body>
+</html>

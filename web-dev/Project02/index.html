@@ -1,0 +1,162 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AnimeStream - Watch Anime Online</title>
+    <link rel="icon" type="image/png" href="./assets/logo.png">
+    <link rel="stylesheet" href="./index.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav>
+        <div class="logo">
+            <a href="index.html">
+                <img src="./assets/logo.png" alt="AnimeStream Logo">
+                <span>AnimeStream</span>
+            </a>
+        </div>
+        
+        <div class="nav-right">
+            <div class="search-container">
+                <input type="search" id="searchInput" placeholder="Search anime...">
+                <button id="searchBtn"><i class="fa-solid fa-magnifying-glass"></i></button>
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            
+            <div class="nav-buttons">
+                <div class="notification-container">
+                    <button id="notificationBtn"><i class="fa-solid fa-bell"></i>
+                        <span class="notification-count">0</span>
+                    </button>
+                    <div id="notificationPanel" class="notification-panel">
+                        <h3>Notifications</h3>
+                        <div class="notification-list" id="notificationList">
+                            <p class="no-notifications">No new notifications</p>
+                        </div>
+                    </div>
+                </div>
+                <button id="userBtn" class="user-btn"><i class="fa-solid fa-user"></i></button>
+                <button id="loginBtn" class="login-btn">Login</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Hero Banner Slider -->
+        <section class="hero-slider">
+            <div class="swiper">
+                <div class="swiper-wrapper" id="heroSlider">
+                    <div class="swiper">
+                        slide1
+                    </div>
+                </div>
+                <div class="swiper-pagination"></div>
+                <!-- <div class="swiper-button-prev" style="color: blue; width: 10%;"></div>
+                <div class="swiper-button-next" style="color: transparent; height: 100%; width: 10%;"></div> -->
+            </div>
+        </section>
+
+        <!-- Trending Anime Section -->
+        <section class="anime-section" id="trendingSection">
+            <div class="section-header">
+                <h2>Trending Now</h2>
+                <button class="load-more" data-section="trending">Load More</button>
+            </div>
+            <div class="anime-grid" id="trendingGrid">
+                <!-- Anime cards will be inserted here by JavaScript -->
+            </div>
+        </section>
+
+        <!-- Action Anime Section -->
+        <section class="anime-section" id="actionSection">
+            <div class="section-header">
+                <h2>Action Anime</h2>
+                <button class="load-more" data-section="action">Load More</button>
+            </div>
+            <div class="anime-grid" id="actionGrid">
+                <!-- Anime cards will be inserted here by JavaScript -->
+            </div>
+        </section>
+
+        <!-- Adventure Anime Section -->
+        <section class="anime-section" id="adventureSection">
+            <div class="section-header">
+                <h2>Adventure Anime</h2>
+                <button class="load-more" data-section="adventure">Load More</button>
+            </div>
+            <div class="anime-grid" id="adventureGrid">
+                <!-- Anime cards will be inserted here by JavaScript -->
+            </div>
+        </section>
+
+        <!-- Comedy Anime Section -->
+        <section class="anime-section" id="comedySection">
+            <div class="section-header">
+                <h2>Comedy Anime</h2>
+                <button class="load-more" data-section="comedy">Load More</button>
+            </div>
+            <div class="anime-grid" id="comedyGrid">
+                <!-- Anime cards will be inserted here by JavaScript -->
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-logo">
+                <img src="./assets/logo.png" alt="AnimeStream Logo">
+                <h2>AnimeStream</h2>
+                <p>Your ultimate anime streaming destination</p>
+            </div>
+            
+            <div class="footer-links">
+                <div class="footer-section">
+                    <h3>Explore</h3>
+                    <ul>
+                        <li><a href="#">Home</a></li>
+                        <li><a href="#">Genres</a></li>
+                        <li><a href="#">New Releases</a></li>
+                        <li><a href="#">Popular</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>About</h3>
+                    <ul>
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">Contact</a></li>
+                        <li><a href="#">FAQ</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Connect</h3>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-discord"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>&copy; 2025 AnimeStream. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script src="./db.js"></script>
+    <script src="./common.js"></script>
+    <script src="./index.js"></script>
+</body>
+</html>

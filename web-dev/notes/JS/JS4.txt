@@ -1,0 +1,2 @@
+-> String-- "This is string" or 'This is String' or `This is string`
+ important methods - slice, replace, split

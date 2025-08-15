@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Something</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f4f4f4;
+            color: #333;
+        }
+
+        nav {
+            background-color: #09152b;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 5vh;
+            height: 10vh;
+            width: 100%;
+            position: fixed;
+            top: 0;
+            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.5);
+            z-index: 20;
+        }
+
+        #icon {
+            font-size: 6vh;
+            color: #76d5fe;
+            background-color: #09152b;
+            width: 10vh;
+            height: 6vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 50%;
+        }
+
+        .nav {
+            display: flex;
+            margin-left: 10vw;
+            justify-content: center;
+            flex: 1;
+        }
+
+        .nav a {
+            text-decoration: none;
+            color: white;
+            margin: 0 1.5vw;
+            font-size: 3.5vh;
+            width: 6vh;
+            height: 6vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 50%;
+            transition: color 0.25s;
+        }
+
+        .nav a.active {
+            background-color: white;
+            color: #09152b;
+            animation: bounce 1s ease-in-out infinite;
+        }
+
+        .nav a:hover {
+            color: #76d5fe;
+        }
+
+        #srch {
+            display: flex;
+            align-items: center;
+            position: relative;
+            margin-right: auto;
+        }
+
+        #toggleSearch {
+            display: none;
+        }
+
+        #srch input {
+            width: 0;
+            height: 5vh;
+            font-size: 2vh;
+            background-color: white;
+            border: 1px solid rgba(0, 0, 0, 0.45);
+            border-radius: 50px;
+            padding: 0;
+            opacity: 0;
+            outline: none;
+            transition: width 0.3s ease, padding 0.3s ease, opacity 0.3s;
+        }
+
+        #toggleSearch:checked + label + input {
+            width: 18vw; 
+            padding: 0 3vw;
+            opacity: 1;
+        }
+
+        #srch label {
+            background-color: white;
+            color: #09152b;
+            border-radius: 50px;
+            height: 5vh;
+            width: 2.5vw;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3vh;
+            cursor: pointer;
+            transition: color 0.25s;
+            position: relative;
+            z-index: 5;
+        }
+
+        #srch label:hover {
+            color: #76d5fe;
+        }
+
+        .menu-toggle {
+            display: none;
+            width: 20px;
+            height: 16px;
+            flex-direction: column;
+            justify-content: space-between;
+            cursor: pointer;
+            margin-left: auto;
+            z-index: 15;
+        }
+
+        .menu-toggle span {
+            display: block;
+            height: 2px;
+            width: 100%;
+            background-color: white;
+            border-radius: 2px;
+            transition: transform 0.3s ease, opacity 0.3s ease, width 0.3s ease;
+        }
+
+        .menu-checkbox {
+            display: none;
+        }
+
+        .side-panel {
+            position: fixed;
+            top: 10vh;
+            font-size: 3%;
+            right: -60%;
+            width: 20%;
+            height: calc(100vh - 10vh);
+            background-color: #09152b;
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+            padding: 4vh;
+            gap: 5vh;
+            transition: right 0.4s ease;
+            z-index: 10;
+            box-shadow: -4px 0 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .side-panel a{
+            text-decoration: none;
+            color: white;
+        }
+
+        .menu-checkbox:checked ~ .side-panel {
+            right: 0;
+        }
+
+        .menu-checkbox:checked + .menu-toggle span:nth-child(1) {
+            transform: translateY(6px) rotate(45deg);
+        }
+
+        .menu-checkbox:checked + .menu-toggle span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .menu-checkbox:checked + .menu-toggle span:nth-child(3) {
+            transform: translateY(-6px) rotate(-45deg);
+        }
+
+        @media (max-width: 768px) {
+            .nav {
+                display: none;
+            }
+
+            #srch {
+                position: absolute;
+                right: 10vw;
+            }
+
+            #srch label{
+                width: 4vw;
+            }
+
+            .menu-toggle {
+                display: flex;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- === Navbar === -->
+<nav>
+    <div id="icon">
+        <i class="fa-solid fa-gamepad"></i>
+    </div>
+
+    <div class="nav">
+        <a href="." class="active"><i class="fa-solid fa-house"></i></a>
+        <a href="./product.html"><i class="fa-solid fa-cart-shopping"></i></a>
+        <a href="./news.html"><i class="fa-solid fa-newspaper"></i></a>
+        <a href=""><i class="fa-solid fa-headset"></i></a>
+    </div>
+
+    <!-- === Search Box === -->
+    <div id="srch">
+        <input type="checkbox" id="toggleSearch">
+        <label for="toggleSearch"><i class="fa-solid fa-magnifying-glass"></i></label>
+        <input type="search" placeholder="Search Games">
+    </div>
+
+    <!-- === Hamburger Menu === -->
+    <input type="checkbox" id="menu-toggle" class="menu-checkbox">
+    <label for="menu-toggle" class="menu-toggle">
+        <span></span>
+        <span></span>
+        <span></span>
+    </label>
+
+    <!-- === Side Panel === -->
+    <div class="side-panel">
+        <a href=".">Home</a>
+        <a href="./product.html">Product</a>
+        <a href="./news.html">News</a>
+        <a href="">Support</a>
+    </div>
+</nav>
+
+</body>
+</html>

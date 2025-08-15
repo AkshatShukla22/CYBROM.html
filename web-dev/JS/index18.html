@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #head{
+            display: flex;
+            justify-content: space-around;
+        }
+    </style>
+</head>
+<body>
+    <div id="head"></div>
+    <table border="3" style="font-size: 2em;">
+        <tr>
+            <td>Name</td>
+            <td>Age</td>
+            <td>City</td>
+        </tr>
+        <tbody id="tbl">
+
+        </tbody>
+    </table>
+    <script>
+        let head = document.querySelector("#head");
+        let tbl = document.querySelector("#tbl");
+        
+        //Array of object
+        let userData = [
+            {
+                id: 1,
+                Name: "Akshat Shukla",
+                Age: 20,
+                City: "Hoshangabad"
+            },
+
+            {
+                id: 2,
+                Name: "Anshuka Gupta",
+                Age: 20,
+                City: "Bareli"
+            },
+
+            {
+                id: 3,
+                Name: "Pradhuman Gujjar",
+                Age: 20,
+                City: "Bhopal"
+            },
+
+            {
+                id: 4,
+                Name: "Simran",
+                Age: 20,
+                City: "Bhopal"
+            }
+        ]
+
+        console.log(userData[0]);
+        
+        userData.map( (e) =>{
+            head.innerHTML += `
+            <div>
+                <h1>Name: ${e.Name}</h1>
+                <h1>Age: ${e.Age}</h1>
+                <h1>City: ${e.City}</h1>
+            </div>
+            `;
+        })
+
+        userData.map((e)=>{
+            tbl.innerHTML += `
+            <tr>
+                <td>${e.Name}</td>
+                <td>${e.Age}</td>
+                <td>${e.City}</td>
+            </tr>
+            `;
+        })
+
+        //Show in table formate
+        
+    </script>
+</body>
+</html>

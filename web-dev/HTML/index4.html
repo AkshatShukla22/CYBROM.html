@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body{
+            padding: 10%;
+            justify-content: space-between;
+            align-items: center;
+            display: flex;
+        }
+        .container{
+            width: 40%;
+            height: 40vh;
+            background-color: blue;
+            transition: transform 1s ease-in-out;
+            box-shadow: 1px 20px 40px rgb(22, 83, 115);
+        }
+        
+        .on:hover{
+            transform: rotateZ(60deg);
+        }
+
+        .to:hover{
+            transform: translateY(-50px);
+        }
+
+
+    </style>
+</head>
+<body>
+    <div class="container on"></div>
+    <div class="container to"></div>
+    
+</body>
+</html>

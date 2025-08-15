@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1 id="heading"></h1>
+    <button id="btn" onclick="fun()">button</button>
+    <button id="btn-2" onclick="func()">button 2</button>
+    <script>
+        let heading = document.querySelector("#heading")
+        // Syncronous -- Asyncronous
+
+        // js is a syncronous language means one line will execute one after another.
+        // async funtion in js --> set timeout, time interaval, fetch method.
+
+        //  setTimeout( () => {  //run once
+        //     console.log("Hello");
+        // }, 2000);
+
+        // setInterval( () => {  // runs again and again
+        //     console.log("Hello again...")
+        // }, 3000)
+
+        // console.log("What u doing?");
+
+        // console.log("feeling good?");
+
+        // fun = () =>{
+        //     setTimeout( () => {
+        //         console.log("Akshat")
+        //     }, 3000)
+
+        //     setTimeout( () => {
+        //         heading.innerHTML = "Akshat";
+        //     }, 3000)
+        // }
+
+        let a = 0;
+        func = () => {
+            let stop = setInterval( () => {
+                console.log(a);
+                heading.innerHTML=a;
+                a++;
+            }, 1000)
+
+            setTimeout(() => {
+                clearInterval(stop)
+            }, 6000)
+        }
+
+        //clear interal = used to stop set timeout and set interval
+
+    </script>
+</body>
+</html>

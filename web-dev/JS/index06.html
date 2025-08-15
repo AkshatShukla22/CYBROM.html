@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        *{
+            margin: 0px;
+            padding: 0px;
+        }
+        
+        div{
+            height: 100vh;
+            width: 100%;
+            background-color: rgb(227, 224, 224);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 5vh;
+        }
+
+        .btn{
+            font-size: 3rem;
+            padding: 2vh 2vw;
+            background-color: black;
+            color: white;
+            border-radius: 10px;
+            box-shadow: 0px 5px 20px 5px gray;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn:hover{
+            background-color: rgb(54, 52, 52);
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <button class="btn" onclick="fn1()">Function 1</button>
+        <button class="btn" onclick="fn2()">Function 2</button>
+        <button class="btn" onclick="fn3()">Function 3</button>
+    </div>
+
+    <script>
+        'use striict'
+        fn1 = () => {
+            alert(`It's Functiion 1 `)
+        }
+
+        fn2 = () => {
+            alert(`It's Functiion 2 `)
+        }
+
+        fn3 = () => {
+            alert(`It's Functiion 3 `)
+        }
+    </script>
+</body>
+</html>

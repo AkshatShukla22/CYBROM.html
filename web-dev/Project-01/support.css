@@ -1,0 +1,335 @@
+/* support.css */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.support {
+    margin: 15vh 0; 
+    width: 100%;
+    min-height: 45vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: "Poppins", sans-serif;
+    font-weight: 400;
+}
+
+.support .support-dv {
+    background-color: #09152b;
+    width: 30%;
+    padding: 2vh;
+    border-radius: 10px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1); 
+    color: white;
+    opacity: 0;
+    transform: translateY(15px);
+    animation: fadeIn 0.5s ease-in-out forwards;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.support .support-dv h2 {
+    font-size: 4vh; 
+    color: #76d5fe;
+    text-align: center;
+    margin-bottom: 1.5vh;
+    white-space: normal; 
+}
+
+.support .support-dv form {
+    display: flex;
+    flex-direction: column;
+    gap: 3vh;
+    font-size: 2vh;
+}
+
+.support .support-dv form .select-section {
+    display: flex;
+    flex-direction: column;
+    gap: 3vh;
+}
+
+.support .support-dv form label {
+    font-size: 2vh;
+    font-weight: 500;
+    color: white;
+    margin-bottom: 6px;
+}
+
+.support .support-dv form input[type="text"],
+.support .support-dv form select,
+.support .support-dv form textarea,
+.support .support-dv form input[type="file"] {
+    width: 100%;
+    padding: 1.5vh; 
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 6px;
+    outline: none;
+    font-size: 2vh;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: white;
+    transition: border 0.3s ease, background-color 0.3s ease;
+}
+
+.support .support-dv form input:focus,
+.support .support-dv form select:focus,
+.support .support-dv form textarea:focus {
+    border-color: #4285f4;
+    background-color: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 0 8px #4285f4;
+}
+
+.support .support-dv form select option {
+    background-color: #09152b;
+    color: white;
+}
+
+.support .support-dv form input[type="checkbox"] {
+    appearance: none;
+    width: 1vw;
+    height: 1vw;
+    border: 0.2vh solid rgba(255, 255, 255, 0.3);
+    border-radius: 4px;
+    background-color: transparent;
+    cursor: pointer;
+    position: relative;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.support .support-dv form input[type="checkbox"]:checked {
+    background-color: #09152b;
+    border-color: rgba(255, 255, 255, 0.3);
+    animation: check-bounce 0.3s ease; 
+}
+
+@keyframes check-bounce {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.5);
+    }
+}
+
+.support .support-dv form input[type="checkbox"]::before {
+    content: '';
+    position: absolute;
+    top: 50%; 
+    left: 50%; 
+    width: 5px;
+    height: 15px;
+    border: solid white;
+    border-width: 0 0.2vw 0.2vw 0;
+    transform: translate(-50%, -50%) rotate(45deg);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.support .support-dv form input[type="checkbox"]:checked::before {
+    opacity: 1; 
+}
+
+.support .support-dv form input[type="file"]:hover {
+    border-color: #76d5fe;
+    box-shadow: 0 0 12px #76d5fe;
+}
+
+.support .support-dv form button {
+    padding: 1.5vh;
+    background-color: rgba(0, 0, 0, 0.2);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 2vh;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
+}
+
+.support .support-dv form button:hover {
+    background-color: #ffffff;
+    color: #09152b;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    transform: scale(1.05);
+}
+
+@media (max-width: 768px) {
+    .support {
+        height: auto;
+    }
+
+    .support .support-dv {
+        width: 40%;
+        padding: 2vh;
+    }
+
+    .support .support-dv h2 {
+        font-size: 2.5vh;
+    }
+
+    .support .support-dv form {
+        font-size: 1.8vh;
+    }
+
+    .support .support-dv form input,
+    .support .support-dv form select,
+    .support .support-dv form textarea,
+    .support .support-dv form button {
+        font-size: 1.8vh;
+        padding: 1.2vh;
+    }
+
+    .support .support-dv form input[type="checkbox"] {
+        width: 1.6vw;
+        height: 1.6vw;
+    }
+
+    .support .support-dv form input[type="checkbox"]::before {
+        width: 0.4vw;
+        height: 0.8vw;
+    }
+}
+
+@media (max-width: 468px) {
+    .support {
+        height: auto;
+    }
+
+    .support .support-dv {
+        width: 50%; 
+        padding: 2vh;
+    }
+
+    .support .support-dv h2 {
+        font-size: 2.5vh;
+    }
+
+    .support .support-dv form {
+        font-size: 1.5vh; 
+    }
+
+    .support .support-dv form input,
+    .support .support-dv form select,
+    .support .support-dv form textarea,
+    .support .support-dv form button {
+        font-size: 1vh;
+        padding: 1.2vh;
+        border-radius: 5px;
+    }
+
+    .support .support-dv form input[type="checkbox"] {
+        width: 1.6vw;
+        height: 1.6vw;
+    }
+
+    .support .support-dv form input[type="checkbox"]::before {
+        width: 0.4vw;
+        height: 0.8vw;
+    }
+}
+
+@media (max-width: 300px) {
+    .support {
+        height: auto;
+    }
+
+    .support .support-dv {
+        width: 60%; 
+        padding: 1.5vh;
+    }
+
+    .support .support-dv h2 {
+        font-size: 2.5vh;
+    }
+
+    .support .support-dv form {
+        font-size: 1.5vh; 
+    }
+
+    .support .support-dv form input,
+    .support .support-dv form select,
+    .support .support-dv form textarea,
+    .support .support-dv form button {
+        font-size: 1vh;
+        padding: 1.2vh;
+        border-radius: 5px;
+    }
+
+    .support .support-dv form input[type="checkbox"] {
+        width: 1.6vw;
+        height: 1.6vw;
+    }
+
+    .support .support-dv form input[type="checkbox"]::before {
+        width: 0.4vw;
+        height: 0.8vw;
+    }
+}
+
+@media (max-width: 200px) {
+    .support {
+        height: auto;
+    }
+
+    .support .support-dv {
+        width: 70%; 
+        padding: 1vh;
+    }
+
+    .support .support-dv h2 {
+        font-size: 2vh;
+    }
+
+    .support .support-dv form {
+        font-size: 1.5vh; 
+    }
+
+    .support .support-dv form label {
+        font-size: 1vh;
+    }
+
+    .support .support-dv form input,
+    .support .support-dv form select,
+    .support .support-dv form textarea,
+    .support .support-dv form button {
+        font-size: 1vh;
+        padding: 1.2vh;
+        border-radius: 5px;
+    }
+
+    .support .support-dv form input[type="checkbox"] {
+        width: 1vw;
+        height: 1vh;
+    }
+
+    .support .support-dv form input[type="checkbox"]::before {
+        width: 0.4vw;
+        height: 0.8vw;
+    }
+
+    .support .support-dv form input[type="file"] {
+        width: 100%;
+        padding: 1.5vh;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-radius: 6px;
+        outline: none;
+        font-size: 1vh;
+        background-color: rgba(255, 255, 255, 0.1);
+        color: white;
+        transition: border 0.3s ease, background-color 0.3s ease;
+    }
+
+}
+
