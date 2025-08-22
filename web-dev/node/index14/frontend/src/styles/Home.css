@@ -1,0 +1,27 @@
+/* Home page */
+.home-container {
+  text-align: center;
+  margin-top: 50px;
+}
+
+.home-container h1 {
+  color: #BB86FC;
+}
+
+.home-container p {
+  margin: 10px 0;
+  font-size: 18px;
+}
+
+.home-container button {
+  padding: 10px 20px;
+  background-color: #BB86FC;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.home-container button:hover {
+  background-color: #9b6dd1;
+}
