@@ -19,7 +19,7 @@ const myEmitter = new EventEmitter();
 
 // myEmitter.emit('greet', 'Akshat'); 
 
-// ==> Identifying opening on file event throuth event module
+// ==> Identifying opening of file event throuth event module
 const fs = require('fs');
 let rs = fs.createReadStream("./demo.txt");
 
