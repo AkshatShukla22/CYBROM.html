@@ -1,3 +1,4 @@
+// This is a simle logiin and logout system without JWT and bcrypt
 import React, { useContext } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import Register from "./pages/Register";
