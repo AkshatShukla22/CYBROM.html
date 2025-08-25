@@ -1,0 +1,36 @@
+/* Register page */
+.register-container {
+  text-align: center;
+  margin-top: 50px;
+}
+
+.register-form {
+  display: inline-block;
+  margin-top: 20px;
+}
+
+.register-form input {
+  display: block;
+  width: 250px;
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.register-form button {
+  padding: 10px 20px;
+  background-color: #BB86FC;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.register-form button:hover {
+  background-color: #9b6dd1;
+}
+
+.register-form p {
+  margin-top: 15px;
+}
