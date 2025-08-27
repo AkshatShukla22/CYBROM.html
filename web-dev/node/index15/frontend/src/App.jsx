@@ -1,35 +1,23 @@
-import React, { useContext } from "react";
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Home from "./pages/Home";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
-import Home from "./pages/Home";
-import UserContext, { UserProvider } from "./context/UserContext.jsx";
+import UserDashboard from "./components/UserDashboard";
 
-function AppContent() {
-  const { user, loading } = useContext(UserContext);
-
-  if (loading) {
-    return <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>Loading...</div>;
-  }
-
+const App = () => {
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={user ? <Home /> : <Navigate to="/login" />} />
-        <Route path="/login" element={user ? <Navigate to="/" /> : <Login />} />
-        <Route path="/register" element={user ? <Navigate to="/" /> : <Register />} />
-        <Route path="*" element={<h1>404 Not Found</h1>} />
-      </Routes>
-    </Router>
-  );
-}
-
-function App() {
-  return (
-    <UserProvider>
-      <AppContent />
-    </UserProvider>
-  );
+    <>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/home" element={<Home />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/dashboard" element={<UserDashboard />} />
+        </Routes>
+      </BrowserRouter>
+    </>
+  )
 }
 
 export default App;

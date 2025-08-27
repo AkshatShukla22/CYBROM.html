@@ -1,131 +1,83 @@
-const userModel = require("../model/userModel");
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
+const UserModel = require("../model/userModel");
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 
-const generateToken = (userId) => {
-  return jwt.sign({ userId }, process.env.JWT_SECRET, { expiresIn: '7d' });
-};
+const userAuth = async (req, res) => {
+    try {
+        const token = req.header("x-auth-token");
+        if (!token) {
+            return res.status(401).send("No token provided");
+        }
+        const verified = jwt.verify(token, process.env.JWT_SECRET);
+        console.log(verified.id);
+        const User = await UserModel.findById(verified.id);
+        if (!User) {
+            return res.status(404).send("User not found");
+        }
+        res.send({ user: User });
+    } catch (error) {
+        console.error("userAuth error:", error);
+        res.status(500).send("Server error");
+    }
+}
 
 const userRegistration = async (req, res) => {
-  try {
-    const { email, username, password } = req.body;
+    try {
+        const { name, email, password } = req.body;
+        
+        if (!name || !email || !password) {
+            return res.status(400).json({ msg: "All fields are required" });
+        }
 
-    if (!email || !username || !password) {
-      return res.status(400).json({ message: 'All fields are required' });
+        // Check if user already exists
+        const existingUser = await UserModel.findOne({ email: email });
+        if (existingUser) {
+            return res.status(400).json({ msg: "User already exists with this email" });
+        }
+
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, salt);
+        const User = await UserModel.create({
+            name: name,
+            email: email,
+            password: hashedPassword
+        });
+        res.status(201).json({ msg: "You are Successfully Registered!" });
+    } catch (error) {
+        console.error("userRegistration error:", error);
+        res.status(500).json({ msg: "Registration failed" });
     }
-
-    // Check if user already exists
-    const existingUser = await userModel.findOne({ email });
-    if (existingUser) {
-      return res.status(400).json({ message: 'User with this email already exists' });
-    }
-
-    // Hash password
-    const saltRounds = 12;
-    const hashedPassword = await bcrypt.hash(password, saltRounds);
-
-    // Create user
-    const user = await userModel.create({ 
-      email, 
-      username, 
-      password: hashedPassword 
-    });
-
-    // Generate token
-    const token = generateToken(user._id);
-
-    // Return user data without password
-    const userResponse = {
-      id: user._id,
-      username: user.username,
-      email: user.email
-    };
-
-    res.status(201).json({ 
-      message: 'User registered successfully', 
-      user: userResponse,
-      token
-    });
-  } catch (error) {
-    console.error('Registration error:', error);
-    res.status(500).json({ message: 'Registration failed' });
-  }
-};
+}
 
 const userLogin = async (req, res) => {
-  try {
-    const { email, password } = req.body;
+    try {
+        const { email, password } = req.body;
 
-    if (!email || !password) {
-      return res.status(400).json({ message: 'Email and password are required' });
+        if (!email || !password) {
+            return res.status(400).send("Email and password are required");
+        }
+
+        const User = await UserModel.findOne({ email: email });
+        if (!User) {
+            return res.status(401).send("Invalid Email!");
+        }
+        
+        const validPassword = await bcrypt.compare(password, User.password);
+        if (!validPassword) {
+            return res.status(401).send("Invalid Password!");
+        }
+
+        const token = await jwt.sign({ id: User._id }, process.env.JWT_SECRET, { expiresIn: '7 days' });
+
+        res.send({ token: token });
+    } catch (error) {
+        console.error("userLogin error:", error);
+        res.status(500).send("Login failed");
     }
-
-    // Find user
-    const user = await userModel.findOne({ email });
-    if (!user) {
-      return res.status(401).json({ message: 'Invalid email or password' });
-    }
-
-    // Check password using bcrypt
-    const isPasswordValid = await bcrypt.compare(password, user.password);
-    if (!isPasswordValid) {
-      return res.status(401).json({ message: 'Invalid email or password' });
-    }
-
-    // Generate token
-    const token = generateToken(user._id);
-
-    // Return user data without password
-    const userResponse = {
-      id: user._id,
-      username: user.username,
-      email: user.email
-    };
-
-    res.status(200).json({ 
-      message: 'User logged in successfully', 
-      user: userResponse,
-      token
-    });
-  } catch (error) {
-    console.error('Login error:', error);
-    res.status(500).json({ message: 'Login failed' });
-  }
-};
-
-const verifyToken = async (req, res) => {
-  try {
-    const { token } = req.body;
-    
-    if (!token) {
-      return res.status(400).json({ valid: false, message: 'Token is required' });
-    }
-
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const user = await userModel.findById(decoded.userId).select('-password');
-    
-    if (!user) {
-      return res.status(404).json({ valid: false, message: 'User not found' });
-    }
-
-    res.status(200).json({ 
-      valid: true, 
-      user: {
-        id: user._id,
-        username: user.username,
-        email: user.email
-      }
-    });
-  } catch (error) {
-    if (error.name === 'JsonWebTokenError' || error.name === 'TokenExpiredError') {
-      return res.status(401).json({ valid: false, message: 'Invalid or expired token' });
-    }
-    res.status(500).json({ valid: false, message: 'Token verification failed' });
-  }
-};
+}
 
 module.exports = {
-  userRegistration,
-  userLogin,
-  verifyToken,
-};
+    userRegistration,
+    userLogin,
+    userAuth
+}

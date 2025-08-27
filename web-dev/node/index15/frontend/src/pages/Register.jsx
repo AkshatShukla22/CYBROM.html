@@ -1,14 +1,13 @@
-import React, { useState, useContext } from "react";
-import BackendURL from "../utils/BackendURL";
+import React, { useState } from "react";
+import BackendUrl from "../utils/BackendUrl";
 import { useNavigate, Link } from "react-router-dom";
-import UserContext from "../context/UserContext.jsx";
-import "../styles/Register.css";
+import axios from "axios";
+import "../styles/Register.css"; // Import your external CSS file
 
 const Register = () => {
-  const [form, setForm] = useState({ username: "", email: "", password: "" });
+  const [form, setForm] = useState({ name: "", email: "", password: "" });
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const { loginUser } = useContext(UserContext);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -19,21 +18,10 @@ const Register = () => {
     setLoading(true);
     
     try {
-      const res = await fetch(`${BackendURL}/users/register`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
-      });
-      const data = await res.json();
-      
-      if (res.status === 201) {
-        alert(data.message);
-        // Auto-login after successful registration
-        loginUser(data.user, data.token);
-        navigate("/");
-      } else {
-        alert(data.message);
-      }
+      let api = `${BackendUrl}user/registration`;
+      const response = await axios.post(api, form);
+      alert(response.data.msg);
+      navigate("/login");
     } catch (err) {
       console.error(err);
       alert("Registration failed");
@@ -44,46 +32,53 @@ const Register = () => {
 
   return (
     <div className="register-container">
-      <h2>Register</h2>
-      <form onSubmit={handleSubmit} className="register-form">
-        <div>
-          <input 
-            type="text" 
-            name="username" 
-            placeholder="Username" 
-            value={form.username} 
-            onChange={handleChange} 
-            required 
-            disabled={loading}
-          />
-        </div>
-        <div>
-          <input 
-            type="email" 
-            name="email" 
-            placeholder="Email" 
-            value={form.email} 
-            onChange={handleChange} 
-            required 
-            disabled={loading}
-          />
-        </div>
-        <div>
-          <input 
-            type="password" 
-            name="password" 
-            placeholder="Password" 
-            value={form.password} 
-            onChange={handleChange} 
-            required 
-            disabled={loading}
-          />
-        </div>
-        <button type="submit" disabled={loading}>
-          {loading ? "Registering..." : "Register"}
-        </button>
-      </form>
-      <p>Already have an account? <Link to="/login">Login</Link></p>
+      {/* Floating background elements */}
+      <div className="floating-element"></div>
+      <div className="floating-element"></div>
+      <div className="floating-element"></div>
+      
+      <div className="register-card">
+        <h2>Register</h2>
+        <form onSubmit={handleSubmit} className="register-form">
+          <div>
+            <input 
+              type="text" 
+              name="name" 
+              placeholder="Name" 
+              value={form.name} 
+              onChange={handleChange} 
+              required 
+              disabled={loading}
+            />
+          </div>
+          <div>
+            <input 
+              type="email" 
+              name="email" 
+              placeholder="Email" 
+              value={form.email} 
+              onChange={handleChange} 
+              required 
+              disabled={loading}
+            />
+          </div>
+          <div>
+            <input 
+              type="password" 
+              name="password" 
+              placeholder="Password" 
+              value={form.password} 
+              onChange={handleChange} 
+              required 
+              disabled={loading}
+            />
+          </div>
+          <button type="submit" disabled={loading}>
+            {loading ? "Registering..." : "Register"}
+          </button>
+        </form>
+        <p>Already have an account? <Link to="/login">Login</Link></p>
+      </div>
     </div>
   );
 };
