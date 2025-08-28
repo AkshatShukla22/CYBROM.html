@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import BackendUrl from "../utils/BackendUrl";
 import { useNavigate, Link } from "react-router-dom";
 import UserDashboard from "../components/UserDashboard";
+import "../styles/Home.css"; // Import your external CSS file
 
 const Home = () => {
   const navigate = useNavigate();
@@ -37,27 +38,39 @@ const Home = () => {
 
   // Show loading while checking authentication
   if (isAuthenticated === null) {
-    return <div>Loading...</div>;
+    return (
+      <div className="loading-container">
+        <div>
+          <div className="loading-spinner"></div>
+          <div className="loading-text">Loading...</div>
+        </div>
+      </div>
+    );
   }
 
   // Show login button if not authenticated
   if (!isAuthenticated) {
     return (
-      <div style={{ textAlign: "center", marginTop: "50px" }}>
-        <h1>Welcome</h1>
-        <Link to="/login">
-          <button style={{ padding: "10px 20px", fontSize: "16px" }}>
+      <div className="welcome-container">
+        {/* Floating background elements */}
+        <div className="floating-element"></div>
+        <div className="floating-element"></div>
+        <div className="floating-element"></div>
+        
+        <div className="welcome-card">
+          <h1 className="welcome-title">Welcome</h1>
+          <Link to="/login" className="login-button">
             Login
-          </button>
-        </Link>
+          </Link>
+        </div>
       </div>
     );
   }
 
   return (
-    <>
+    <div className="dashboard-container">
       <UserDashboard />
-    </>
+    </div>
   );
 }
 
