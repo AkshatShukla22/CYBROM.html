@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import BackendUrl from "../utils/BackendUrl";
 import { useNavigate, Link } from "react-router-dom";
 import UserDashboard from "../components/UserDashboard";
-import "../styles/Home.css"; // Import your external CSS file
+import "../styles/Home.css";
 
 const Home = () => {
   const navigate = useNavigate();
