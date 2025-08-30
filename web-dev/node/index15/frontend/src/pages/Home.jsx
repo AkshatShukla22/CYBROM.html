@@ -36,7 +36,6 @@ const Home = () => {
     userAuthenticate();
   }, [])
 
-  // Show loading while checking authentication
   if (isAuthenticated === null) {
     return (
       <div className="loading-container">
