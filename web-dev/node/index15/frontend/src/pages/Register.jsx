@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import BackendUrl from "../utils/BackendUrl";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
-import "../styles/Register.css"; // Import your external CSS file
+import "../styles/Register.css";
 
 const Register = () => {
   const [form, setForm] = useState({ name: "", email: "", password: "" });
