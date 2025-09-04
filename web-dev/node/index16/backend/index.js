@@ -3,7 +3,8 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const mongoose = require("mongoose");
 const multer = require("multer");
-const userRoute = require("./routes/userRoute");
+const authorRoute = require("./routes/authorRoute"); 
+const bookRoute = require("./routes/bookRoute"); 
 
 mongoose.connect("mongodb://localhost:27017/testdb2").then(() => {
   console.log("DB Connected!!!");
@@ -15,7 +16,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cors());
 
-app.use("/user", userRoute)
+app.use("/author", authorRoute); 
+app.use("/book", bookRoute); 
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -32,7 +34,7 @@ const myupload = multer({
 });
 
 app.post("/upload", myupload.single("image"), (req, res) => {
-  console.log("File succesfully uploaded!");
+  console.log("File successfully uploaded!");
   res.send("OKKK");
 });
 

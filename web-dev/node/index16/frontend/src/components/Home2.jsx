@@ -3,20 +3,19 @@ import axios from "axios";
 
 const Home2 = () => {
   const [input, setInput] = useState({});
-  const [employees, setEmployees] = useState([]);
+  const [authors, setAuthors] = useState([]);
 
-  // Fetch all employees from backend
-  const fetchEmployees = async () => {
+  const fetchAuthors = async () => {
     try {
-      const res = await axios.get("http://localhost:8000/user/all");
-      setEmployees(res.data);
+      const res = await axios.get("http://localhost:8000/author/authorall");
+      setAuthors(res.data);
     } catch (err) {
       console.error(err);
     }
   };
 
   useEffect(() => {
-    fetchEmployees();
+    fetchAuthors();
   }, []);
 
   const handleInput = (e) => {
@@ -26,58 +25,100 @@ const Home2 = () => {
 
   const handleSubmit = async () => {
     try {
-      await axios.post("http://localhost:8000/user/add", {
+      await axios.post("http://localhost:8000/author/authorsave", {
         email: input.email,
-        firstName: input.first,
-        lastName: input.last,
+        authorName: input.authorName,
+        bookname: input.bookname,
+        price: input.price,
       });
 
       setInput({});
-      fetchEmployees(); 
+      fetchAuthors();
+      alert("Author and book saved successfully!");
     } catch (err) {
       console.error("AxiosError:", err.response?.data || err.message);
+      alert("Error saving data: " + (err.response?.data?.error || err.message));
     }
   };
 
   return (
     <div>
-      <h1>Employee Data</h1>
+      <h1>Author & Books Management</h1>
 
       <div>
-        Employee ID: <input type="text" name="id" value={input.id || ""} onChange={handleInput} /> <br />
-        Email: <input type="email" name="email" value={input.email || ""} onChange={handleInput} /> <br />
-        First Name: <input type="text" name="first" value={input.first || ""} onChange={handleInput} /> <br />
-        Last Name: <input type="text" name="last" value={input.last || ""} onChange={handleInput} /> <br /><br />
+        <h3>Add Author with Book</h3>
+        Author Name: <input 
+          type="text" 
+          name="authorName" 
+          value={input.authorName || ""} 
+          onChange={handleInput} 
+          placeholder="Enter author name"
+        /> <br />
+        Email: <input 
+          type="email" 
+          name="email" 
+          value={input.email || ""} 
+          onChange={handleInput} 
+          placeholder="Enter email"
+        /> <br />
+        Book Name: <input 
+          type="text" 
+          name="bookname" 
+          value={input.bookname || ""} 
+          onChange={handleInput} 
+          placeholder="Enter book name"
+        /> <br />
+        Price: <input 
+          type="number" 
+          name="price" 
+          value={input.price || ""} 
+          onChange={handleInput} 
+          placeholder="Enter price"
+          step="0.01"
+        /> <br /><br />
 
         <button onClick={handleSubmit}>Submit</button>
       </div>
 
       <hr />
 
-      <h2>Employees List</h2>
-      {employees.length === 0 ? (
-        <p>No employees found</p>
+      <h2>Authors and Their Books</h2>
+      {authors.length === 0 ? (
+        <p>No authors found</p>
       ) : (
-        <table border="1" cellPadding="5">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Email</th>
-              <th>First Name</th>
-              <th>Last Name</th>
-            </tr>
-          </thead>
-          <tbody>
-            {employees.map((emp) => (
-              <tr key={emp.id}>
-                <td>{emp.id}</td>
-                <td>{emp.email}</td>
-                <td>{emp.firstName}</td>
-                <td>{emp.lastName}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <div>
+          {authors.map((author) => (
+            <div key={author._id} style={{ marginBottom: "20px", border: "1px solid #ccc", padding: "10px" }}>
+              <h3>Author: {author.authorName}</h3>
+              <p><strong>Email:</strong> {author.email}</p>
+              <p><strong>Created:</strong> {new Date(author.createdAt).toLocaleDateString()}</p>
+              
+              <h4>Books:</h4>
+              {author.books && author.books.length > 0 ? (
+                <table border="1" cellPadding="5" style={{ width: "100%" }}>
+                  <thead>
+                    <tr>
+                      <th>Book Name</th>
+                      <th>Price</th>
+                      <th>Created</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {author.books.map((book) => (
+                      <tr key={book._id}>
+                        <td>{book.bookname}</td>
+                        <td>{book.price}</td>
+                        <td>{new Date(book.createdAt).toLocaleDateString()}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              ) : (
+                <p>No books found for this author</p>
+              )}
+            </div>
+          ))}
+        </div>
       )}
     </div>
   );
