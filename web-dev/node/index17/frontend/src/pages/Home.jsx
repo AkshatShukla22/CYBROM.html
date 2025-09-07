@@ -4,7 +4,7 @@ import React from 'react';
 const Home = () => {
   return (
     <div style={{
-      paddingTop: '100px',  // Account for fixed header
+      paddingTop: '100px',  
       minHeight: '100vh',
       background: '#f8fafc'
     }}>
