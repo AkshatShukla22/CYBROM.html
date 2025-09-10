@@ -5,6 +5,8 @@ import NotFound from './pages/NotFound'
 import Login from './pages/Login'
 import Register from './pages/Register'
 import Profile from './pages/Profile'
+import Doctors from './pages/Doctors'
+import Messages from './pages/Messages'
 
 function App() {
 
@@ -16,10 +18,8 @@ function App() {
             <Route index element={<Home />} />
             <Route path="/home" element={<Home />} />
             <Route path="/profile" element={<Profile />} />
-
-            {/* <Route path="/about" element={<About />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/admin" element={<Admin />} /> */}
+            <Route path='doctors' element={<Doctors />} />
+            <Route path='messages' element={<Messages />} />
           </Route>
 
           <Route path="/login" element={<Login />} />

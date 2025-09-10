@@ -95,9 +95,9 @@ const Header = () => {
               </Link>
             </li> */}
             <li className="nav__item">
-              <Link to="/services" className="nav__link" onClick={() => setIsMenuOpen(false)}>
-                <i className="fas fa-stethoscope"></i>
-                <span>Services</span>
+              <Link to="/messages" className="nav__link" onClick={() => setIsMenuOpen(false)}>
+                <i className="fa-solid fa-message"></i>
+                <span>Messages</span>
               </Link>
             </li>
             <li className="nav__item">

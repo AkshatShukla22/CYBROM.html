@@ -7,6 +7,7 @@ require('dotenv').config();
 
 // Import routes
 const authRoutes = require('./routes/authRoutes');
+const doctorRoutes = require('./routes/doctorRoutes');
 
 // Initialize Express app - MOVE THIS TO THE TOP
 const app = express();
@@ -48,6 +49,7 @@ app.get('/health', (req, res) => {
 
 // API Routes
 app.use('/api/auth', authRoutes);
+app.use('/api/doctors', doctorRoutes);
 
 // Test endpoint
 app.get('/api/test', (req, res) => {

@@ -63,7 +63,6 @@ const storage = multer.diskStorage({
     cb(null, uploadPath);
   },
   filename: function (req, file, cb) {
-    // Determine type from route path first, then body
     let type = 'profile';
     
     if (req.route.path.includes('/background')) {
