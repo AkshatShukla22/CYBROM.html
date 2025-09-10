@@ -1,9 +1,8 @@
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import '../styles/FilterSidebar.css';
 
 const FilterSidebar = ({
   filters,
-  filterOptions,
   userLocation,
   onFilterChange,
   onSortChange,
@@ -11,31 +10,31 @@ const FilterSidebar = ({
   sortBy,
   sortOrder
 }) => {
-  const [isCollapsed, setIsCollapsed] = useState(false);
-  const [citySearch, setCitySearch] = useState('');
+  const [isCollapsed, setIsCollapsed] = useState(true);
   const [minFee, setMinFee] = useState('');
   const [maxFee, setMaxFee] = useState('');
 
-  // Specialization options
+  // Specialization options - Enhanced
   const specializationOptions = [
-    { value: 'cardiology', label: 'Cardiology' },
-    { value: 'dermatology', label: 'Dermatology' },
-    { value: 'neurology', label: 'Neurology' },
-    { value: 'pediatrics', label: 'Pediatrics' },
-    { value: 'orthopedics', label: 'Orthopedics' },
-    { value: 'psychiatry', label: 'Psychiatry' },
-    { value: 'general', label: 'General Practice' },
-    { value: 'other', label: 'Other' }
+    { value: 'cardiology', label: 'Cardiology', icon: 'fa-heart' },
+    { value: 'dermatology', label: 'Dermatology', icon: 'fa-user-md' },
+    { value: 'neurology', label: 'Neurology', icon: 'fa-brain' },
+    { value: 'pediatrics', label: 'Pediatrics', icon: 'fa-baby' },
+    { value: 'orthopedics', label: 'Orthopedics', icon: 'fa-bone' },
+    { value: 'psychiatry', label: 'Psychiatry', icon: 'fa-user-friends' },
+    { value: 'general', label: 'General Practice', icon: 'fa-hospital' },
+    { value: 'gynecology', label: 'Gynecology', icon: 'fa-female' },
+    { value: 'ophthalmology', label: 'Ophthalmology', icon: 'fa-eye' },
+    { value: 'dentistry', label: 'Dentistry', icon: 'fa-tooth' },
+    { value: 'other', label: 'Other', icon: 'fa-microscope' }
   ];
 
-  // Rating options - more comprehensive
+  // Rating options
   const ratingOptions = [
     { value: '4.8', label: '4.8+' },
     { value: '4.5', label: '4.5+' },
     { value: '4.0', label: '4.0+' },
-    { value: '3.5', label: '3.5+' },
-    { value: '3.0', label: '3.0+' },
-    { value: '2.5', label: '2.5+' }
+    { value: '3.5', label: '3.5+' }
   ];
 
   // Experience options
@@ -44,8 +43,7 @@ const FilterSidebar = ({
     { value: '3', label: '3+ Years' },
     { value: '5', label: '5+ Years' },
     { value: '10', label: '10+ Years' },
-    { value: '15', label: '15+ Years' },
-    { value: '20', label: '20+ Years' }
+    { value: '15', label: '15+ Years' }
   ];
 
   // Sorting options
@@ -56,17 +54,8 @@ const FilterSidebar = ({
     { value: 'experience|asc', label: 'Least Experienced' },
     { value: 'consultationFee|asc', label: 'Lowest Fee' },
     { value: 'consultationFee|desc', label: 'Highest Fee' },
-    { value: 'totalAppointments|desc', label: 'Most Popular' },
-    { value: 'createdAt|desc', label: 'Recently Joined' }
+    { value: 'totalAppointments|desc', label: 'Most Popular' }
   ];
-
-  // Filtered cities based on search
-  const filteredCities = useMemo(() => {
-    if (!filterOptions.cities) return [];
-    return filterOptions.cities.filter(city =>
-      city.toLowerCase().includes(citySearch.toLowerCase())
-    );
-  }, [filterOptions.cities, citySearch]);
 
   // Memoized handlers to prevent unnecessary re-renders
   const handleSortChange = useCallback((value) => {
@@ -119,7 +108,7 @@ const FilterSidebar = ({
           )}
           {isCollapsed && (
             <div className="collapsed-header">
-              <span className="collapsed-title">Filters</span>
+              <span className="collapsed-title">F</span>
               {getActiveFiltersCount() > 0 && (
                 <span className="filter-count">{getActiveFiltersCount()}</span>
               )}
@@ -144,7 +133,7 @@ const FilterSidebar = ({
               onClick={onClearFilters}
               disabled={getActiveFiltersCount() === 0}
             >
-              Clear All Filters ({getActiveFiltersCount()})
+              Clear All ({getActiveFiltersCount()})
             </button>
           </div>
 
@@ -157,7 +146,7 @@ const FilterSidebar = ({
             <select 
               value={getCurrentSortValue()}
               onChange={(e) => handleSortChange(e.target.value)}
-              className="filter-select"
+              className="filter-select modern-select"
             >
               {sortOptions.map(option => (
                 <option key={option.value} value={option.value}>
@@ -183,38 +172,11 @@ const FilterSidebar = ({
                     checked={filters.showLocalOnly || false}
                     onChange={handleLocationToggle}
                   />
-                  <span className="checkmark"></span>
-                  Doctors from my city ({userLocation})
+                  <span className="sidebar-checkmark"></span>
+                  Doctors from my city
                 </label>
               </div>
             )}
-
-            {/* City Filter with Search */}
-            <div className="city-filter-container">
-              <div className="city-search-container">
-                <input
-                  type="text"
-                  placeholder="Search cities..."
-                  value={citySearch}
-                  onChange={(e) => setCitySearch(e.target.value)}
-                  className="city-search-input"
-                />
-                <i className="fas fa-search search-icon"></i>
-              </div>
-              
-              <select 
-                value={filters.city || ''}
-                onChange={(e) => onFilterChange('city', e.target.value)}
-                className="filter-select city-select"
-              >
-                <option value="">All Cities</option>
-                {filteredCities.map(city => (
-                  <option key={city} value={city}>
-                    {city}
-                  </option>
-                ))}
-              </select>
-            </div>
           </div>
 
           {/* Specialization Filter */}
@@ -226,7 +188,7 @@ const FilterSidebar = ({
             <select 
               value={filters.specialization || ''}
               onChange={(e) => onFilterChange('specialization', e.target.value)}
-              className="filter-select"
+              className="filter-select modern-select specialization-select"
             >
               <option value="">All Specializations</option>
               {specializationOptions.map(option => (
@@ -246,20 +208,20 @@ const FilterSidebar = ({
                     filters.specialization === spec ? '' : spec
                   )}
                 >
+                  <i className={`fas ${specializationOptions.find(s => s.value === spec)?.icon || 'fa-medical'}`}></i>
                   {spec.charAt(0).toUpperCase() + spec.slice(1)}
                 </button>
               ))}
             </div>
           </div>
 
-          {/* Rating Filter - Only Buttons */}
+          {/* Rating Filter */}
           <div className="filter-section">
             <h4>
               <i className="fas fa-star"></i>
-              Minimum Rating
+              Rating
             </h4>
             
-            {/* Rating buttons */}
             <div className="rating-buttons-grid">
               {ratingOptions.map(rating => (
                 <button 
@@ -277,12 +239,12 @@ const FilterSidebar = ({
           <div className="filter-section">
             <h4>
               <i className="fas fa-graduation-cap"></i>
-              Minimum Experience
+              Experience
             </h4>
             <select 
               value={filters.experience || ''}
               onChange={(e) => onFilterChange('experience', e.target.value)}
-              className="filter-select"
+              className="filter-select modern-select"
             >
               <option value="">Any Experience</option>
               {experienceOptions.map(option => (
@@ -297,19 +259,20 @@ const FilterSidebar = ({
               <input
                 type="range"
                 min="0"
-                max="30"
+                max="25"
                 value={filters.experience || 0}
                 onChange={(e) => onFilterChange('experience', e.target.value || '')}
                 className="slider"
               />
               <div className="slider-labels">
                 <span>0 years</span>
-                <span>30+ years</span>
+                <span>{filters.experience || 0}+ years</span>
+                <span>25+ years</span>
               </div>
             </div>
           </div>
 
-          {/* Custom Fee Range */}
+          {/* Fee Range */}
           <div className="filter-section">
             <h4>
               <i className="fas fa-money-bill-wave"></i>
@@ -351,7 +314,7 @@ const FilterSidebar = ({
           <div className="filter-section">
             <h4>
               <i className="fas fa-bolt"></i>
-              Quick Filters
+              Quick Options
             </h4>
             <div className="quick-filters">
               <button 
@@ -381,12 +344,12 @@ const FilterSidebar = ({
             </div>
           </div>
 
-          {/* Applied Filters Summary */}
+          {/* Active Filters Summary */}
           {getActiveFiltersCount() > 0 && (
             <div className="filter-section">
               <h4>
                 <i className="fas fa-list-check"></i>
-                Active Filters ({getActiveFiltersCount()})
+                Active ({getActiveFiltersCount()})
               </h4>
               <div className="active-filters-summary">
                 {Object.entries(filters).map(([key, value]) => {
@@ -401,21 +364,19 @@ const FilterSidebar = ({
                     displayKey = 'Specialty';
                   } else if (key === 'minRating') {
                     displayValue = `${value}+ stars`;
-                    displayKey = 'Min Rating';
+                    displayKey = 'Rating';
                   } else if (key === 'maxFee') {
-                    displayValue = `Under ₹${value}`;
+                    displayValue = `< ₹${value}`;
                     displayKey = 'Max Fee';
                   } else if (key === 'minFee') {
-                    displayValue = `Above ₹${value}`;
+                    displayValue = `> ₹${value}`;
                     displayKey = 'Min Fee';
                   } else if (key === 'experience') {
                     displayValue = `${value}+ years`;
-                    displayKey = 'Min Experience';
+                    displayKey = 'Experience';
                   } else if (key === 'showLocalOnly') {
-                    displayValue = `In ${userLocation}`;
+                    displayValue = `My City`;
                     displayKey = 'Location';
-                  } else if (key === 'city') {
-                    displayKey = 'City';
                   }
 
                   return (
@@ -435,26 +396,6 @@ const FilterSidebar = ({
               </div>
             </div>
           )}
-
-          {/* Filter Statistics */}
-          <div className="filter-section">
-            <div className="filter-stats">
-              <h4>
-                <i className="fas fa-chart-bar"></i>
-                Available Options
-              </h4>
-              <div className="stats-list">
-                <div className="stat-item">
-                  <span className="stat-label">Cities:</span>
-                  <span className="stat-value">{filterOptions.cities?.length || 0}</span>
-                </div>
-                <div className="stat-item">
-                  <span className="stat-label">Specializations:</span>
-                  <span className="stat-value">{filterOptions.specializations?.length || 0}</span>
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
       )}
 
@@ -487,7 +428,7 @@ const FilterSidebar = ({
           
           {getActiveFiltersCount() > 0 && (
             <div className="active-count-collapsed">
-              {getActiveFiltersCount()} active
+              {getActiveFiltersCount()}
             </div>
           )}
         </div>

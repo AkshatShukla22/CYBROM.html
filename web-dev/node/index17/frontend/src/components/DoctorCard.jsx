@@ -2,11 +2,8 @@ import React from 'react';
 import '../styles/DoctorCard.css';
 
 const DoctorCard = ({ doctor, onClick, userLocation }) => {
-  // Default profile image if none exists
-  const defaultImage = '/api/placeholder/150/150';
-  
-  // Calculate if doctor is in same city as user
-  const isLocal = doctor.address?.city?.toLowerCase() === userLocation?.toLowerCase();
+  // Check if doctor has profile image
+  const hasProfileImage = doctor.profileImage && doctor.profileImage.trim() !== '';
   
   // Format specialization
   const formatSpecialization = (spec) => {
@@ -23,17 +20,6 @@ const DoctorCard = ({ doctor, onClick, userLocation }) => {
     return specializations[spec] || spec;
   };
 
-  // Format address
-  const formatAddress = (address) => {
-    if (!address) return 'Location not specified';
-    
-    const parts = [];
-    if (address.city) parts.push(address.city);
-    if (address.state) parts.push(address.state);
-    
-    return parts.length > 0 ? parts.join(', ') : 'Location not specified';
-  };
-
   // Generate rating stars
   const renderRatingStars = (rating) => {
     const stars = [];
@@ -42,11 +28,11 @@ const DoctorCard = ({ doctor, onClick, userLocation }) => {
     
     for (let i = 0; i < 5; i++) {
       if (i < fullStars) {
-        stars.push(<span key={i} className="star filled">★</span>);
+        stars.push(<i key={i} className="fas fa-star star filled"></i>);
       } else if (i === fullStars && hasHalfStar) {
-        stars.push(<span key={i} className="star half">★</span>);
+        stars.push(<i key={i} className="fas fa-star-half-alt star half"></i>);
       } else {
-        stars.push(<span key={i} className="star empty">☆</span>);
+        stars.push(<i key={i} className="far fa-star star empty"></i>);
       }
     }
     
@@ -55,160 +41,51 @@ const DoctorCard = ({ doctor, onClick, userLocation }) => {
 
   return (
     <div className="doctor-card" onClick={onClick}>
-      {/* Card Header */}
-      <div className="card-header">
-        <div className="doctor-image">
+      {/* Doctor Image */}
+      <div className="doctor-image">
+        {hasProfileImage ? (
           <img 
-            src={doctor.profileImage ? `http://localhost:8000${doctor.profileImage}` : defaultImage}
+            src={`http://localhost:8000${doctor.profileImage}`}
             alt={doctor.name}
             onError={(e) => {
-              e.target.src = defaultImage;
+              e.target.style.display = 'none';
+              e.target.parentElement.classList.add('no-image');
             }}
           />
-          
-          {/* Online/Available status */}
-          <div className="status-indicator">
-            <span className="status-dot available"></span>
+        ) : (
+          <div className="doctor-icon-placeholder">
+            <i className="fas fa-user-md"></i>
           </div>
-          
-          {/* Local badge */}
-          {isLocal && (
-            <div className="local-badge">
-              <span>📍 Local</span>
-            </div>
-          )}
-        </div>
+        )}
+      </div>
+      
+      {/* Doctor Information */}
+      <div className="doctor-info">
+        <h3 className="doctor-name">Dr. {doctor.name}</h3>
+        <p className="specialization">{formatSpecialization(doctor.specialization)}</p>
         
-        <div className="doctor-basic-info">
-          <h3 className="doctor-name">Dr. {doctor.name}</h3>
-          <p className="specialization">{formatSpecialization(doctor.specialization)}</p>
-          
-          {/* Rating */}
-          <div className="rating">
-            <div className="stars">
-              {renderRatingStars(doctor.ratings?.average || 0)}
-            </div>
-            <span className="rating-text">
-              {doctor.ratings?.average ? doctor.ratings.average.toFixed(1) : '0.0'}
-              {doctor.ratings?.count > 0 && (
-                <span className="rating-count">({doctor.ratings.count})</span>
-              )}
-            </span>
+        {/* Rating */}
+        <div className="rating">
+          <div className="stars">
+            {renderRatingStars(doctor.ratings?.average || 0)}
           </div>
+          <span className="rating-text">
+            {doctor.ratings?.average ? doctor.ratings.average.toFixed(1) : '0.0'}
+          </span>
         </div>
 
-        {/* Verified badge */}
-        {doctor.isVerified && (
-          <div className="verified-badge">
-            <span>✓ Verified</span>
+        {/* Doctor Details */}
+        <div className="doctor-details">
+          {/* Experience */}
+          <div className="detail-item">
+            <i className="fas fa-graduation-cap detail-icon"></i>
+            <span>Experience: {doctor.experience || 'N/A'} years</span>
           </div>
-        )}
-      </div>
 
-      {/* Card Body */}
-      <div className="card-body">
-        {/* Experience */}
-        <div className="info-item">
-          <span className="icon">🎓</span>
-          <div className="info-content">
-            <span className="label">Experience</span>
-            <span className="value">{doctor.experience} years</span>
-          </div>
-        </div>
-
-        {/* Location */}
-        <div className="info-item">
-          <span className="icon">📍</span>
-          <div className="info-content">
-            <span className="label">Location</span>
-            <span className="value">{formatAddress(doctor.address)}</span>
-          </div>
-        </div>
-
-        {/* Consultation Fee */}
-        <div className="info-item">
-          <span className="icon">💰</span>
-          <div className="info-content">
-            <span className="label">Consultation Fee</span>
-            <span className="value">₹{doctor.consultationFee || 'Not specified'}</span>
-          </div>
-        </div>
-
-        {/* Total Appointments */}
-        <div className="info-item">
-          <span className="icon">👥</span>
-          <div className="info-content">
-            <span className="label">Patients Treated</span>
-            <span className="value">{doctor.totalAppointments || 0}+</span>
-          </div>
-        </div>
-
-        {/* Bio Preview */}
-        {doctor.bio && (
-          <div className="bio-preview">
-            <p>{doctor.bio.length > 100 ? `${doctor.bio.substring(0, 100)}...` : doctor.bio}</p>
-          </div>
-        )}
-
-        {/* Available Slots Preview */}
-        {doctor.availableSlots && doctor.availableSlots.length > 0 && (
-          <div className="availability-preview">
-            <span className="label">Available:</span>
-            <div className="time-slots">
-              {doctor.availableSlots.slice(0, 3).map((slot, index) => (
-                <span key={index} className="time-slot">
-                  {slot.day}: {slot.startTime}-{slot.endTime}
-                </span>
-              ))}
-              {doctor.availableSlots.length > 3 && (
-                <span className="more-slots">+{doctor.availableSlots.length - 3} more</span>
-              )}
-            </div>
-          </div>
-        )}
-      </div>
-
-      {/* Card Footer */}
-      <div className="card-footer">
-        <div className="action-buttons">
-          <button className="btn-secondary">
-            📞 Call Now
-          </button>
-          <button className="btn-primary">
-            📅 Book Appointment
-          </button>
-        </div>
-        
-        <div className="quick-actions">
-          <button className="quick-action" title="Add to Favorites">
-            ♡
-          </button>
-          <button className="quick-action" title="Share">
-            📤
-          </button>
-          <button className="quick-action" title="More Info">
-            ℹ️
-          </button>
-        </div>
-      </div>
-
-      {/* Hover overlay */}
-      <div className="hover-overlay">
-        <div className="hover-content">
-          <p>Click to view full profile</p>
-          <div className="hover-stats">
-            <div className="stat">
-              <span className="number">{doctor.ratings?.average?.toFixed(1) || '0.0'}</span>
-              <span className="label">Rating</span>
-            </div>
-            <div className="stat">
-              <span className="number">{doctor.experience}</span>
-              <span className="label">Years</span>
-            </div>
-            <div className="stat">
-              <span className="number">{doctor.totalAppointments || 0}</span>
-              <span className="label">Patients</span>
-            </div>
+          {/* Location */}
+          <div className="detail-item">
+            <i className="fas fa-map-marker-alt detail-icon"></i>
+            <span>City: {doctor.address?.city || doctor.city || 'Not specified'}</span>
           </div>
         </div>
       </div>

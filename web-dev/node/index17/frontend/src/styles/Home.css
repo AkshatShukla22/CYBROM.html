@@ -501,7 +501,7 @@ body {
   font-size: 16px;
 }
 
-.doctor-card {
+.home-doctor-card {
   background: linear-gradient(135deg, #f8f9ff 0%, #e8efff 100%);
   padding: 20px;
   border-radius: 15px;
@@ -511,13 +511,13 @@ body {
   border: 1px solid rgba(102, 126, 234, 0.2);
 }
 
-.doctor-info {
+.home-doctor-info {
   display: flex;
   align-items: center;
   gap: 15px;
 }
 
-.doctor-photo {
+.home-doctor-photo {
   width: 55px;
   height: 45px;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -525,34 +525,34 @@ body {
   box-shadow: 0 3px 10px rgba(102, 126, 234, 0.3);
 }
 
-.doctor-photo img {
+.home-doctor-photo img {
   width: 100%;
   height: 100%;
   border-radius: 50%;
   object-fit: cover;
 }
 
-.doctor-details h5 {
+.home-doctor-details h5 {
   font-size: 1rem;
   color: #333;
   margin-bottom: 4px;
   font-weight: 700;
 }
 
-.doctor-details p {
+.home-doctor-details p {
   font-size: 0.8rem;
   color: #666;
   margin-bottom: 6px;
 }
 
-.rating {
+.home-doctor-rating {
   display: flex;
   align-items: center;
   gap: 6px;
   font-size: 0.75rem;
 }
 
-.rating span:first-child {
+.home-doctor-rating span:first-child {
   color: #ffc107;
   font-size: 0.85rem;
 }
@@ -1112,7 +1112,7 @@ body {
     padding: 15px;
   }
   
-  .doctor-card {
+  .home-doctor-card {
     padding: 15px;
     flex-direction: column;
     gap: 15px;

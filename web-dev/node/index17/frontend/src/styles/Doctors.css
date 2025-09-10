@@ -11,6 +11,15 @@
   padding: 0 20px;
 }
 
+.page-content {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 40px;
+  align-items: start;
+  flex: 1;
+}
+
+
 /* Page Header */
 .page-header {
   text-align: center;

@@ -189,15 +189,15 @@ const Home = () => {
                     <div className="app-header">
                       <span>MediCare App</span>
                     </div>
-                    <div className="doctor-card">
-                      <div className="doctor-info">
-                        <div className="doctor-photo">
+                    <div className="home-doctor-card">
+                      <div className="home-doctor-info">
+                        <div className="home-doctor-photo">
                           <img src="https://i.pinimg.com/736x/c5/a3/90/c5a3904b38eb241dd03dd30889599dc4.jpg" alt="Dr. Priya Sharma" />
                         </div>
-                        <div className="doctor-details">
+                        <div className="home-doctor-details">
                           <h5>Dr. Priya Sharma</h5>
                           <p>Cardiologist</p>
-                          <div className="rating">
+                          <div className="home-doctor-rating">
                             <span>★★★★★</span>
                             <span>4.9</span>
                           </div>
