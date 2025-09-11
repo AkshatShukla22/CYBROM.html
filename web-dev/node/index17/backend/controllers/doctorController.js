@@ -1,5 +1,30 @@
 // controllers/doctorController.js
 const User = require('../models/User');
+const Rating = require('../models/Rating');
+
+// Helper function to update doctor ratings
+const updateDoctorRatings = async (doctorId) => {
+  try {
+    const ratings = await Rating.find({ doctorId, isActive: true });
+    
+    if (ratings.length > 0) {
+      const totalRating = ratings.reduce((sum, rating) => sum + rating.rating, 0);
+      const averageRating = totalRating / ratings.length;
+      
+      await User.findByIdAndUpdate(doctorId, {
+        'ratings.average': Math.round(averageRating * 10) / 10, // Round to 1 decimal
+        'ratings.count': ratings.length
+      });
+    } else {
+      await User.findByIdAndUpdate(doctorId, {
+        'ratings.average': 0,
+        'ratings.count': 0
+      });
+    }
+  } catch (error) {
+    console.error('Error updating doctor ratings:', error);
+  }
+};
 
 // @desc    Get all doctors with filters
 // @access  Public
@@ -210,9 +235,15 @@ const getDoctorRatings = async (req, res) => {
       });
     }
     
-    // For now, return empty ratings array since Rating model doesn't exist yet
-    // You can implement this later when you create a proper Rating model
-    const ratings = [];
+    // Fetch actual ratings from the Rating model
+    const ratings = await Rating.find({ 
+      doctorId, 
+      isActive: true 
+    })
+    .sort({ createdAt: -1 })
+    .lean();
+    
+    console.log(`Found ${ratings.length} ratings for doctor ${doctorId}`);
     
     res.json({
       success: true,
@@ -235,6 +266,9 @@ const submitDoctorRating = async (req, res) => {
   try {
     const { doctorId } = req.params;
     const { rating, feedback } = req.body;
+    const userId = req.userId; // From auth middleware
+    
+    console.log('Submit rating request:', { doctorId, userId, rating, feedback });
     
     // Validate ObjectId format
     if (!doctorId.match(/^[0-9a-fA-F]{24}$/)) {
@@ -266,12 +300,74 @@ const submitDoctorRating = async (req, res) => {
       });
     }
     
-    // For now, return success message
-    // You can implement actual rating storage later when you create the Rating model
-    res.json({
-      success: true,
-      message: 'Rating submitted successfully'
-    });
+    // Get current user details
+    const currentUser = await User.findById(userId);
+    if (!currentUser) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found'
+      });
+    }
+    
+    // Prevent doctors from rating themselves
+    if (doctorId === userId) {
+      return res.status(400).json({
+        success: false,
+        message: 'You cannot rate yourself'
+      });
+    }
+    
+    try {
+      // Check if user has already rated this doctor
+      const existingRating = await Rating.findOne({ 
+        doctorId, 
+        userId, 
+        isActive: true 
+      });
+      
+      if (existingRating) {
+        // Update existing rating
+        existingRating.rating = rating;
+        existingRating.feedback = feedback ? feedback.trim() : '';
+        existingRating.userName = currentUser.name; // Update user name in case it changed
+        existingRating.profileImage = currentUser.profileImage; // Update profile image
+        await existingRating.save();
+        
+        console.log('Updated existing rating');
+      } else {
+        // Create new rating
+        const newRating = new Rating({
+          doctorId,
+          userId,
+          userName: currentUser.name,
+          userEmail: currentUser.email,
+          profileImage: currentUser.profileImage, // Include profile image
+          rating,
+          feedback: feedback ? feedback.trim() : ''
+        });
+        
+        await newRating.save();
+        console.log('Created new rating');
+      }
+      
+      // Update doctor's overall rating
+      await updateDoctorRatings(doctorId);
+      
+      res.json({
+        success: true,
+        message: existingRating ? 'Rating updated successfully' : 'Rating submitted successfully'
+      });
+      
+    } catch (error) {
+      if (error.code === 11000) {
+        // Duplicate key error - this shouldn't happen with our check above, but just in case
+        return res.status(400).json({
+          success: false,
+          message: 'You have already rated this doctor'
+        });
+      }
+      throw error;
+    }
     
   } catch (error) {
     console.error('Submit rating error:', error);
@@ -465,7 +561,6 @@ const deleteDoctorRating = async (req, res) => {
   try {
     const { doctorId, ratingId } = req.params;
     const userId = req.userId; // From auth middleware
-    const Rating = require('../models/Rating');
     
     const rating = await Rating.findOne({
       _id: ratingId,

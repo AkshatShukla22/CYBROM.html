@@ -1,7 +1,8 @@
 import React from 'react';
 import '../styles/DoctorCard.css';
+import backendUrl from '../utils/BackendURl';
 
-const DoctorCard = ({ doctor, onClick, userLocation }) => {
+const DoctorCard = ({ doctor, onClick }) => {
   // Check if doctor has profile image
   const hasProfileImage = doctor.profileImage && doctor.profileImage.trim() !== '';
   
@@ -45,7 +46,7 @@ const DoctorCard = ({ doctor, onClick, userLocation }) => {
       <div className="doctor-image">
         {hasProfileImage ? (
           <img 
-            src={`http://localhost:8000${doctor.profileImage}`}
+            src={`${backendUrl}${doctor.profileImage}`}
             alt={doctor.name}
             onError={(e) => {
               e.target.style.display = 'none';
