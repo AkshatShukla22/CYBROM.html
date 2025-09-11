@@ -9,15 +9,13 @@ const {
   changePassword,
   logoutUser,
   uploadImage,
-  upload,
-  createUploadMiddleware
+  addPracticeLocation,
+  updatePracticeLocation,
+  removePracticeLocation,
+  upload
 } = require('../controllers/authController');
 
 const router = express.Router();
-
-// Create specific upload middleware for each type
-const profileUpload = createUploadMiddleware('profile');
-const backgroundUpload = createUploadMiddleware('background');
 
 // Authentication routes
 router.post('/register', registerUser);
@@ -27,18 +25,14 @@ router.put('/profile', auth, updateProfile);
 router.post('/change-password', auth, changePassword);
 router.post('/logout', auth, logoutUser);
 
-// Image upload routes - using specific middleware for each type
-router.post('/upload-image/profile', auth, profileUpload.single('image'), (req, res, next) => {
-  req.body.type = 'profile';
-  next();
-}, uploadImage);
-
-router.post('/upload-image/background', auth, backgroundUpload.single('image'), (req, res, next) => {
-  req.body.type = 'background';
-  next();
-}, uploadImage);
-
-// Fallback route for backwards compatibility - this handles the general upload-image route
+// Image upload routes
 router.post('/upload-image', auth, upload.single('image'), uploadImage);
+router.post('/upload-image/profile', auth, upload.single('image'), uploadImage);
+router.post('/upload-image/background', auth, upload.single('image'), uploadImage);
+
+// Practice location management routes (for doctors)
+router.post('/practice-locations', auth, addPracticeLocation);
+router.put('/practice-locations/:locationId', auth, updatePracticeLocation);
+router.delete('/practice-locations/:locationId', auth, removePracticeLocation);
 
 module.exports = router;

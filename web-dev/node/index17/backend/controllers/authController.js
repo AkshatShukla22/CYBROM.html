@@ -1,4 +1,4 @@
-// controllers/authController.js
+// controllers/authController.js - FIXED VERSION
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const multer = require('multer');
@@ -10,8 +10,7 @@ const User = require('../models/User');
 const createUploadsDir = async () => {
   const uploadsDir = path.join(__dirname, '..', 'uploads');
   const profileDir = path.join(uploadsDir, 'profiles');
-  const backgroundDir = path.join(uploadsDir, 'backgrounds');
-  const tempDir = path.join(uploadsDir, 'temp');
+  const backgroundDir = path.join(uploadsDir, 'backgrounds'); // FIXED: Added backgrounds dir
   
   try {
     await fs.access(uploadsDir);
@@ -24,67 +23,39 @@ const createUploadsDir = async () => {
   } catch {
     await fs.mkdir(profileDir, { recursive: true });
   }
-  
+
+  // FIXED: Create backgrounds directory
   try {
     await fs.access(backgroundDir);
   } catch {
     await fs.mkdir(backgroundDir, { recursive: true });
-  }
-  
-  try {
-    await fs.access(tempDir);
-  } catch {
-    await fs.mkdir(tempDir, { recursive: true });
   }
 };
 
 // Initialize directories
 createUploadsDir();
 
-// Configure multer for image uploads
+// FIXED: Configure multer for both profile and background images
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    // Determine type from route path first, then body
-    let isBackgroundUpload = false;
-    
-    if (req.route.path.includes('/background')) {
-      isBackgroundUpload = true;
-    } else if (req.route.path.includes('/profile')) {
-      isBackgroundUpload = false;
-    } else if (req.body.type === 'background') {
-      isBackgroundUpload = true;
-    }
-    
-    const uploadPath = isBackgroundUpload ? 
-      path.join(__dirname, '..', 'uploads', 'backgrounds') : 
-      path.join(__dirname, '..', 'uploads', 'profiles');
-    
-    console.log('Upload destination:', uploadPath, 'Type detected:', isBackgroundUpload ? 'background' : 'profile', 'Route:', req.route.path);
+    // FIXED: Choose directory based on image type
+    const isBackground = req.route.path.includes('background');
+    const uploadPath = path.join(__dirname, '..', 'uploads', isBackground ? 'backgrounds' : 'profiles');
     cb(null, uploadPath);
   },
   filename: function (req, file, cb) {
-    let type = 'profile';
-    
-    if (req.route.path.includes('/background')) {
-      type = 'background';
-    } else if (req.route.path.includes('/profile')) {
-      type = 'profile';
-    } else if (req.body.type === 'background') {
-      type = 'background';
-    }
-    
     const timestamp = Date.now();
     const randomString = Math.random().toString(36).substring(2, 15);
     const extension = path.extname(file.originalname);
-    const filename = `${type}_${req.userId}_${timestamp}_${randomString}${extension}`;
-    
-    console.log('Generated filename:', filename, 'Type detected:', type);
+    // FIXED: Use appropriate prefix based on image type
+    const isBackground = req.route.path.includes('background');
+    const prefix = isBackground ? 'background' : 'profile';
+    const filename = `${prefix}_${req.userId}_${timestamp}_${randomString}${extension}`;
     cb(null, filename);
   }
 });
 
 const fileFilter = (req, file, cb) => {
-  // Check if file is an image
   if (file.mimetype.startsWith('image/')) {
     cb(null, true);
   } else {
@@ -99,33 +70,6 @@ const upload = multer({
     fileSize: 5 * 1024 * 1024
   }
 });
-
-// Create separate multer instances for different types
-const createUploadMiddleware = (type) => {
-  const typeStorage = multer.diskStorage({
-    destination: function (req, file, cb) {
-      const uploadPath = type === 'background' ? 
-        path.join(__dirname, '..', 'uploads', 'backgrounds') : 
-        path.join(__dirname, '..', 'uploads', 'profiles');
-      cb(null, uploadPath);
-    },
-    filename: function (req, file, cb) {
-      const timestamp = Date.now();
-      const randomString = Math.random().toString(36).substring(2, 15);
-      const extension = path.extname(file.originalname);
-      const filename = `${type}_${req.userId}_${timestamp}_${randomString}${extension}`;
-      cb(null, filename);
-    }
-  });
-
-  return multer({
-    storage: typeStorage,
-    fileFilter: fileFilter,
-    limits: {
-      fileSize: 5 * 1024 * 1024 // 5MB limit
-    }
-  });
-};
 
 // Generate JWT Token
 const generateToken = (userId) => {
@@ -146,6 +90,33 @@ const deleteOldImage = async (imagePath) => {
       console.log(`Could not delete old image: ${imagePath}`);
     }
   }
+};
+
+// Utility function to validate time format
+const validateTimeFormat = (time) => {
+  const timeRegex = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/;
+  return timeRegex.test(time);
+};
+
+// Utility function to check time conflicts
+const hasTimeConflict = (newSlot, existingSlots, excludeLocationId = null) => {
+  const newStart = new Date(`2000-01-01 ${newSlot.startTime}`);
+  const newEnd = new Date(`2000-01-01 ${newSlot.endTime}`);
+  
+  return existingSlots.some(location => {
+    if (excludeLocationId && location._id.toString() === excludeLocationId) {
+      return false;
+    }
+    
+    return location.availableSlots.some(slot => {
+      if (slot.day !== newSlot.day || !slot.isActive) return false;
+      
+      const existingStart = new Date(`2000-01-01 ${slot.startTime}`);
+      const existingEnd = new Date(`2000-01-01 ${slot.endTime}`);
+      
+      return (newStart < existingEnd && newEnd > existingStart);
+    });
+  });
 };
 
 // @desc    Register a new user
@@ -199,7 +170,6 @@ const registerUser = async (req, res) => {
         });
       }
 
-      // Check if license number already exists
       const existingDoctor = await User.findOne({ 
         licenseNumber: licenseNumber,
         userType: 'doctor'
@@ -217,7 +187,19 @@ const registerUser = async (req, res) => {
       email: email.toLowerCase().trim(),
       password,
       phone: phone.trim(),
-      userType
+      userType,
+      contactInfo: {
+        phones: [{
+          number: phone.trim(),
+          type: 'primary',
+          isActive: true
+        }],
+        emails: [{
+          email: email.toLowerCase().trim(),
+          type: 'primary',
+          isActive: true
+        }]
+      }
     };
 
     // Add doctor-specific fields
@@ -225,7 +207,22 @@ const registerUser = async (req, res) => {
       userData.specialization = specialization;
       userData.experience = parseInt(experience);
       userData.licenseNumber = licenseNumber.trim();
-      userData.consultationFee = 500; // Default fee, can be updated later
+      // Initialize with a default practice location
+      userData.practiceLocations = [{
+        name: 'Primary Practice',
+        address: {
+          street: '',
+          city: '',
+          state: '',
+          zipCode: '',
+          country: 'India'
+        },
+        consultationFee: 500,
+        patientsPerDay: 20,
+        availableSlots: [],
+        facilities: [],
+        isActive: true
+      }];
     }
 
     // Create new user
@@ -248,7 +245,9 @@ const registerUser = async (req, res) => {
         specialization: user.specialization,
         experience: user.experience,
         licenseNumber: user.licenseNumber,
-        isVerified: user.isVerified
+        isVerified: user.isVerified,
+        contactInfo: user.contactInfo,
+        practiceLocations: user.practiceLocations
       }
     });
 
@@ -267,14 +266,12 @@ const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // Validation
     if (!email || !password) {
       return res.status(400).json({
         message: 'Please provide email and password'
       });
     }
 
-    // Check if user exists
     const user = await User.findOne({ email: email.toLowerCase() });
     if (!user) {
       return res.status(400).json({
@@ -282,14 +279,12 @@ const loginUser = async (req, res) => {
       });
     }
 
-    // Check if account is active
     if (!user.isActive) {
       return res.status(400).json({
         message: 'Account has been deactivated. Please contact support.'
       });
     }
 
-    // Compare password
     const isMatch = await user.comparePassword(password);
     if (!isMatch) {
       return res.status(400).json({
@@ -297,10 +292,8 @@ const loginUser = async (req, res) => {
       });
     }
 
-    // Generate JWT token
     const token = generateToken(user._id);
 
-    // Return user data and token
     res.json({
       message: 'Login successful',
       token,
@@ -312,9 +305,12 @@ const loginUser = async (req, res) => {
         userType: user.userType,
         specialization: user.specialization,
         experience: user.experience,
+        licenseNumber: user.licenseNumber, // FIXED: Added license number to login response
         isVerified: user.isVerified,
         profileImage: user.profileImage,
-        backgroundImage: user.backgroundImage
+        backgroundImage: user.backgroundImage, // FIXED: Added background image to login response
+        contactInfo: user.contactInfo,
+        practiceLocations: user.practiceLocations
       }
     });
 
@@ -347,13 +343,15 @@ const getCurrentUser = async (req, res) => {
         userType: user.userType,
         specialization: user.specialization,
         experience: user.experience,
+        licenseNumber: user.licenseNumber, // FIXED: Added license number to getCurrentUser
         isVerified: user.isVerified,
         profileImage: user.profileImage,
-        backgroundImage: user.backgroundImage,
+        backgroundImage: user.backgroundImage, // FIXED: Added background image to getCurrentUser
         bio: user.bio,
         address: user.address,
+        contactInfo: user.contactInfo,
+        practiceLocations: user.practiceLocations,
         consultationFee: user.consultationFee,
-        availableSlots: user.availableSlots,
         ratings: user.ratings,
         totalAppointments: user.totalAppointments,
         createdAt: user.createdAt
@@ -385,35 +383,18 @@ const uploadImage = async (req, res) => {
       });
     }
 
-    // Determine image type from the route path
-    let imageType = 'profile'; // default
+    // FIXED: Determine image type from route
+    const imageType = req.route.path.includes('background') ? 'background' : 'profile';
     
-    if (req.route.path.includes('/profile')) {
-      imageType = 'profile';
-    } else if (req.route.path.includes('/background')) {
-      imageType = 'background';
-    } else if (req.body.type) {
-      // Fallback to body type if route doesn't specify
-      imageType = req.body.type;
-    }
-    
-    // Construct the correct image URL based on the actual file location
+    // FIXED: Construct the proper image URL
     const imageUrl = `/uploads/${imageType === 'background' ? 'backgrounds' : 'profiles'}/${req.file.filename}`;
 
     console.log('Image uploaded:', {
       type: imageType,
       filename: req.file.filename,
       path: req.file.path,
-      url: imageUrl,
-      route: req.route.path
+      url: imageUrl
     });
-
-    // Delete old image if exists
-    if (imageType === 'profile' && user.profileImage) {
-      await deleteOldImage(user.profileImage);
-    } else if (imageType === 'background' && user.backgroundImage) {
-      await deleteOldImage(user.backgroundImage);
-    }
 
     res.json({
       message: 'Image uploaded successfully',
@@ -436,14 +417,15 @@ const updateProfile = async (req, res) => {
   try {
     const {
       name,
-      phone,
       bio,
       address,
+      profileImage,
+      backgroundImage,
+      contactInfo,
+      practiceLocations,
       consultationFee,
       specialization,
-      experience,
-      profileImage,
-      backgroundImage
+      experience
     } = req.body;
 
     const user = await User.findById(req.userId);
@@ -453,35 +435,51 @@ const updateProfile = async (req, res) => {
       });
     }
 
-    // Update fields if provided
+    // Update basic fields
     if (name) user.name = name.trim();
-    if (phone) user.phone = phone.trim();
     if (bio !== undefined) user.bio = bio.trim();
-    if (address) user.address = address;
 
     // Update profile image if provided
     if (profileImage && profileImage !== user.profileImage) {
-      // Delete old profile image
       if (user.profileImage) {
         await deleteOldImage(user.profileImage);
       }
       user.profileImage = profileImage;
     }
 
-    // Update background image if provided (only for doctors)
+    // Update background image if provided (for doctors only)
     if (user.userType === 'doctor' && backgroundImage && backgroundImage !== user.backgroundImage) {
-      // Delete old background image
       if (user.backgroundImage) {
         await deleteOldImage(user.backgroundImage);
       }
       user.backgroundImage = backgroundImage;
     }
 
+    // Update address for regular users
+    if (user.userType === 'user' && address) {
+      user.address = address;
+    }
+
+    // Update contact info - handle both old and new format
+    if (contactInfo) {
+      user.contactInfo = contactInfo;
+      // Also update the legacy phone field from primary phone
+      if (contactInfo.phones && contactInfo.phones.length > 0) {
+        const primaryPhone = contactInfo.phones.find(p => p.type === 'primary') || contactInfo.phones[0];
+        user.phone = primaryPhone.number;
+      }
+    }
+
     // Doctor-specific updates
     if (user.userType === 'doctor') {
-      if (consultationFee) user.consultationFee = consultationFee;
+      if (consultationFee !== undefined) user.consultationFee = consultationFee;
       if (specialization) user.specialization = specialization;
       if (experience !== undefined) user.experience = experience;
+      
+      // Update practice locations with basic validation
+      if (practiceLocations && Array.isArray(practiceLocations)) {
+        user.practiceLocations = practiceLocations;
+      }
     }
 
     await user.save();
@@ -496,12 +494,17 @@ const updateProfile = async (req, res) => {
         userType: user.userType,
         specialization: user.specialization,
         experience: user.experience,
+        licenseNumber: user.licenseNumber, // FIXED: Added license number to update response
         isVerified: user.isVerified,
         profileImage: user.profileImage,
         backgroundImage: user.backgroundImage,
         bio: user.bio,
         address: user.address,
+        contactInfo: user.contactInfo,
+        practiceLocations: user.practiceLocations,
         consultationFee: user.consultationFee,
+        ratings: user.ratings,
+        totalAppointments: user.totalAppointments,
         createdAt: user.createdAt
       }
     });
@@ -514,13 +517,171 @@ const updateProfile = async (req, res) => {
   }
 };
 
+// @desc    Add practice location for doctors
+// @access  Private
+const addPracticeLocation = async (req, res) => {
+  try {
+    const user = await User.findById(req.userId);
+    if (!user || user.userType !== 'doctor') {
+      return res.status(403).json({
+        message: 'Only doctors can add practice locations'
+      });
+    }
+
+    const { name, address, consultationFee, patientsPerDay, availableSlots, facilities } = req.body;
+
+    // Validate required fields
+    if (!name || !address || !consultationFee || !patientsPerDay) {
+      return res.status(400).json({
+        message: 'Please provide all required fields'
+      });
+    }
+
+    // Validate time slots for conflicts
+    for (let slot of availableSlots || []) {
+      if (!slot.isActive) continue;
+      
+      if (!validateTimeFormat(slot.startTime) || !validateTimeFormat(slot.endTime)) {
+        return res.status(400).json({
+          message: 'Invalid time format. Use HH:MM format.'
+        });
+      }
+
+      if (hasTimeConflict(slot, user.practiceLocations)) {
+        return res.status(400).json({
+          message: `Time slot conflict: ${slot.day} ${slot.startTime}-${slot.endTime} is already assigned to another location`
+        });
+      }
+    }
+
+    const newLocation = {
+      name: name.trim(),
+      address,
+      consultationFee,
+      patientsPerDay,
+      availableSlots: availableSlots || [],
+      facilities: facilities || [],
+      isActive: true
+    };
+
+    user.practiceLocations.push(newLocation);
+    await user.save();
+
+    res.json({
+      message: 'Practice location added successfully',
+      location: user.practiceLocations[user.practiceLocations.length - 1]
+    });
+  } catch (error) {
+    console.error('Add practice location error:', error);
+    res.status(500).json({
+      message: 'Server error',
+      error: error.message
+    });
+  }
+};
+
+// @desc    Update practice location
+// @access  Private
+const updatePracticeLocation = async (req, res) => {
+  try {
+    const { locationId } = req.params;
+    const user = await User.findById(req.userId);
+    
+    if (!user || user.userType !== 'doctor') {
+      return res.status(403).json({
+        message: 'Only doctors can update practice locations'
+      });
+    }
+
+    const location = user.practiceLocations.id(locationId);
+    if (!location) {
+      return res.status(404).json({
+        message: 'Practice location not found'
+      });
+    }
+
+    const { availableSlots } = req.body;
+
+    // Validate time conflicts if updating slots
+    if (availableSlots) {
+      for (let slot of availableSlots) {
+        if (!slot.isActive) continue;
+        
+        if (!validateTimeFormat(slot.startTime) || !validateTimeFormat(slot.endTime)) {
+          return res.status(400).json({
+            message: 'Invalid time format. Use HH:MM format.'
+          });
+        }
+
+        const otherLocations = user.practiceLocations.filter(loc => 
+          loc._id.toString() !== locationId
+        );
+        
+        if (hasTimeConflict(slot, otherLocations)) {
+          return res.status(400).json({
+            message: `Time slot conflict: ${slot.day} ${slot.startTime}-${slot.endTime} is already assigned to another location`
+          });
+        }
+      }
+    }
+
+    // Update location fields
+    Object.assign(location, req.body);
+    await user.save();
+
+    res.json({
+      message: 'Practice location updated successfully',
+      location
+    });
+  } catch (error) {
+    console.error('Update practice location error:', error);
+    res.status(500).json({
+      message: 'Server error',
+      error: error.message
+    });
+  }
+};
+
+// @desc    Remove practice location
+// @access  Private
+const removePracticeLocation = async (req, res) => {
+  try {
+    const { locationId } = req.params;
+    const user = await User.findById(req.userId);
+    
+    if (!user || user.userType !== 'doctor') {
+      return res.status(403).json({
+        message: 'Only doctors can remove practice locations'
+      });
+    }
+
+    if (user.practiceLocations.length <= 1) {
+      return res.status(400).json({
+        message: 'Cannot remove the last practice location. Doctors must have at least one location.'
+      });
+    }
+
+    user.practiceLocations.pull(locationId);
+    await user.save();
+
+    res.json({
+      message: 'Practice location removed successfully'
+    });
+  } catch (error) {
+    console.error('Remove practice location error:', error);
+    res.status(500).json({
+      message: 'Server error',
+      error: error.message
+    });
+  }
+};
+
 // @desc    Change user password
 // @access  Private
 const changePassword = async (req, res) => {
   try {
     const { currentPassword, newPassword, confirmNewPassword } = req.body;
 
-    // Validation
     if (!currentPassword || !newPassword || !confirmNewPassword) {
       return res.status(400).json({
         message: 'Please provide all required fields'
@@ -546,7 +707,6 @@ const changePassword = async (req, res) => {
       });
     }
 
-    // Verify current password
     const isMatch = await user.comparePassword(currentPassword);
     if (!isMatch) {
       return res.status(400).json({
@@ -554,7 +714,6 @@ const changePassword = async (req, res) => {
       });
     }
 
-    // Update password
     user.password = newPassword;
     await user.save();
 
@@ -570,11 +729,9 @@ const changePassword = async (req, res) => {
   }
 };
 
-// @desc    Logout user (client-side token removal)
+// @desc    Logout user
 // @access  Private
 const logoutUser = (req, res) => {
-  // In a JWT implementation, logout is typically handled client-side
-  // by removing the token from localStorage/sessionStorage
   res.json({
     message: 'Logged out successfully'
   });
@@ -588,6 +745,8 @@ module.exports = {
   changePassword,
   logoutUser,
   uploadImage,
-  upload,
-  createUploadMiddleware
+  addPracticeLocation,
+  updatePracticeLocation,
+  removePracticeLocation,
+  upload
 };

@@ -79,28 +79,28 @@ const Footer = () => {
               Contact Info
             </h4>
             <div className="footer__contact">
-              <div className="contact-item">
+              <div className="footer-contact-item">
                 <i className="fas fa-map-marker-alt"></i>
                 <div>
                   <strong>Address</strong>
                   <p>123 Medical Center Drive<br />Health City, HC 12345</p>
                 </div>
               </div>
-              <div className="contact-item">
+              <div className="footer-contact-item">
                 <i className="fas fa-phone"></i>
                 <div>
                   <strong>Phone</strong>
                   <p>+91 12345 67890<br />Emergency: 100</p>
                 </div>
               </div>
-              <div className="contact-item">
+              <div className="footer-contact-item">
                 <i className="fas fa-envelope"></i>
                 <div>
                   <strong>Email</strong>
                   <p>info@medicare.com<br />appointments@medicare.com</p>
                 </div>
               </div>
-              <div className="contact-item">
+              <div className="footer-contact-item">
                 <i className="fas fa-clock"></i>
                 <div>
                   <strong>Hours</strong>

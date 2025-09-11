@@ -1,7 +1,76 @@
-// models/User.js
+// models/User.js - Simplified version that works with existing database
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
+// Simple contact info schema
+const contactInfoSchema = new mongoose.Schema({
+  phones: [{
+    number: String,
+    type: {
+      type: String,
+      enum: ['primary', 'secondary', 'emergency'],
+      default: 'primary'
+    },
+    isActive: {
+      type: Boolean,
+      default: true
+    }
+  }],
+  emails: [{
+    email: String,
+    type: {
+      type: String,
+      enum: ['primary', 'secondary'],
+      default: 'primary'
+    },
+    isActive: {
+      type: Boolean,
+      default: true
+    }
+  }]
+});
+
+// Simple practice location schema
+const practiceLocationSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    default: 'Practice Location'
+  },
+  address: {
+    street: String,
+    city: String,
+    state: String,
+    zipCode: String,
+    country: {
+      type: String,
+      default: 'India'
+    }
+  },
+  consultationFee: {
+    type: Number,
+    default: 500
+  },
+  patientsPerDay: {
+    type: Number,
+    default: 20
+  },
+  availableSlots: [{
+    day: String,
+    startTime: String,
+    endTime: String,
+    isActive: {
+      type: Boolean,
+      default: true
+    }
+  }],
+  facilities: [String],
+  isActive: {
+    type: Boolean,
+    default: true
+  }
+});
+
+// Main user schema - backward compatible
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -34,6 +103,22 @@ const userSchema = new mongoose.Schema({
     default: 'user',
     required: true
   },
+  
+  // Enhanced contact information (optional)
+  contactInfo: contactInfoSchema,
+  
+  // Address for all users
+  address: {
+    street: String,
+    city: String,
+    state: String,
+    zipCode: String,
+    country: {
+      type: String,
+      default: 'India'
+    }
+  },
+  
   // Doctor-specific fields
   specialization: {
     type: String,
@@ -55,8 +140,21 @@ const userSchema = new mongoose.Schema({
       return this.userType === 'doctor';
     },
     unique: true,
-    sparse: true // Allows multiple null values but unique non-null values
+    sparse: true
   },
+  
+  // Practice locations for doctors (optional, falls back to single consultation fee)
+  practiceLocations: [practiceLocationSchema],
+  
+  // General consultation fee (fallback)
+  consultationFee: {
+    type: Number,
+    required: function() {
+      return this.userType === 'doctor';
+    },
+    default: 500
+  },
+  
   isVerified: {
     type: Boolean,
     default: false
@@ -75,22 +173,10 @@ const userSchema = new mongoose.Schema({
   },
   bio: {
     type: String,
-    maxlength: 500
+    maxlength: 1000
   },
-  address: {
-    street: String,
-    city: String,
-    state: String,
-    zipCode: String,
-    country: String
-  },
-  // Doctor-specific additional fields
-  consultationFee: {
-    type: Number,
-    required: function() {
-      return this.userType === 'doctor';
-    }
-  },
+  
+  // Legacy fields for backward compatibility
   availableSlots: [{
     day: {
       type: String,
@@ -125,11 +211,9 @@ const userSchema = new mongoose.Schema({
 
 // Hash password before saving
 userSchema.pre('save', async function(next) {
-  // Only hash the password if it has been modified (or is new)
   if (!this.isModified('password')) return next();
 
   try {
-    // Hash password with cost of 12
     const salt = await bcrypt.genSalt(12);
     this.password = await bcrypt.hash(this.password, salt);
     next();

@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import '../styles/FilterSidebar.css';
 
 const FilterSidebar = ({
@@ -8,11 +8,16 @@ const FilterSidebar = ({
   onSortChange,
   onClearFilters,
   sortBy,
-  sortOrder
+  sortOrder,
+  backendUrl
 }) => {
   const [isCollapsed, setIsCollapsed] = useState(true);
   const [minFee, setMinFee] = useState('');
   const [maxFee, setMaxFee] = useState('');
+  const [citySearch, setCitySearch] = useState('');
+  const [cityResults, setCityResults] = useState([]);
+  const [showCityDropdown, setShowCityDropdown] = useState(false);
+  const [isSearchingCities, setIsSearchingCities] = useState(false);
 
   // Specialization options - Enhanced
   const specializationOptions = [
@@ -57,6 +62,63 @@ const FilterSidebar = ({
     { value: 'totalAppointments|desc', label: 'Most Popular' }
   ];
 
+  // Search cities function
+  const searchCities = async (query) => {
+    if (!query || query.length < 2) {
+      setCityResults([]);
+      setShowCityDropdown(false);
+      return;
+    }
+
+    setIsSearchingCities(true);
+    try {
+      const response = await fetch(`${backendUrl}/api/doctors/search-cities?q=${encodeURIComponent(query)}`);
+      const data = await response.json();
+      
+      if (data.success) {
+        setCityResults(data.data.cities);
+        setShowCityDropdown(data.data.cities.length > 0);
+      } else {
+        setCityResults([]);
+        setShowCityDropdown(false);
+      }
+    } catch (error) {
+      console.error('Error searching cities:', error);
+      setCityResults([]);
+      setShowCityDropdown(false);
+    }
+    setIsSearchingCities(false);
+  };
+
+  // Debounced city search
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      searchCities(citySearch);
+    }, 300);
+
+    return () => clearTimeout(timeoutId);
+  }, [citySearch, backendUrl]);
+
+  // Handle city search input change
+  const handleCitySearchChange = (e) => {
+    setCitySearch(e.target.value);
+  };
+
+  // Handle city selection
+  const handleCitySelect = (city) => {
+    setCitySearch(city);
+    setShowCityDropdown(false);
+    onFilterChange('city', city);
+  };
+
+  // Clear city search
+  const clearCitySearch = () => {
+    setCitySearch('');
+    setCityResults([]);
+    setShowCityDropdown(false);
+    onFilterChange('city', '');
+  };
+
   // Memoized handlers to prevent unnecessary re-renders
   const handleSortChange = useCallback((value) => {
     const [field, order] = value.split('|');
@@ -92,6 +154,18 @@ const FilterSidebar = ({
   const handleCollapseToggle = useCallback(() => {
     setIsCollapsed(!isCollapsed);
   }, [isCollapsed]);
+
+  // Handle click outside to close dropdown
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (!event.target.closest('.city-search-container')) {
+        setShowCityDropdown(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   return (
     <div className={`filter-sidebar ${isCollapsed ? 'collapsed' : ''}`}>
@@ -133,6 +207,7 @@ const FilterSidebar = ({
               onClick={onClearFilters}
               disabled={getActiveFiltersCount() === 0}
             >
+              <i className="fas fa-undo"></i>
               Clear All ({getActiveFiltersCount()})
             </button>
           </div>
@@ -163,8 +238,98 @@ const FilterSidebar = ({
               Location
             </h4>
             
+            {/* City Search */}
+            <div className="city-search-container" style={{ position: 'relative', marginBottom: '15px' }}>
+              <div className="city-search-input-wrapper" style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+                <input
+                  type="text"
+                  className="filter-select"
+                  placeholder="Search city..."
+                  value={citySearch}
+                  onChange={handleCitySearchChange}
+                  style={{ paddingRight: '40px' }}
+                />
+                {citySearch && (
+                  <button 
+                    className="clear-city-btn"
+                    onClick={clearCitySearch}
+                    title="Clear city search"
+                    style={{
+                      position: 'absolute',
+                      right: '30px',
+                      background: 'none',
+                      border: 'none',
+                      color: '#6c757d',
+                      cursor: 'pointer',
+                      padding: '5px',
+                      borderRadius: '3px'
+                    }}
+                  >
+                    <i className="fas fa-times"></i>
+                  </button>
+                )}
+                {isSearchingCities && (
+                  <div className="city-search-loading" style={{
+                    position: 'absolute',
+                    right: '10px',
+                    color: '#007bff'
+                  }}>
+                    <i className="fas fa-spinner fa-spin"></i>
+                  </div>
+                )}
+              </div>
+              
+              {/* City Dropdown */}
+              {showCityDropdown && (
+                <div className="city-dropdown" style={{
+                  position: 'absolute',
+                  top: '100%',
+                  left: '0',
+                  right: '0',
+                  background: 'white',
+                  border: '1px solid #e1e5e9',
+                  borderRadius: '8px',
+                  boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+                  zIndex: 1000,
+                  maxHeight: '200px',
+                  overflowY: 'auto'
+                }}>
+                  {cityResults.length > 0 ? (
+                    cityResults.map((city, index) => (
+                      <div 
+                        key={index}
+                        className="city-option"
+                        onClick={() => handleCitySelect(city)}
+                        style={{
+                          padding: '10px 12px',
+                          cursor: 'pointer',
+                          borderBottom: index < cityResults.length - 1 ? '1px solid #f0f0f0' : 'none',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '8px'
+                        }}
+                        onMouseEnter={(e) => e.target.style.background = '#f8f9fa'}
+                        onMouseLeave={(e) => e.target.style.background = 'white'}
+                      >
+                        <i className="fas fa-map-marker-alt" style={{ color: '#6c757d', fontSize: '12px' }}></i>
+                        {city}
+                      </div>
+                    ))
+                  ) : (
+                    <div className="city-no-results" style={{
+                      padding: '10px 12px',
+                      color: '#6c757d',
+                      textAlign: 'center'
+                    }}>
+                      No cities found
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+            
             {/* Local Doctors Checkbox */}
-            {userLocation && (
+            {userLocation && userLocation.city && (
               <div className="checkbox-filter">
                 <label className="checkbox-label">
                   <input
@@ -173,8 +338,49 @@ const FilterSidebar = ({
                     onChange={handleLocationToggle}
                   />
                   <span className="sidebar-checkmark"></span>
-                  Doctors from my city
+                  Doctors from my city ({userLocation.city})
                 </label>
+              </div>
+            )}
+
+            {/* Selected City Display */}
+            {filters.city && (
+              <div className="selected-city" style={{
+                background: '#e3f2fd',
+                border: '1px solid #1976d2',
+                borderRadius: '6px',
+                padding: '8px 12px',
+                marginTop: '10px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between'
+              }}>
+                <span className="selected-city-name" style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  color: '#1976d2',
+                  fontSize: '14px'
+                }}>
+                  <i className="fas fa-map-marker-alt"></i>
+                  {filters.city}
+                </span>
+                <button 
+                  className="remove-city-btn"
+                  onClick={() => onFilterChange('city', '')}
+                  title="Remove city filter"
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    color: '#1976d2',
+                    cursor: 'pointer',
+                    padding: '2px 6px',
+                    borderRadius: '3px',
+                    fontSize: '12px'
+                  }}
+                >
+                  <i className="fas fa-times"></i>
+                </button>
               </div>
             )}
           </div>
@@ -308,6 +514,45 @@ const FilterSidebar = ({
                 Apply Range
               </button>
             </div>
+
+            {/* Active Fee Range Display */}
+            {(filters.minFee || filters.maxFee) && (
+              <div className="active-fee-range" style={{
+                background: '#fff3cd',
+                border: '1px solid #ffeaa7',
+                borderRadius: '6px',
+                padding: '8px 12px',
+                marginTop: '10px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between'
+              }}>
+                <span className="fee-range-value" style={{ fontSize: '14px', color: '#856404' }}>
+                  {filters.minFee ? `₹${filters.minFee}` : '₹0'} - {filters.maxFee ? `₹${filters.maxFee}` : '∞'}
+                </span>
+                <button 
+                  className="remove-fee-range-btn"
+                  onClick={() => {
+                    onFilterChange('minFee', '');
+                    onFilterChange('maxFee', '');
+                    setMinFee('');
+                    setMaxFee('');
+                  }}
+                  title="Remove fee range filter"
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    color: '#856404',
+                    cursor: 'pointer',
+                    padding: '2px 6px',
+                    borderRadius: '3px',
+                    fontSize: '12px'
+                  }}
+                >
+                  <i className="fas fa-times"></i>
+                </button>
+              </div>
+            )}
           </div>
 
           {/* Quick Filters */}
@@ -377,6 +622,9 @@ const FilterSidebar = ({
                   } else if (key === 'showLocalOnly') {
                     displayValue = `My City`;
                     displayKey = 'Location';
+                  } else if (key === 'city') {
+                    displayValue = value;
+                    displayKey = 'City';
                   }
 
                   return (

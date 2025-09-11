@@ -7,9 +7,9 @@ import Register from './pages/Register'
 import Profile from './pages/Profile'
 import Doctors from './pages/Doctors'
 import Messages from './pages/Messages'
+import DoctorProfileView from './pages/DoctorProfileView'
 
 function App() {
-
   return (
     <>
       <BrowserRouter>
@@ -20,12 +20,12 @@ function App() {
             <Route path="/profile" element={<Profile />} />
             <Route path='doctors' element={<Doctors />} />
             <Route path='messages' element={<Messages />} />
+            <Route path='doctor/:doctorId' element={<DoctorProfileView />} />
           </Route>
 
           <Route path="/login" element={<Login />} />
           <Route path='/register' element={<Register />} />
           <Route path="*" element={<NotFound />} />
-
         </Routes>
       </BrowserRouter>
     </>

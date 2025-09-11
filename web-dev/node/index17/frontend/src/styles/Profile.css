@@ -1,715 +1,4 @@
-/* Profile.css - All styles prefixed with profile-page- to prevent conflicts */
-
-info-header {
-  padding: 0 2rem 2rem;
-  position: relative;
-  display: flex;
-  align-items: flex-end;
-  gap: 2rem;
-  flex-wrap: wrap;
-}
-
-.profile-page-avatar {
-  margin-top: -60px;
-  z-index: 10;
-}
-
-.profile-avatar-container {
-  position: relative;
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  overflow: hidden;
-}
-
-.profile-avatar-container img {
-  width: 100%;
-  height: 100%;
-  border: 4px solid white;
-  object-fit: cover;
-  border-radius: 50%;
-}
-
-.profile-avatar-placeholder {
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  border: 4px solid white;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-size: 3rem;
-}
-
-.profile-verification-badge {
-  position: absolute;
-  bottom: 5px;
-  right: 5px;
-  width: 30px;
-  height: 30px;
-  background: #28a745;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  border: 3px solid white;
-}
-
-.profile-basic-info {
-  flex: 1;
-  min-width: 300px;
-}
-
-.profile-page-name {
-  font-size: 2.5rem;
-  font-weight: 700;
-  color: #2c3e50;
-  margin: 0 0 0.5rem;
-}
-
-.profile-doctor-title, .profile-user-title {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 1.2rem;
-  color: #6c757d;
-  margin-bottom: 1rem;
-}
-
-.profile-doctor-title i {
-  color: #007bff;
-}
-
-.profile-user-title i {
-  color: #28a745;
-}
-
-.profile-page-stats {
-  display: flex;
-  gap: 2rem;
-  flex-wrap: wrap;
-}
-
-.profile-stat-item {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  color: #6c757d;
-  font-size: 0.9rem;
-}
-
-.profile-stat-item i {
-  color: #007bff;
-}
-
-.profile-page-actions {
-  display: flex;
-  gap: 1rem;
-  flex-wrap: wrap;
-}
-
-/* Buttons */
-.profile-btn {
-  padding: 0.75rem 1.5rem;
-  border: none;
-  border-radius: 8px;
-  font-size: 0.9rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  text-decoration: none;
-}
-
-.profile-btn-primary {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-}
-
-.profile-btn-primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
-}
-
-.profile-btn-secondary {
-  background: #6c757d;
-  color: white;
-}
-
-.profile-btn-secondary:hover {
-  background: #5a6268;
-  transform: translateY(-2px);
-}
-
-.profile-btn-outline {
-  background: transparent;
-  border: 2px solid #007bff;
-  color: #007bff;
-}
-
-.profile-btn-outline:hover {
-  background: #007bff;
-  color: white;
-}
-
-/* Profile Content */
-.profile-page-content {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 2rem;
-}
-
-/* Doctor Profile Content */
-.profile-doctor-content {
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-}
-
-/* Info Cards */
-.profile-info-cards {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 2rem;
-}
-
-.profile-info-card {
-  background: white;
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease;
-}
-
-.profile-info-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 25px rgba(0, 0, 0, 0.15);
-}
-
-.profile-card-header {
-  padding: 1.5rem;
-  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-  border-bottom: 1px solid #dee2e6;
-}
-
-.profile-card-header h3 {
-  margin: 0;
-  color: #2c3e50;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 1.2rem;
-}
-
-.profile-card-header i {
-  color: #007bff;
-}
-
-.profile-card-content {
-  padding: 2rem;
-}
-
-/* Image Upload Section */
-.profile-image-upload-section {
-  margin-bottom: 2rem;
-  padding-bottom: 2rem;
-  border-bottom: 1px solid #e9ecef;
-}
-
-.profile-image-upload-section h4 {
-  margin: 0 0 1.5rem;
-  color: #495057;
-  font-size: 1.1rem;
-}
-
-.image-upload-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 2rem;
-}
-
-.image-upload-item {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.image-upload-item label {
-  font-weight: 600;
-  color: #495057;
-  font-size: 0.9rem;
-}
-
-.image-preview-container {
-  width: 100%;
-  margin-bottom: 1rem;
-}
-
-.image-preview {
-  width: 100%;
-  border-radius: 8px;
-  overflow: hidden;
-  border: 2px solid #e9ecef;
-  background: #f8f9fa;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.image-preview.profile-preview {
-  height: 150px;
-  border-radius: 50%;
-  width: 150px;
-  margin: 0 auto;
-}
-
-.image-preview.background-preview {
-  height: 100px;
-}
-
-.image-preview img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.image-preview-placeholder {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  color: #6c757d;
-  padding: 2rem;
-}
-
-.image-preview-placeholder i {
-  font-size: 2rem;
-  color: #dee2e6;
-}
-
-.image-preview-placeholder span {
-  font-size: 0.9rem;
-}
-
-/* Info Display */
-.profile-info-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 1.5rem;
-}
-
-.profile-info-item {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.profile-info-item.profile-full-width {
-  grid-column: 1 / -1;
-}
-
-.profile-full-width {
-  grid-column: 1 / -1;
-}
-
-.profile-info-item label {
-  font-weight: 600;
-  color: #495057;
-  font-size: 0.9rem;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.profile-info-item span, .profile-info-item p {
-  color: #2c3e50;
-  font-size: 1rem;
-  line-height: 1.5;
-}
-
-/* Contact Info */
-.profile-contact-info {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.profile-contact-item {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  padding: 1rem;
-  background: #f8f9fa;
-  border-radius: 8px;
-  transition: all 0.3s ease;
-}
-
-.profile-contact-item:hover {
-  background: #e9ecef;
-}
-
-.profile-contact-item i {
-  color: #007bff;
-  width: 20px;
-  text-align: center;
-}
-
-/* Forms */
-.profile-edit-form {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-
-.profile-form-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 1.5rem;
-}
-
-.profile-form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.profile-form-group.profile-full-width {
-  grid-column: 1 / -1;
-}
-
-.profile-form-group label {
-  font-weight: 600;
-  color: #495057;
-  font-size: 0.9rem;
-}
-
-.profile-form-group input,
-.profile-form-group select,
-.profile-form-group textarea {
-  padding: 0.75rem;
-  border: 2px solid #e9ecef;
-  border-radius: 8px;
-  font-size: 1rem;
-  transition: all 0.3s ease;
-  background: white;
-}
-
-.profile-form-group input:focus,
-.profile-form-group select:focus,
-.profile-form-group textarea:focus {
-  outline: none;
-  border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-}
-
-.profile-form-group textarea {
-  resize: vertical;
-  min-height: 100px;
-}
-
-.profile-form-actions {
-  display: flex;
-  gap: 1rem;
-  justify-content: flex-end;
-  padding-top: 1rem;
-  border-top: 1px solid #e9ecef;
-}
-
-/* Error Messages */
-.profile-error-message {
-  background: #f8d7da;
-  color: #721c24;
-  padding: 1rem;
-  border-radius: 8px;
-  border: 1px solid #f5c6cb;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
-}
-
-.profile-error-message i {
-  color: #dc3545;
-}
-
-/* Patient Profile Specific Styles */
-.profile-patient-content {
-  max-width: 800px;
-  margin: 0 auto;
-}
-
-.profile-section {
-  background: white;
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
-}
-
-.profile-section-header {
-  padding: 1.5rem;
-  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-  border-bottom: 1px solid #dee2e6;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.profile-section-header h3 {
-  margin: 0;
-  color: #2c3e50;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 1.2rem;
-}
-
-.profile-section-header i {
-  color: #007bff;
-}
-
-.profile-section-content {
-  padding: 2rem;
-}
-
-.profile-info-display {
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-}
-
-.profile-address-section {
-  margin-top: 2rem;
-  padding-top: 2rem;
-  border-top: 1px solid #e9ecef;
-}
-
-.profile-address-section h4 {
-  margin: 0 0 1rem;
-  color: #495057;
-  font-size: 1.1rem;
-}
-
-.profile-address-display {
-  margin-top: 1.5rem;
-  padding-top: 1.5rem;
-  border-top: 1px solid #e9ecef;
-}
-
-.profile-address-display h4 {
-  margin: 0 0 1rem;
-  color: #495057;
-  font-size: 1.1rem;
-}
-
-.profile-address-text {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  color: #6c757d;
-}
-
-.profile-address-text i {
-  color: #007bff;
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-  .profile-page-container {
-    padding: 0;
-  }
-
-  .profile-info-header {
-    padding: 0 1rem 1rem;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 1rem;
-  }
-
-  .profile-basic-info {
-    min-width: unset;
-    width: 100%;
-  }
-
-  .profile-page-name {
-    font-size: 2rem;
-  }
-
-  .profile-page-stats {
-    gap: 1rem;
-  }
-
-  .profile-stat-item {
-    font-size: 0.8rem;
-  }
-
-  .profile-page-actions {
-    width: 100%;
-  }
-
-  .profile-btn {
-    flex: 1;
-    justify-content: center;
-  }
-
-  .profile-page-content {
-    padding: 0 1rem;
-  }
-
-  .profile-info-grid, .profile-form-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .profile-card-content {
-    padding: 1rem;
-  }
-
-  .profile-contact-item {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.5rem;
-  }
-
-  .image-upload-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .image-preview.profile-preview {
-    width: 120px;
-    height: 120px;
-  }
-}
-
-@media (max-width: 480px) {
-  .profile-avatar-container {
-    width: 100px;
-    height: 100px;
-  }
-
-  .profile-avatar-placeholder {
-    font-size: 2.5rem;
-  }
-
-  .profile-page-name {
-    font-size: 1.5rem;
-  }
-
-  .profile-doctor-title, .profile-user-title {
-    font-size: 1rem;
-  }
-
-  .profile-page-stats {
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-}
-
-/* Animation Classes */
-@keyframes profileFadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.profile-doctor-content, .profile-patient-content {
-  animation: profileFadeIn 0.3s ease-in-out;
-}
-
-/* Button States */
-.profile-btn:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.profile-btn:disabled:hover {
-  transform: none;
-  box-shadow: none;
-}
-
-/* Success Messages */
-.profile-success-message {
-  background: #d4edda;
-  color: #155724;
-  padding: 1rem;
-  border-radius: 8px;
-  border: 1px solid #c3e6cb;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
-}
-
-.profile-success-message i {
-  color: #28a745;
-}page-container {
-  min-height: 100vh;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-  padding: 0;
-}
-
-/* Loading and Error States */
-.profile-loading-spinner, .profile-error-message {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 60vh;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.profile-loading-spinner i {
-  font-size: 3rem;
-  color: #007bff;
-  margin-bottom: 1rem;
-}
-
-.profile-loading-spinner span {
-  font-size: 1.1rem;
-  color: #6c757d;
-}
-
-.profile-error-message {
-  color: #dc3545;
-}
-
-.profile-error-message i {
-  font-size: 2rem;
-  margin-bottom: 0.5rem;
-}
-
-/* Profile Header */
-.profile-page-header {
-  position: relative;
-  background: white;
-  margin-bottom: 2rem;
-  border-radius: 0 0 20px 20px;
-  overflow: hidden;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-}
-
-.profile-page-cover {
-  height: 200px;
-  position: relative;
-}
-
-.profile-cover-image {
-  position: relative;
-  width: 100%;
-  height: 200px;
-  overflow: hidden;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-}
-
-/* Profile.css - All styles prefixed with profile-page- to prevent conflicts */
+/* Enhanced Profile.css - All styles prefixed with profile-page- to prevent conflicts */
 
 .profile-page-container {
   min-height: 100vh;
@@ -770,16 +59,6 @@ info-header {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 }
 
-/* Background image styles */
-.profile-background-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  position: absolute;
-  top: 0;
-  left: 0;
-}
-
 .profile-cover-placeholder {
   width: 100%;
   height: 100%;
@@ -819,11 +98,6 @@ info-header {
 .profile-image-upload-btn:hover {
   background: rgba(0, 123, 255, 1);
   transform: translateY(-1px);
-}
-
-.profile-image-upload-btn.background-upload {
-  top: 10px;
-  right: 10px;
 }
 
 .profile-image-upload-btn.profile-upload {
@@ -1068,24 +342,6 @@ info-header {
   font-size: 1.1rem;
 }
 
-.image-upload-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 2rem;
-}
-
-.image-upload-item {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.image-upload-item label {
-  font-weight: 600;
-  color: #495057;
-  font-size: 0.9rem;
-}
-
 .image-preview-container {
   width: 100%;
   margin-bottom: 1rem;
@@ -1107,10 +363,6 @@ info-header {
   border-radius: 50%;
   width: 150px;
   margin: 0 auto;
-}
-
-.image-preview.background-preview {
-  height: 100px;
 }
 
 .image-preview img {
@@ -1136,6 +388,364 @@ info-header {
 
 .image-preview-placeholder span {
   font-size: 0.9rem;
+}
+
+/* Contact Information Styles */
+.profile-contact-section {
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid #e9ecef;
+}
+
+.profile-contact-section h4 {
+  margin: 0 0 1.5rem;
+  color: #495057;
+  font-size: 1.1rem;
+}
+
+.contact-group {
+  margin-bottom: 2rem;
+}
+
+.contact-group-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.contact-group-header label {
+  font-weight: 600;
+  color: #495057;
+  font-size: 0.95rem;
+}
+
+.contact-item {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding: 1rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+}
+
+.contact-item input {
+  flex: 2;
+  padding: 0.5rem;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+
+.contact-item select {
+  flex: 1;
+  padding: 0.5rem;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+
+.contact-item .remove-btn {
+  background: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 0.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.contact-item .remove-btn:hover {
+  background: #c82333;
+}
+
+/* Contact Information Display */
+.contact-section {
+  margin-bottom: 2rem;
+}
+
+.contact-section h5 {
+  margin: 0 0 1rem;
+  color: #495057;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.profile-contact-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
+  transition: all 0.3s ease;
+}
+
+.profile-contact-item:hover {
+  background: #e9ecef;
+}
+
+.profile-contact-item i {
+  color: #007bff;
+  width: 20px;
+  text-align: center;
+}
+
+/* Practice Locations Styles */
+.practice-locations-section {
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid #e9ecef;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.section-header h4 {
+  margin: 0;
+  color: #495057;
+  font-size: 1.1rem;
+}
+
+.practice-location-card {
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.location-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.location-header h5 {
+  margin: 0;
+  color: #495057;
+  font-size: 1rem;
+}
+
+.location-header .remove-btn {
+  background: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 0.5rem 1rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.location-header .remove-btn:hover {
+  background: #c82333;
+}
+
+/* Time Slots Styles */
+.time-slots-section {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #e9ecef;
+}
+
+.time-slots-section .section-header {
+  margin-bottom: 1rem;
+}
+
+.time-slots-section label {
+  font-weight: 600;
+  color: #495057;
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+.time-slot-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: white;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  margin-bottom: 0.75rem;
+  flex-wrap: wrap;
+  position: relative;
+}
+
+.time-slot-item.has-conflict {
+  border-color: #dc3545;
+  background: #fff5f5;
+}
+
+.time-slot-item select,
+.time-slot-item input[type="time"] {
+  padding: 0.5rem;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+
+.time-slot-item select {
+  min-width: 120px;
+}
+
+.time-slot-item input[type="time"] {
+  min-width: 100px;
+}
+
+.time-slot-item span {
+  color: #6c757d;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  color: #495057;
+  cursor: pointer;
+}
+
+.checkbox-label input[type="checkbox"] {
+  margin: 0;
+}
+
+.time-slot-item .remove-btn {
+  background: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 0.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-left: auto;
+}
+
+.time-slot-item .remove-btn:hover {
+  background: #c82333;
+}
+
+.conflict-warning {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: #f8d7da;
+  color: #721c24;
+  padding: 0.5rem;
+  border-radius: 0 0 8px 8px;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  z-index: 10;
+}
+
+.conflict-warning i {
+  color: #dc3545;
+}
+
+/* Practice Locations Display */
+.location-display-card {
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.location-display-card h5 {
+  margin: 0 0 1rem;
+  color: #2c3e50;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.location-info {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.location-address {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #6c757d;
+  font-size: 0.95rem;
+}
+
+.location-address i {
+  color: #007bff;
+}
+
+.location-details {
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.detail-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #6c757d;
+  font-size: 0.9rem;
+}
+
+.detail-item i {
+  color: #28a745;
+}
+
+.available-slots {
+  margin-top: 1rem;
+}
+
+.available-slots h6 {
+  margin: 0 0 0.75rem;
+  color: #495057;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.slot-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.slot-item:last-child {
+  border-bottom: none;
+}
+
+.slot-item .day {
+  font-weight: 600;
+  color: #495057;
+  min-width: 80px;
+  text-transform: capitalize;
+}
+
+.slot-item .time {
+  color: #007bff;
+  font-weight: 500;
 }
 
 /* Info Display */
@@ -1171,33 +781,6 @@ info-header {
   color: #2c3e50;
   font-size: 1rem;
   line-height: 1.5;
-}
-
-/* Contact Info */
-.profile-contact-info {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.profile-contact-item {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  padding: 1rem;
-  background: #f8f9fa;
-  border-radius: 8px;
-  transition: all 0.3s ease;
-}
-
-.profile-contact-item:hover {
-  background: #e9ecef;
-}
-
-.profile-contact-item i {
-  color: #007bff;
-  width: 20px;
-  text-align: center;
 }
 
 /* Forms */
@@ -1415,13 +998,49 @@ info-header {
     gap: 0.5rem;
   }
 
-  .image-upload-grid {
-    grid-template-columns: 1fr;
-  }
-
   .image-preview.profile-preview {
     width: 120px;
     height: 120px;
+  }
+
+  /* Mobile adjustments for contact items */
+  .contact-item {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .contact-item input,
+  .contact-item select {
+    flex: none;
+    width: 100%;
+  }
+
+  /* Mobile adjustments for time slots */
+  .time-slot-item {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+  }
+
+  .time-slot-item select,
+  .time-slot-item input[type="time"] {
+    width: 100%;
+    min-width: unset;
+  }
+
+  .location-details {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .practice-location-card {
+    padding: 1rem;
+  }
+
+  .location-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
   }
 }
 
@@ -1446,6 +1065,18 @@ info-header {
   .profile-page-stats {
     flex-direction: column;
     gap: 0.5rem;
+  }
+
+  .section-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .contact-group-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
   }
 }
 
@@ -1492,3 +1123,11 @@ info-header {
 .profile-success-message i {
   color: #28a745;
 }
+
+/* Utility classes for better spacing */
+.mb-2 { margin-bottom: 1rem; }
+.mt-2 { margin-top: 1rem; }
+.text-muted { color: #6c757d; }
+.text-primary { color: #007bff; }
+.text-success { color: #28a745; }
+.text-danger { color: #dc3545; }

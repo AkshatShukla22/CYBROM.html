@@ -238,20 +238,20 @@
   gap: 1.5rem;
 }
 
-.contact-item {
+.footer-contact-item {
   display: flex;
   align-items: flex-start;
   gap: 1rem;
 }
 
-.contact-item i {
+.footer-contact-item i {
   color: var(--footer-primary);
   font-size: 1.125rem;
   margin-top: 0.125rem;
   flex-shrink: 0;
 }
 
-.contact-item strong {
+.footer-contact-item strong {
   color: var(--footer-heading);
   display: block;
   margin-bottom: 0.25rem;
@@ -259,7 +259,7 @@
   font-weight: 600;
 }
 
-.contact-item p {
+.footer-contact-item p {
   color: var(--footer-text-light);
   margin: 0;
   font-size: 0.875rem;
