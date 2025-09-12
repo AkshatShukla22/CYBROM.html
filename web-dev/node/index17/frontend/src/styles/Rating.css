@@ -1403,6 +1403,10 @@
   font-size: 1.2rem;
 }
 
+.rating-review-avatar img {
+  object-fit: cover;
+}
+
 .rating-review-user-info {
   display: flex;
   flex-direction: column;

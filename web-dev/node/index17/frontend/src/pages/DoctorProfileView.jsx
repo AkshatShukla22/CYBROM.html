@@ -1,4 +1,4 @@
-// DoctorProfileView.jsx - Complete component with fixed profile image display
+// DoctorProfileView.jsx - Updated with appointment booking navigation
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import backendUrl from '../utils/BackendURl';
@@ -30,12 +30,12 @@ const DoctorProfileView = () => {
     }
   }, [doctorId]);
 
-    // Separate useEffect for fetching ratings after user is loaded
-    useEffect(() => {
-        if (doctorId && userLoaded) {
-            fetchRatings();
-        }
-    }, [doctorId, userLoaded]);
+  // Separate useEffect for fetching ratings after user is loaded
+  useEffect(() => {
+      if (doctorId && userLoaded) {
+          fetchRatings();
+      }
+  }, [doctorId, userLoaded]);
 
   const fetchCurrentUser = async () => {
     try {
@@ -204,6 +204,21 @@ const DoctorProfileView = () => {
     setError('');
   };
 
+  // Navigate to appointment booking page
+  const handleBookAppointment = () => {
+    navigate(`/book-appointment/${doctorId}`);
+  };
+
+  // Navigate to messaging (placeholder for future implementation)
+  const handleSendMessage = () => {
+    if (!currentUser) {
+      setError('Please login to send messages');
+      return;
+    }
+    // Placeholder - implement messaging functionality
+    alert('Messaging feature coming soon!');
+  };
+
   const formatSpecialization = (specialization) => {
     if (!specialization) return 'General Physician';
     
@@ -353,11 +368,11 @@ const DoctorProfileView = () => {
           </div>
           
           <div className="profile-page-actions">
-            <button className="profile-btn profile-btn-primary">
+            <button className="profile-btn profile-btn-primary" onClick={handleBookAppointment}>
               <i className="fas fa-calendar-plus"></i>
               Book Appointment
             </button>
-            <button className="profile-btn profile-btn-secondary">
+            <button className="profile-btn profile-btn-secondary" onClick={handleSendMessage}>
               <i className="fas fa-comment-medical"></i>
               Send Message
             </button>

@@ -8,6 +8,7 @@ import Profile from './pages/Profile'
 import Doctors from './pages/Doctors'
 import Messages from './pages/Messages'
 import DoctorProfileView from './pages/DoctorProfileView'
+import AppointmentBooking from './pages/AppointmentBooking'
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
             <Route path='doctors' element={<Doctors />} />
             <Route path='messages' element={<Messages />} />
             <Route path='doctor/:doctorId' element={<DoctorProfileView />} />
+            <Route path='book-appointment/:doctorId' element={<AppointmentBooking />} />
           </Route>
 
           <Route path="/login" element={<Login />} />

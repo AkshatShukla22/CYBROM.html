@@ -1,4 +1,4 @@
-// routes/doctorRoutes.js
+// routes/doctorRoutes.js - Updated with appointment routes
 const express = require('express');
 const auth = require('../middleware/auth'); // Import auth middleware for protected routes
 const {
