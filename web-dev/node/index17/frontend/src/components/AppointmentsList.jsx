@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import backendUrl from '../utils/BackendURl';
-// import '../styles/AppointmentsList.css';
+import '../styles/AppointmentsList.css';
 
 const AppointmentsList = () => {
   
@@ -185,19 +185,21 @@ const AppointmentsList = () => {
 
   if (loading) {
     return (
-      <div className="appointments-page-container">
-        <div className="appointments-loading-spinner">
-          <i className="fas fa-spinner fa-spin"></i>
-          <span>Loading appointments...</span>
+      <div className="appointments-page-wrapper">
+        <div className="appointments-loading-container">
+          <div className="appointments-loading-spinner">
+            <i className="fas fa-spinner"></i>
+            <span>Loading appointments...</span>
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="appointments-page-container">
+    <div className="appointments-page-wrapper">
       {/* Header */}
-      <div className="appointments-header">
+      <div className="appointments-main-header">
         <div className="appointments-header-content">
           <h1>My Appointments</h1>
           <p>Manage your appointments and consultations</p>
@@ -206,44 +208,44 @@ const AppointmentsList = () => {
 
       {/* Error Message */}
       {error && (
-        <div className="message-alert error-alert">
+        <div className="appointments-error-alert">
           <i className="fas fa-exclamation-triangle"></i>
           <span>{error}</span>
-          <button onClick={() => setError('')} className="close-alert">
+          <button onClick={() => setError('')} className="appointments-close-alert">
             <i className="fas fa-times"></i>
           </button>
         </div>
       )}
 
       {/* Filter Tabs */}
-      <div className="appointments-filters">
-        <div className="filter-tabs">
+      <div className="appointments-filter-section">
+        <div className="appointments-filter-tabs">
           <button 
-            className={`filter-tab ${filter === 'all' ? 'active' : ''}`}
+            className={`appointments-filter-tab ${filter === 'all' ? 'active' : ''}`}
             onClick={() => setFilter('all')}
           >
             All
           </button>
           <button 
-            className={`filter-tab ${filter === 'scheduled' ? 'active' : ''}`}
+            className={`appointments-filter-tab ${filter === 'scheduled' ? 'active' : ''}`}
             onClick={() => setFilter('scheduled')}
           >
             Scheduled
           </button>
           <button 
-            className={`filter-tab ${filter === 'confirmed' ? 'active' : ''}`}
+            className={`appointments-filter-tab ${filter === 'confirmed' ? 'active' : ''}`}
             onClick={() => setFilter('confirmed')}
           >
             Confirmed
           </button>
           <button 
-            className={`filter-tab ${filter === 'completed' ? 'active' : ''}`}
+            className={`appointments-filter-tab ${filter === 'completed' ? 'active' : ''}`}
             onClick={() => setFilter('completed')}
           >
             Completed
           </button>
           <button 
-            className={`filter-tab ${filter === 'cancelled' ? 'active' : ''}`}
+            className={`appointments-filter-tab ${filter === 'cancelled' ? 'active' : ''}`}
             onClick={() => setFilter('cancelled')}
           >
             Cancelled
@@ -252,64 +254,64 @@ const AppointmentsList = () => {
       </div>
 
       {/* Appointments List */}
-      <div className="appointments-list">
+      <div className="appointments-main-list">
         {appointments.length > 0 ? (
           appointments.map((appointment) => (
-            <div key={appointment._id} className="appointment-card">
-              <div className="appointment-header">
-                <div className="appointment-info">
+            <div key={appointment._id} className="appointment-item-card">
+              <div className="appointment-card-header">
+                <div className="appointment-main-info">
                   {currentUser?.userType === 'doctor' ? (
                     <h3>Patient: {appointment.patientName}</h3>
                   ) : (
                     <h3>Dr. {appointment.doctorName}</h3>
                   )}
-                  <p className="appointment-location">
+                  <p className="appointment-location-info">
                     <i className="fas fa-map-marker-alt"></i>
                     {appointment.locationName}
                   </p>
                 </div>
-                <div className={`appointment-status ${getStatusColor(appointment.status)}`}>
+                <div className={`appointment-status-badge ${getStatusColor(appointment.status)}`}>
                   <i className={getStatusIcon(appointment.status)}></i>
                   <span>{appointment.status.charAt(0).toUpperCase() + appointment.status.slice(1)}</span>
                 </div>
               </div>
 
-              <div className="appointment-details">
-                <div className="appointment-datetime">
-                  <div className="detail-item">
+              <div className="appointment-card-details">
+                <div className="appointment-datetime-info">
+                  <div className="appointment-detail-item">
                     <i className="fas fa-calendar"></i>
                     <span>{formatDate(appointment.appointmentDate)}</span>
                   </div>
-                  <div className="detail-item">
+                  <div className="appointment-detail-item">
                     <i className="fas fa-clock"></i>
                     <span>{formatTime(appointment.timeSlot)}</span>
                   </div>
-                  <div className="detail-item">
+                  <div className="appointment-detail-item">
                     <i className="fas fa-list-ol"></i>
                     <span>Queue #{appointment.queueNumber}</span>
                   </div>
-                  <div className="detail-item">
+                  <div className="appointment-detail-item">
                     <i className="fas fa-rupee-sign"></i>
                     <span>₹{appointment.consultationFee}</span>
                   </div>
                 </div>
 
                 {appointment.symptoms && (
-                  <div className="appointment-symptoms">
+                  <div className="appointment-symptoms-section">
                     <h4>Symptoms:</h4>
                     <p>{appointment.symptoms}</p>
                   </div>
                 )}
 
                 {appointment.notes && (
-                  <div className="appointment-notes">
+                  <div className="appointment-notes-section">
                     <h4>Notes:</h4>
                     <p>{appointment.notes}</p>
                   </div>
                 )}
 
                 {appointment.cancellationReason && (
-                  <div className="appointment-cancellation">
+                  <div className="appointment-cancellation-section">
                     <h4>Cancellation Reason:</h4>
                     <p>{appointment.cancellationReason}</p>
                     <small>Cancelled by: {appointment.cancelledBy}</small>
@@ -317,19 +319,19 @@ const AppointmentsList = () => {
                 )}
               </div>
 
-              <div className="appointment-actions">
+              <div className="appointment-card-actions">
                 {currentUser?.userType === 'doctor' && appointment.status === 'scheduled' && (
                   <>
                     <button 
                       onClick={() => handleUpdateStatus(appointment._id, 'confirmed')}
-                      className="action-btn confirm-btn"
+                      className="appointment-action-btn confirm-action-btn"
                     >
                       <i className="fas fa-check"></i>
                       Confirm
                     </button>
                     <button 
                       onClick={() => handleUpdateStatus(appointment._id, 'in-progress')}
-                      className="action-btn progress-btn"
+                      className="appointment-action-btn progress-action-btn"
                     >
                       <i className="fas fa-play"></i>
                       Start Consultation
@@ -340,7 +342,7 @@ const AppointmentsList = () => {
                 {currentUser?.userType === 'doctor' && appointment.status === 'in-progress' && (
                   <button 
                     onClick={() => handleUpdateStatus(appointment._id, 'completed')}
-                    className="action-btn complete-btn"
+                    className="appointment-action-btn complete-action-btn"
                   >
                     <i className="fas fa-check-double"></i>
                     Mark Complete
@@ -351,7 +353,7 @@ const AppointmentsList = () => {
                   <button 
                     onClick={() => handleCancelAppointment(appointment._id)}
                     disabled={cancellingId === appointment._id}
-                    className="action-btn cancel-btn"
+                    className="appointment-action-btn cancel-action-btn"
                   >
                     {cancellingId === appointment._id ? (
                       <span>
@@ -369,7 +371,7 @@ const AppointmentsList = () => {
 
                 <button 
                   onClick={() => window.location.href = `/appointments/${appointment._id}`}
-                  className="action-btn view-btn"
+                  className="appointment-action-btn view-action-btn"
                 >
                   <i className="fas fa-eye"></i>
                   View Details
@@ -378,7 +380,7 @@ const AppointmentsList = () => {
             </div>
           ))
         ) : (
-          <div className="no-appointments-message">
+          <div className="no-appointments-container">
             <i className="fas fa-calendar-times"></i>
             <h3>No appointments found</h3>
             <p>
@@ -390,7 +392,7 @@ const AppointmentsList = () => {
             {currentUser?.userType !== 'doctor' && (
               <button 
                 onClick={() => window.location.href = '/doctors'}
-                className="book-appointment-btn"
+                className="book-new-appointment-btn"
               >
                 <i className="fas fa-calendar-plus"></i>
                 Book New Appointment

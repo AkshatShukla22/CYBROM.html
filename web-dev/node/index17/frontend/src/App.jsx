@@ -9,6 +9,8 @@ import Doctors from './pages/Doctors'
 import Messages from './pages/Messages'
 import DoctorProfileView from './pages/DoctorProfileView'
 import AppointmentBooking from './pages/AppointmentBooking'
+import AppointmentsList from './components/AppointmentsList'
+import Dashboard from './pages/Dashboard'
 
 function App() {
   return (
@@ -19,10 +21,12 @@ function App() {
             <Route index element={<Home />} />
             <Route path="/home" element={<Home />} />
             <Route path="/profile" element={<Profile />} />
-            <Route path='doctors' element={<Doctors />} />
-            <Route path='messages' element={<Messages />} />
-            <Route path='doctor/:doctorId' element={<DoctorProfileView />} />
-            <Route path='book-appointment/:doctorId' element={<AppointmentBooking />} />
+            <Route path='/doctors' element={<Doctors />} />
+            <Route path='/messages' element={<Messages />} />
+            <Route path='/doctor/:doctorId' element={<DoctorProfileView />} />
+            <Route path='/book-appointment/:doctorId' element={<AppointmentBooking />} />
+            <Route path='/appointments' element={<AppointmentsList />} />
+            <Route path='/dashboard' element={<Dashboard />} />
           </Route>
 
           <Route path="/login" element={<Login />} />

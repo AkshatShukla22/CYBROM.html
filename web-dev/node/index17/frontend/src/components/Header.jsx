@@ -159,7 +159,7 @@ const Header = () => {
                     )}
                     {user?.userType === 'user' && (
                       <li>
-                        <Link to="/my-appointments" onClick={() => setShowProfileMenu(false)}>
+                        <Link to="/appointments" onClick={() => setShowProfileMenu(false)}>
                           <i className="fas fa-calendar-alt"></i>
                           My Appointments
                         </Link>

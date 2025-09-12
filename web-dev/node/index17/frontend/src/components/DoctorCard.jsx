@@ -1,6 +1,6 @@
 import React from 'react';
-import '../styles/DoctorCard.css';
 import backendUrl from '../utils/BackendURl';
+import '../styles/DoctorCard.css';
 
 const DoctorCard = ({ doctor, onClick }) => {
   // Check if doctor has profile image
