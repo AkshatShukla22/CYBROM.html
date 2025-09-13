@@ -29,6 +29,7 @@ function App() {
             <Route path='/dashboard' element={<Dashboard />} />
           </Route>
 
+          {/* Other Routes */}
           <Route path="/login" element={<Login />} />
           <Route path='/register' element={<Register />} />
           <Route path="*" element={<NotFound />} />
