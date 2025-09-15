@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import backendUrl from '../utils/BackendURl';
+import backendUrl from '../utils/BackendUrl';
 import '../styles/Profile.css';
 
 const Profile = () => {

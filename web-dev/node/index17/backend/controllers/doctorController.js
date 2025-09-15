@@ -61,32 +61,49 @@ const getAllDoctors = async (req, res) => {
       query.experience = { $gte: parseInt(experience) };
     }
 
-    // Handle city filtering - check both old address.city and new practiceLocations
+    // FIXED: Handle city filtering - improved logic for multiple practice locations
     if (city || (showLocalOnly === 'true' && userCity)) {
       const searchCity = city || userCity;
+      const cityRegex = new RegExp(searchCity, 'i');
+      
+      // Create comprehensive city search across both old and new structures
       query.$or = [
-        // Check old address structure
-        { 'address.city': { $regex: searchCity, $options: 'i' } },
-        // Check new practiceLocations structure
-        { 'practiceLocations.address.city': { $regex: searchCity, $options: 'i' } }
+        // Check old address structure (case-insensitive)
+        { 'address.city': { $regex: cityRegex } },
+        // Check new practiceLocations structure (case-insensitive)
+        { 
+          'practiceLocations': {
+            $elemMatch: {
+              'isActive': { $ne: false },
+              'address.city': { $regex: cityRegex }
+            }
+          }
+        }
       ];
     }
 
-    // Handle fee filtering - check both old consultationFee and new practiceLocations fees
+    // FIXED: Handle fee filtering - improved logic for multiple practice locations
     let feeQuery = [];
     if (minFee || maxFee) {
       const feeFilter = {};
       if (minFee) feeFilter.$gte = parseInt(minFee);
       if (maxFee) feeFilter.$lte = parseInt(maxFee);
       
-      // Check both old and new fee structures
+      // Check both old consultationFee and new practiceLocations fees
       feeQuery = [
         { consultationFee: feeFilter },
-        { 'practiceLocations.consultationFee': feeFilter }
+        { 
+          'practiceLocations': {
+            $elemMatch: {
+              'isActive': { $ne: false },
+              'consultationFee': feeFilter
+            }
+          }
+        }
       ];
       
       if (query.$or) {
-        // Combine city and fee queries
+        // Combine city and fee queries using $and
         query.$and = [
           { $or: query.$or },
           { $or: feeQuery }
@@ -107,11 +124,16 @@ const getAllDoctors = async (req, res) => {
     if (sortBy && sortOrder) {
       // Handle sorting by consultation fee (prioritize practiceLocations over legacy field)
       if (sortBy === 'consultationFee') {
-        sort = { 'practiceLocations.consultationFee': sortOrder === 'desc' ? -1 : 1, consultationFee: sortOrder === 'desc' ? -1 : 1 };
+        sort = { 
+          'practiceLocations.consultationFee': sortOrder === 'desc' ? -1 : 1, 
+          consultationFee: sortOrder === 'desc' ? -1 : 1 
+        };
       } else {
         sort[sortBy] = sortOrder === 'desc' ? -1 : 1;
       }
     }
+
+    console.log('Doctor search query:', JSON.stringify(query, null, 2));
 
     // Execute query with pagination
     const doctors = await User.find(query)
@@ -125,24 +147,50 @@ const getAllDoctors = async (req, res) => {
     const totalDoctors = await User.countDocuments(query);
     const totalPages = Math.ceil(totalDoctors / limitNum);
 
-    // Get all unique cities from both old and new structures
-    const oldCities = await User.distinct('address.city', { 
-      userType: 'doctor', 
-      isActive: true,
-      'address.city': { $exists: true, $ne: null, $ne: '' }
-    });
-    
-    const newCities = await User.aggregate([
+    // FIXED: Get all unique cities from both old and new structures using aggregation
+    const citiesAggregation = await User.aggregate([
       { $match: { userType: 'doctor', isActive: true } },
-      { $unwind: '$practiceLocations' },
-      { $match: { 'practiceLocations.address.city': { $exists: true, $ne: null, $ne: '' } } },
-      { $group: { _id: '$practiceLocations.address.city' } }
+      {
+        $project: {
+          cities: {
+            $setUnion: [
+              // Get cities from legacy address field
+              {
+                $cond: {
+                  if: { $and: [{ $ne: ['$address.city', null] }, { $ne: ['$address.city', ''] }] },
+                  then: ['$address.city'],
+                  else: []
+                }
+              },
+              // Get cities from practice locations
+              {
+                $map: {
+                  input: {
+                    $filter: {
+                      input: '$practiceLocations',
+                      cond: {
+                        $and: [
+                          { $ne: ['$$this.isActive', false] },
+                          { $ne: ['$$this.address.city', null] },
+                          { $ne: ['$$this.address.city', ''] }
+                        ]
+                      }
+                    }
+                  },
+                  as: 'location',
+                  in: '$$location.address.city'
+                }
+              }
+            ]
+          }
+        }
+      },
+      { $unwind: '$cities' },
+      { $group: { _id: '$cities' } },
+      { $sort: { _id: 1 } }
     ]);
 
-    const allCities = [...new Set([
-      ...oldCities.filter(city => city),
-      ...newCities.map(item => item._id).filter(city => city)
-    ])].sort();
+    const allCities = citiesAggregation.map(item => item._id).filter(city => city);
 
     // Get all specializations for filter options
     const specializations = await User.distinct('specialization', { 
@@ -512,37 +560,89 @@ const searchCities = async (req, res) => {
       });
     }
 
-    // Search in both old and new city structures
+    // Create a case-insensitive regex pattern
+    const searchRegex = new RegExp(q, 'i');
+
+    // Search in legacy address.city field
     const oldCities = await User.distinct('address.city', {
       userType: 'doctor',
       isActive: true,
-      'address.city': { $regex: q, $options: 'i', $exists: true, $ne: null }
+      'address.city': { 
+        $regex: searchRegex, 
+        $exists: true, 
+        $ne: null, 
+        $ne: '' 
+      }
     });
 
-    const newCities = await User.aggregate([
-      { $match: { userType: 'doctor', isActive: true } },
+    // Search in practice locations using aggregation
+    const newCitiesAgg = await User.aggregate([
+      { 
+        $match: { 
+          userType: 'doctor', 
+          isActive: true,
+          practiceLocations: { $exists: true, $ne: [] }
+        } 
+      },
       { $unwind: '$practiceLocations' },
       { 
         $match: { 
+          'practiceLocations.isActive': { $ne: false },
           'practiceLocations.address.city': { 
-            $regex: q, 
-            $options: 'i', 
+            $regex: searchRegex,
             $exists: true, 
-            $ne: null 
+            $ne: null, 
+            $ne: '' 
           } 
         } 
       },
-      { $group: { _id: '$practiceLocations.address.city' } }
+      { 
+        $group: { 
+          _id: '$practiceLocations.address.city' 
+        } 
+      },
+      {
+        $project: {
+          _id: 0,
+          city: '$_id'
+        }
+      }
     ]);
 
+    // Extract cities from aggregation result
+    const newCities = newCitiesAgg.map(item => item.city);
+
+    // Combine both sources and remove duplicates
     const allCities = [...new Set([
-      ...oldCities.filter(city => city),
-      ...newCities.map(item => item._id).filter(city => city)
-    ])].sort();
+      ...oldCities.filter(city => city && city.trim() !== ''),
+      ...newCities.filter(city => city && city.trim() !== '')
+    ])];
+
+    // Sort cities alphabetically and prioritize exact matches
+    const sortedCities = allCities
+      .sort((a, b) => {
+        const aLower = a.toLowerCase();
+        const bLower = b.toLowerCase();
+        const qLower = q.toLowerCase();
+        
+        // Exact match first
+        if (aLower === qLower && bLower !== qLower) return -1;
+        if (bLower === qLower && aLower !== qLower) return 1;
+        
+        // Starts with query second
+        if (aLower.startsWith(qLower) && !bLower.startsWith(qLower)) return -1;
+        if (bLower.startsWith(qLower) && !aLower.startsWith(qLower)) return 1;
+        
+        // Alphabetical order for the rest
+        return aLower.localeCompare(bLower);
+      })
+      .slice(0, 10); // Limit to 10 results
+
+    console.log(`City search for "${q}": found ${sortedCities.length} cities`);
 
     res.json({
       success: true,
-      data: { cities: allCities.slice(0, 10) } // Limit to 10 results
+      data: { cities: sortedCities }
     });
 
   } catch (error) {
@@ -554,6 +654,7 @@ const searchCities = async (req, res) => {
     });
   }
 };
+
 
 // @desc    Delete doctor rating (for users to delete their own ratings)
 // @access  Private

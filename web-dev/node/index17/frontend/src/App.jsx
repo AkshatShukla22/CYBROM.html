@@ -9,7 +9,7 @@ import Doctors from './pages/Doctors'
 import Messages from './pages/Messages'
 import DoctorProfileView from './pages/DoctorProfileView'
 import AppointmentBooking from './pages/AppointmentBooking'
-import AppointmentsList from './components/AppointmentsList'
+import AppointmentsList from './pages/AppointmentsList'
 import Dashboard from './pages/Dashboard'
 
 function App() {

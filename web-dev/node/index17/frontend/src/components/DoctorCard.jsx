@@ -21,6 +21,38 @@ const DoctorCard = ({ doctor, onClick }) => {
     return specializations[spec] || spec;
   };
 
+  // Get cities from practice locations
+  const getCities = () => {
+    const cities = [];
+    
+    // Check practice locations first (new structure)
+    if (doctor.practiceLocations && doctor.practiceLocations.length > 0) {
+      doctor.practiceLocations.forEach(location => {
+        if (location.isActive !== false && location.address?.city) {
+          cities.push(location.address.city);
+        }
+      });
+    }
+    
+    // Fallback to legacy address structure
+    if (cities.length === 0 && doctor.address?.city) {
+      cities.push(doctor.address.city);
+    }
+    
+    // Remove duplicates and return
+    const uniqueCities = [...new Set(cities)];
+    
+    if (uniqueCities.length === 0) {
+      return 'Not specified';
+    } else if (uniqueCities.length === 1) {
+      return uniqueCities[0];
+    } else if (uniqueCities.length <= 3) {
+      return uniqueCities.join(', ');
+    } else {
+      return `${uniqueCities.slice(0, 2).join(', ')} +${uniqueCities.length - 2} more`;
+    }
+  };
+
   // Generate rating stars
   const renderRatingStars = (rating) => {
     const stars = [];
@@ -83,10 +115,10 @@ const DoctorCard = ({ doctor, onClick }) => {
             <span>Experience: {doctor.experience || 'N/A'} years</span>
           </div>
 
-          {/* Location */}
+          {/* Location - Fixed to handle multiple practice locations */}
           <div className="detail-item">
             <i className="fas fa-map-marker-alt detail-icon"></i>
-            <span>City: {doctor.address?.city || doctor.city || 'Not specified'}</span>
+            <span>City: {getCities()}</span>
           </div>
         </div>
       </div>

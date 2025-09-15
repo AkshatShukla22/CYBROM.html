@@ -119,6 +119,21 @@ const FilterSidebar = ({
     onFilterChange('city', '');
   };
 
+  // Handle search button click
+  const handleSearchButtonClick = () => {
+    if (citySearch && citySearch.trim() !== '') {
+      onFilterChange('city', citySearch.trim());
+      setShowCityDropdown(false);
+    }
+  };
+
+  // Handle Enter key press in search input
+  const handleSearchKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      handleSearchButtonClick();
+    }
+  };
+
   // Memoized handlers to prevent unnecessary re-renders
   const handleSortChange = useCallback((value) => {
     const [field, order] = value.split('|');
@@ -238,89 +253,63 @@ const FilterSidebar = ({
               Location
             </h4>
             
-            {/* City Search */}
-            <div className="city-search-container" style={{ position: 'relative', marginBottom: '15px' }}>
-              <div className="city-search-input-wrapper" style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
-                <input
-                  type="text"
-                  className="filter-select"
-                  placeholder="Search city..."
-                  value={citySearch}
-                  onChange={handleCitySearchChange}
-                  style={{ paddingRight: '40px' }}
-                />
-                {citySearch && (
-                  <button 
-                    className="clear-city-btn"
-                    onClick={clearCitySearch}
-                    title="Clear city search"
-                    style={{
-                      position: 'absolute',
-                      right: '30px',
-                      background: 'none',
-                      border: 'none',
-                      color: '#6c757d',
-                      cursor: 'pointer',
-                      padding: '5px',
-                      borderRadius: '3px'
-                    }}
-                  >
-                    <i className="fas fa-times"></i>
-                  </button>
-                )}
-                {isSearchingCities && (
-                  <div className="city-search-loading" style={{
-                    position: 'absolute',
-                    right: '10px',
-                    color: '#007bff'
-                  }}>
+            {/* City Search with Search Button */}
+            <div className="city-search-container">
+              <div className="city-search-input-wrapper">
+                <div className="city-input-container">
+                  <input
+                    type="text"
+                    className={`filter-select city-search-input ${citySearch ? 'has-clear-btn' : ''}`}
+                    placeholder="Search city..."
+                    value={citySearch}
+                    onChange={handleCitySearchChange}
+                    onKeyPress={handleSearchKeyPress}
+                  />
+                  {citySearch && (
+                    <button 
+                      className="clear-city-btn"
+                      onClick={clearCitySearch}
+                      title="Clear city search"
+                    >
+                      <i className="fas fa-times"></i>
+                    </button>
+                  )}
+                </div>
+                
+                {/* Search Button */}
+                <button 
+                  className={`city-search-btn ${citySearch && !isSearchingCities ? 'enabled' : 'disabled'}`}
+                  onClick={handleSearchButtonClick}
+                  disabled={!citySearch || citySearch.trim() === '' || isSearchingCities}
+                  title="Search for city"
+                >
+                  {isSearchingCities ? (
                     <i className="fas fa-spinner fa-spin"></i>
-                  </div>
-                )}
+                  ) : (
+                    <>
+                      <i className="fas fa-search"></i>
+                      Search
+                    </>
+                  )}
+                </button>
               </div>
               
               {/* City Dropdown */}
               {showCityDropdown && (
-                <div className="city-dropdown" style={{
-                  position: 'absolute',
-                  top: '100%',
-                  left: '0',
-                  right: '0',
-                  background: 'white',
-                  border: '1px solid #e1e5e9',
-                  borderRadius: '8px',
-                  boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-                  zIndex: 1000,
-                  maxHeight: '200px',
-                  overflowY: 'auto'
-                }}>
+                <div className="city-dropdown">
                   {cityResults.length > 0 ? (
                     cityResults.map((city, index) => (
                       <div 
                         key={index}
-                        className="city-option"
+                        className={`city-option ${index < cityResults.length - 1 ? 'has-border' : ''}`}
                         onClick={() => handleCitySelect(city)}
-                        style={{
-                          padding: '10px 12px',
-                          cursor: 'pointer',
-                          borderBottom: index < cityResults.length - 1 ? '1px solid #f0f0f0' : 'none',
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '8px'
-                        }}
-                        onMouseEnter={(e) => e.target.style.background = '#f8f9fa'}
-                        onMouseLeave={(e) => e.target.style.background = 'white'}
                       >
-                        <i className="fas fa-map-marker-alt" style={{ color: '#6c757d', fontSize: '12px' }}></i>
+                        <i className="fas fa-map-marker-alt"></i>
                         {city}
                       </div>
                     ))
                   ) : (
-                    <div className="city-no-results" style={{
-                      padding: '10px 12px',
-                      color: '#6c757d',
-                      textAlign: 'center'
-                    }}>
+                    <div className="city-no-results">
                       No cities found
                     </div>
                   )}
@@ -345,23 +334,8 @@ const FilterSidebar = ({
 
             {/* Selected City Display */}
             {filters.city && (
-              <div className="selected-city" style={{
-                background: '#e3f2fd',
-                border: '1px solid #1976d2',
-                borderRadius: '6px',
-                padding: '8px 12px',
-                marginTop: '10px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between'
-              }}>
-                <span className="selected-city-name" style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '6px',
-                  color: '#1976d2',
-                  fontSize: '14px'
-                }}>
+              <div className="selected-city">
+                <span className="selected-city-name">
                   <i className="fas fa-map-marker-alt"></i>
                   {filters.city}
                 </span>
@@ -369,15 +343,6 @@ const FilterSidebar = ({
                   className="remove-city-btn"
                   onClick={() => onFilterChange('city', '')}
                   title="Remove city filter"
-                  style={{
-                    background: 'none',
-                    border: 'none',
-                    color: '#1976d2',
-                    cursor: 'pointer',
-                    padding: '2px 6px',
-                    borderRadius: '3px',
-                    fontSize: '12px'
-                  }}
                 >
                   <i className="fas fa-times"></i>
                 </button>
@@ -517,17 +482,8 @@ const FilterSidebar = ({
 
             {/* Active Fee Range Display */}
             {(filters.minFee || filters.maxFee) && (
-              <div className="active-fee-range" style={{
-                background: '#fff3cd',
-                border: '1px solid #ffeaa7',
-                borderRadius: '6px',
-                padding: '8px 12px',
-                marginTop: '10px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between'
-              }}>
-                <span className="fee-range-value" style={{ fontSize: '14px', color: '#856404' }}>
+              <div className="active-fee-range">
+                <span className="fee-range-value">
                   {filters.minFee ? `₹${filters.minFee}` : '₹0'} - {filters.maxFee ? `₹${filters.maxFee}` : '∞'}
                 </span>
                 <button 
@@ -539,15 +495,6 @@ const FilterSidebar = ({
                     setMaxFee('');
                   }}
                   title="Remove fee range filter"
-                  style={{
-                    background: 'none',
-                    border: 'none',
-                    color: '#856404',
-                    cursor: 'pointer',
-                    padding: '2px 6px',
-                    borderRadius: '3px',
-                    fontSize: '12px'
-                  }}
                 >
                   <i className="fas fa-times"></i>
                 </button>
