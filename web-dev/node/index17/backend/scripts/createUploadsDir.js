@@ -1,4 +1,3 @@
-// scripts/createUploadsDir.js - Run this once to create necessary directories
 const fs = require('fs');
 const path = require('path');
 
