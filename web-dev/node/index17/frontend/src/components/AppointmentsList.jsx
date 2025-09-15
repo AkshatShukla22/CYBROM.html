@@ -17,7 +17,12 @@ const AppointmentsList = () => {
 
   useEffect(() => {
     if (currentUser) {
-      fetchAppointments();
+      // Only fetch appointments for patients
+      if (currentUser.userType !== 'doctor') {
+        fetchAppointments();
+      } else {
+        setLoading(false);
+      }
     }
   }, [currentUser, filter]);
 
@@ -52,9 +57,7 @@ const AppointmentsList = () => {
     setLoading(true);
     try {
       const token = localStorage.getItem('token');
-      const endpoint = currentUser?.userType === 'doctor' 
-        ? '/api/appointments/doctor/appointments'
-        : '/api/appointments/patient/appointments';
+      const endpoint = '/api/appointments/patient/appointments';
       
       const queryParams = new URLSearchParams();
       if (filter !== 'all') {
@@ -114,30 +117,6 @@ const AppointmentsList = () => {
     }
   };
 
-  const handleUpdateStatus = async (appointmentId, newStatus) => {
-    try {
-      const token = localStorage.getItem('token');
-      const response = await fetch(`${backendUrl}/api/appointments/${appointmentId}/status`, {
-        method: 'PUT',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ status: newStatus })
-      });
-
-      const data = await response.json();
-      if (response.ok) {
-        fetchAppointments();
-      } else {
-        setError(data.message || 'Failed to update appointment status');
-      }
-    } catch (error) {
-      setError('Network error. Please try again.');
-      console.error('Update status error:', error);
-    }
-  };
-
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString('en-IN', {
       weekday: 'long',
@@ -191,6 +170,38 @@ const AppointmentsList = () => {
             <i className="fas fa-spinner"></i>
             <span>Loading appointments...</span>
           </div>
+        </div>
+      </div>
+    );
+  }
+
+  // If user is a doctor, show empty state directing them to dashboard
+  if (currentUser?.userType === 'doctor') {
+    return (
+      <div className="appointments-page-wrapper">
+        <div className="appointments-main-header">
+          <div className="appointments-header-content">
+            <h1>My Appointments</h1>
+            <p>Manage your appointments and consultations</p>
+          </div>
+        </div>
+
+        <div className="no-appointments-container">
+          <i className="fas fa-user-md"></i>
+          <h3>Doctor Portal</h3>
+          <p>
+            As a doctor, your appointment management is handled through the Dashboard.
+          </p>
+          <p>
+            Please visit the Dashboard to manage patient appointments, confirm consultations, and handle your practice.
+          </p>
+          <button 
+            onClick={() => window.location.href = '/dashboard'}
+            className="book-new-appointment-btn"
+          >
+            <i className="fas fa-tachometer-alt"></i>
+            Go to Dashboard
+          </button>
         </div>
       </div>
     );
@@ -260,11 +271,7 @@ const AppointmentsList = () => {
             <div key={appointment._id} className="appointment-item-card">
               <div className="appointment-card-header">
                 <div className="appointment-main-info">
-                  {currentUser?.userType === 'doctor' ? (
-                    <h3>Patient: {appointment.patientName}</h3>
-                  ) : (
-                    <h3>Dr. {appointment.doctorName}</h3>
-                  )}
+                  <h3>Dr. {appointment.doctorName}</h3>
                   <p className="appointment-location-info">
                     <i className="fas fa-map-marker-alt"></i>
                     {appointment.locationName}
@@ -320,35 +327,6 @@ const AppointmentsList = () => {
               </div>
 
               <div className="appointment-card-actions">
-                {currentUser?.userType === 'doctor' && appointment.status === 'scheduled' && (
-                  <>
-                    <button 
-                      onClick={() => handleUpdateStatus(appointment._id, 'confirmed')}
-                      className="appointment-action-btn confirm-action-btn"
-                    >
-                      <i className="fas fa-check"></i>
-                      Confirm
-                    </button>
-                    <button 
-                      onClick={() => handleUpdateStatus(appointment._id, 'in-progress')}
-                      className="appointment-action-btn progress-action-btn"
-                    >
-                      <i className="fas fa-play"></i>
-                      Start Consultation
-                    </button>
-                  </>
-                )}
-
-                {currentUser?.userType === 'doctor' && appointment.status === 'in-progress' && (
-                  <button 
-                    onClick={() => handleUpdateStatus(appointment._id, 'completed')}
-                    className="appointment-action-btn complete-action-btn"
-                  >
-                    <i className="fas fa-check-double"></i>
-                    Mark Complete
-                  </button>
-                )}
-
                 {canCancelAppointment(appointment) && (
                   <button 
                     onClick={() => handleCancelAppointment(appointment._id)}
@@ -389,15 +367,13 @@ const AppointmentsList = () => {
                 : `No ${filter} appointments found.`
               }
             </p>
-            {currentUser?.userType !== 'doctor' && (
-              <button 
-                onClick={() => window.location.href = '/doctors'}
-                className="book-new-appointment-btn"
-              >
-                <i className="fas fa-calendar-plus"></i>
-                Book New Appointment
-              </button>
-            )}
+            <button 
+              onClick={() => window.location.href = '/doctors'}
+              className="book-new-appointment-btn"
+            >
+              <i className="fas fa-calendar-plus"></i>
+              Book New Appointment
+            </button>
           </div>
         )}
       </div>
