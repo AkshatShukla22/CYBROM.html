@@ -1,4 +1,4 @@
-// routes/doctorRoutes.js - Updated with appointment routes
+// routes/doctorRoutes.js - Updated with search route
 const express = require('express');
 const auth = require('../middleware/auth'); // Import auth middleware for protected routes
 const {
@@ -9,7 +9,8 @@ const {
   deleteDoctorRating,
   getDoctorsBySpecialization,
   getDoctorStats,
-  searchCities
+  searchCities,
+  searchDoctors // ADD THIS IMPORT
 } = require('../controllers/doctorController');
 
 const router = express.Router();
@@ -17,6 +18,7 @@ const router = express.Router();
 // Public routes - no authentication required to view doctors
 router.get('/', getAllDoctors);
 router.get('/stats', getDoctorStats);
+router.get('/search', searchDoctors); // ADD THIS ROUTE - MUST BE BEFORE /:doctorId
 router.get('/search-cities', searchCities);
 router.get('/specialization/:specialization', getDoctorsBySpecialization);
 

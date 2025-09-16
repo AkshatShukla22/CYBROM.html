@@ -220,7 +220,7 @@
       height: 100%;
       background: linear-gradient(90deg, #667eea, #764ba2);
       width: 0%;
-      animation: progressAnimation 5s linear infinite;
+      animation: progressBar  5s linear infinite;
       box-shadow: 0 0 10px rgba(102, 126, 234, 0.5);
     }
 
@@ -236,7 +236,7 @@
       }
     }
 
-    @keyframes progressAnimation {
+    @keyframes progressBar  {
       0% { width: 0%; }
       100% { width: 100%; }
     }

@@ -1,14 +1,50 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import '../styles/Home.css';
 import Banner from '../components/Banner';
 
 const Home = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
   const [counters, setCounters] = useState({
     doctors: 0,
     patients: 0,
     centers: 0,
     experience: 0
   });
+
+  // Handle scroll-to functionality from banner navigation
+  useEffect(() => {
+    if (location.state?.scrollTo) {
+      const scrollTarget = location.state.scrollTo;
+      
+      // Use setTimeout to ensure the component has fully rendered
+      setTimeout(() => {
+        let targetElement = null;
+        
+        switch (scrollTarget) {
+          case 'emergency':
+            targetElement = document.querySelector('.emergency-section');
+            break;
+          case 'services':
+            targetElement = document.querySelector('.services-section');
+            break;
+          default:
+            console.log('Unknown scroll target:', scrollTarget);
+        }
+        
+        if (targetElement) {
+          targetElement.scrollIntoView({ 
+            behavior: 'smooth',
+            block: 'start' 
+          });
+        }
+      }, 100);
+
+      // Clear the state to prevent unwanted scrolling on subsequent renders
+      window.history.replaceState({}, document.title);
+    }
+  }, [location.state]);
 
   // Animate counters
   useEffect(() => {
@@ -39,6 +75,11 @@ const Home = () => {
     setTimeout(() => animateCounter('experience', targetValues.experience), 1100);
   }, []);
 
+  // Handle service card clicks
+  const handleServiceClick = (specialization) => {
+    navigate(`/doctors?specialization=${encodeURIComponent(specialization)}`);
+  };
+
   return (
     <>
       <Banner />
@@ -50,53 +91,53 @@ const Home = () => {
             <p className="section-subtitle">Comprehensive healthcare solutions tailored to your needs</p>
           </div>
           <div className="services-grid">
-            <div className="service-card">
+            <div className="service-card" onClick={() => handleServiceClick('general')}>
               <div className="service-icon">
                 <i className="fas fa-stethoscope"></i>
               </div>
               <h3>General Consultation</h3>
               <p>Expert medical advice and health checkups from certified general practitioners.</p>
-              <a href="#" className="service-link">Learn More <i className="fas fa-arrow-right"></i></a>
+              <span className="service-link">Learn More <i className="fas fa-arrow-right"></i></span>
             </div>
-            <div className="service-card">
+            <div className="service-card" onClick={() => handleServiceClick('cardiology')}>
               <div className="service-icon">
                 <i className="fas fa-heartbeat"></i>
               </div>
               <h3>Cardiology</h3>
               <p>Specialized heart care and cardiovascular disease prevention and treatment.</p>
-              <a href="#" className="service-link">Learn More <i className="fas fa-arrow-right"></i></a>
+              <span className="service-link">Learn More <i className="fas fa-arrow-right"></i></span>
             </div>
-            <div className="service-card">
+            <div className="service-card" onClick={() => handleServiceClick('neurology')}>
               <div className="service-icon">
                 <i className="fas fa-brain"></i>
               </div>
               <h3>Neurology</h3>
               <p>Advanced neurological care for brain and nervous system disorders.</p>
-              <a href="#" className="service-link">Learn More <i className="fas fa-arrow-right"></i></a>
+              <span className="service-link">Learn More <i className="fas fa-arrow-right"></i></span>
             </div>
-            <div className="service-card">
+            <div className="service-card" onClick={() => handleServiceClick('pediatrics')}>
               <div className="service-icon">
                 <i className="fas fa-baby"></i>
               </div>
               <h3>Pediatrics</h3>
               <p>Comprehensive healthcare services for infants, children, and adolescents.</p>
-              <a href="#" className="service-link">Learn More <i className="fas fa-arrow-right"></i></a>
+              <span className="service-link">Learn More <i className="fas fa-arrow-right"></i></span>
             </div>
-            <div className="service-card">
+            <div className="service-card" onClick={() => handleServiceClick('ophthalmology')}>
               <div className="service-icon">
                 <i className="fas fa-eye"></i>
               </div>
               <h3>Ophthalmology</h3>
               <p>Complete eye care services including vision correction and eye surgery.</p>
-              <a href="#" className="service-link">Learn More <i className="fas fa-arrow-right"></i></a>
+              <span className="service-link">Learn More <i className="fas fa-arrow-right"></i></span>
             </div>
-            <div className="service-card">
+            <div className="service-card" onClick={() => handleServiceClick('dentistry')}>
               <div className="service-icon">
                 <i className="fas fa-tooth"></i>
               </div>
               <h3>Dental Care</h3>
               <p>Professional dental services for optimal oral health and beautiful smiles.</p>
-              <a href="#" className="service-link">Learn More <i className="fas fa-arrow-right"></i></a>
+              <span className="service-link">Learn More <i className="fas fa-arrow-right"></i></span>
             </div>
           </div>
         </div>
@@ -334,7 +375,7 @@ const Home = () => {
             <h2>Ready to Take Control of Your Health?</h2>
             <p>Join thousands of patients who trust MediCare for their healthcare needs. Book your first appointment today and experience the difference.</p>
             <div className="cta-actions">
-              <button className="btn btn-primary btn-large">
+              <button className="btn btn-primary btn-large" onClick={() => navigate('/doctors')}>
                 <i className="fas fa-calendar-plus"></i>
                 Book Your First Appointment
               </button>

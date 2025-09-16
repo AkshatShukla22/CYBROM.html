@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import DoctorCard from '../components/DoctorCard';
 import FilterSidebar from '../components/FilterSidebar';
 import LoadingSpinner from '../components/LoadingSpinner';
@@ -7,12 +7,13 @@ import '../styles/Doctors.css';
 
 const Doctors = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [doctors, setDoctors] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [userLocation, setUserLocation] = useState(null);
   const [currentUser, setCurrentUser] = useState(null);
-  const [userLocationLoaded, setUserLocationLoaded] = useState(false); // NEW: Track if user location is loaded
+  const [userLocationLoaded, setUserLocationLoaded] = useState(false);
   
   // Filter states
   const [filters, setFilters] = useState({
@@ -23,7 +24,8 @@ const Doctors = () => {
     minFee: '',
     experience: '',
     showLocalOnly: false,
-    userCity: ''
+    userCity: '',
+    search: '' // Added search filter
   });
 
   // Pagination states
@@ -48,6 +50,64 @@ const Doctors = () => {
   const [sortBy, setSortBy] = useState('ratings.average');
   const [sortOrder, setSortOrder] = useState('desc');
 
+  // Parse URL parameters and update filters
+  useEffect(() => {
+    const searchParams = new URLSearchParams(location.search);
+    const newFilters = { ...filters };
+    let hasChanges = false;
+
+    // Handle search parameter
+    const searchQuery = searchParams.get('search');
+    if (searchQuery && searchQuery !== filters.search) {
+      newFilters.search = searchQuery;
+      hasChanges = true;
+    }
+
+    // Handle specialization parameter
+    const specialization = searchParams.get('specialization');
+    if (specialization && specialization !== filters.specialization) {
+      newFilters.specialization = specialization;
+      hasChanges = true;
+    }
+
+    // Handle city parameter
+    const city = searchParams.get('city');
+    if (city && city !== filters.city) {
+      newFilters.city = city;
+      hasChanges = true;
+    }
+
+    // Handle other parameters
+    const minRating = searchParams.get('minRating');
+    if (minRating && minRating !== filters.minRating) {
+      newFilters.minRating = minRating;
+      hasChanges = true;
+    }
+
+    const maxFee = searchParams.get('maxFee');
+    if (maxFee && maxFee !== filters.maxFee) {
+      newFilters.maxFee = maxFee;
+      hasChanges = true;
+    }
+
+    const minFee = searchParams.get('minFee');
+    if (minFee && minFee !== filters.minFee) {
+      newFilters.minFee = minFee;
+      hasChanges = true;
+    }
+
+    const experience = searchParams.get('experience');
+    if (experience && experience !== filters.experience) {
+      newFilters.experience = experience;
+      hasChanges = true;
+    }
+
+    if (hasChanges) {
+      console.log('URL parameters detected, updating filters:', newFilters);
+      setFilters(newFilters);
+    }
+  }, [location.search]);
+
   // FIXED: Fetch actual user location from database
   useEffect(() => {
     const fetchCurrentUser = async () => {
@@ -56,7 +116,7 @@ const Doctors = () => {
         
         if (!token) {
           console.log('No token found, user not logged in');
-          setUserLocationLoaded(true); // Mark as loaded even if no user
+          setUserLocationLoaded(true);
           return;
         }
 
@@ -85,10 +145,8 @@ const Doctors = () => {
             console.log('Setting user location:', userLocationData);
             console.log('User address from DB:', data.user.address);
             
-            // Set user location
             setUserLocation(userLocationData);
             
-            // If we have a city, also log what we're setting
             if (userLocationData.city) {
               console.log('✅ User city found:', userLocationData.city);
             } else {
@@ -104,7 +162,7 @@ const Doctors = () => {
       } catch (error) {
         console.error('Error fetching current user:', error);
       } finally {
-        setUserLocationLoaded(true); // FIXED: Always mark as loaded
+        setUserLocationLoaded(true);
       }
     };
 
@@ -118,8 +176,9 @@ const Doctors = () => {
     console.log('User location:', userLocation);
     console.log('User location loaded:', userLocationLoaded);
     console.log('Filters:', filters);
+    console.log('URL Search params:', location.search);
     console.log('===========================');
-  }, [currentUser, userLocation, userLocationLoaded, filters]);
+  }, [currentUser, userLocation, userLocationLoaded, filters, location.search]);
 
   // Fetch doctors data
   const fetchDoctors = async (page = 1, isLoadMore = false) => {
@@ -196,7 +255,7 @@ const Doctors = () => {
     setShowMoreStates(showMoreInitial);
   };
 
-  // FIXED: Handle filter changes with proper logging
+  // FIXED: Handle filter changes with proper logging and URL updates
   const handleFilterChange = (filterName, value) => {
     console.log(`Filter change: ${filterName} = ${value}`);
     
@@ -207,6 +266,20 @@ const Doctors = () => {
       };
       
       console.log('Updated filters:', newFilters);
+      
+      // Update URL parameters to reflect filter changes
+      const searchParams = new URLSearchParams();
+      Object.entries(newFilters).forEach(([key, val]) => {
+        if (val && val !== false && val !== '' && key !== 'userCity') {
+          searchParams.set(key, val.toString());
+        }
+      });
+      
+      const newSearch = searchParams.toString();
+      if (newSearch !== location.search.replace('?', '')) {
+        navigate(`/doctors?${newSearch}`, { replace: true });
+      }
+      
       return newFilters;
     });
     
@@ -222,7 +295,7 @@ const Doctors = () => {
 
   // Clear all filters
   const clearFilters = () => {
-    setFilters({
+    const clearedFilters = {
       specialization: '',
       city: '',
       minRating: '',
@@ -230,8 +303,13 @@ const Doctors = () => {
       minFee: '',
       experience: '',
       showLocalOnly: false,
-      userCity: ''
-    });
+      userCity: '',
+      search: ''
+    };
+    setFilters(clearedFilters);
+    
+    // Clear URL parameters as well
+    navigate('/doctors', { replace: true });
   };
 
   // Show more doctors in a specific specialization
@@ -254,13 +332,31 @@ const Doctors = () => {
     navigate(`/doctor/${doctorId}`);
   };
 
+  // Scroll to specialization section
+  const scrollToSpecialization = (specialization) => {
+    const element = document.getElementById(`specialization-${specialization}`);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+
+  // Check if we should scroll to a specific specialization after loading
+  useEffect(() => {
+    if (!loading && filters.specialization && doctors.length > 0) {
+      // Delay scroll to ensure DOM is updated
+      setTimeout(() => {
+        scrollToSpecialization(filters.specialization);
+      }, 100);
+    }
+  }, [loading, filters.specialization, doctors]);
+
   // FIXED: Initial load - wait for user location to be loaded before fetching
   useEffect(() => {
     if (userLocationLoaded) {
       console.log('User location loaded, fetching doctors...');
       fetchDoctors();
     }
-  }, [userLocationLoaded]); // Only depend on userLocationLoaded for initial fetch
+  }, [userLocationLoaded]);
 
   // FIXED: Filter updates - fetch doctors when filters change (but only after user location is loaded)
   useEffect(() => {
@@ -268,7 +364,7 @@ const Doctors = () => {
       console.log('Filters changed, refetching doctors...');
       fetchDoctors();
     }
-  }, [filters, sortBy, sortOrder]); // Removed userLocationLoaded from dependencies to avoid double fetch
+  }, [filters, sortBy, sortOrder]);
 
   // Specialization display names
   const specializationNames = {
@@ -297,6 +393,22 @@ const Doctors = () => {
         <div className="page-header">
           <h1>Find the Right Doctor for You</h1>
           <p>Browse through our network of qualified healthcare professionals</p>
+          
+          {/* Search Results Info */}
+          {filters.search && (
+            <div style={{ 
+              background: '#e3f2fd', 
+              padding: '10px', 
+              margin: '10px 0', 
+              borderRadius: '5px',
+              fontSize: '14px' 
+            }}>
+              <strong>Search Results for:</strong> "{filters.search}"
+              {pagination.totalDoctors > 0 && (
+                <span> - {pagination.totalDoctors} doctors found</span>
+              )}
+            </div>
+          )}
           
           {/* User Location Debug Info */}
           {userLocation && userLocation.city && (
@@ -371,6 +483,11 @@ const Doctors = () => {
               <div className="no-results">
                 <h3>No doctors found</h3>
                 <p>Try adjusting your filters or search criteria</p>
+                {filters.search && (
+                  <p style={{ color: '#666', fontSize: '14px' }}>
+                    No results for search: "{filters.search}"
+                  </p>
+                )}
                 {filters.showLocalOnly && userLocation && userLocation.city && (
                   <p style={{ color: '#666', fontSize: '14px' }}>
                     Looking for doctors in: {userLocation.city}
@@ -388,10 +505,16 @@ const Doctors = () => {
             {!error && doctors.length > 0 && (
               <>
                 {/* Active Filters */}
-                {(filters.specialization || filters.city || filters.minRating || filters.maxFee || filters.minFee || filters.experience || filters.showLocalOnly) && (
+                {(filters.specialization || filters.city || filters.minRating || filters.maxFee || filters.minFee || filters.experience || filters.showLocalOnly || filters.search) && (
                   <div className="active-filters">
                     <h4>Active Filters:</h4>
                     <div className="filter-tags">
+                      {filters.search && (
+                        <span className="filter-tag">
+                          Search: {filters.search}
+                          <button onClick={() => handleFilterChange('search', '')}>×</button>
+                        </span>
+                      )}
                       {filters.specialization && (
                         <span className="filter-tag">
                           Specialty: {filters.specialization}
@@ -449,7 +572,7 @@ const Doctors = () => {
                   const hasMore = doctorsInSpec.length > visibleCount;
 
                   return (
-                    <section key={specialization} className="specialization-section">
+                    <section key={specialization} className="specialization-section" id={`specialization-${specialization}`}>
                       <div className="section-header">
                         <h2>{specializationNames[specialization] || `${specialization} Specialists`}</h2>
                         <span className="doctor-count">{doctorsInSpec.length} doctors</span>

@@ -38,23 +38,59 @@ const getAllDoctors = async (req, res) => {
       minFee,
       experience,
       showLocalOnly,
-      userCity, // This should be passed from frontend when showLocalOnly is true
+      userCity,
       page = 1,
       limit = 10,
       sortBy = 'ratings.average',
-      sortOrder = 'desc'
+      sortOrder = 'desc',
+      search // ADD THIS LINE
     } = req.query;
 
     console.log('Filter parameters received:', { 
-      specialization, city, minRating, maxFee, minFee, experience, showLocalOnly, userCity 
+      specialization, city, minRating, maxFee, minFee, experience, showLocalOnly, userCity, search // ADD search HERE
     });
 
     // Build query object
     let query = { userType: 'doctor', isActive: true };
 
-    // Add filters
-    if (specialization) {
-      query.specialization = specialization;
+    // ADD THIS SEARCH FUNCTIONALITY BLOCK AFTER THE QUERY INITIALIZATION:
+    // Add search functionality
+    if (search && search.trim()) {
+      const searchRegex = new RegExp(search.trim(), 'i');
+      console.log('Applying search filter:', search);
+      
+      const searchConditions = [
+        { name: searchRegex },
+        { specialization: searchRegex },
+        { bio: searchRegex },
+        { email: searchRegex },
+        { 'address.city': searchRegex },
+        { 'address.state': searchRegex },
+        { 
+          'practiceLocations': {
+            $elemMatch: {
+              'isActive': { $ne: false },
+              $or: [
+                { 'address.city': searchRegex },
+                { 'address.state': searchRegex }
+              ]
+            }
+          }
+        }
+      ];
+
+      // If query already has conditions, combine them
+      if (query.$and) {
+        query.$and.push({ $or: searchConditions });
+      } else if (query.$or) {
+        query.$and = [
+          { $or: query.$or },
+          { $or: searchConditions }
+        ];
+        delete query.$or;
+      } else {
+        query.$or = searchConditions;
+      }
     }
 
     if (minRating) {
@@ -701,6 +737,178 @@ const deleteDoctorRating = async (req, res) => {
   }
 };
 
+const searchDoctors = async (req, res) => {
+  try {
+    const { q, limit = 8 } = req.query;
+
+    if (!q || q.trim().length < 2) {
+      return res.status(400).json({
+        success: false,
+        message: 'Search query must be at least 2 characters long'
+      });
+    }
+
+    const searchQuery = q.trim();
+    const searchLimit = Math.min(parseInt(limit), 20); // Max 20 results
+    const searchRegex = new RegExp(searchQuery, 'i');
+
+    console.log(`Searching for: "${searchQuery}"`);
+
+    // Search doctors by name, email, and bio
+    const doctorResults = await User.find({
+      userType: 'doctor',
+      isActive: true,
+      $or: [
+        { name: searchRegex },
+        { email: searchRegex },
+        { bio: searchRegex }
+      ]
+    })
+    .select('_id name specialization ratings practiceLocations email')
+    .sort({ 'ratings.average': -1 }) // Sort by rating first
+    .limit(searchLimit)
+    .lean();
+
+    console.log(`Found ${doctorResults.length} doctors matching search`);
+
+    // Get unique specializations that match search
+    const allSpecializations = [
+      'cardiology', 'dermatology', 'neurology', 'pediatrics',
+      'orthopedics', 'psychiatry', 'general', 'gynecology',
+      'ophthalmology', 'dentistry', 'other'
+    ];
+
+    const specializationDisplayNames = {
+      'cardiology': 'Cardiologist',
+      'dermatology': 'Dermatologist',
+      'neurology': 'Neurologist',
+      'pediatrics': 'Pediatrician',
+      'orthopedics': 'Orthopedic Surgeon',
+      'psychiatry': 'Psychiatrist',
+      'general': 'General Physician',
+      'gynecology': 'Gynecologist',
+      'ophthalmology': 'Ophthalmologist',
+      'dentistry': 'Dentist',
+      'other': 'Specialist'
+    };
+
+    const matchingSpecializations = allSpecializations.filter(spec => {
+      const displayName = specializationDisplayNames[spec] || spec;
+      const searchLower = searchQuery.toLowerCase();
+      
+      return spec.includes(searchLower) || 
+             displayName.toLowerCase().includes(searchLower) ||
+             // Add common search terms
+             (searchLower.includes('cardio') && spec === 'cardiology') ||
+             (searchLower.includes('heart') && spec === 'cardiology') ||
+             (searchLower.includes('dermat') && spec === 'dermatology') ||
+             (searchLower.includes('skin') && spec === 'dermatology') ||
+             (searchLower.includes('neuro') && spec === 'neurology') ||
+             (searchLower.includes('brain') && spec === 'neurology') ||
+             (searchLower.includes('pediatr') && spec === 'pediatrics') ||
+             (searchLower.includes('child') && spec === 'pediatrics') ||
+             (searchLower.includes('orthop') && spec === 'orthopedics') ||
+             (searchLower.includes('bone') && spec === 'orthopedics') ||
+             (searchLower.includes('joint') && spec === 'orthopedics') ||
+             (searchLower.includes('psychiat') && spec === 'psychiatry') ||
+             (searchLower.includes('mental') && spec === 'psychiatry') ||
+             (searchLower.includes('gynec') && spec === 'gynecology') ||
+             (searchLower.includes('women') && spec === 'gynecology') ||
+             (searchLower.includes('ophthal') && spec === 'ophthalmology') ||
+             (searchLower.includes('eye') && spec === 'ophthalmology') ||
+             (searchLower.includes('dent') && spec === 'dentistry') ||
+             (searchLower.includes('teeth') && spec === 'dentistry') ||
+             (searchLower.includes('tooth') && spec === 'dentistry');
+    });
+
+    // Search cities from both old and new address structures
+    const citiesAggregation = await User.aggregate([
+      {
+        $match: {
+          userType: 'doctor',
+          isActive: true,
+          $or: [
+            { 'address.city': searchRegex },
+            { 
+              'practiceLocations.address.city': searchRegex,
+              'practiceLocations.isActive': { $ne: false }
+            }
+          ]
+        }
+      },
+      {
+        $project: {
+          cities: {
+            $setUnion: [
+              // Get cities from legacy address field
+              {
+                $cond: {
+                  if: { 
+                    $and: [
+                      { $ne: ['$address.city', null] }, 
+                      { $ne: ['$address.city', ''] },
+                      { $regexMatch: { input: '$address.city', regex: searchQuery, options: 'i' } }
+                    ] 
+                  },
+                  then: ['$address.city'],
+                  else: []
+                }
+              },
+              // Get cities from practice locations
+              {
+                $map: {
+                  input: {
+                    $filter: {
+                      input: '$practiceLocations',
+                      cond: {
+                        $and: [
+                          { $ne: ['$$this.isActive', false] },
+                          { $ne: ['$$this.address.city', null] },
+                          { $ne: ['$$this.address.city', ''] },
+                          { $regexMatch: { input: '$$this.address.city', regex: searchQuery, options: 'i' } }
+                        ]
+                      }
+                    }
+                  },
+                  as: 'location',
+                  in: '$$location.address.city'
+                }
+              }
+            ]
+          }
+        }
+      },
+      { $unwind: '$cities' },
+      { $group: { _id: '$cities' } },
+      { $limit: Math.floor(searchLimit / 3) }, // Limit city results
+      { $sort: { _id: 1 } }
+    ]);
+
+    const cityResults = citiesAggregation.map(item => item._id).filter(city => city);
+
+    console.log(`Found ${matchingSpecializations.length} specializations and ${cityResults.length} cities`);
+
+    const response = {
+      success: true,
+      data: {
+        doctors: doctorResults,
+        specializations: matchingSpecializations.slice(0, Math.floor(searchLimit / 2)),
+        cities: cityResults
+      }
+    };
+
+    res.json(response);
+
+  } catch (error) {
+    console.error('Search error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Search failed',
+      error: error.message
+    });
+  }
+};
+
 module.exports = {
   getAllDoctors,
   getDoctorById,
@@ -709,5 +917,6 @@ module.exports = {
   deleteDoctorRating,
   getDoctorsBySpecialization,
   getDoctorStats,
-  searchCities
+  searchCities,
+  searchDoctors
 };
