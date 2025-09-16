@@ -1,18 +1,20 @@
-/* Doctors Page Layout - Enhanced with Sidebar Theme */
+/* Doctors Page Layout - Fixed for proper sidebar scrolling */
 .doctors-page {
   margin-top: 80px;
-  min-height: 100vh;
+  min-height: calc(100vh - 80px); /* Ensure minimum height */
   background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  position: relative; /* Added for proper positioning context */
 }
 
 .doctors-page .container {
   max-width: none;
   padding: 0;
   margin: 0;
+  min-height: inherit; /* Inherit min-height from parent */
 }
 
-/* Page layout with sidebar space - Enhanced */
+/* Page layout with sidebar space - Fixed */
 .page-header {
   margin-left: 370px; /* Space for expanded sidebar + margin */
   padding: 24px 32px;
@@ -29,7 +31,9 @@
   display: flex;
   margin-left: 370px;
   transition: margin-left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  min-height: calc(100vh - 140px);
+  min-height: calc(100vh - 220px); /* Adjusted to account for header and margins */
+  position: relative; /* Added for proper positioning */
+  z-index: 1; /* Ensure content is below sidebar */
 }
 
 /* When sidebar is collapsed */
@@ -38,25 +42,34 @@
   margin-left: 100px; /* Space for collapsed sidebar + margin */
 }
 
-/* Sidebar positioning - Updated */
+/* Sidebar positioning - Fixed to not interfere with document flow */
 .page-content .sidebar {
   position: fixed;
   top: 80px;
   left: 0;
   height: calc(100vh - 80px);
-  width: auto;
-  z-index: 1000;
+  width: auto; /* High z-index to stay on top */
   padding: 0;
   box-sizing: border-box;
 }
 
-/* Main content area - Enhanced */
+/* Main content area - Fixed for proper flow */
 .page-content .main-content {
   flex: 1;
   padding: 32px;
-  min-height: calc(100vh - 140px);
+  min-height: 100%; /* Take full height of parent */
   background: transparent;
   border-radius: 0;
+  width: 100%; /* Ensure full width usage */
+  box-sizing: border-box;
+}
+
+/* Ensure the page extends to full viewport height minimum */
+.doctors-page::after {
+  content: '';
+  display: block;
+  height: 1px;
+  clear: both;
 }
 
 /* Header styling - Enhanced with theme colors */
@@ -317,6 +330,7 @@
   display: flex;
   justify-content: center;
   margin-top: 32px;
+  padding-bottom: 32px; /* Added padding to ensure space at bottom */
 }
 
 .show-more-btn,
@@ -416,6 +430,13 @@
   box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
 }
 
+/* Add bottom spacing to ensure page extends beyond viewport */
+.main-content::after {
+  content: '';
+  display: block;
+  height: 80px; /* Extra space at bottom */
+}
+
 /* Responsive adjustments */
 @media (max-width: 1200px) {
   .page-header,
@@ -511,4 +532,36 @@
     padding: 20px;
     margin-bottom: 32px;
   }
+}
+
+/* Ensure proper page flow and prevent overlap */
+body {
+  overflow-x: hidden; /* Prevent horizontal scrollbar */
+}
+
+/* Fix for potential z-index issues */
+.doctors-page * {
+  position: relative;
+  z-index: auto;
+}
+
+.doctors-page .filter-sidebar {
+  z-index: 1000 !important;
+}
+
+/* Ensure page content flows properly after sidebar */
+.doctors-page .page-content .main-content {
+  position: relative;
+  z-index: 1;
+}
+
+/* Add proper clearfix for the entire page */
+.doctors-page::before,
+.doctors-page::after {
+  content: '';
+  display: table;
+}
+
+.doctors-page::after {
+  clear: both;
 }
