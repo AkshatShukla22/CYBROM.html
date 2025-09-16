@@ -1,5 +1,6 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import '../styles/FilterSidebar.css';
+import '../styles/Doctors.css';
 
 const FilterSidebar = ({
   filters,
@@ -18,6 +19,11 @@ const FilterSidebar = ({
   const [cityResults, setCityResults] = useState([]);
   const [showCityDropdown, setShowCityDropdown] = useState(false);
   const [isSearchingCities, setIsSearchingCities] = useState(false);
+  
+  // New states for sticky behavior
+  const [isSticky, setIsSticky] = useState(true);
+  const [sidebarHeight, setSidebarHeight] = useState(0);
+  const sidebarRef = useRef(null);
 
   // Specialization options - Enhanced
   const specializationOptions = [
@@ -61,6 +67,67 @@ const FilterSidebar = ({
     { value: 'consultationFee|desc', label: 'Highest Fee' },
     { value: 'totalAppointments|desc', label: 'Most Popular' }
   ];
+
+  // New useEffect for handling sticky behavior and updating page layout class
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!sidebarRef.current) return;
+
+      const sidebar = sidebarRef.current;
+      const footer = document.querySelector('footer');
+      
+      if (!footer) {
+        setIsSticky(true);
+        return;
+      }
+
+      const sidebarRect = sidebar.getBoundingClientRect();
+      const footerRect = footer.getBoundingClientRect();
+      const windowHeight = window.innerHeight;
+      
+      // Calculate if sidebar would overlap with footer
+      const sidebarBottom = sidebarRect.top + sidebarRect.height;
+      const footerTop = footerRect.top;
+      
+      // If footer is visible and would overlap with fixed sidebar
+      if (footerTop < windowHeight && footerTop < sidebarBottom) {
+        setIsSticky(false);
+      } else {
+        setIsSticky(true);
+      }
+    };
+
+    const handleResize = () => {
+      if (sidebarRef.current) {
+        setSidebarHeight(sidebarRef.current.offsetHeight);
+      }
+    };
+
+    // Update page layout class based on collapsed state
+    const doctorsPage = document.querySelector('.doctors-page');
+    if (doctorsPage) {
+      if (isCollapsed) {
+        doctorsPage.classList.add('sidebar-collapsed');
+      } else {
+        doctorsPage.classList.remove('sidebar-collapsed');
+      }
+    }
+
+    // Set initial sidebar height
+    handleResize();
+
+    // Add event listeners
+    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('resize', handleResize);
+    
+    // Call once on mount
+    handleScroll();
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [isCollapsed]); // Re-run when sidebar expands/collapses
 
   // Search cities function
   const searchCities = async (query) => {
@@ -162,9 +229,33 @@ const FilterSidebar = ({
     onFilterChange('minRating', filters.minRating === rating ? '' : rating);
   }, [filters.minRating, onFilterChange]);
 
+  // FIXED: Handle local doctor toggle with better error handling
   const handleLocationToggle = useCallback(() => {
-    onFilterChange('showLocalOnly', !filters.showLocalOnly);
-  }, [filters.showLocalOnly, onFilterChange]);
+    console.log('Toggling showLocalOnly');
+    console.log('Current filters.showLocalOnly:', filters.showLocalOnly);
+    console.log('User location:', userLocation);
+    
+    const newValue = !filters.showLocalOnly;
+    
+    // If enabling local filter but no user city available, show warning and don't enable
+    if (newValue && (!userLocation || !userLocation.city)) {
+      alert('Please add your city to your profile to use the local doctors filter.');
+      return;
+    }
+    
+    console.log('Setting showLocalOnly to:', newValue);
+    onFilterChange('showLocalOnly', newValue);
+    
+    // IMPORTANT: Pass the user's city to the backend when enabling local filter
+    if (newValue && userLocation && userLocation.city) {
+      console.log('Setting userCity for local filter:', userLocation.city);
+      onFilterChange('userCity', userLocation.city);
+    } else {
+      // Clear userCity when disabling local filter
+      console.log('Clearing userCity');
+      onFilterChange('userCity', '');
+    }
+  }, [filters.showLocalOnly, onFilterChange, userLocation]);
 
   const handleCollapseToggle = useCallback(() => {
     setIsCollapsed(!isCollapsed);
@@ -183,7 +274,10 @@ const FilterSidebar = ({
   }, []);
 
   return (
-    <div className={`filter-sidebar ${isCollapsed ? 'collapsed' : ''}`}>
+    <div 
+      ref={sidebarRef}
+      className={`filter-sidebar ${isCollapsed ? 'collapsed' : ''} ${isSticky ? 'sticky' : 'scroll-with-footer'}`}
+    >
       {/* Sidebar Header */}
       <div className="sidebar-header">
         <div className="header-content">
@@ -317,20 +411,30 @@ const FilterSidebar = ({
               )}
             </div>
             
-            {/* Local Doctors Checkbox */}
-            {userLocation && userLocation.city && (
-              <div className="checkbox-filter">
-                <label className="checkbox-label">
-                  <input
-                    type="checkbox"
-                    checked={filters.showLocalOnly || false}
-                    onChange={handleLocationToggle}
-                  />
-                  <span className="sidebar-checkmark"></span>
-                  Doctors from my city ({userLocation.city})
-                </label>
-              </div>
-            )}
+            {/* Local Doctors Checkbox - FIXED: Better handling for no user location */}
+            <div className="checkbox-filter">
+              <label className={`checkbox-label ${(!userLocation || !userLocation.city) ? 'disabled' : ''}`}>
+                <input
+                  type="checkbox"
+                  checked={filters.showLocalOnly || false}
+                  onChange={handleLocationToggle}
+                  disabled={!userLocation || !userLocation.city}
+                />
+                <span className="sidebar-checkmark"></span>
+                {userLocation && userLocation.city ? (
+                  <>Doctors from my city ({userLocation.city})</>
+                ) : (
+                  <>Doctors from my city (Add city to profile)</>
+                )}
+              </label>
+              {(!userLocation || !userLocation.city) && (
+                <div className="filter-note">
+                  <small style={{ color: '#666', fontSize: '12px' }}>
+                    Add your city to your profile to use this filter
+                  </small>
+                </div>
+              )}
+            </div>
 
             {/* Selected City Display */}
             {filters.city && (
@@ -572,6 +676,9 @@ const FilterSidebar = ({
                   } else if (key === 'city') {
                     displayValue = value;
                     displayKey = 'City';
+                  } else if (key === 'userCity') {
+                    // Don't show userCity in active filters (it's internal)
+                    return null;
                   }
 
                   return (
@@ -579,7 +686,13 @@ const FilterSidebar = ({
                       <span className="filter-key">{displayKey}:</span>
                       <span className="filter-value">{displayValue}</span>
                       <button 
-                        onClick={() => onFilterChange(key, key === 'showLocalOnly' ? false : '')}
+                        onClick={() => {
+                          onFilterChange(key, key === 'showLocalOnly' ? false : '');
+                          // Also clear userCity when clearing showLocalOnly
+                          if (key === 'showLocalOnly') {
+                            onFilterChange('userCity', '');
+                          }
+                        }}
                         className="remove-filter"
                         title={`Remove ${displayKey} filter`}
                       >
@@ -606,9 +719,10 @@ const FilterSidebar = ({
               <i className="fas fa-star"></i>
             </button>
             <button 
-              className="collapsed-action"
+              className={`collapsed-action ${filters.showLocalOnly ? 'active' : ''}`}
               onClick={handleLocationToggle}
               title="Toggle local doctors only"
+              disabled={!userLocation || !userLocation.city}
             >
               <i className="fas fa-map-marker-alt"></i>
             </button>

@@ -330,11 +330,13 @@ const getCurrentUser = async (req, res) => {
     const user = await User.findById(req.userId).select('-password');
     if (!user) {
       return res.status(404).json({
+        success: false,
         message: 'User not found'
       });
     }
 
     res.json({
+      success: true, // FIXED: Added success flag for consistency
       user: {
         id: user._id,
         name: user.name,
@@ -343,10 +345,10 @@ const getCurrentUser = async (req, res) => {
         userType: user.userType,
         specialization: user.specialization,
         experience: user.experience,
-        licenseNumber: user.licenseNumber, // FIXED: Added license number to getCurrentUser
+        licenseNumber: user.licenseNumber,
         isVerified: user.isVerified,
         profileImage: user.profileImage,
-        backgroundImage: user.backgroundImage, // FIXED: Added background image to getCurrentUser
+        backgroundImage: user.backgroundImage,
         bio: user.bio,
         address: user.address,
         contactInfo: user.contactInfo,
@@ -360,6 +362,7 @@ const getCurrentUser = async (req, res) => {
   } catch (error) {
     console.error('Get user error:', error);
     res.status(500).json({
+      success: false,
       message: 'Server error',
       error: error.message
     });

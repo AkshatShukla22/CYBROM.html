@@ -1,4 +1,4 @@
-// controllers/doctorController.js
+// controllers/doctorController.js - FIXED city filtering logic
 const User = require('../models/User');
 const Rating = require('../models/Rating');
 
@@ -38,12 +38,16 @@ const getAllDoctors = async (req, res) => {
       minFee,
       experience,
       showLocalOnly,
-      userCity,
+      userCity, // This should be passed from frontend when showLocalOnly is true
       page = 1,
       limit = 10,
       sortBy = 'ratings.average',
       sortOrder = 'desc'
     } = req.query;
+
+    console.log('Filter parameters received:', { 
+      specialization, city, minRating, maxFee, minFee, experience, showLocalOnly, userCity 
+    });
 
     // Build query object
     let query = { userType: 'doctor', isActive: true };
@@ -61,16 +65,18 @@ const getAllDoctors = async (req, res) => {
       query.experience = { $gte: parseInt(experience) };
     }
 
-    // FIXED: Handle city filtering - improved logic for multiple practice locations
-    if (city || (showLocalOnly === 'true' && userCity)) {
-      const searchCity = city || userCity;
-      const cityRegex = new RegExp(searchCity, 'i');
+    // FIXED: Improved city filtering logic for both single city search and local-only filter
+    let cityQueryConditions = [];
+    
+    if (city) {
+      // Direct city search - user typed a specific city
+      const cityRegex = new RegExp(city.trim(), 'i');
+      console.log('Searching for specific city:', city);
       
-      // Create comprehensive city search across both old and new structures
-      query.$or = [
-        // Check old address structure (case-insensitive)
+      cityQueryConditions = [
+        // Check old address structure
         { 'address.city': { $regex: cityRegex } },
-        // Check new practiceLocations structure (case-insensitive)
+        // Check new practiceLocations structure
         { 
           'practiceLocations': {
             $elemMatch: {
@@ -80,17 +86,51 @@ const getAllDoctors = async (req, res) => {
           }
         }
       ];
+    } else if (showLocalOnly === 'true' && userCity) {
+      // Show local only - filter by user's city from their profile
+      const userCityRegex = new RegExp(userCity.trim(), 'i');
+      console.log('Filtering for local doctors in user city:', userCity);
+      
+      cityQueryConditions = [
+        // Check old address structure
+        { 'address.city': { $regex: userCityRegex } },
+        // Check new practiceLocations structure
+        { 
+          'practiceLocations': {
+            $elemMatch: {
+              'isActive': { $ne: false },
+              'address.city': { $regex: userCityRegex }
+            }
+          }
+        }
+      ];
+    }
+
+    // Apply city conditions if any exist
+    if (cityQueryConditions.length > 0) {
+      if (query.$or) {
+        // If we already have $or conditions, combine them with $and
+        query.$and = [
+          { $or: query.$or },
+          { $or: cityQueryConditions }
+        ];
+        delete query.$or;
+      } else {
+        query.$or = cityQueryConditions;
+      }
     }
 
     // FIXED: Handle fee filtering - improved logic for multiple practice locations
-    let feeQuery = [];
+    let feeQueryConditions = [];
     if (minFee || maxFee) {
       const feeFilter = {};
       if (minFee) feeFilter.$gte = parseInt(minFee);
       if (maxFee) feeFilter.$lte = parseInt(maxFee);
       
+      console.log('Applying fee filter:', feeFilter);
+      
       // Check both old consultationFee and new practiceLocations fees
-      feeQuery = [
+      feeQueryConditions = [
         { consultationFee: feeFilter },
         { 
           'practiceLocations': {
@@ -102,15 +142,19 @@ const getAllDoctors = async (req, res) => {
         }
       ];
       
-      if (query.$or) {
-        // Combine city and fee queries using $and
+      // Combine with existing query conditions
+      if (query.$and) {
+        // Already have $and conditions, add fee filter
+        query.$and.push({ $or: feeQueryConditions });
+      } else if (query.$or) {
+        // Have $or conditions, convert to $and
         query.$and = [
           { $or: query.$or },
-          { $or: feeQuery }
+          { $or: feeQueryConditions }
         ];
         delete query.$or;
       } else {
-        query.$or = feeQuery;
+        query.$or = feeQueryConditions;
       }
     }
 
@@ -122,7 +166,6 @@ const getAllDoctors = async (req, res) => {
     // Build sort object
     let sort = {};
     if (sortBy && sortOrder) {
-      // Handle sorting by consultation fee (prioritize practiceLocations over legacy field)
       if (sortBy === 'consultationFee') {
         sort = { 
           'practiceLocations.consultationFee': sortOrder === 'desc' ? -1 : 1, 
@@ -133,7 +176,7 @@ const getAllDoctors = async (req, res) => {
       }
     }
 
-    console.log('Doctor search query:', JSON.stringify(query, null, 2));
+    console.log('Final MongoDB query:', JSON.stringify(query, null, 2));
 
     // Execute query with pagination
     const doctors = await User.find(query)
@@ -143,11 +186,13 @@ const getAllDoctors = async (req, res) => {
       .limit(limitNum)
       .lean();
 
+    console.log(`Found ${doctors.length} doctors matching criteria`);
+
     // Get total count for pagination
     const totalDoctors = await User.countDocuments(query);
     const totalPages = Math.ceil(totalDoctors / limitNum);
 
-    // FIXED: Get all unique cities from both old and new structures using aggregation
+    // Get all unique cities from both old and new structures using aggregation
     const citiesAggregation = await User.aggregate([
       { $match: { userType: 'doctor', isActive: true } },
       {
@@ -227,13 +272,11 @@ const getAllDoctors = async (req, res) => {
   }
 };
 
-// @desc    Get single doctor by ID
-// @access  Public
+// Keep all other existing functions unchanged...
 const getDoctorById = async (req, res) => {
   try {
     const { doctorId } = req.params;
     
-    // Validate ObjectId format
     if (!doctorId.match(/^[0-9a-fA-F]{24}$/)) {
       return res.status(400).json({
         success: false,
@@ -269,13 +312,10 @@ const getDoctorById = async (req, res) => {
   }
 };
 
-// @desc    Get doctor ratings
-// @access  Public
 const getDoctorRatings = async (req, res) => {
   try {
     const { doctorId } = req.params;
     
-    // Validate ObjectId format
     if (!doctorId.match(/^[0-9a-fA-F]{24}$/)) {
       return res.status(400).json({
         success: false,
@@ -283,7 +323,6 @@ const getDoctorRatings = async (req, res) => {
       });
     }
     
-    // Fetch actual ratings from the Rating model
     const ratings = await Rating.find({ 
       doctorId, 
       isActive: true 
@@ -308,17 +347,14 @@ const getDoctorRatings = async (req, res) => {
   }
 };
 
-// @desc    Submit doctor rating
-// @access  Private (requires authentication)
 const submitDoctorRating = async (req, res) => {
   try {
     const { doctorId } = req.params;
     const { rating, feedback } = req.body;
-    const userId = req.userId; // From auth middleware
+    const userId = req.userId;
     
     console.log('Submit rating request:', { doctorId, userId, rating, feedback });
     
-    // Validate ObjectId format
     if (!doctorId.match(/^[0-9a-fA-F]{24}$/)) {
       return res.status(400).json({
         success: false,
@@ -326,7 +362,6 @@ const submitDoctorRating = async (req, res) => {
       });
     }
     
-    // Validate rating
     if (!rating || rating < 1 || rating > 5) {
       return res.status(400).json({
         success: false,
@@ -334,7 +369,6 @@ const submitDoctorRating = async (req, res) => {
       });
     }
     
-    // Check if doctor exists
     const doctor = await User.findOne({ 
       _id: doctorId, 
       userType: 'doctor', 
@@ -348,7 +382,6 @@ const submitDoctorRating = async (req, res) => {
       });
     }
     
-    // Get current user details
     const currentUser = await User.findById(userId);
     if (!currentUser) {
       return res.status(404).json({
@@ -357,7 +390,6 @@ const submitDoctorRating = async (req, res) => {
       });
     }
     
-    // Prevent doctors from rating themselves
     if (doctorId === userId) {
       return res.status(400).json({
         success: false,
@@ -366,7 +398,6 @@ const submitDoctorRating = async (req, res) => {
     }
     
     try {
-      // Check if user has already rated this doctor
       const existingRating = await Rating.findOne({ 
         doctorId, 
         userId, 
@@ -374,22 +405,20 @@ const submitDoctorRating = async (req, res) => {
       });
       
       if (existingRating) {
-        // Update existing rating
         existingRating.rating = rating;
         existingRating.feedback = feedback ? feedback.trim() : '';
-        existingRating.userName = currentUser.name; // Update user name in case it changed
-        existingRating.profileImage = currentUser.profileImage; // Update profile image
+        existingRating.userName = currentUser.name;
+        existingRating.profileImage = currentUser.profileImage;
         await existingRating.save();
         
         console.log('Updated existing rating');
       } else {
-        // Create new rating
         const newRating = new Rating({
           doctorId,
           userId,
           userName: currentUser.name,
           userEmail: currentUser.email,
-          profileImage: currentUser.profileImage, // Include profile image
+          profileImage: currentUser.profileImage,
           rating,
           feedback: feedback ? feedback.trim() : ''
         });
@@ -398,7 +427,6 @@ const submitDoctorRating = async (req, res) => {
         console.log('Created new rating');
       }
       
-      // Update doctor's overall rating
       await updateDoctorRatings(doctorId);
       
       res.json({
@@ -408,7 +436,6 @@ const submitDoctorRating = async (req, res) => {
       
     } catch (error) {
       if (error.code === 11000) {
-        // Duplicate key error - this shouldn't happen with our check above, but just in case
         return res.status(400).json({
           success: false,
           message: 'You have already rated this doctor'
@@ -427,8 +454,6 @@ const submitDoctorRating = async (req, res) => {
   }
 };
 
-// @desc    Get doctors by specialization
-// @access  Public
 const getDoctorsBySpecialization = async (req, res) => {
   try {
     const { specialization } = req.params;
@@ -481,21 +506,16 @@ const getDoctorsBySpecialization = async (req, res) => {
   }
 };
 
-// @desc    Get doctor statistics
-// @access  Public
 const getDoctorStats = async (req, res) => {
   try {
-    // Get total doctors count
     const totalDoctors = await User.countDocuments({ userType: 'doctor', isActive: true });
 
-    // Get doctors count by specialization
     const specializationStats = await User.aggregate([
       { $match: { userType: 'doctor', isActive: true } },
       { $group: { _id: '$specialization', count: { $sum: 1 } } },
       { $sort: { count: -1 } }
     ]);
 
-    // Get doctors count by city (including practice locations)
     const oldCityStats = await User.aggregate([
       { $match: { userType: 'doctor', isActive: true, 'address.city': { $exists: true, $ne: null } } },
       { $group: { _id: '$address.city', count: { $sum: 1 } } }
@@ -508,7 +528,6 @@ const getDoctorStats = async (req, res) => {
       { $group: { _id: '$practiceLocations.address.city', count: { $sum: 1 } } }
     ]);
 
-    // Combine and deduplicate city stats
     const cityStatsMap = new Map();
     [...oldCityStats, ...newCityStats].forEach(stat => {
       if (stat._id) {
@@ -521,7 +540,6 @@ const getDoctorStats = async (req, res) => {
       .sort((a, b) => b.count - a.count)
       .slice(0, 10);
 
-    // Get average ratings
     const avgRating = await User.aggregate([
       { $match: { userType: 'doctor', isActive: true } },
       { $group: { _id: null, avgRating: { $avg: '$ratings.average' } } }
@@ -547,8 +565,6 @@ const getDoctorStats = async (req, res) => {
   }
 };
 
-// @desc    Search cities
-// @access  Public
 const searchCities = async (req, res) => {
   try {
     const { q } = req.query;
@@ -560,10 +576,8 @@ const searchCities = async (req, res) => {
       });
     }
 
-    // Create a case-insensitive regex pattern
     const searchRegex = new RegExp(q, 'i');
 
-    // Search in legacy address.city field
     const oldCities = await User.distinct('address.city', {
       userType: 'doctor',
       isActive: true,
@@ -575,7 +589,6 @@ const searchCities = async (req, res) => {
       }
     });
 
-    // Search in practice locations using aggregation
     const newCitiesAgg = await User.aggregate([
       { 
         $match: { 
@@ -609,34 +622,28 @@ const searchCities = async (req, res) => {
       }
     ]);
 
-    // Extract cities from aggregation result
     const newCities = newCitiesAgg.map(item => item.city);
 
-    // Combine both sources and remove duplicates
     const allCities = [...new Set([
       ...oldCities.filter(city => city && city.trim() !== ''),
       ...newCities.filter(city => city && city.trim() !== '')
     ])];
 
-    // Sort cities alphabetically and prioritize exact matches
     const sortedCities = allCities
       .sort((a, b) => {
         const aLower = a.toLowerCase();
         const bLower = b.toLowerCase();
         const qLower = q.toLowerCase();
         
-        // Exact match first
         if (aLower === qLower && bLower !== qLower) return -1;
         if (bLower === qLower && aLower !== qLower) return 1;
         
-        // Starts with query second
         if (aLower.startsWith(qLower) && !bLower.startsWith(qLower)) return -1;
         if (bLower.startsWith(qLower) && !aLower.startsWith(qLower)) return 1;
         
-        // Alphabetical order for the rest
         return aLower.localeCompare(bLower);
       })
-      .slice(0, 10); // Limit to 10 results
+      .slice(0, 10);
 
     console.log(`City search for "${q}": found ${sortedCities.length} cities`);
 
@@ -655,13 +662,10 @@ const searchCities = async (req, res) => {
   }
 };
 
-
-// @desc    Delete doctor rating (for users to delete their own ratings)
-// @access  Private
 const deleteDoctorRating = async (req, res) => {
   try {
     const { doctorId, ratingId } = req.params;
-    const userId = req.userId; // From auth middleware
+    const userId = req.userId;
     
     const rating = await Rating.findOne({
       _id: ratingId,
@@ -677,11 +681,9 @@ const deleteDoctorRating = async (req, res) => {
       });
     }
     
-    // Soft delete - mark as inactive
     rating.isActive = false;
     await rating.save();
     
-    // Update doctor's ratings
     await updateDoctorRatings(doctorId);
     
     res.json({

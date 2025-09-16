@@ -29,6 +29,7 @@
   color: var(--footer-text);
   position: relative;
   overflow: hidden;
+  clear: both
 }
 
 .footer::before {
@@ -45,6 +46,7 @@
     var(--footer-primary), 
     transparent
   );
+  z-index: 1;
 }
 
 .footer__container {

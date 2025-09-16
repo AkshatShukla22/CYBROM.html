@@ -23,6 +23,41 @@
   overflow-y: auto;
 }
 
+.filter-sidebar.sticky {
+  position: fixed;
+  top: 80px;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.filter-sidebar.scroll-with-footer {
+  position: absolute;
+  top: auto;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Update the main sidebar positioning */
+.filter-sidebar {
+  position: fixed;
+  top: 80px; /* Below navbar */
+  left: 0;
+  width: 350px;
+  height: calc(100vh - 80px);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.95) 100%);
+  backdrop-filter: blur(25px);
+  border-right: 1px solid rgba(102, 126, 234, 0.2);
+  box-shadow: 
+    8px 0 40px rgba(102, 126, 234, 0.25),
+    4px 0 20px rgba(0, 0, 0, 0.15),
+    0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+  z-index: 1000;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  transform: translateX(0);
+}
+
 .filter-sidebar.collapsed {
   width: 70px;
   box-shadow: 
