@@ -5,6 +5,7 @@ import '../styles/Header.css';
 const Header = () => {
   const navigate = useNavigate();
   const searchRef = useRef(null);
+  const profileMenuRef = useRef(null); // Added ref for profile menu
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -37,11 +38,17 @@ const Header = () => {
     }
   }, []);
 
-  // Close suggestions when clicking outside
+  // Combined click-outside handler for both search suggestions and profile menu
   useEffect(() => {
     const handleClickOutside = (event) => {
+      // Handle search suggestions
       if (searchRef.current && !searchRef.current.contains(event.target)) {
         setShowSuggestions(false);
+      }
+      
+      // Handle profile menu
+      if (profileMenuRef.current && !profileMenuRef.current.contains(event.target)) {
+        setShowProfileMenu(false);
       }
     };
 
@@ -101,9 +108,10 @@ const Header = () => {
           });
         }
 
-        // Add doctor suggestions
+        // Add doctor suggestions - FIXED: Include profileImage
         if (data.data.doctors && data.data.doctors.length > 0) {
           data.data.doctors.forEach(doctor => {
+            console.log('Doctor data:', doctor); // Debug log
             suggestions.push({
               type: 'doctor',
               value: doctor._id,
@@ -111,7 +119,8 @@ const Header = () => {
               subtitle: formatSpecializationDisplay(doctor.specialization),
               location: doctor.practiceLocations?.[0]?.address?.city,
               rating: doctor.ratings?.average,
-              icon: 'fas fa-user-md'
+              icon: 'fas fa-user-md',
+              profileImage: doctor.profileImage // FIXED: Add profileImage
             });
           });
         }
@@ -128,6 +137,7 @@ const Header = () => {
           });
         }
 
+        console.log('Processed suggestions:', suggestions); // Debug log
         setSearchSuggestions(suggestions);
         setShowSuggestions(suggestions.length > 0);
       }
@@ -291,7 +301,26 @@ const Header = () => {
                         onClick={() => handleSuggestionClick(suggestion)}
                       >
                         <div className="suggestion-icon">
-                          <i className={suggestion.icon}></i>
+                          {/* FIXED: Show profile image for doctors, fallback to icon */}
+                          {suggestion.type === 'doctor' && suggestion.profileImage ? (
+                            <img 
+                              src={`http://localhost:8000${suggestion.profileImage}`} 
+                              alt={suggestion.label}
+                              className="suggestion-profile-image"
+                              onError={(e) => {
+                                // Fallback to icon if image fails to load
+                                console.log('Image failed to load:', suggestion.profileImage);
+                                e.target.style.display = 'none';
+                                e.target.nextSibling.style.display = 'inline';
+                              }}
+                            />
+                          ) : null}
+                          <i 
+                            className={suggestion.icon}
+                            style={{ 
+                              display: suggestion.type === 'doctor' && suggestion.profileImage ? 'none' : 'inline' 
+                            }}
+                          ></i>
                         </div>
                         <div className="suggestion-content">
                           <div className="suggestion-main">
@@ -379,7 +408,11 @@ const Header = () => {
         {/* Authentication Section */}
         <div className="header__auth">
           {isLoggedIn ? (
-            <div className="user-profile" onClick={toggleProfileMenu}>
+            <div 
+              className="user-profile" 
+              onClick={toggleProfileMenu}
+              ref={profileMenuRef} // FIXED: Added ref for click-outside handling
+            >
               <div className="profile-avatar">
                 <i className={`fas ${user?.userType === 'doctor' ? 'fa-user-md' : 'fa-user'}`}></i>
               </div>

@@ -11,6 +11,7 @@ import DoctorProfileView from './pages/DoctorProfileView'
 import AppointmentBooking from './pages/AppointmentBooking'
 import AppointmentsList from './pages/AppointmentsList'
 import Dashboard from './pages/Dashboard'
+import Chat from './pages/Chat'
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
             <Route path="/profile" element={<Profile />} />
             <Route path='/doctors' element={<Doctors />} />
             <Route path='/messages' element={<Messages />} />
+            <Route path='/messages/:userId' element={<Chat />} />
             <Route path='/doctor/:doctorId' element={<DoctorProfileView />} />
             <Route path='/book-appointment/:doctorId' element={<AppointmentBooking />} />
             <Route path='/appointments' element={<AppointmentsList />} />

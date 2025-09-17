@@ -1,4 +1,4 @@
-// DoctorProfileView.jsx - Updated with appointment booking navigation
+// DoctorProfileView.jsx - Updated with messaging functionality
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import backendUrl from '../utils/BackendURl';
@@ -209,14 +209,21 @@ const DoctorProfileView = () => {
     navigate(`/book-appointment/${doctorId}`);
   };
 
-  // Navigate to messaging (placeholder for future implementation)
+  // Navigate to messaging - UPDATED FUNCTION
   const handleSendMessage = () => {
     if (!currentUser) {
       setError('Please login to send messages');
       return;
     }
-    // Placeholder - implement messaging functionality
-    alert('Messaging feature coming soon!');
+    
+    // Check if user is trying to message themselves
+    if (currentUser.id === doctorId) {
+      setError('You cannot send messages to yourself');
+      return;
+    }
+    
+    // Navigate to chat with this doctor
+    navigate(`/messages/${doctorId}`);
   };
 
   const formatSpecialization = (specialization) => {

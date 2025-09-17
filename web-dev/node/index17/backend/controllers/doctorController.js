@@ -764,7 +764,8 @@ const searchDoctors = async (req, res) => {
         { bio: searchRegex }
       ]
     })
-    .select('_id name specialization ratings practiceLocations email')
+    // FIXED: Include profileImage and backgroundImage in the selection
+    .select('_id name specialization ratings practiceLocations email profileImage backgroundImage bio')
     .sort({ 'ratings.average': -1 }) // Sort by rating first
     .limit(searchLimit)
     .lean();
