@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import backendUrl from '../utils/BackendUrl'; // Import your backend URL
 import '../styles/Header.css';
 
 const Header = () => {
   const navigate = useNavigate();
   const searchRef = useRef(null);
-  const profileMenuRef = useRef(null); // Added ref for profile menu
+  const profileMenuRef = useRef(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -18,6 +19,24 @@ const Header = () => {
 
   // Debounce timer for search
   const searchTimeoutRef = useRef(null);
+
+  // Helper function to check if URL is a Cloudinary URL
+  const isCloudinaryUrl = (url) => {
+    return url && (url.startsWith('https://res.cloudinary.com') || url.startsWith('http://res.cloudinary.com'));
+  };
+
+  // Helper function to get correct image URL
+  const getImageUrl = (imageUrl) => {
+    if (!imageUrl) return null;
+    
+    // If it's a Cloudinary URL, return as-is
+    if (isCloudinaryUrl(imageUrl)) {
+      return imageUrl;
+    }
+    
+    // If it's a relative path (legacy), prepend backend URL
+    return `${backendUrl}${imageUrl}`;
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -83,7 +102,7 @@ const Header = () => {
     setIsSearchLoading(true);
 
     try {
-      const response = await fetch(`http://localhost:8000/api/doctors/search?q=${encodeURIComponent(query)}&limit=8`, {
+      const response = await fetch(`${backendUrl}/api/doctors/search?q=${encodeURIComponent(query)}&limit=8`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -301,10 +320,10 @@ const Header = () => {
                         onClick={() => handleSuggestionClick(suggestion)}
                       >
                         <div className="suggestion-icon">
-                          {/* FIXED: Show profile image for doctors, fallback to icon */}
+                          {/* FIXED: Use getImageUrl helper for proper URL handling */}
                           {suggestion.type === 'doctor' && suggestion.profileImage ? (
                             <img 
-                              src={`http://localhost:8000${suggestion.profileImage}`} 
+                              src={getImageUrl(suggestion.profileImage)} 
                               alt={suggestion.label}
                               className="suggestion-profile-image"
                               onError={(e) => {
@@ -411,10 +430,25 @@ const Header = () => {
             <div 
               className="user-profile" 
               onClick={toggleProfileMenu}
-              ref={profileMenuRef} // FIXED: Added ref for click-outside handling
+              ref={profileMenuRef}
             >
               <div className="profile-avatar">
-                <i className={`fas ${user?.userType === 'doctor' ? 'fa-user-md' : 'fa-user'}`}></i>
+                {/* FIXED: Also apply proper image URL handling for user profile in header */}
+                {user?.profileImage ? (
+                  <img 
+                    src={getImageUrl(user.profileImage)} 
+                    alt={user.name}
+                    className="profile-avatar-image"
+                    onError={(e) => {
+                      e.target.style.display = 'none';
+                      e.target.nextSibling.style.display = 'inline';
+                    }}
+                  />
+                ) : null}
+                <i 
+                  className={`fas ${user?.userType === 'doctor' ? 'fa-user-md' : 'fa-user'}`}
+                  style={{ display: user?.profileImage ? 'none' : 'inline' }}
+                ></i>
               </div>
               <span className="profile-name">{user?.name}</span>
               <i className="fas fa-chevron-down profile-arrow"></i>

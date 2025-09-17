@@ -1,75 +1,8 @@
-// controllers/authController.js - FIXED VERSION
+// controllers/authController.js - Updated with Cloudinary integration
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
-const multer = require('multer');
-const path = require('path');
-const fs = require('fs').promises;
 const User = require('../models/User');
-
-// Create uploads directory if it doesn't exist
-const createUploadsDir = async () => {
-  const uploadsDir = path.join(__dirname, '..', 'uploads');
-  const profileDir = path.join(uploadsDir, 'profiles');
-  const backgroundDir = path.join(uploadsDir, 'backgrounds'); // FIXED: Added backgrounds dir
-  
-  try {
-    await fs.access(uploadsDir);
-  } catch {
-    await fs.mkdir(uploadsDir, { recursive: true });
-  }
-  
-  try {
-    await fs.access(profileDir);
-  } catch {
-    await fs.mkdir(profileDir, { recursive: true });
-  }
-
-  // FIXED: Create backgrounds directory
-  try {
-    await fs.access(backgroundDir);
-  } catch {
-    await fs.mkdir(backgroundDir, { recursive: true });
-  }
-};
-
-// Initialize directories
-createUploadsDir();
-
-// FIXED: Configure multer for both profile and background images
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    // FIXED: Choose directory based on image type
-    const isBackground = req.route.path.includes('background');
-    const uploadPath = path.join(__dirname, '..', 'uploads', isBackground ? 'backgrounds' : 'profiles');
-    cb(null, uploadPath);
-  },
-  filename: function (req, file, cb) {
-    const timestamp = Date.now();
-    const randomString = Math.random().toString(36).substring(2, 15);
-    const extension = path.extname(file.originalname);
-    // FIXED: Use appropriate prefix based on image type
-    const isBackground = req.route.path.includes('background');
-    const prefix = isBackground ? 'background' : 'profile';
-    const filename = `${prefix}_${req.userId}_${timestamp}_${randomString}${extension}`;
-    cb(null, filename);
-  }
-});
-
-const fileFilter = (req, file, cb) => {
-  if (file.mimetype.startsWith('image/')) {
-    cb(null, true);
-  } else {
-    cb(new Error('Only image files are allowed!'), false);
-  }
-};
-
-const upload = multer({
-  storage: storage,
-  fileFilter: fileFilter,
-  limits: {
-    fileSize: 5 * 1024 * 1024
-  }
-});
+const { uploadProfile, uploadBackground, deleteImage, extractPublicId } = require('../config/cloudinary');
 
 // Generate JWT Token
 const generateToken = (userId) => {
@@ -78,16 +11,17 @@ const generateToken = (userId) => {
   });
 };
 
-// Helper function to delete old image file
-const deleteOldImage = async (imagePath) => {
-  if (imagePath) {
+// Helper function to delete old image from Cloudinary
+const deleteOldImage = async (imageUrl) => {
+  if (imageUrl) {
     try {
-      const fullPath = path.join(__dirname, '..', imagePath.replace('/uploads', 'uploads'));
-      await fs.access(fullPath);
-      await fs.unlink(fullPath);
-      console.log(`Deleted old image: ${fullPath}`);
+      const publicId = extractPublicId(imageUrl);
+      if (publicId) {
+        await deleteImage(publicId);
+        console.log(`Deleted old image: ${publicId}`);
+      }
     } catch (error) {
-      console.log(`Could not delete old image: ${imagePath}`);
+      console.log(`Could not delete old image: ${imageUrl}`, error.message);
     }
   }
 };
@@ -138,18 +72,21 @@ const registerUser = async (req, res) => {
     // Validation
     if (!name || !email || !password || !phone || !userType) {
       return res.status(400).json({
+        success: false,
         message: 'Please provide all required fields'
       });
     }
 
     if (password !== confirmPassword) {
       return res.status(400).json({
+        success: false,
         message: 'Passwords do not match'
       });
     }
 
     if (password.length < 6) {
       return res.status(400).json({
+        success: false,
         message: 'Password must be at least 6 characters long'
       });
     }
@@ -158,6 +95,7 @@ const registerUser = async (req, res) => {
     const existingUser = await User.findOne({ email: email.toLowerCase() });
     if (existingUser) {
       return res.status(400).json({
+        success: false,
         message: 'User with this email already exists'
       });
     }
@@ -166,6 +104,7 @@ const registerUser = async (req, res) => {
     if (userType === 'doctor') {
       if (!specialization || !experience || !licenseNumber) {
         return res.status(400).json({
+          success: false,
           message: 'Please provide all required doctor information'
         });
       }
@@ -176,6 +115,7 @@ const registerUser = async (req, res) => {
       });
       if (existingDoctor) {
         return res.status(400).json({
+          success: false,
           message: 'Doctor with this license number already exists'
         });
       }
@@ -234,6 +174,7 @@ const registerUser = async (req, res) => {
 
     // Return user data and token
     res.status(201).json({
+      success: true,
       message: 'User registered successfully',
       token,
       user: {
@@ -254,8 +195,9 @@ const registerUser = async (req, res) => {
   } catch (error) {
     console.error('Registration error:', error);
     res.status(500).json({
+      success: false,
       message: 'Server error during registration',
-      error: error.message
+      error: process.env.NODE_ENV === 'development' ? error.message : 'Internal server error'
     });
   }
 };
@@ -268,6 +210,7 @@ const loginUser = async (req, res) => {
 
     if (!email || !password) {
       return res.status(400).json({
+        success: false,
         message: 'Please provide email and password'
       });
     }
@@ -275,12 +218,14 @@ const loginUser = async (req, res) => {
     const user = await User.findOne({ email: email.toLowerCase() });
     if (!user) {
       return res.status(400).json({
+        success: false,
         message: 'Invalid email or password'
       });
     }
 
     if (!user.isActive) {
       return res.status(400).json({
+        success: false,
         message: 'Account has been deactivated. Please contact support.'
       });
     }
@@ -288,6 +233,7 @@ const loginUser = async (req, res) => {
     const isMatch = await user.comparePassword(password);
     if (!isMatch) {
       return res.status(400).json({
+        success: false,
         message: 'Invalid email or password'
       });
     }
@@ -295,6 +241,7 @@ const loginUser = async (req, res) => {
     const token = generateToken(user._id);
 
     res.json({
+      success: true,
       message: 'Login successful',
       token,
       user: {
@@ -305,10 +252,10 @@ const loginUser = async (req, res) => {
         userType: user.userType,
         specialization: user.specialization,
         experience: user.experience,
-        licenseNumber: user.licenseNumber, // FIXED: Added license number to login response
+        licenseNumber: user.licenseNumber,
         isVerified: user.isVerified,
         profileImage: user.profileImage,
-        backgroundImage: user.backgroundImage, // FIXED: Added background image to login response
+        backgroundImage: user.backgroundImage,
         contactInfo: user.contactInfo,
         practiceLocations: user.practiceLocations
       }
@@ -317,8 +264,9 @@ const loginUser = async (req, res) => {
   } catch (error) {
     console.error('Login error:', error);
     res.status(500).json({
+      success: false,
       message: 'Server error during login',
-      error: error.message
+      error: process.env.NODE_ENV === 'development' ? error.message : 'Internal server error'
     });
   }
 };
@@ -336,7 +284,7 @@ const getCurrentUser = async (req, res) => {
     }
 
     res.json({
-      success: true, // FIXED: Added success flag for consistency
+      success: true,
       user: {
         id: user._id,
         name: user.name,
@@ -364,52 +312,104 @@ const getCurrentUser = async (req, res) => {
     res.status(500).json({
       success: false,
       message: 'Server error',
-      error: error.message
+      error: process.env.NODE_ENV === 'development' ? error.message : 'Internal server error'
     });
   }
 };
 
-// @desc    Upload user image
+// @desc    Upload profile image
 // @access  Private
-const uploadImage = async (req, res) => {
+const uploadProfileImage = async (req, res) => {
   try {
     const user = await User.findById(req.userId);
     if (!user) {
       return res.status(404).json({
+        success: false,
         message: 'User not found'
       });
     }
 
     if (!req.file) {
       return res.status(400).json({
+        success: false,
         message: 'No image file provided'
       });
     }
 
-    // FIXED: Determine image type from route
-    const imageType = req.route.path.includes('background') ? 'background' : 'profile';
-    
-    // FIXED: Construct the proper image URL
-    const imageUrl = `/uploads/${imageType === 'background' ? 'backgrounds' : 'profiles'}/${req.file.filename}`;
+    // Delete old profile image if exists
+    if (user.profileImage) {
+      await deleteOldImage(user.profileImage);
+    }
 
-    console.log('Image uploaded:', {
-      type: imageType,
-      filename: req.file.filename,
-      path: req.file.path,
-      url: imageUrl
-    });
+    // Update user with new profile image URL from Cloudinary
+    user.profileImage = req.file.path;
+    await user.save();
 
     res.json({
-      message: 'Image uploaded successfully',
-      imageUrl: imageUrl,
-      type: imageType
+      success: true,
+      message: 'Profile image uploaded successfully',
+      imageUrl: req.file.path,
+      type: 'profile'
     });
 
   } catch (error) {
-    console.error('Image upload error:', error);
+    console.error('Profile image upload error:', error);
     res.status(500).json({
+      success: false,
       message: 'Server error during image upload',
-      error: error.message
+      error: process.env.NODE_ENV === 'development' ? error.message : 'Internal server error'
+    });
+  }
+};
+
+// @desc    Upload background image
+// @access  Private
+const uploadBackgroundImage = async (req, res) => {
+  try {
+    const user = await User.findById(req.userId);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found'
+      });
+    }
+
+    if (user.userType !== 'doctor') {
+      return res.status(403).json({
+        success: false,
+        message: 'Only doctors can upload background images'
+      });
+    }
+
+    if (!req.file) {
+      return res.status(400).json({
+        success: false,
+        message: 'No image file provided'
+      });
+    }
+
+    // Delete old background image if exists
+    if (user.backgroundImage) {
+      await deleteOldImage(user.backgroundImage);
+    }
+
+    // Update user with new background image URL from Cloudinary
+    user.backgroundImage = req.file.path;
+    await user.save();
+
+    res.json({
+      success: true,
+      message: 'Background image uploaded successfully',
+      imageUrl: req.file.path,
+      type: 'background'
+    });
+
+  } catch (error) {
+    console.error('Background image upload error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error during image upload',
+      error: process.env.NODE_ENV === 'development' ? error.message : 'Internal server error'
     });
   }
 };
@@ -422,8 +422,6 @@ const updateProfile = async (req, res) => {
       name,
       bio,
       address,
-      profileImage,
-      backgroundImage,
       contactInfo,
       practiceLocations,
       consultationFee,
@@ -434,6 +432,7 @@ const updateProfile = async (req, res) => {
     const user = await User.findById(req.userId);
     if (!user) {
       return res.status(404).json({
+        success: false,
         message: 'User not found'
       });
     }
@@ -441,22 +440,6 @@ const updateProfile = async (req, res) => {
     // Update basic fields
     if (name) user.name = name.trim();
     if (bio !== undefined) user.bio = bio.trim();
-
-    // Update profile image if provided
-    if (profileImage && profileImage !== user.profileImage) {
-      if (user.profileImage) {
-        await deleteOldImage(user.profileImage);
-      }
-      user.profileImage = profileImage;
-    }
-
-    // Update background image if provided (for doctors only)
-    if (user.userType === 'doctor' && backgroundImage && backgroundImage !== user.backgroundImage) {
-      if (user.backgroundImage) {
-        await deleteOldImage(user.backgroundImage);
-      }
-      user.backgroundImage = backgroundImage;
-    }
 
     // Update address for regular users
     if (user.userType === 'user' && address) {
@@ -488,6 +471,7 @@ const updateProfile = async (req, res) => {
     await user.save();
 
     res.json({
+      success: true,
       message: 'Profile updated successfully',
       user: {
         id: user._id,
@@ -497,7 +481,7 @@ const updateProfile = async (req, res) => {
         userType: user.userType,
         specialization: user.specialization,
         experience: user.experience,
-        licenseNumber: user.licenseNumber, // FIXED: Added license number to update response
+        licenseNumber: user.licenseNumber,
         isVerified: user.isVerified,
         profileImage: user.profileImage,
         backgroundImage: user.backgroundImage,
@@ -514,8 +498,9 @@ const updateProfile = async (req, res) => {
   } catch (error) {
     console.error('Profile update error:', error);
     res.status(500).json({
+      success: false,
       message: 'Server error during profile update',
-      error: error.message
+      error: process.env.NODE_ENV === 'development' ? error.message : 'Internal server error'
     });
   }
 };
@@ -527,6 +512,7 @@ const addPracticeLocation = async (req, res) => {
     const user = await User.findById(req.userId);
     if (!user || user.userType !== 'doctor') {
       return res.status(403).json({
+        success: false,
         message: 'Only doctors can add practice locations'
       });
     }
@@ -536,6 +522,7 @@ const addPracticeLocation = async (req, res) => {
     // Validate required fields
     if (!name || !address || !consultationFee || !patientsPerDay) {
       return res.status(400).json({
+        success: false,
         message: 'Please provide all required fields'
       });
     }
@@ -546,12 +533,14 @@ const addPracticeLocation = async (req, res) => {
       
       if (!validateTimeFormat(slot.startTime) || !validateTimeFormat(slot.endTime)) {
         return res.status(400).json({
+          success: false,
           message: 'Invalid time format. Use HH:MM format.'
         });
       }
 
       if (hasTimeConflict(slot, user.practiceLocations)) {
         return res.status(400).json({
+          success: false,
           message: `Time slot conflict: ${slot.day} ${slot.startTime}-${slot.endTime} is already assigned to another location`
         });
       }
@@ -571,14 +560,16 @@ const addPracticeLocation = async (req, res) => {
     await user.save();
 
     res.json({
+      success: true,
       message: 'Practice location added successfully',
       location: user.practiceLocations[user.practiceLocations.length - 1]
     });
   } catch (error) {
     console.error('Add practice location error:', error);
     res.status(500).json({
+      success: false,
       message: 'Server error',
-      error: error.message
+      error: process.env.NODE_ENV === 'development' ? error.message : 'Internal server error'
     });
   }
 };
@@ -592,6 +583,7 @@ const updatePracticeLocation = async (req, res) => {
     
     if (!user || user.userType !== 'doctor') {
       return res.status(403).json({
+        success: false,
         message: 'Only doctors can update practice locations'
       });
     }
@@ -599,6 +591,7 @@ const updatePracticeLocation = async (req, res) => {
     const location = user.practiceLocations.id(locationId);
     if (!location) {
       return res.status(404).json({
+        success: false,
         message: 'Practice location not found'
       });
     }
@@ -612,6 +605,7 @@ const updatePracticeLocation = async (req, res) => {
         
         if (!validateTimeFormat(slot.startTime) || !validateTimeFormat(slot.endTime)) {
           return res.status(400).json({
+            success: false,
             message: 'Invalid time format. Use HH:MM format.'
           });
         }
@@ -622,6 +616,7 @@ const updatePracticeLocation = async (req, res) => {
         
         if (hasTimeConflict(slot, otherLocations)) {
           return res.status(400).json({
+            success: false,
             message: `Time slot conflict: ${slot.day} ${slot.startTime}-${slot.endTime} is already assigned to another location`
           });
         }
@@ -633,14 +628,16 @@ const updatePracticeLocation = async (req, res) => {
     await user.save();
 
     res.json({
+      success: true,
       message: 'Practice location updated successfully',
       location
     });
   } catch (error) {
     console.error('Update practice location error:', error);
     res.status(500).json({
+      success: false,
       message: 'Server error',
-      error: error.message
+      error: process.env.NODE_ENV === 'development' ? error.message : 'Internal server error'
     });
   }
 };
@@ -654,12 +651,14 @@ const removePracticeLocation = async (req, res) => {
     
     if (!user || user.userType !== 'doctor') {
       return res.status(403).json({
+        success: false,
         message: 'Only doctors can remove practice locations'
       });
     }
 
     if (user.practiceLocations.length <= 1) {
       return res.status(400).json({
+        success: false,
         message: 'Cannot remove the last practice location. Doctors must have at least one location.'
       });
     }
@@ -668,13 +667,15 @@ const removePracticeLocation = async (req, res) => {
     await user.save();
 
     res.json({
+      success: true,
       message: 'Practice location removed successfully'
     });
   } catch (error) {
     console.error('Remove practice location error:', error);
     res.status(500).json({
+      success: false,
       message: 'Server error',
-      error: error.message
+      error: process.env.NODE_ENV === 'development' ? error.message : 'Internal server error'
     });
   }
 };
@@ -687,18 +688,21 @@ const changePassword = async (req, res) => {
 
     if (!currentPassword || !newPassword || !confirmNewPassword) {
       return res.status(400).json({
+        success: false,
         message: 'Please provide all required fields'
       });
     }
 
     if (newPassword !== confirmNewPassword) {
       return res.status(400).json({
+        success: false,
         message: 'New passwords do not match'
       });
     }
 
     if (newPassword.length < 6) {
       return res.status(400).json({
+        success: false,
         message: 'New password must be at least 6 characters long'
       });
     }
@@ -706,6 +710,7 @@ const changePassword = async (req, res) => {
     const user = await User.findById(req.userId);
     if (!user) {
       return res.status(404).json({
+        success: false,
         message: 'User not found'
       });
     }
@@ -713,6 +718,7 @@ const changePassword = async (req, res) => {
     const isMatch = await user.comparePassword(currentPassword);
     if (!isMatch) {
       return res.status(400).json({
+        success: false,
         message: 'Current password is incorrect'
       });
     }
@@ -721,13 +727,15 @@ const changePassword = async (req, res) => {
     await user.save();
 
     res.json({
+      success: true,
       message: 'Password changed successfully'
     });
   } catch (error) {
     console.error('Password change error:', error);
     res.status(500).json({
+      success: false,
       message: 'Server error during password change',
-      error: error.message
+      error: process.env.NODE_ENV === 'development' ? error.message : 'Internal server error'
     });
   }
 };
@@ -736,6 +744,7 @@ const changePassword = async (req, res) => {
 // @access  Private
 const logoutUser = (req, res) => {
   res.json({
+    success: true,
     message: 'Logged out successfully'
   });
 };
@@ -747,9 +756,9 @@ module.exports = {
   updateProfile,
   changePassword,
   logoutUser,
-  uploadImage,
+  uploadProfileImage,
+  uploadBackgroundImage,
   addPracticeLocation,
   updatePracticeLocation,
-  removePracticeLocation,
-  upload
+  removePracticeLocation
 };

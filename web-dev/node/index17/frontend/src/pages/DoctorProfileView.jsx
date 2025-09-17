@@ -1,4 +1,4 @@
-// DoctorProfileView.jsx - Updated with messaging functionality
+// DoctorProfileView.jsx - Updated with Cloudinary support and messaging functionality
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import backendUrl from '../utils/BackendURl';
@@ -22,6 +22,24 @@ const DoctorProfileView = () => {
   const [showDoctorPopup, setShowDoctorPopup] = useState(false);
   const [originalUserRating, setOriginalUserRating] = useState(0);
   const [originalUserFeedback, setOriginalUserFeedback] = useState('');
+
+  // Helper function to check if URL is a Cloudinary URL
+  const isCloudinaryUrl = (url) => {
+    return url && (url.startsWith('https://res.cloudinary.com') || url.startsWith('http://res.cloudinary.com'));
+  };
+
+  // Helper function to get correct image URL
+  const getImageUrl = (imageUrl) => {
+    if (!imageUrl) return null;
+    
+    // If it's a Cloudinary URL, return as-is
+    if (isCloudinaryUrl(imageUrl)) {
+      return imageUrl;
+    }
+    
+    // If it's a relative path (legacy), prepend backend URL
+    return `${backendUrl}${imageUrl}`;
+  };
 
   useEffect(() => {
     if (doctorId) {
@@ -306,13 +324,13 @@ const DoctorProfileView = () => {
         </div>
       )}
 
-      {/* Profile Header */}
+      {/* Profile Header - FIXED IMAGE DISPLAYS */}
       <div className="profile-page-header">
         <div className="profile-page-cover">
           <div className="profile-cover-image">
             {doctor.backgroundImage ? (
               <img 
-                src={`${backendUrl}${doctor.backgroundImage}`} 
+                src={getImageUrl(doctor.backgroundImage)} 
                 alt="Background" 
                 className="profile-background-img"
                 onError={(e) => {
@@ -331,7 +349,7 @@ const DoctorProfileView = () => {
           <div className="profile-page-avatar">
             <div className="profile-avatar-container">
               {doctor.profileImage ? (
-                <img src={`${backendUrl}${doctor.profileImage}`} alt={doctor.name || 'Doctor'} />
+                <img src={getImageUrl(doctor.profileImage)} alt={doctor.name || 'Doctor'} />
               ) : (
                 <div className="profile-avatar-placeholder">
                   <i className="fas fa-user-md"></i>
@@ -656,7 +674,7 @@ const DoctorProfileView = () => {
                   </div>
                 )}
 
-                {/* Reviews List */}
+                {/* Reviews List - FIXED IMAGE DISPLAYS */}
                 <div className="rating-reviews-section">
                   <div className="rating-reviews-header">
                     <h4>
@@ -681,11 +699,11 @@ const DoctorProfileView = () => {
                               <div className="rating-review-avatar">
                                 {review.profileImage ? (
                                   <img 
-                                    src={`${backendUrl}${review.profileImage}`} 
+                                    src={getImageUrl(review.profileImage)} 
                                     alt={review.userName || 'User'} 
                                     className="rating-review-avatar-img"
                                     onError={(e) => {
-                                      console.log('Profile image failed to load:', `${backendUrl}${review.profileImage}`);
+                                      console.log('Profile image failed to load:', getImageUrl(review.profileImage));
                                       // Hide the image and show the fallback icon
                                       e.target.style.display = 'none';
                                       const fallbackIcon = e.target.parentNode.querySelector('.rating-avatar-fallback');

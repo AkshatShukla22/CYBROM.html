@@ -1,4 +1,4 @@
-// Messages.jsx - Main messaging page
+// Messages.jsx - Main messaging page with fixed image handling
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSocket } from '../contexts/SocketContext';
@@ -16,6 +16,24 @@ const Messages = () => {
   const [searching, setSearching] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
   const [showSearch, setShowSearch] = useState(false);
+
+  // Helper function to check if URL is a Cloudinary URL
+  const isCloudinaryUrl = (url) => {
+    return url && (url.startsWith('https://res.cloudinary.com') || url.startsWith('http://res.cloudinary.com'));
+  };
+
+  // Helper function to get correct image URL
+  const getImageUrl = (imageUrl) => {
+    if (!imageUrl) return null;
+    
+    // If it's a Cloudinary URL, return as-is
+    if (isCloudinaryUrl(imageUrl)) {
+      return imageUrl;
+    }
+    
+    // If it's a relative path (legacy), prepend backend URL
+    return `${backendUrl}${imageUrl}`;
+  };
 
   useEffect(() => {
     fetchCurrentUser();
@@ -298,12 +316,22 @@ const Messages = () => {
                 >
                   <div className="search-result-avatar">
                     {user.profileImage ? (
-                      <img src={`${backendUrl}${user.profileImage}`} alt={user.name} />
-                    ) : (
-                      <div className="avatar-placeholder">
-                        <i className={`fas ${user.userType === 'doctor' ? 'fa-user-md' : 'fa-user'}`}></i>
-                      </div>
-                    )}
+                      <img 
+                        src={getImageUrl(user.profileImage)} 
+                        alt={user.name} 
+                        onError={(e) => {
+                          // Fallback to placeholder if image fails to load
+                          e.target.style.display = 'none';
+                          e.target.parentElement.querySelector('.avatar-placeholder').style.display = 'flex';
+                        }}
+                      />
+                    ) : null}
+                    <div 
+                      className="avatar-placeholder"
+                      style={{ display: user.profileImage ? 'none' : 'flex' }}
+                    >
+                      <i className={`fas ${user.userType === 'doctor' ? 'fa-user-md' : 'fa-user'}`}></i>
+                    </div>
                     {onlineUsers.has(user.id) && (
                       <div className="online-indicator"></div>
                     )}
@@ -341,12 +369,22 @@ const Messages = () => {
             >
               <div className="conversation-avatar">
                 {conversation.profileImage ? (
-                  <img src={`${backendUrl}${conversation.profileImage}`} alt={conversation.name} />
-                ) : (
-                  <div className="avatar-placeholder">
-                    <i className={`fas ${conversation.userType === 'doctor' ? 'fa-user-md' : 'fa-user'}`}></i>
-                  </div>
-                )}
+                  <img 
+                    src={getImageUrl(conversation.profileImage)} 
+                    alt={conversation.name} 
+                    onError={(e) => {
+                      // Fallback to placeholder if image fails to load
+                      e.target.style.display = 'none';
+                      e.target.parentElement.querySelector('.avatar-placeholder').style.display = 'flex';
+                    }}
+                  />
+                ) : null}
+                <div 
+                  className="avatar-placeholder"
+                  style={{ display: conversation.profileImage ? 'none' : 'flex' }}
+                >
+                  <i className={`fas ${conversation.userType === 'doctor' ? 'fa-user-md' : 'fa-user'}`}></i>
+                </div>
                 {onlineUsers.has(conversation.userId) && (
                   <div className="online-indicator"></div>
                 )}

@@ -1,4 +1,4 @@
-// routes/messageRoutes.js
+// routes/messageRoutes.js - Clean message routes
 const express = require('express');
 const auth = require('../middleware/auth');
 const {
@@ -15,22 +15,16 @@ const router = express.Router();
 // All message routes require authentication
 router.use(auth);
 
-// Get user's conversations
+// Conversation management
 router.get('/conversations', getConversations);
-
-// Get messages between two users
 router.get('/conversation/:userId', getMessages);
 
-// Send a message
+// Message operations
 router.post('/send', sendMessage);
-
-// Mark messages as read
 router.put('/read/:senderId', markAsRead);
-
-// Get unread message count
 router.get('/unread-count', getUnreadCount);
 
-// Search users for messaging
+// User search for messaging
 router.get('/search-users', searchUsers);
 
 module.exports = router;

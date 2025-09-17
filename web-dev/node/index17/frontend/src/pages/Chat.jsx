@@ -1,4 +1,4 @@
-// Chat.jsx - Individual chat interface
+// Chat.jsx - Individual chat interface with fixed image handling
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useSocket } from '../contexts/SocketContext';
@@ -21,6 +21,24 @@ const Chat = () => {
   
   const messagesEndRef = useRef(null);
   const typingTimeoutRef = useRef(null);
+
+  // Helper function to check if URL is a Cloudinary URL
+  const isCloudinaryUrl = (url) => {
+    return url && (url.startsWith('https://res.cloudinary.com') || url.startsWith('http://res.cloudinary.com'));
+  };
+
+  // Helper function to get correct image URL
+  const getImageUrl = (imageUrl) => {
+    if (!imageUrl) return null;
+    
+    // If it's a Cloudinary URL, return as-is
+    if (isCloudinaryUrl(imageUrl)) {
+      return imageUrl;
+    }
+    
+    // If it's a relative path (legacy), prepend backend URL
+    return `${backendUrl}${imageUrl}`;
+  };
 
   useEffect(() => {
     fetchCurrentUser();
@@ -330,12 +348,22 @@ const Chat = () => {
         <div className="chat-user-info">
           <div className="chat-user-avatar">
             {otherUser?.profileImage ? (
-              <img src={`${backendUrl}${otherUser.profileImage}`} alt={otherUser.name} />
-            ) : (
-              <div className="avatar-placeholder">
-                <i className={`fas ${otherUser?.userType === 'doctor' ? 'fa-user-md' : 'fa-user'}`}></i>
-              </div>
-            )}
+              <img 
+                src={getImageUrl(otherUser.profileImage)} 
+                alt={otherUser.name}
+                onError={(e) => {
+                  // Fallback to placeholder if image fails to load
+                  e.target.style.display = 'none';
+                  e.target.nextSibling.style.display = 'flex';
+                }}
+              />
+            ) : null}
+            <div 
+              className="avatar-placeholder"
+              style={{ display: otherUser?.profileImage ? 'none' : 'flex' }}
+            >
+              <i className={`fas ${otherUser?.userType === 'doctor' ? 'fa-user-md' : 'fa-user'}`}></i>
+            </div>
             {onlineUsers.has(userId) && (
               <div className="online-indicator"></div>
             )}
@@ -375,21 +403,45 @@ const Chat = () => {
             >
               <div className="message-avatar">
                 {message.senderId === currentUser?.id ? (
-                  currentUser.profileImage ? (
-                    <img src={`${backendUrl}${currentUser.profileImage}`} alt={currentUser.name} />
-                  ) : (
-                    <div className="avatar-placeholder">
+                  // Current user's avatar
+                  <>
+                    {currentUser.profileImage ? (
+                      <img 
+                        src={getImageUrl(currentUser.profileImage)} 
+                        alt={currentUser.name}
+                        onError={(e) => {
+                          e.target.style.display = 'none';
+                          e.target.nextSibling.style.display = 'flex';
+                        }}
+                      />
+                    ) : null}
+                    <div 
+                      className="avatar-placeholder"
+                      style={{ display: currentUser.profileImage ? 'none' : 'flex' }}
+                    >
                       <i className={`fas ${currentUser.userType === 'doctor' ? 'fa-user-md' : 'fa-user'}`}></i>
                     </div>
-                  )
+                  </>
                 ) : (
-                  otherUser?.profileImage ? (
-                    <img src={`${backendUrl}${otherUser.profileImage}`} alt={otherUser.name} />
-                  ) : (
-                    <div className="avatar-placeholder">
+                  // Other user's avatar
+                  <>
+                    {otherUser?.profileImage ? (
+                      <img 
+                        src={getImageUrl(otherUser.profileImage)} 
+                        alt={otherUser.name}
+                        onError={(e) => {
+                          e.target.style.display = 'none';
+                          e.target.nextSibling.style.display = 'flex';
+                        }}
+                      />
+                    ) : null}
+                    <div 
+                      className="avatar-placeholder"
+                      style={{ display: otherUser?.profileImage ? 'none' : 'flex' }}
+                    >
                       <i className={`fas ${otherUser?.userType === 'doctor' ? 'fa-user-md' : 'fa-user'}`}></i>
                     </div>
-                  )
+                  </>
                 )}
               </div>
               
@@ -412,12 +464,21 @@ const Chat = () => {
           <div className="typing-indicator">
             <div className="typing-avatar">
               {otherUser?.profileImage ? (
-                <img src={`${backendUrl}${otherUser.profileImage}`} alt={otherUser.name} />
-              ) : (
-                <div className="avatar-placeholder">
-                  <i className={`fas ${otherUser?.userType === 'doctor' ? 'fa-user-md' : 'fa-user'}`}></i>
-                </div>
-              )}
+                <img 
+                  src={getImageUrl(otherUser.profileImage)} 
+                  alt={otherUser.name}
+                  onError={(e) => {
+                    e.target.style.display = 'none';
+                    e.target.nextSibling.style.display = 'flex';
+                  }}
+                />
+              ) : null}
+              <div 
+                className="avatar-placeholder"
+                style={{ display: otherUser?.profileImage ? 'none' : 'flex' }}
+              >
+                <i className={`fas ${otherUser?.userType === 'doctor' ? 'fa-user-md' : 'fa-user'}`}></i>
+              </div>
             </div>
             <div className="typing-bubble">
               <div className="typing-dots">

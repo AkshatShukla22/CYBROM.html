@@ -1,3 +1,4 @@
+// Profile.jsx - Fixed for Cloudinary integration
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import backendUrl from '../utils/BackendUrl';
@@ -20,6 +21,24 @@ const Profile = () => {
   const profileImageRef = useRef(null);
   const backgroundImageRef = useRef(null);
   const navigate = useNavigate();
+
+  // Helper function to check if URL is a Cloudinary URL
+  const isCloudinaryUrl = (url) => {
+    return url && (url.startsWith('https://res.cloudinary.com') || url.startsWith('http://res.cloudinary.com'));
+  };
+
+  // Helper function to get correct image URL
+  const getImageUrl = (imageUrl) => {
+    if (!imageUrl) return null;
+    
+    // If it's a Cloudinary URL, return as-is
+    if (isCloudinaryUrl(imageUrl)) {
+      return imageUrl;
+    }
+    
+    // If it's a relative path (legacy), prepend backend URL
+    return `${backendUrl}${imageUrl}`;
+  };
 
   useEffect(() => {
     fetchUserProfile();
@@ -429,7 +448,7 @@ const Profile = () => {
       <div className="profile-page-header">
         <div className="profile-page-cover">
           <div className="profile-cover-image">
-            {/* Background image display for doctors only */}
+            {/* Background image display for doctors only - FIXED */}
             {user.userType === 'doctor' && (
               <>
                 {imagePreview.background ? (
@@ -440,7 +459,7 @@ const Profile = () => {
                   />
                 ) : user.backgroundImage ? (
                   <img 
-                    src={`${backendUrl}${user.backgroundImage}`} 
+                    src={getImageUrl(user.backgroundImage)} 
                     alt="Background" 
                     className="profile-background-img"
                     onError={(e) => {
@@ -476,10 +495,11 @@ const Profile = () => {
         <div className="profile-info-header">
           <div className="profile-page-avatar">
             <div className="profile-avatar-container">
+              {/* Profile image display - FIXED */}
               {imagePreview.profile ? (
                 <img src={imagePreview.profile} alt="Profile Preview" />
               ) : user.profileImage ? (
-                <img src={`${backendUrl}${user.profileImage}`} alt={user.name || 'User'} />
+                <img src={getImageUrl(user.profileImage)} alt={user.name || 'User'} />
               ) : (
                 <div className="profile-avatar-placeholder">
                   <i className={`fas ${user.userType === 'doctor' ? 'fa-user-md' : 'fa-user'}`}></i>
@@ -585,7 +605,7 @@ const Profile = () => {
         />
       )}
 
-      {/* Profile Content */}
+      {/* Profile Content - FIXED IMAGE DISPLAYS */}
       <div className="profile-page-content">
         {user.userType === 'doctor' ? (
           // Doctor Profile Content
@@ -605,7 +625,7 @@ const Profile = () => {
                         </div>
                       )}
                       
-                      {/* Profile & Background Image Upload Section */}
+                      {/* Profile & Background Image Upload Section - FIXED */}
                       <div className="profile-image-upload-section">
                         <h4>Profile Images</h4>
                         <div className="image-upload-grid">
@@ -616,7 +636,7 @@ const Profile = () => {
                                 {imagePreview.profile ? (
                                   <img src={imagePreview.profile} alt="Profile Preview" />
                                 ) : user.profileImage ? (
-                                  <img src={`${backendUrl}${user.profileImage}`} alt="Current Profile" />
+                                  <img src={getImageUrl(user.profileImage)} alt="Current Profile" />
                                 ) : (
                                   <div className="image-preview-placeholder">
                                     <i className="fas fa-user"></i>
@@ -643,7 +663,7 @@ const Profile = () => {
                                 {imagePreview.background ? (
                                   <img src={imagePreview.background} alt="Background Preview" />
                                 ) : user.backgroundImage ? (
-                                  <img src={`${backendUrl}${user.backgroundImage}`} alt="Current Background" />
+                                  <img src={getImageUrl(user.backgroundImage)} alt="Current Background" />
                                 ) : (
                                   <div className="image-preview-placeholder">
                                     <i className="fas fa-image"></i>
@@ -665,6 +685,7 @@ const Profile = () => {
                         </div>
                       </div>
 
+                      {/* Rest of the form remains the same */}
                       <div className="profile-form-grid">
                         <div className="profile-form-group">
                           <label>Full Name</label>
@@ -1162,7 +1183,7 @@ const Profile = () => {
                       </div>
                     )}
 
-                    {/* Profile Image Upload */}
+                    {/* Profile Image Upload - FIXED */}
                     <div className="profile-image-upload-section">
                       <h4>Profile Picture</h4>
                       <div className="image-preview-container">
@@ -1170,7 +1191,7 @@ const Profile = () => {
                           {imagePreview.profile ? (
                             <img src={imagePreview.profile} alt="Profile Preview" />
                           ) : user.profileImage ? (
-                            <img src={`${backendUrl}${user.profileImage}`} alt="Current Profile" />
+                            <img src={getImageUrl(user.profileImage)} alt="Current Profile" />
                           ) : (
                             <div className="image-preview-placeholder">
                               <i className="fas fa-user"></i>

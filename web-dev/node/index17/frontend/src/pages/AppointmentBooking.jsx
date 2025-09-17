@@ -21,6 +21,24 @@ const AppointmentBooking = () => {
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
 
+  // Helper function to check if URL is a Cloudinary URL
+  const isCloudinaryUrl = (url) => {
+    return url && (url.startsWith('https://res.cloudinary.com') || url.startsWith('http://res.cloudinary.com'));
+  };
+
+  // Helper function to get correct image URL
+  const getImageUrl = (imageUrl) => {
+    if (!imageUrl) return null;
+    
+    // If it's a Cloudinary URL, return as-is
+    if (isCloudinaryUrl(imageUrl)) {
+      return imageUrl;
+    }
+    
+    // If it's a relative path (legacy), prepend backend URL
+    return `${backendUrl}${imageUrl}`;
+  };
+
   // Get minimum date (today)
   const getMinDate = () => {
     const today = new Date();
@@ -226,13 +244,13 @@ const AppointmentBooking = () => {
         </div>
       </div>
 
-      {/* Doctor Info Card */}
+      {/* Doctor Info Card - FIXED */}
       <div className="doctor-info-card">
         <div className="doctor-info-content">
           <div className="doctor-avatar">
             {doctor.profileImage ? (
               <img 
-                src={`${backendUrl}${doctor.profileImage}`} 
+                src={getImageUrl(doctor.profileImage)} 
                 alt={doctor.name}
                 className="doctor-avatar-img"
               />

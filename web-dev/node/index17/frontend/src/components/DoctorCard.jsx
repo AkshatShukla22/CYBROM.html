@@ -3,6 +3,24 @@ import backendUrl from '../utils/BackendURl';
 import '../styles/DoctorCard.css';
 
 const DoctorCard = ({ doctor, onClick }) => {
+  // Helper function to check if URL is a Cloudinary URL
+  const isCloudinaryUrl = (url) => {
+    return url && (url.startsWith('https://res.cloudinary.com') || url.startsWith('http://res.cloudinary.com'));
+  };
+
+  // Helper function to get correct image URL
+  const getImageUrl = (imageUrl) => {
+    if (!imageUrl) return null;
+    
+    // If it's a Cloudinary URL, return as-is
+    if (isCloudinaryUrl(imageUrl)) {
+      return imageUrl;
+    }
+    
+    // If it's a relative path (legacy), prepend backend URL
+    return `${backendUrl}${imageUrl}`;
+  };
+
   // Check if doctor has profile image
   const hasProfileImage = doctor.profileImage && doctor.profileImage.trim() !== '';
   
@@ -74,11 +92,11 @@ const DoctorCard = ({ doctor, onClick }) => {
 
   return (
     <div className="doctor-card" onClick={onClick}>
-      {/* Doctor Image */}
+      {/* Doctor Image - FIXED */}
       <div className="doctor-image">
         {hasProfileImage ? (
           <img 
-            src={`${backendUrl}${doctor.profileImage}`}
+            src={getImageUrl(doctor.profileImage)}
             alt={doctor.name}
             onError={(e) => {
               e.target.style.display = 'none';

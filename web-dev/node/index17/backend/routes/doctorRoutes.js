@@ -1,6 +1,6 @@
-// routes/doctorRoutes.js - Updated with search route
+// routes/doctorRoutes.js - Clean and organized doctor routes
 const express = require('express');
-const auth = require('../middleware/auth'); // Import auth middleware for protected routes
+const auth = require('../middleware/auth');
 const {
   getAllDoctors,
   getDoctorById,
@@ -10,24 +10,24 @@ const {
   getDoctorsBySpecialization,
   getDoctorStats,
   searchCities,
-  searchDoctors // ADD THIS IMPORT
+  searchDoctors
 } = require('../controllers/doctorController');
 
 const router = express.Router();
 
-// Public routes - no authentication required to view doctors
+// Public routes - no authentication required
 router.get('/', getAllDoctors);
 router.get('/stats', getDoctorStats);
-router.get('/search', searchDoctors); // ADD THIS ROUTE - MUST BE BEFORE /:doctorId
+router.get('/search', searchDoctors); // Must be before /:doctorId to avoid conflicts
 router.get('/search-cities', searchCities);
 router.get('/specialization/:specialization', getDoctorsBySpecialization);
 
-// Routes that must come AFTER the static routes above to avoid conflicts
-router.get('/:doctorId', getDoctorById);  // Get single doctor by ID
-router.get('/:doctorId/ratings', getDoctorRatings);  // Get doctor ratings
+// Doctor-specific routes (must come after static routes)
+router.get('/:doctorId', getDoctorById);
+router.get('/:doctorId/ratings', getDoctorRatings);
 
 // Protected routes - require authentication
-router.post('/:doctorId/ratings', auth, submitDoctorRating);  // Submit rating (requires login)
-router.delete('/:doctorId/ratings/:ratingId', auth, deleteDoctorRating);  // Delete rating (requires login)
+router.post('/:doctorId/ratings', auth, submitDoctorRating);
+router.delete('/:doctorId/ratings/:ratingId', auth, deleteDoctorRating);
 
 module.exports = router;
