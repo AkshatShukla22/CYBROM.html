@@ -47,7 +47,7 @@ app.use(cors({
 
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json({ limit: '10mb' }));
+app.use(bodyParser.json({ limit: process.env.MAX_FILE_SIZE  }));
 
 // Request logging middleware
 app.use((req, res, next) => {
