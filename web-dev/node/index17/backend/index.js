@@ -205,7 +205,7 @@ app.get('/api/test', (req, res) => {
 });
 
 // Serve static files (for profile images, documents, etc.)
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use(process.env.UPLOAD_ROUTE, express.static(path.join(__dirname, process.env.UPLOAD_DIR)));
 
 // Error handling middleware
 app.use((error, req, res, next) => {
