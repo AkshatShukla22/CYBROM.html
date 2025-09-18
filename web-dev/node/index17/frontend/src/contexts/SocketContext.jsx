@@ -1,7 +1,7 @@
 // contexts/SocketContext.js
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import io from 'socket.io-client';
-import backendUrl from '../utils/BackendURl';
+import backendUrl from '../utils/BackendURL';
 
 const SocketContext = createContext();
 

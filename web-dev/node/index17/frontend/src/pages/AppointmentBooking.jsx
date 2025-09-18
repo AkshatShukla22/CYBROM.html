@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import backendUrl from '../utils/BackendURl';
+import backendUrl from '../utils/BackendURL';
 import '../styles/AppointmentBooking.css';
 
 const AppointmentBooking = () => {

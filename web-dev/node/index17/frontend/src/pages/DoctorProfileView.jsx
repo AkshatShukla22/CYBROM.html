@@ -1,7 +1,7 @@
 // DoctorProfileView.jsx - Updated with Cloudinary support and messaging functionality
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import backendUrl from '../utils/BackendURl';
+import backendUrl from '../utils/BackendURL';
 import '../styles/Rating.css';
 
 const DoctorProfileView = () => {

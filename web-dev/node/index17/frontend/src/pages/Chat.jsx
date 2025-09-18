@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useSocket } from '../contexts/SocketContext';
-import backendUrl from '../utils/BackendURl';
+import backendUrl from '../utils/BackendURL';
 import '../styles/Chat.css';
 
 const Chat = () => {

@@ -1,7 +1,7 @@
 // Profile.jsx - Fixed for Cloudinary integration
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import backendUrl from '../utils/BackendUrl';
+import backendUrl from '../utils/BackendURL';
 import '../styles/Profile.css';
 
 const Profile = () => {

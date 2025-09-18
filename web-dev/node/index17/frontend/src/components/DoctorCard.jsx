@@ -1,5 +1,5 @@
 import React from 'react';
-import backendUrl from '../utils/BackendURl';
+import backendUrl from '../utils/BackendURL';
 import '../styles/DoctorCard.css';
 
 const DoctorCard = ({ doctor, onClick }) => {

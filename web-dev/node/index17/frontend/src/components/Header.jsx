@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import backendUrl from '../utils/BackendUrl'; // Import your backend URL
+import backendUrl from '../utils/BackendURL'; // Import your backend URL
 import '../styles/Header.css';
 
 const Header = () => {

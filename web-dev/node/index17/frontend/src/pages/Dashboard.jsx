@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import DashboardPatients from '../components/DashboardPatients';
 import DashboardAnalytics from '../components/DashboardAnalytics';
-import backendUrl from '../utils/BackendUrl';
+import backendUrl from '../utils/BackendURL';
 import '../styles/Dashboard.css';
 
 const Dashboard = () => {

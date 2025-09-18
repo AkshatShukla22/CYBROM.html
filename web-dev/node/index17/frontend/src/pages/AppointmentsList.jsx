@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import backendUrl from '../utils/BackendUrl';
+import backendUrl from '../utils/BackendURL';
 import '../styles/AppointmentsList.css';
 
 const AppointmentsList = () => {

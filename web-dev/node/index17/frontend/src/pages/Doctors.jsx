@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import DoctorCard from '../components/DoctorCard';
 import FilterSidebar from '../components/FilterSidebar';
 import LoadingSpinner from '../components/LoadingSpinner';
+import backendUrl from '../utils/BackendURL';
 import '../styles/Doctors.css';
 
 const Doctors = () => {
@@ -120,7 +121,7 @@ const Doctors = () => {
           return;
         }
 
-        const response = await fetch('http://localhost:8000/api/auth/me', {
+        const response = await fetch(`${backendUrl}/api/auth/me`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -202,7 +203,7 @@ const Doctors = () => {
 
       console.log('API Query params:', queryParams.toString());
 
-      const response = await fetch(`http://localhost:8000/api/doctors?${queryParams}`, {
+      const response = await fetch(`${backendUrl}/api/doctors?${queryParams}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -466,7 +467,7 @@ const Doctors = () => {
               onClearFilters={clearFilters}
               sortBy={sortBy}
               sortOrder={sortOrder}
-              backendUrl="http://localhost:8000"
+              backendUrl={backendUrl}
             />
           </aside>
 

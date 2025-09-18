@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSocket } from '../contexts/SocketContext';
-import backendUrl from '../utils/BackendURl';
+import backendUrl from '../utils/BackendURL';
 import '../styles/Messages.css';
 
 const Messages = () => {
