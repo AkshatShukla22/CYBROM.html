@@ -1,21 +1,24 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 function App() {
+  const [name, setName] = useState("");
+  const [course, setCourse] = useState("");
   const [data, setData] = useState(null);
 
-  useEffect(() => {
-    fetch("http://localhost:8000/cookie", {
+  const setCookies = () => {
+    fetch(`http://localhost:8000/cookie?myname=${name}&course=${course}`, {
       method: "GET",
       credentials: "include",
     })
       .then((res) => res.text())
-      .then((msg) => console.log("Cookie set response:", msg))
+      .then((msg) => {
+        console.log(msg);
+        alert(msg);
+      })
       .catch((err) => console.error(err));
+  };
 
-    fetchCookies();
-  }, []);
-
-  const fetchCookies = () => {
+  const getCookies = () => {
     fetch("http://localhost:8000/display", {
       method: "GET",
       credentials: "include",
@@ -36,27 +39,52 @@ function App() {
       .then((res) => res.text())
       .then((msg) => {
         console.log(msg);
-        setData(null); 
+        alert(msg);
+        setData(null);
       })
       .catch((err) => console.error(err));
   };
 
   return (
-    <>
-      <h1>Hello World</h1>
+    <div style={{ padding: "20px", fontFamily: "Arial" }}>
+      <h1>Cookie Playground</h1>
 
-      {data ? (
-        <p>
-          Name: {data.name} <br />
-          Course: {data.course}
-        </p>
-      ) : (
-        <p>No cookies found</p>
-      )}
+      <input
+        type="text"
+        placeholder="Enter name"
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+        style={{ marginRight: "20px" }}
+      />
 
-      <button onClick={fetchCookies}>Refresh Cookies</button>
-      <button onClick={clearCookies}>Remove Cookies</button>
-    </>
+      <input
+        type="text"
+        placeholder="Enter course"
+        value={course}
+        onChange={(e) => setCourse(e.target.value)}
+      />
+
+      <div style={{ marginTop: "20px" }}>
+        <button onClick={setCookies} style={{ marginRight: "20px" }}>
+          Set Cookie
+        </button>
+        <button onClick={getCookies} style={{ marginRight: "20px" }}>
+          Get Cookie
+        </button>
+        <button onClick={clearCookies}>Clear Cookie</button>
+      </div>
+
+      <div style={{ marginTop: "20px" }}>
+        {data ? (
+          <p>
+            <b>Name:</b> {data.name} <br />
+            <b>Course:</b> {data.course}
+          </p>
+        ) : (
+          <p>No cookies found</p>
+        )}
+      </div>
+    </div>
   );
 }
 

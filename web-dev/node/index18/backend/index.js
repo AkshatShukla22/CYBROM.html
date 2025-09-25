@@ -25,10 +25,22 @@ mongoose.connect('mongodb://127.0.0.1:27017/cookiesDB')
     });
 
 app.get("/cookie", (req, res) => {
-    res.cookie("myname", "Akshat", { maxAge: 60 * 1000 });
-    res.cookie("course", "Btech", { maxAge: 60 * 1000 });
-    res.send("cookie has been set!");
+    const { myname = "defaultName", course = "defaultCourse" } = req.query;
+
+    res.cookie("myname", myname, {
+        maxAge: 60 * 1000,
+        httpOnly: false,
+        sameSite: "lax",
+    });
+    res.cookie("course", course, {
+        maxAge: 60 * 1000,
+        httpOnly: false,
+        sameSite: "lax",
+    });
+
+    res.send(`Cookies set: myname=${myname}, course=${course}`);
 });
+
 
 app.get("/display", (req, res) => {
     const { myname, course } = req.cookies;
