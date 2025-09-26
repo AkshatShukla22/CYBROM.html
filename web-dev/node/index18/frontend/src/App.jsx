@@ -1,89 +1,115 @@
-import { useState } from "react";
+import React, { useState, useEffect, useRef } from 'react';
+import io from 'socket.io-client';
 
 function App() {
-  const [name, setName] = useState("");
-  const [course, setCourse] = useState("");
-  const [data, setData] = useState(null);
+  const [socket, setSocket] = useState(null);
+  const [username, setUsername] = useState('');
+  const [isJoined, setIsJoined] = useState(false);
+  const [message, setMessage] = useState('');
+  const [messages, setMessages] = useState([]);
+  const messagesEndRef = useRef(null);
 
-  const setCookies = () => {
-    fetch(`http://localhost:8000/cookie?myname=${name}&course=${course}`, {
-      method: "GET",
-      credentials: "include",
-    })
-      .then((res) => res.text())
-      .then((msg) => {
-        console.log(msg);
-        alert(msg);
-      })
-      .catch((err) => console.error(err));
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
-  const getCookies = () => {
-    fetch("http://localhost:8000/display", {
-      method: "GET",
-      credentials: "include",
-    })
-      .then((res) => res.json())
-      .then((result) => {
-        console.log("Cookies from server:", result);
-        setData(result);
-      })
-      .catch((err) => console.error(err));
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
+  useEffect(() => {
+    const newSocket = io('http://localhost:5000');
+    setSocket(newSocket);
+
+    newSocket.on('message', (messageData) => {
+      setMessages(prev => [...prev, { ...messageData, type: 'message' }]);
+    });
+
+    newSocket.on('userJoined', (notification) => {
+      setMessages(prev => [...prev, { 
+        id: Date.now(), 
+        message: notification, 
+        type: 'notification' 
+      }]);
+    });
+
+    newSocket.on('userLeft', (notification) => {
+      setMessages(prev => [...prev, { 
+        id: Date.now(), 
+        message: notification, 
+        type: 'notification' 
+      }]);
+    });
+
+    return () => {
+      newSocket.close();
+    };
+  }, []);
+
+  const handleJoin = (e) => {
+    e.preventDefault();
+    if (username.trim() && socket) {
+      socket.emit('join', username.trim());
+      setIsJoined(true);
+    }
   };
 
-  const clearCookies = () => {
-    fetch("http://localhost:8000/clear-cookie", {
-      method: "GET",
-      credentials: "include",
-    })
-      .then((res) => res.text())
-      .then((msg) => {
-        console.log(msg);
-        alert(msg);
-        setData(null);
-      })
-      .catch((err) => console.error(err));
+  const handleSendMessage = (e) => {
+    e.preventDefault();
+    if (message.trim() && socket) {
+      socket.emit('message', { message: message.trim() });
+      setMessage('');
+    }
   };
+
+  if (!isJoined) {
+    return (
+      <div>
+        <h1>Chat Application</h1>
+        <form onSubmit={handleJoin}>
+          <input
+            type="text"
+            placeholder="Enter your name"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            required
+          />
+          <button type="submit">Join Chat</button>
+        </form>
+      </div>
+    );
+  }
 
   return (
-    <div style={{ padding: "20px", fontFamily: "Arial" }}>
-      <h1>Cookie Playground</h1>
-
-      <input
-        type="text"
-        placeholder="Enter name"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-        style={{ marginRight: "20px" }}
-      />
-
-      <input
-        type="text"
-        placeholder="Enter course"
-        value={course}
-        onChange={(e) => setCourse(e.target.value)}
-      />
-
-      <div style={{ marginTop: "20px" }}>
-        <button onClick={setCookies} style={{ marginRight: "20px" }}>
-          Set Cookie
-        </button>
-        <button onClick={getCookies} style={{ marginRight: "20px" }}>
-          Get Cookie
-        </button>
-        <button onClick={clearCookies}>Clear Cookie</button>
+    <div>
+      <h2>Chat Room - Welcome {username}!</h2>
+      
+      <div>
+        {messages.map((msg) => (
+          <div key={msg.id}>
+            {msg.type === 'notification' ? (
+              <div>{msg.message}</div>
+            ) : (
+              <div>
+                <strong>{msg.username}:</strong> {msg.message}
+                <small> ({msg.timestamp})</small>
+              </div>
+            )}
+          </div>
+        ))}
+        <div ref={messagesEndRef} />
       </div>
-
-      <div style={{ marginTop: "20px" }}>
-        {data ? (
-          <p>
-            <b>Name:</b> {data.name} <br />
-            <b>Course:</b> {data.course}
-          </p>
-        ) : (
-          <p>No cookies found</p>
-        )}
-      </div>
+      
+      <form onSubmit={handleSendMessage}>
+        <input
+          type="text"
+          placeholder="Type your message..."
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+          required
+        />
+        <button type="submit">Send</button>
+      </form>
     </div>
   );
 }

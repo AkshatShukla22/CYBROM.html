@@ -1,59 +1,59 @@
-// index.js
-
 const express = require('express');
-const bodyParser = require('body-parser');
+const http = require('http');
+const socketIo = require('socket.io');
 const cors = require('cors');
-const cookieParser = require('cookie-parser');
-const mongoose = require('mongoose');
 
 const app = express();
-const PORT = 8000;
-
-app.use(bodyParser.json());
-app.use(cors({
-    origin: 'http://localhost:5173',  
-    credentials: true
-}));
-app.use(cookieParser());
-
-mongoose.connect('mongodb://127.0.0.1:27017/cookiesDB')
-    .then(() => {
-        console.log("DB Connected!!!");
-    })
-    .catch((err) => {
-        console.log("DB Connection Failed:", err);
-    });
-
-app.get("/cookie", (req, res) => {
-    const { myname = "defaultName", course = "defaultCourse" } = req.query;
-
-    res.cookie("myname", myname, {
-        maxAge: 60 * 1000,
-        httpOnly: false,
-        sameSite: "lax",
-    });
-    res.cookie("course", course, {
-        maxAge: 60 * 1000,
-        httpOnly: false,
-        sameSite: "lax",
-    });
-
-    res.send(`Cookies set: myname=${myname}, course=${course}`);
+const server = http.createServer(app);
+const io = socketIo(server, {
+  cors: {
+    origin: "http://localhost:5173",
+    methods: ["GET", "POST"]
+  }
 });
 
+app.use(cors());
+app.use(express.json());
 
-app.get("/display", (req, res) => {
-    const { myname, course } = req.cookies;
-    console.log(req.cookies);
-    res.send({ name: myname, course: course });
+// Store connected users
+const users = new Map();
+
+io.on('connection', (socket) => {
+  console.log('User connected:', socket.id);
+
+  // Handle user joining
+  socket.on('join', (username) => {
+    users.set(socket.id, username);
+    socket.broadcast.emit('userJoined', `${username} joined the chat`);
+    console.log(`${username} joined`);
+  });
+
+  // Handle new messages
+  socket.on('message', (data) => {
+    const username = users.get(socket.id);
+    const messageData = {
+      id: Date.now(),
+      username: username,
+      message: data.message,
+      timestamp: new Date().toLocaleTimeString()
+    };
+    
+    // Send message to all clients including sender
+    io.emit('message', messageData);
+  });
+
+  // Handle disconnection
+  socket.on('disconnect', () => {
+    const username = users.get(socket.id);
+    if (username) {
+      users.delete(socket.id);
+      socket.broadcast.emit('userLeft', `${username} left the chat`);
+      console.log(`${username} disconnected`);
+    }
+  });
 });
 
-app.get("/clear-cookie", (req, res) => {
-    res.clearCookie("myname");
-    res.clearCookie("course");
-    res.send("cookies cleared!");
-});
-
-app.listen(PORT, () => {
-    console.log(`Server listening on port ${PORT}`);
+const PORT = 5000;
+server.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });

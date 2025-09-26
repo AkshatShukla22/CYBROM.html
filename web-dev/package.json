@@ -8,9 +8,12 @@
     "dotenv": "^17.2.1",
     "ejs": "^3.1.10",
     "express": "^5.1.0",
+    "http": "^0.0.1-security",
     "mongoose": "^8.18.0",
     "multer": "^2.0.2",
-    "nodemon": "^3.1.10"
+    "nodemon": "^3.1.10",
+    "socket.io": "^4.8.1",
+    "socketio": "^1.0.0"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.21",
