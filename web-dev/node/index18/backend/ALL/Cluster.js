@@ -1,17 +1,13 @@
 const http = require('http');
 const cluster = require('cluster');
-const os = require('os');
 
 if (cluster.isMaster) {
-  console.log(`Master is running`);
-  const numCPUs = os.cpus().length;
-  console.log(`Forking for ${numCPUs} CPUs`);
-  for (let i = 0; i < numCPUs; i++) {
-    cluster.fork();
-  }
+  console.log(`Master ${process.pid} is running`);
+  cluster.fork();
+  cluster.fork();
+  cluster.fork();
 }
-else {
-  console.log(`Worker started`);
+else {  console.log(`Worker ${process.pid} started`);  
   http.createServer((req, res) => {
     setTimeout(() => {
       res.write(`<h1>Hello, World!</h1>`);
