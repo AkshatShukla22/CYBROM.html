@@ -11,11 +11,16 @@ if (cluster.isMaster) {
   }
 }
 else {
-  console.log(`Worker started`);
+  console.log(`Worker started ${process.pid}`);
   http.createServer((req, res) => {
     setTimeout(() => {
       res.write(`<h1>Hello, World!</h1>`);
       res.end();
+      cluster.on('exit', (worker, code, signal) => {
+        console.log(`Worker ${worker.process.pid} died`);
+        console.log('Starting a new worker');
+        cluster.fork();
+      });
     }, 5000);
   }).listen(3000, () => {
     console.log('Server running at http://localhost:3000/');
