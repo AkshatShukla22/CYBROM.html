@@ -1,6 +1,6 @@
-Session Storage.
+Session Storage.<remaining>
 Learned about cookies.
 Chat App (Socket.io)
-Buffer 
+Buffer <remaining>
 Cluster
 <Final Project>
