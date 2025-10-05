@@ -3,5 +3,5 @@ Learned about cookies.
 Chat App (Socket.io)
 Buffer <remaining>
 Cluster
-<Final Project>
+<Final Project> <In Progress>
 
