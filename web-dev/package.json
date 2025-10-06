@@ -1,17 +1,19 @@
 {
   "dependencies": {
     "@tailwindcss/vite": "^4.1.11",
+    "axios": "^1.12.2",
     "body-parser": "^2.2.0",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "create-react-app": "^5.1.0",
-    "dotenv": "^17.2.1",
+    "dotenv": "^17.2.3",
     "ejs": "^3.1.10",
     "express": "^5.1.0",
     "http": "^0.0.1-security",
     "mongoose": "^8.18.0",
     "multer": "^2.0.2",
     "nodemon": "^3.1.10",
+    "react-router-dom": "^7.9.3",
     "socket.io": "^4.8.1",
     "socketio": "^1.0.0"
   },
