@@ -14,18 +14,13 @@ const Header = () => {
 
   return (
     <>
-      {/* Font Awesome CDN */}
-      <link 
-        rel="stylesheet" 
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-      />
 
       <nav className="navbar">
         <div className="nav-container">
           {/* Logo and Brand */}
           <div className="brand">
             <div className="logo">
-              <i className="fas fa-gamepad"></i>
+              <i className="fas fa-ring"></i>
             </div>
             <span className="brand-name">Respawn Hub</span>
           </div>
@@ -37,7 +32,7 @@ const Header = () => {
               <span>Home</span>
             </a>
             <a href="products" className="nav-link">
-              <i className="fas fa-box"></i>
+              <i className="fas fa-gamepad"></i>
               <span>Products</span>
             </a>
             <a href="news" className="nav-link">
@@ -75,6 +70,8 @@ const Header = () => {
           </div>
         </div>
       </nav>
+      
+      <div className="content-spacer"></div>
     </>
   );
 }

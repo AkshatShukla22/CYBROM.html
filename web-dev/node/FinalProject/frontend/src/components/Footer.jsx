@@ -15,12 +15,11 @@ const Footer = () => {
           <div className="footer-top">
             <div className="footer-section">
               <div className="footer-brand">
-                <i className="fas fa-gamepad"></i>
+                <i className="fas fa-ring"></i>
                 <h3>Respawn Hub</h3>
               </div>
               <p className="footer-description">
-                Your premier destination for the latest games, exclusive deals, and gaming news. 
-                Level up your gaming experience with us.
+                Rise, Tarnished — your journey awaits
               </p>
               <div className="social-links">
                 <a href="#facebook" className="social-link">
@@ -98,6 +97,7 @@ const Footer = () => {
         <div className="footer-bg-element element-2"></div>
         <div className="footer-bg-element element-3"></div>
       </footer>
+      
     </>
   );
 }
