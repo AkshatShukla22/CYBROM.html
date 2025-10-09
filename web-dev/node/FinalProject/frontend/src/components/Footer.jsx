@@ -19,7 +19,7 @@ const Footer = () => {
                 <h3>Respawn Hub</h3>
               </div>
               <p className="footer-description">
-                Rise, Tarnished — your journey awaits
+                Rise, <span>Tarnished</span> — <br /> your <span>journey</span> awaits
               </p>
               <div className="social-links">
                 <a href="#facebook" className="social-link">

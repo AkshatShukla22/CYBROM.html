@@ -6,6 +6,7 @@ import Products from './pages/Products';
 import News from './pages/News';
 import Support from './pages/Support';
 import Cart from './pages/Cart';
+import Auth from './pages/Auth';
 
 function App() {
 
@@ -24,6 +25,7 @@ function App() {
         </Route>
 
         <Route path="*" element={<h1>404 Not Found</h1>} />
+        <Route path="login" element={<Auth />} />
       </Routes>
     </BrowserRouter>
   )

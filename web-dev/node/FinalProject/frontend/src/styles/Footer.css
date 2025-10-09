@@ -87,7 +87,13 @@
           font-size: 20px;
           font-style: italic;
           font-weight: 600;
-          letter-spacing: 0.3px;
+          letter-spacing: 2px;
+          word-spacing: 5px;
+        }
+
+        .footer-description  span{
+          color: #1e88e5;
+          font-weight: 800;
         }
 
         .social-links {
