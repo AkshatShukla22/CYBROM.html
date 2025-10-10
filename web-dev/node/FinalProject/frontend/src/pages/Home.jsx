@@ -41,7 +41,7 @@ export default function Home() {
       });
 
       if (response.ok) {
-        navigate('Login');
+        navigate('/Login');
       }
     } catch (error) {
       console.error('Logout error:', error);

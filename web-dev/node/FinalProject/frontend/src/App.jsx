@@ -6,7 +6,9 @@ import Products from './pages/Products';
 import News from './pages/News';
 import Support from './pages/Support';
 import Cart from './pages/Cart';
-import Auth from './pages/Auth';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import AdminPanel from './pages/AdminPanel';
 
 function App() {
 
@@ -25,7 +27,9 @@ function App() {
         </Route>
 
         <Route path="*" element={<h1>404 Not Found</h1>} />
-        <Route path="login" element={<Auth />} />
+        <Route path="login" element={<Login />} />
+        <Route path="register" element={<Register />} />
+        <Route path="admin" element={<AdminPanel />} />
       </Routes>
     </BrowserRouter>
   )

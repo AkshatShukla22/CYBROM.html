@@ -1,18 +1,13 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import '../styles/Register.css';
 
-export default function Auth() {
+const Register = () => {
   const navigate = useNavigate();
-  const [isLogin, setIsLogin] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
-  
-  const [loginData, setLoginData] = useState({
-    email: '',
-    password: ''
-  });
   
   const [registerData, setRegisterData] = useState({
     username: '',
@@ -21,51 +16,9 @@ export default function Auth() {
     confirmPassword: ''
   });
 
-  const handleLoginChange = (e) => {
-    setLoginData({ ...loginData, [e.target.name]: e.target.value });
-    setError('');
-  };
-
-  const handleRegisterChange = (e) => {
+  const handleChange = (e) => {
     setRegisterData({ ...registerData, [e.target.name]: e.target.value });
     setError('');
-  };
-
-  const handleLogin = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setError('');
-    setSuccess('');
-
-    try {
-      const response = await fetch('http://localhost:5000/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-        body: JSON.stringify(loginData)
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        setSuccess('Login successful! Redirecting...');
-        setLoginData({ email: '', password: '' });
-        
-        // Navigate to Home after successful login
-        setTimeout(() => {
-          navigate('/home');
-        }, 1000);
-      } else {
-        setError(data.message || 'Login failed. Please try again.');
-      }
-    } catch (err) {
-      setError('Network error. Please check if the server is running.');
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
   };
 
   const handleRegister = async (e) => {
@@ -117,7 +70,6 @@ export default function Auth() {
           confirmPassword: ''
         });
         
-        // Navigate to Home after successful registration
         setTimeout(() => {
           navigate('/home');
         }, 1000);
@@ -132,99 +84,66 @@ export default function Auth() {
     }
   };
 
-  const toggleForm = () => {
-    setIsLogin(!isLogin);
-    setError('');
-    setSuccess('');
-    setShowPassword(false);
-  };
-
   return (
-    <div>
-      <div>
-        <h1>Respawn Hub</h1>
-        <p>{isLogin ? 'Login to your account' : 'Create a new account'}</p>
-      </div>
-
-      {error && <div style={{color: 'red', border: '1px solid red', padding: '10px', marginBottom: '10px'}}>{error}</div>}
-      {success && <div style={{color: 'green', border: '1px solid green', padding: '10px', marginBottom: '10px'}}>{success}</div>}
-
-      {isLogin ? (
-        <div>
-          <div>
-            <label>Email</label>
-            <input
-              type="email"
-              name="email"
-              value={loginData.email}
-              onChange={handleLoginChange}
-              required
-              placeholder="Enter your email"
-            />
-          </div>
-
-          <div>
-            <label>Password</label>
-            <div>
-              <input
-                type={showPassword ? 'text' : 'password'}
-                name="password"
-                value={loginData.password}
-                onChange={handleLoginChange}
-                required
-                placeholder="Enter your password"
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-              >
-                {showPassword ? 'Hide' : 'Show'}
-              </button>
-            </div>
-          </div>
-
-          <button onClick={handleLogin} disabled={loading}>
-            {loading ? 'Logging in...' : 'Login'}
-          </button>
+    <div className="register-container">
+      <div className="register-card">
+        <div className="register-header">
+          <h1>Respawn Hub</h1>
+          <p>Create a new account</p>
         </div>
-      ) : (
-        <div>
-          <div>
+
+        {error && (
+          <div className="register-alert-message register-alert-error">
+            {error}
+          </div>
+        )}
+        {success && (
+          <div className="register-alert-message register-alert-success">
+            {success}
+          </div>
+        )}
+
+        <form className="register-form" onSubmit={handleRegister}>
+          <div className="register-form-group">
             <label>Username</label>
             <input
+              className="register-form-input"
               type="text"
               name="username"
               value={registerData.username}
-              onChange={handleRegisterChange}
+              onChange={handleChange}
               required
               placeholder="Choose a username"
             />
           </div>
 
-          <div>
+          <div className="register-form-group">
             <label>Email</label>
             <input
+              className="register-form-input"
               type="email"
               name="email"
               value={registerData.email}
-              onChange={handleRegisterChange}
+              onChange={handleChange}
               required
               placeholder="Enter your email"
             />
           </div>
 
-          <div>
+          <div className="register-form-group">
             <label>Password</label>
-            <div>
+            <div className="register-password-wrapper">
               <input
+                className="register-form-input"
                 type={showPassword ? 'text' : 'password'}
                 name="password"
                 value={registerData.password}
-                onChange={handleRegisterChange}
+                onChange={handleChange}
                 required
                 placeholder="Create a password"
               />
               <button
+                className="register-password-toggle-btn"
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
               >
@@ -233,32 +152,35 @@ export default function Auth() {
             </div>
           </div>
 
-          <div>
+          <div className="register-form-group">
             <label>Confirm Password</label>
             <input
+              className="register-form-input"
               type={showPassword ? 'text' : 'password'}
               name="confirmPassword"
               value={registerData.confirmPassword}
-              onChange={handleRegisterChange}
+              onChange={handleChange}
               required
               placeholder="Confirm your password"
             />
           </div>
 
-          <button onClick={handleRegister} disabled={loading}>
+          <button className="register-submit-btn" type="submit" disabled={loading}>
             {loading ? 'Creating account...' : 'Register'}
           </button>
-        </div>
-      )}
+        </form>
 
-      <div>
-        <p>
-          {isLogin ? "Don't have an account? " : "Already have an account? "}
-          <button onClick={toggleForm}>
-            {isLogin ? 'Register here' : 'Login here'}
-          </button>
-        </p>
+        <div className="register-footer">
+          <p>
+            Already have an account?{' '}
+            <button className="register-login-btn" onClick={() => navigate('/login')}>
+              Login here
+            </button>
+          </p>
+        </div>
       </div>
     </div>
   );
 }
+
+export default Register;
