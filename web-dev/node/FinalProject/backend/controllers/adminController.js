@@ -8,10 +8,10 @@ const path = require('path');
 // Add Game
 exports.addGame = async (req, res) => {
   try {
-    const { name, description, price, discount, rating, consoles } = req.body;
+    const { name, description, price, discount, ratings, categories, consoles } = req.body;
 
     // Validate required fields
-    if (!name || !description || !price || !rating) {
+    if (!name || !description || !price) {
       return res.status(400).json({ message: 'All required fields must be filled' });
     }
 
@@ -20,7 +20,8 @@ exports.addGame = async (req, res) => {
       description,
       price: parseFloat(price),
       discount: parseFloat(discount) || 0,
-      rating,
+      ratings: JSON.parse(ratings || '[]'),
+      categories: JSON.parse(categories || '[]'),
       consoles: JSON.parse(consoles || '[]')
     };
 
@@ -51,7 +52,7 @@ exports.addGame = async (req, res) => {
   }
 };
 
-// Get All Games
+// Get All Games (simplified for list view)
 exports.getAllGames = async (req, res) => {
   try {
     const games = await Game.find().sort({ createdAt: -1 });
@@ -62,11 +63,28 @@ exports.getAllGames = async (req, res) => {
   }
 };
 
+// Get Single Game (detailed view)
+exports.getGameById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const game = await Game.findById(id);
+    
+    if (!game) {
+      return res.status(404).json({ message: 'Game not found' });
+    }
+
+    res.status(200).json({ game });
+  } catch (error) {
+    console.error('Get game error:', error);
+    res.status(500).json({ message: 'Server error.' });
+  }
+};
+
 // Update Game
 exports.updateGame = async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, description, price, discount, rating, consoles } = req.body;
+    const { name, description, price, discount, ratings, categories, consoles } = req.body;
 
     const game = await Game.findById(id);
     if (!game) {
@@ -78,7 +96,8 @@ exports.updateGame = async (req, res) => {
     if (description) game.description = description;
     if (price) game.price = parseFloat(price);
     if (discount !== undefined) game.discount = parseFloat(discount);
-    if (rating) game.rating = rating;
+    if (ratings) game.ratings = JSON.parse(ratings);
+    if (categories) game.categories = JSON.parse(categories);
     if (consoles) game.consoles = JSON.parse(consoles);
 
     // Handle file uploads and delete old files

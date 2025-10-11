@@ -22,11 +22,16 @@ const gameSchema = new mongoose.Schema({
     min: 0,
     max: 100
   },
-  rating: {
+  // Multiple ratings instead of single rating
+  ratings: [{
     type: String,
-    required: [true, 'Rating is required'],
     enum: ['Everyone', 'Teen', '18+', 'Mature', 'Violence', 'Horror']
-  },
+  }],
+  // New categories field
+  categories: [{
+    type: String,
+    enum: ['Action', 'Adventure', 'RPG', 'Horror', 'Sports', 'Racing', 'Strategy', 'Simulation', 'Puzzle', 'Fighting', 'Shooter', 'Open World']
+  }],
   consoles: [{
     type: String,
     enum: ['PlayStation 5', 'PlayStation 4', 'Xbox Series X/S', 'Xbox One', 'Nintendo Switch', 'PC']
@@ -74,5 +79,17 @@ const gameSchema = new mongoose.Schema({
 }, {
   timestamps: true
 });
+
+// Virtual field to calculate discounted price
+gameSchema.virtual('discountedPrice').get(function() {
+  if (this.discount > 0) {
+    return this.price - (this.price * this.discount / 100);
+  }
+  return this.price;
+});
+
+// Ensure virtuals are included in JSON
+gameSchema.set('toJSON', { virtuals: true });
+gameSchema.set('toObject', { virtuals: true });
 
 module.exports = mongoose.model('Game', gameSchema);

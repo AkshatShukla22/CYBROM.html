@@ -9,6 +9,8 @@ import Cart from './pages/Cart';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import AdminPanel from './pages/AdminPanel';
+import AdminGameDetails from './pages/AdminGameDetails';
+import GameDetail from './pages/GameDetail';
 
 function App() {
 
@@ -22,6 +24,7 @@ function App() {
           <Route path="news" element={<News />} />
           <Route path="support" element={<Support />} />
           <Route path="cart" element={<Cart />} />
+          <Route path="/game/:id" element={<GameDetail />} />
 
 
         </Route>
@@ -30,6 +33,7 @@ function App() {
         <Route path="login" element={<Login />} />
         <Route path="register" element={<Register />} />
         <Route path="admin" element={<AdminPanel />} />
+        <Route path="/admin/game/:id" element={<AdminGameDetails />} />
       </Routes>
     </BrowserRouter>
   )

@@ -20,6 +20,7 @@ router.post('/games', upload.fields([
 ]), adminController.addGame);
 
 router.get('/games', adminController.getAllGames);
+router.get('/games/:id', adminController.getGameById); // New route for single game details
 router.put('/games/:id', upload.fields([
   { name: 'gamePic', maxCount: 1 },
   { name: 'backgroundPic', maxCount: 1 },

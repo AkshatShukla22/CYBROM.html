@@ -1,0 +1,117 @@
+/* ==================== GAME CARD GRID SECTION ==================== */
+
+.game-card-grid-section {
+  padding: 40px 0;
+  animation: fadeInUp 0.6s ease-out;
+}
+
+/* Section Header */
+.grid-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  padding: 0 20px;
+}
+
+.grid-section-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #09152b;
+  position: relative;
+  display: inline-block;
+  letter-spacing: 0.5px;
+}
+
+.grid-section-title::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 0;
+  width: 60px;
+  height: 4px;
+  background: linear-gradient(90deg, #063977, #0a4d9e);
+  border-radius: 2px;
+}
+
+.grid-games-count {
+  font-size: 15px;
+  color: #4a5568;
+  font-weight: 600;
+  background: rgba(6, 57, 119, 0.08);
+  padding: 8px 16px;
+  border-radius: 20px;
+  border: 1px solid rgba(6, 57, 119, 0.12);
+}
+
+/* Games Grid Container */
+.games-grid-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 24px;
+  padding: 0 20px;
+}
+
+/* Responsive Grid */
+@media (max-width: 1600px) {
+  .games-grid-container {
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 20px;
+  }
+}
+
+@media (max-width: 1200px) {
+  .games-grid-container {
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 18px;
+  }
+
+  .grid-section-title {
+    font-size: 24px;
+  }
+}
+
+@media (max-width: 768px) {
+  .game-card-grid-section {
+    padding: 30px 0;
+  }
+
+  .grid-section-header {
+    padding: 0 15px;
+    margin-bottom: 20px;
+  }
+
+  .grid-section-title {
+    font-size: 22px;
+  }
+
+  .grid-games-count {
+    font-size: 13px;
+    padding: 6px 12px;
+  }
+
+  .games-grid-container {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 16px;
+    padding: 0 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .games-grid-container {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}
+
+/* Animation */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

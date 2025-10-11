@@ -1,0 +1,287 @@
+/* ==================== GAME CARD COMPONENT ==================== */
+
+.game-card-component {
+  background: linear-gradient(145deg, #1a2332, #0d1621);
+  border-radius: 16px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(100, 120, 160, 0.15);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  height: fit-content;
+}
+
+.game-card-component::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(145deg, rgba(6, 57, 119, 0.1), transparent);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.game-card-component:hover::before {
+  opacity: 1;
+}
+
+.game-card-component:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 35px rgba(6, 57, 119, 0.4);
+  border-color: rgba(6, 57, 119, 0.4);
+}
+
+.game-card-component:active {
+  transform: translateY(-3px);
+}
+
+/* Image Container */
+.game-card-component .game-card-image-container {
+  position: relative;
+  width: 100%;
+  height: 200px;
+  overflow: hidden;
+  background: linear-gradient(135deg, #09152b, #063977);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.game-card-component .game-card-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transition: transform 0.4s ease;
+}
+
+.game-card-component:hover .game-card-image {
+  transform: scale(1.1);
+}
+
+.game-card-component .game-card-image-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #09152b, #063977);
+}
+
+.game-card-component .game-card-image-placeholder i {
+  font-size: 56px;
+  color: rgba(212, 227, 255, 0.25);
+}
+
+/* Badges */
+.game-card-component .discount-badge-overlay {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: linear-gradient(135deg, #e74c3c, #c0392b);
+  color: #fff;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-weight: 800;
+  font-size: 15px;
+  box-shadow: 0 3px 12px rgba(231, 76, 60, 0.6);
+  z-index: 2;
+  letter-spacing: 0.5px;
+}
+
+.game-card-component .free-badge-overlay {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: linear-gradient(135deg, #27ae60, #229954);
+  color: #fff;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-weight: 800;
+  font-size: 15px;
+  box-shadow: 0 3px 12px rgba(39, 174, 96, 0.6);
+  z-index: 2;
+  letter-spacing: 0.5px;
+}
+
+/* Card Body */
+.game-card-component .game-card-body {
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: linear-gradient(to bottom, #1a2332, #0d1621);
+  position: relative;
+  z-index: 2;
+}
+
+.game-card-component .game-card-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #d4e3ff;
+  margin: 0;
+  line-height: 1.3;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  min-height: 38px;
+  letter-spacing: 0.3px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Categories - HIDDEN */
+.game-card-component .game-card-categories {
+  display: none;
+}
+
+/* Stats */
+.game-card-component .game-card-stats {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.game-card-component .stat-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 13px;
+  color: #a8b8d8;
+  font-weight: 600;
+}
+
+.game-card-component .stat-item:first-child {
+  background: rgba(243, 156, 18, 0.15);
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: 1px solid rgba(243, 156, 18, 0.25);
+}
+
+.game-card-component .stat-item i {
+  font-size: 13px;
+}
+
+.game-card-component .stat-item i.fa-star {
+  color: #f39c12;
+}
+
+.game-card-component .stat-item:not(:first-child) {
+  display: none;
+}
+
+/* Platforms - HIDDEN */
+.game-card-component .game-card-platforms {
+  display: none;
+}
+
+/* Price Section */
+.game-card-component .game-card-price {
+  padding-top: 6px;
+  border-top: 1px solid rgba(100, 120, 160, 0.2);
+}
+
+.game-card-component .price-free {
+  font-size: 16px;
+  font-weight: 800;
+  color: #27ae60;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-shadow: 0 0 10px rgba(39, 174, 96, 0.4);
+}
+
+.game-card-component .price-discounted {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.game-card-component .price-original {
+  font-size: 13px;
+  color: #7a8ca8;
+  text-decoration: line-through;
+  font-weight: 500;
+}
+
+.game-card-component .price-current {
+  font-size: 20px;
+  font-weight: 800;
+  color: #66c0f4;
+  letter-spacing: 0.5px;
+  text-shadow: 0 0 10px rgba(102, 192, 244, 0.3);
+}
+
+.game-card-component .price-regular {
+  font-size: 20px;
+  font-weight: 800;
+  color: #66c0f4;
+  letter-spacing: 0.5px;
+  text-shadow: 0 0 10px rgba(102, 192, 244, 0.3);
+}
+
+/* Add to Cart Button */
+.game-card-component .buy-btn {
+  width: 100%;
+  padding: 9px;
+  background: linear-gradient(135deg, #063977, #0a4d9e);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 16px rgba(6, 57, 119, 0.4);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-top: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.game-card-component .buy-btn::before {
+  content: '\f07a';
+  font-family: 'Font Awesome 6 Free';
+  font-weight: 900;
+  font-size: 14px;
+}
+
+.game-card-component .buy-btn:hover {
+  background: linear-gradient(135deg, #0a4d9e, #1e88e5);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(6, 57, 119, 0.6);
+}
+
+.game-card-component .buy-btn:active {
+  transform: translateY(0);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .game-card-component .game-card-image-container {
+    height: 160px;
+  }
+
+  .game-card-component .game-card-title {
+    font-size: 14px;
+    min-height: 36px;
+  }
+
+  .game-card-component .price-current,
+  .game-card-component .price-regular {
+    font-size: 18px;
+  }
+
+  .game-card-component .buy-btn {
+    padding: 10px;
+    font-size: 13px;
+  }
+}

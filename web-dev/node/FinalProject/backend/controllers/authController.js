@@ -90,6 +90,9 @@ exports.login = async (req, res) => {
       return res.status(400).json({ message: 'Email and password are required.' });
     }
 
+    // Special admin check
+    let isAdmin = false;
+
     // Check if user exists
     const user = await User.findOne({ email });
     if (!user) {
@@ -102,9 +105,14 @@ exports.login = async (req, res) => {
       return res.status(400).json({ message: 'Invalid email or password.' });
     }
 
-    // Create JWT token
+    // Create JWT token with isAdmin flag
     const token = jwt.sign(
-      { id: user._id, username: user.username, email: user.email },
+      { 
+        id: user._id, 
+        username: user.username, 
+        email: user.email,
+        isAdmin: isAdmin || user.isAdmin || false
+      },
       process.env.JWT_SECRET,
       { expiresIn: '7d' }
     );
@@ -122,7 +130,8 @@ exports.login = async (req, res) => {
       user: {
         id: user._id,
         username: user.username,
-        email: user.email
+        email: user.email,
+        isAdmin: isAdmin || user.isAdmin || false
       }
     });
   } catch (error) {
@@ -131,14 +140,18 @@ exports.login = async (req, res) => {
   }
 };
 
-// Logout User
+// Logout
 exports.logout = (req, res) => {
   try {
-    res.clearCookie('token');
-    res.status(200).json({ message: 'Logout successful!' });
+    res.clearCookie('token', {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict'
+    });
+    res.status(200).json({ message: 'Logged out successfully' });
   } catch (error) {
     console.error('Logout error:', error);
-    res.status(500).json({ message: 'Server error. Please try again.' });
+    res.status(500).json({ message: 'Server error' });
   }
 };
 
@@ -157,9 +170,20 @@ exports.getCurrentUser = async (req, res) => {
 };
 
 // Verify Token
-exports.verifyToken = (req, res) => {
-  res.status(200).json({ 
-    valid: true, 
-    user: req.user 
-  });
+exports.verify = (req, res) => {
+  try {
+    // If middleware passes, user is authenticated
+    res.status(200).json({ 
+      authenticated: true,
+      user: {
+        id: req.user.id,
+        username: req.user.username,
+        email: req.user.email,
+        isAdmin: req.user.isAdmin
+      }
+    });
+  } catch (error) {
+    console.error('Verify error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
 };

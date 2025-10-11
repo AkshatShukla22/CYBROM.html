@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import BACKEND_URL from '../utils/BackendURL';
 import '../styles/AdminPanel.css';
 
 const AdminPanel = () => {
@@ -20,7 +21,8 @@ const AdminPanel = () => {
     description: '',
     price: '',
     discount: 0,
-    rating: '',
+    ratings: [],
+    categories: [],
     consoles: [],
     gamePic: null,
     backgroundPic: null,
@@ -30,6 +32,11 @@ const AdminPanel = () => {
 
   const consoleOptions = ['PlayStation 5', 'PlayStation 4', 'Xbox Series X/S', 'Xbox One', 'Nintendo Switch', 'PC'];
   const ratingOptions = ['Everyone', 'Teen', '18+', 'Mature', 'Violence', 'Horror'];
+  const categoryOptions = ['Action', 'Adventure', 'RPG', 'Horror', 'Sports', 'Racing', 'Strategy', 'Simulation', 'Puzzle', 'Fighting', 'Shooter', 'Open World'];
+
+  useEffect(() => {
+    checkAuth();
+  }, []);
 
   useEffect(() => {
     fetchGames();
@@ -37,11 +44,29 @@ const AdminPanel = () => {
     if (activeTab === 'purchases') fetchPurchases();
   }, [activeTab]);
 
-  const fetchGames = async () => {
+  const checkAuth = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/admin/games', {
+      const response = await fetch(`${BACKEND_URL}/api/auth/verify`, {
         credentials: 'include'
       });
+      if (!response.ok) {
+        navigate('/login');
+      }
+    } catch (error) {
+      console.error('Auth check failed:', error);
+      navigate('/login');
+    }
+  };
+
+  const fetchGames = async () => {
+    try {
+      const response = await fetch(`${BACKEND_URL}/api/admin/games`, {
+        credentials: 'include'
+      });
+      if (response.status === 401) {
+        navigate('/login');
+        return;
+      }
       const data = await response.json();
       if (response.ok) setGames(data.games);
     } catch (error) {
@@ -51,9 +76,13 @@ const AdminPanel = () => {
 
   const fetchUsers = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/admin/users', {
+      const response = await fetch(`${BACKEND_URL}/api/admin/users`, {
         credentials: 'include'
       });
+      if (response.status === 401) {
+        navigate('/login');
+        return;
+      }
       const data = await response.json();
       if (response.ok) setUsers(data.users);
     } catch (error) {
@@ -63,9 +92,13 @@ const AdminPanel = () => {
 
   const fetchPurchases = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/admin/purchases', {
+      const response = await fetch(`${BACKEND_URL}/api/admin/purchases`, {
         credentials: 'include'
       });
+      if (response.status === 401) {
+        navigate('/login');
+        return;
+      }
       const data = await response.json();
       if (response.ok) setPurchases(data.purchases);
     } catch (error) {
@@ -75,9 +108,13 @@ const AdminPanel = () => {
 
   const fetchUserDetails = async (userId) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/admin/users/${userId}`, {
+      const response = await fetch(`${BACKEND_URL}/api/admin/users/${userId}`, {
         credentials: 'include'
       });
+      if (response.status === 401) {
+        navigate('/login');
+        return;
+      }
       const data = await response.json();
       if (response.ok) setSelectedUser(data);
     } catch (error) {
@@ -90,11 +127,12 @@ const AdminPanel = () => {
     setGameForm({ ...gameForm, [name]: value });
   };
 
-  const handleConsoleToggle = (console) => {
-    const consoles = gameForm.consoles.includes(console)
-      ? gameForm.consoles.filter(c => c !== console)
-      : [...gameForm.consoles, console];
-    setGameForm({ ...gameForm, consoles });
+  const handleMultiSelectToggle = (field, value) => {
+    const current = gameForm[field];
+    const updated = current.includes(value)
+      ? current.filter(item => item !== value)
+      : [...current, value];
+    setGameForm({ ...gameForm, [field]: updated });
   };
 
   const handleFileChange = (e, field, index = null) => {
@@ -118,7 +156,8 @@ const AdminPanel = () => {
     formData.append('description', gameForm.description);
     formData.append('price', gameForm.price);
     formData.append('discount', gameForm.discount);
-    formData.append('rating', gameForm.rating);
+    formData.append('ratings', JSON.stringify(gameForm.ratings));
+    formData.append('categories', JSON.stringify(gameForm.categories));
     formData.append('consoles', JSON.stringify(gameForm.consoles));
     
     if (gameForm.gamePic) formData.append('gamePic', gameForm.gamePic);
@@ -131,14 +170,19 @@ const AdminPanel = () => {
 
     try {
       const url = editingGame 
-        ? `http://localhost:5000/api/admin/games/${editingGame._id}`
-        : 'http://localhost:5000/api/admin/games';
+        ? `${BACKEND_URL}/api/admin/games/${editingGame._id}`
+        : `${BACKEND_URL}/api/admin/games`;
       
       const response = await fetch(url, {
         method: editingGame ? 'PUT' : 'POST',
         credentials: 'include',
         body: formData
       });
+
+      if (response.status === 401) {
+        navigate('/login');
+        return;
+      }
 
       const data = await response.json();
 
@@ -162,10 +206,15 @@ const AdminPanel = () => {
     if (!window.confirm('Are you sure you want to delete this game?')) return;
 
     try {
-      const response = await fetch(`http://localhost:5000/api/admin/games/${gameId}`, {
+      const response = await fetch(`${BACKEND_URL}/api/admin/games/${gameId}`, {
         method: 'DELETE',
         credentials: 'include'
       });
+
+      if (response.status === 401) {
+        navigate('/login');
+        return;
+      }
 
       if (response.ok) {
         setMessage({ type: 'success', text: 'Game deleted!' });
@@ -184,7 +233,8 @@ const AdminPanel = () => {
       description: game.description,
       price: game.price,
       discount: game.discount || 0,
-      rating: game.rating,
+      ratings: game.ratings || [],
+      categories: game.categories || [],
       consoles: game.consoles,
       gamePic: null,
       backgroundPic: null,
@@ -196,12 +246,17 @@ const AdminPanel = () => {
 
   const handleSetDiscount = async (gameId, discount) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/admin/games/${gameId}/discount`, {
+      const response = await fetch(`${BACKEND_URL}/api/admin/games/${gameId}/discount`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
         body: JSON.stringify({ discount: parseFloat(discount) })
       });
+
+      if (response.status === 401) {
+        navigate('/login');
+        return;
+      }
 
       if (response.ok) {
         setMessage({ type: 'success', text: 'Discount updated!' });
@@ -219,7 +274,8 @@ const AdminPanel = () => {
       description: '',
       price: '',
       discount: 0,
-      rating: '',
+      ratings: [],
+      categories: [],
       consoles: [],
       gamePic: null,
       backgroundPic: null,
@@ -229,8 +285,23 @@ const AdminPanel = () => {
     setEditingGame(null);
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    try {
+      await fetch(`${BACKEND_URL}/api/auth/logout`, {
+        method: 'POST',
+        credentials: 'include'
+      });
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
     navigate('/login');
+  };
+
+  const calculateDiscountedPrice = (price, discount) => {
+    if (discount > 0) {
+      return price - (price * discount / 100);
+    }
+    return price;
   };
 
   const filteredGames = games.filter(game =>
@@ -354,17 +425,34 @@ const AdminPanel = () => {
                     />
                   </div>
                   <div className="form-group">
-                    <label>Rating:</label>
-                    <select 
-                      name="rating" 
-                      className="form-select"
-                      value={gameForm.rating} 
-                      onChange={handleGameFormChange} 
-                      required
-                    >
-                      <option value="">Select rating</option>
-                      {ratingOptions.map(r => <option key={r} value={r}>{r}</option>)}
-                    </select>
+                    <label>Age Ratings (Multiple):</label>
+                    <div className="checkbox-group">
+                      {ratingOptions.map(rating => (
+                        <label key={rating} className="checkbox-label">
+                          <input
+                            type="checkbox"
+                            checked={gameForm.ratings.includes(rating)}
+                            onChange={() => handleMultiSelectToggle('ratings', rating)}
+                          />
+                          {rating}
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="form-group">
+                    <label>Categories (Multiple):</label>
+                    <div className="checkbox-group">
+                      {categoryOptions.map(category => (
+                        <label key={category} className="checkbox-label">
+                          <input
+                            type="checkbox"
+                            checked={gameForm.categories.includes(category)}
+                            onChange={() => handleMultiSelectToggle('categories', category)}
+                          />
+                          {category}
+                        </label>
+                      ))}
+                    </div>
                   </div>
                   <div className="form-group">
                     <label>Consoles:</label>
@@ -374,7 +462,7 @@ const AdminPanel = () => {
                           <input
                             type="checkbox"
                             checked={gameForm.consoles.includes(console)}
-                            onChange={() => handleConsoleToggle(console)}
+                            onChange={() => handleMultiSelectToggle('consoles', console)}
                           />
                           {console}
                         </label>
@@ -414,7 +502,7 @@ const AdminPanel = () => {
                     </div>
                   </div>
                   <div className="form-group">
-                    <label>Video:</label>
+                    <label>Video (Optional):</label>
                     <input 
                       type="file" 
                       className="file-input"
@@ -431,40 +519,44 @@ const AdminPanel = () => {
 
             <div className="games-list">
               <h2>Games List</h2>
-              {filteredGames.map(game => (
-                <div key={game._id} className="game-card">
-                  <h3>{game.name}</h3>
-                  <p>{game.description}</p>
-                  <div className="game-info-row">
-                    <span className="game-info-item"><strong>Price:</strong> ₹{game.price}</span>
-                    <span className="game-info-item"><strong>Discount:</strong> {game.discount}%</span>
-                    <span className="game-info-item"><strong>Rating:</strong> {game.rating}</span>
+              <div className="games-grid">
+                {filteredGames.map(game => (
+                  <div 
+                    key={game._id} 
+                    className="game-card-simple"
+                    onClick={() => navigate(`/admin/game/${game._id}`)}
+                  >
+                    {game.gamePic && (
+                      <img 
+                        src={`${BACKEND_URL}/uploads/${game.gamePic}`} 
+                        alt={game.name}
+                        className="game-card-image"
+                      />
+                    )}
+                    <div className="game-card-content">
+                      <h3>{game.name}</h3>
+                      <div className="game-price-info">
+                        {game.discount > 0 ? (
+                          <>
+                            <span className="original-price">₹{game.price}</span>
+                            <span className="discounted-price">
+                              ₹{calculateDiscountedPrice(game.price, game.discount).toFixed(2)}
+                            </span>
+                            <span className="discount-badge">-{game.discount}%</span>
+                          </>
+                        ) : (
+                          <span className="current-price">₹{game.price}</span>
+                        )}
+                      </div>
+                      <div className="game-rating-info">
+                        <span className="star-rating">
+                          ⭐ {game.averageRating ? game.averageRating.toFixed(1) : '0.0'}/5
+                        </span>
+                      </div>
+                    </div>
                   </div>
-                  <div className="game-info-row">
-                    <span className="game-info-item"><strong>Consoles:</strong> {game.consoles.join(', ')}</span>
-                  </div>
-                  <div className="game-info-row">
-                    <span className="game-info-item"><strong>Purchases:</strong> {game.purchaseCount || 0}</span>
-                    <span className="game-info-item"><strong>Avg Rating:</strong> {game.averageRating || 0}/5</span>
-                  </div>
-                  <div className="discount-group">
-                    <label>Set Discount:</label>
-                    <input 
-                      type="number" 
-                      className="discount-input"
-                      min="0" 
-                      max="100" 
-                      defaultValue={game.discount} 
-                      onBlur={(e) => handleSetDiscount(game._id, e.target.value)}
-                    />
-                    <span>%</span>
-                  </div>
-                  <div className="action-buttons">
-                    <button className="edit-btn" onClick={() => handleEditGame(game)}>Edit</button>
-                    <button className="delete-btn" onClick={() => handleDeleteGame(game._id)}>Delete</button>
-                  </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           </div>
         )}
