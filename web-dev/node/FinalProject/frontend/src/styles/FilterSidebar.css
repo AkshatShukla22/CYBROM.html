@@ -1,0 +1,486 @@
+/* ==================== FILTER SIDEBAR ==================== */
+
+/* Overlay/Backdrop */
+.sidebar-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(9, 21, 43, 0.6);
+  backdrop-filter: blur(5px);
+  z-index: 998;
+  opacity: 0;
+  animation: fadeInOverlay 0.3s ease-out forwards;
+}
+
+@keyframes fadeInOverlay {
+  to {
+    opacity: 1;
+  }
+}
+
+/* Sidebar Container */
+.filter-sidebar {
+  position: fixed;
+  top: 0;
+  left: -320px;
+  width: 320px;
+  height: 100vh;
+  background: linear-gradient(180deg, #09152b 0%, #0d1f3d 50%, #09152b 100%);
+  box-shadow: 4px 0 30px rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  border-right: 2px solid rgba(100, 120, 160, 0.2);
+  overflow: hidden;
+}
+
+.filter-sidebar.open {
+  left: 0;
+}
+
+/* Animated Background Elements */
+.filter-sidebar::before {
+  content: '';
+  position: absolute;
+  top: -100px;
+  right: -100px;
+  width: 250px;
+  height: 250px;
+  background: radial-gradient(circle, rgba(6, 57, 119, 0.15), transparent);
+  border-radius: 50%;
+  animation: floatFilter 15s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.filter-sidebar::after {
+  content: '';
+  position: absolute;
+  bottom: -120px;
+  left: -120px;
+  width: 280px;
+  height: 280px;
+  background: radial-gradient(circle, rgba(10, 77, 158, 0.12), transparent);
+  border-radius: 50%;
+  animation: floatFilter 18s ease-in-out infinite reverse;
+  pointer-events: none;
+}
+
+/* Sidebar Header */
+.sidebar-header {
+  padding: 25px 20px;
+  background: rgba(6, 57, 119, 0.2);
+  border-bottom: 2px solid rgba(100, 120, 160, 0.2);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  z-index: 2;
+  backdrop-filter: blur(10px);
+}
+
+.sidebar-header h2 {
+  font-size: 24px;
+  font-weight: 800;
+  color: #d4e3ff;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  background: linear-gradient(135deg, #d4e3ff, #ffffff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.close-sidebar-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(9, 21, 43, 0.6);
+  border: 1px solid rgba(100, 120, 160, 0.3);
+  color: #a8b8d8;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.close-sidebar-btn:hover {
+  background: linear-gradient(135deg, #d32f2f, #f44336);
+  color: #fff;
+  border-color: transparent;
+  transform: rotate(90deg) scale(1.1);
+  box-shadow: 0 4px 15px rgba(211, 47, 47, 0.5);
+}
+
+.close-sidebar-btn i {
+  font-size: 18px;
+}
+
+/* Sidebar Content - Scrollable */
+.sidebar-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 25px 20px;
+  position: relative;
+  z-index: 2;
+}
+
+/* Custom Scrollbar */
+.sidebar-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.sidebar-content::-webkit-scrollbar-track {
+  background: rgba(9, 21, 43, 0.4);
+}
+
+.sidebar-content::-webkit-scrollbar-thumb {
+  background: rgba(6, 57, 119, 0.6);
+  border-radius: 3px;
+  transition: background 0.3s ease;
+}
+
+.sidebar-content::-webkit-scrollbar-thumb:hover {
+  background: rgba(10, 77, 158, 0.8);
+}
+
+/* Filter Section */
+.filter-section {
+  margin-bottom: 30px;
+  padding-bottom: 25px;
+  border-bottom: 1px solid rgba(100, 120, 160, 0.15);
+  animation: slideInFilterSection 0.5s ease-out backwards;
+}
+
+.filter-section:nth-child(1) { animation-delay: 0.1s; }
+.filter-section:nth-child(2) { animation-delay: 0.15s; }
+.filter-section:nth-child(3) { animation-delay: 0.2s; }
+.filter-section:nth-child(4) { animation-delay: 0.25s; }
+.filter-section:nth-child(5) { animation-delay: 0.3s; }
+.filter-section:nth-child(6) { animation-delay: 0.35s; }
+.filter-section:nth-child(7) { animation-delay: 0.4s; }
+
+.filter-section:last-child {
+  border-bottom: none;
+}
+
+@keyframes slideInFilterSection {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Filter Title */
+.filter-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #d4e3ff;
+  margin-bottom: 15px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.filter-title::before {
+  content: '';
+  width: 3px;
+  height: 14px;
+  background: linear-gradient(180deg, #063977, #0a4d9e);
+  border-radius: 2px;
+  box-shadow: 0 0 10px rgba(6, 57, 119, 0.5);
+}
+
+/* Filter Select Dropdown */
+.filter-select {
+  width: 100%;
+  padding: 12px 15px;
+  background: rgba(9, 21, 43, 0.6);
+  border: 1px solid rgba(100, 120, 160, 0.3);
+  border-radius: 8px;
+  color: #d4e3ff;
+  font-size: 14px;
+  font-weight: 500;
+  outline: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23d4e3ff' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 35px;
+}
+
+.filter-select:hover {
+  border-color: #0a4d9e;
+  background-color: rgba(9, 21, 43, 0.8);
+}
+
+.filter-select:focus {
+  border-color: #0a4d9e;
+  box-shadow: 0 0 15px rgba(6, 57, 119, 0.4);
+  background-color: rgba(9, 21, 43, 0.9);
+}
+
+.filter-select option {
+  background: #09152b;
+  color: #d4e3ff;
+  padding: 10px;
+}
+
+/* Price Range Inputs */
+.price-inputs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.price-inputs span {
+  color: #7a8ca8;
+  font-size: 13px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+/* Filter Input */
+.filter-input {
+  flex: 1;
+  min-width: 0;
+  width: 100%;
+  padding: 12px 12px;
+  background: rgba(9, 21, 43, 0.6);
+  border: 1px solid rgba(100, 120, 160, 0.3);
+  border-radius: 8px;
+  color: #d4e3ff;
+  font-size: 13px;
+  font-weight: 500;
+  outline: none;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.filter-input::placeholder {
+  color: rgba(122, 140, 168, 0.5);
+}
+
+.filter-input:hover {
+  border-color: #0a4d9e;
+  background-color: rgba(9, 21, 43, 0.8);
+}
+
+.filter-input:focus {
+  border-color: #0a4d9e;
+  box-shadow: 0 0 15px rgba(6, 57, 119, 0.4);
+  background-color: rgba(9, 21, 43, 0.9);
+}
+
+/* Remove number input arrows */
+.filter-input::-webkit-outer-spin-button,
+.filter-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.filter-input[type=number] {
+  -moz-appearance: textfield;
+}
+
+/* Filter Checkboxes */
+.filter-checkboxes {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 220px;
+  overflow-y: auto;
+  padding-right: 5px;
+}
+
+/* Custom Scrollbar for Checkboxes */
+.filter-checkboxes::-webkit-scrollbar {
+  width: 4px;
+}
+
+.filter-checkboxes::-webkit-scrollbar-track {
+  background: rgba(9, 21, 43, 0.3);
+  border-radius: 2px;
+}
+
+.filter-checkboxes::-webkit-scrollbar-thumb {
+  background: rgba(6, 57, 119, 0.5);
+  border-radius: 2px;
+}
+
+.filter-checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  padding: 10px 12px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  background: rgba(9, 21, 43, 0.3);
+  border: 1px solid transparent;
+}
+
+.filter-checkbox-label:hover {
+  background: rgba(6, 57, 119, 0.2);
+  border-color: rgba(100, 120, 160, 0.3);
+}
+
+.filter-checkbox-label input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  position: relative;
+  appearance: none;
+  background: rgba(9, 21, 43, 0.6);
+  border: 2px solid rgba(100, 120, 160, 0.4);
+  border-radius: 4px;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+}
+
+.filter-checkbox-label input[type="checkbox"]:hover {
+  border-color: #0a4d9e;
+  box-shadow: 0 0 10px rgba(6, 57, 119, 0.3);
+}
+
+.filter-checkbox-label input[type="checkbox"]:checked {
+  background: linear-gradient(135deg, #063977, #0a4d9e);
+  border-color: transparent;
+  box-shadow: 0 0 15px rgba(6, 57, 119, 0.5);
+}
+
+.filter-checkbox-label input[type="checkbox"]:checked::after {
+  content: '✓';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.filter-checkbox-label span {
+  color: #a8b8d8;
+  font-size: 14px;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.filter-checkbox-label:hover span {
+  color: #d4e3ff;
+}
+
+.filter-checkbox-label input[type="checkbox"]:checked + span {
+  color: #d4e3ff;
+  font-weight: 600;
+}
+
+/* Sidebar Footer */
+.sidebar-footer {
+  padding: 20px;
+  background: rgba(6, 57, 119, 0.15);
+  border-top: 2px solid rgba(100, 120, 160, 0.2);
+  position: relative;
+  z-index: 2;
+  backdrop-filter: blur(10px);
+}
+
+.reset-btn {
+  width: 100%;
+  padding: 14px 20px;
+  background: linear-gradient(135deg, #063977, #0a4d9e);
+  color: #fff;
+  border: none;
+  border-radius: 25px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 4px 15px rgba(6, 57, 119, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.reset-btn::before {
+  content: '↻';
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.reset-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 25px rgba(6, 57, 119, 0.6);
+  background: linear-gradient(135deg, #0a4d9e, #063977);
+}
+
+.reset-btn:active {
+  transform: translateY(0);
+}
+
+/* ==================== ANIMATIONS ==================== */
+@keyframes floatFilter {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+  }
+  25% {
+    transform: translate(20px, -15px) scale(1.05);
+  }
+  50% {
+    transform: translate(-15px, -25px) scale(0.95);
+  }
+  75% {
+    transform: translate(15px, -10px) scale(1.02);
+  }
+}
+
+/* ==================== RESPONSIVE DESIGN ==================== */
+@media (max-width: 1024px) {
+  .filter-sidebar {
+    width: 280px;
+    left: -280px;
+  }
+}
+
+@media (max-width: 768px) {
+  .filter-sidebar {
+    width: 100%;
+    max-width: 320px;
+    left: -100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .filter-sidebar {
+    max-width: 100%;
+  }
+
+  .sidebar-header {
+    padding: 20px 15px;
+  }
+
+  .sidebar-content {
+    padding: 20px 15px;
+  }
+
+  .sidebar-footer {
+    padding: 15px;
+  }
+}

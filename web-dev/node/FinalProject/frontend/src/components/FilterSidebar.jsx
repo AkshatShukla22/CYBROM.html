@@ -1,5 +1,5 @@
 import React from 'react';
-// import '../styles/FilterSidebar.css';
+import '../styles/FilterSidebar.css';
 
 const FilterSidebar = ({ isOpen, onClose, filters, onFilterChange, onReset }) => {
   const categoryOptions = ['Action', 'Adventure', 'RPG', 'Horror', 'Sports', 'Racing', 'Strategy', 'Simulation', 'Puzzle', 'Fighting', 'Shooter', 'Open World'];
