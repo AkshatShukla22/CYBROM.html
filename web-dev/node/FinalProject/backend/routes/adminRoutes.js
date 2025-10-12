@@ -40,4 +40,11 @@ router.get('/users/:id', adminController.getUserDetails);
 // Purchase tracking
 router.get('/purchases', adminController.getAllPurchases);
 
+// News management
+router.post('/news', upload.single('image'), adminController.addNews);
+router.get('/news', adminController.getAllNews);
+router.get('/news/:id', adminController.getNewsById);
+router.put('/news/:id', upload.single('image'), adminController.updateNews);
+router.delete('/news/:id', adminController.deleteNews);
+
 module.exports = router;

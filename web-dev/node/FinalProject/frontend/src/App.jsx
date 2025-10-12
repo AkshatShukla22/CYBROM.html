@@ -3,7 +3,7 @@ import { Route, Routes, BrowserRouter } from 'react-router-dom'
 import Layout from './components/Layout';
 import Home from './pages/Home';
 import Products from './pages/Products';
-import News from './pages/News';
+import NewsPage from './pages/NewsPage';
 import Support from './pages/Support';
 import Cart from './pages/Cart';
 import Login from './pages/Login';
@@ -21,7 +21,7 @@ function App() {
           <Route index element={<Home />} />
           <Route path="home" element={<Home />} />
           <Route path="products" element={<Products />} />
-          <Route path="news" element={<News />} />
+          <Route path="news" element={<NewsPage />} />
           <Route path="support" element={<Support />} />
           <Route path="cart" element={<Cart />} />
           <Route path="/game/:id" element={<GameDetail />} />

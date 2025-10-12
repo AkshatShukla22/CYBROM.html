@@ -8,12 +8,15 @@ const AdminPanel = () => {
   const [activeTab, setActiveTab] = useState('games');
   const [games, setGames] = useState([]);
   const [users, setUsers] = useState([]);
+  const [news, setNews] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState({ type: '', text: '' });
   const [showAddGame, setShowAddGame] = useState(false);
+  const [showAddNews, setShowAddNews] = useState(false);
   const [editingGame, setEditingGame] = useState(null);
+  const [editingNews, setEditingNews] = useState(null);
   const [purchases, setPurchases] = useState([]);
   
   const [gameForm, setGameForm] = useState({
@@ -30,6 +33,12 @@ const AdminPanel = () => {
     video: null
   });
 
+  const [newsForm, setNewsForm] = useState({
+    heading: '',
+    description: '',
+    image: null
+  });
+
   const consoleOptions = ['PlayStation 5', 'PlayStation 4', 'Xbox Series X/S', 'Xbox One', 'Nintendo Switch', 'PC'];
   const ratingOptions = ['Everyone', 'Teen', '18+', 'Mature', 'Violence', 'Horror'];
   const categoryOptions = ['Action', 'Adventure', 'RPG', 'Horror', 'Sports', 'Racing', 'Strategy', 'Simulation', 'Puzzle', 'Fighting', 'Shooter', 'Open World'];
@@ -42,6 +51,7 @@ const AdminPanel = () => {
     fetchGames();
     if (activeTab === 'users') fetchUsers();
     if (activeTab === 'purchases') fetchPurchases();
+    if (activeTab === 'news') fetchNews();
   }, [activeTab]);
 
   const checkAuth = async () => {
@@ -90,6 +100,22 @@ const AdminPanel = () => {
     }
   };
 
+  const fetchNews = async () => {
+    try {
+      const response = await fetch(`${BACKEND_URL}/api/admin/news`, {
+        credentials: 'include'
+      });
+      if (response.status === 401) {
+        navigate('/login');
+        return;
+      }
+      const data = await response.json();
+      if (response.ok) setNews(data.news);
+    } catch (error) {
+      console.error('Error fetching news:', error);
+    }
+  };
+
   const fetchPurchases = async () => {
     try {
       const response = await fetch(`${BACKEND_URL}/api/admin/purchases`, {
@@ -127,6 +153,11 @@ const AdminPanel = () => {
     setGameForm({ ...gameForm, [name]: value });
   };
 
+  const handleNewsFormChange = (e) => {
+    const { name, value } = e.target;
+    setNewsForm({ ...newsForm, [name]: value });
+  };
+
   const handleMultiSelectToggle = (field, value) => {
     const current = gameForm[field];
     const updated = current.includes(value)
@@ -144,6 +175,10 @@ const AdminPanel = () => {
     } else {
       setGameForm({ ...gameForm, [field]: file });
     }
+  };
+
+  const handleNewsImageChange = (e) => {
+    setNewsForm({ ...newsForm, image: e.target.files[0] });
   };
 
   const handleAddGame = async (e) => {
@@ -188,7 +223,7 @@ const AdminPanel = () => {
 
       if (response.ok) {
         setMessage({ type: 'success', text: editingGame ? 'Game updated!' : 'Game added!' });
-        resetForm();
+        resetGameForm();
         fetchGames();
         setShowAddGame(false);
       } else {
@@ -197,6 +232,50 @@ const AdminPanel = () => {
     } catch (error) {
       setMessage({ type: 'error', text: 'Network error' });
       console.error('Add/Edit game error:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleAddNews = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setMessage({ type: '', text: '' });
+
+    const formData = new FormData();
+    formData.append('heading', newsForm.heading);
+    formData.append('description', newsForm.description);
+    if (newsForm.image) formData.append('image', newsForm.image);
+
+    try {
+      const url = editingNews 
+        ? `${BACKEND_URL}/api/admin/news/${editingNews._id}`
+        : `${BACKEND_URL}/api/admin/news`;
+      
+      const response = await fetch(url, {
+        method: editingNews ? 'PUT' : 'POST',
+        credentials: 'include',
+        body: formData
+      });
+
+      if (response.status === 401) {
+        navigate('/login');
+        return;
+      }
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setMessage({ type: 'success', text: editingNews ? 'News updated!' : 'News added!' });
+        resetNewsForm();
+        fetchNews();
+        setShowAddNews(false);
+      } else {
+        setMessage({ type: 'error', text: data.message || 'Failed to save news' });
+      }
+    } catch (error) {
+      setMessage({ type: 'error', text: 'Network error' });
+      console.error('Add/Edit news error:', error);
     } finally {
       setLoading(false);
     }
@@ -226,6 +305,30 @@ const AdminPanel = () => {
     }
   };
 
+  const handleDeleteNews = async (newsId) => {
+    if (!window.confirm('Are you sure you want to delete this news?')) return;
+
+    try {
+      const response = await fetch(`${BACKEND_URL}/api/admin/news/${newsId}`, {
+        method: 'DELETE',
+        credentials: 'include'
+      });
+
+      if (response.status === 401) {
+        navigate('/login');
+        return;
+      }
+
+      if (response.ok) {
+        setMessage({ type: 'success', text: 'News deleted!' });
+        fetchNews();
+      }
+    } catch (error) {
+      setMessage({ type: 'error', text: 'Failed to delete news' });
+      console.error('Delete news error:', error);
+    }
+  };
+
   const handleEditGame = (game) => {
     setEditingGame(game);
     setGameForm({
@@ -242,6 +345,16 @@ const AdminPanel = () => {
       video: null
     });
     setShowAddGame(true);
+  };
+
+  const handleEditNews = (newsItem) => {
+    setEditingNews(newsItem);
+    setNewsForm({
+      heading: newsItem.heading,
+      description: newsItem.description,
+      image: null
+    });
+    setShowAddNews(true);
   };
 
   const handleSetDiscount = async (gameId, discount) => {
@@ -268,7 +381,7 @@ const AdminPanel = () => {
     }
   };
 
-  const resetForm = () => {
+  const resetGameForm = () => {
     setGameForm({
       name: '',
       description: '',
@@ -283,6 +396,15 @@ const AdminPanel = () => {
       video: null
     });
     setEditingGame(null);
+  };
+
+  const resetNewsForm = () => {
+    setNewsForm({
+      heading: '',
+      description: '',
+      image: null
+    });
+    setEditingNews(null);
   };
 
   const handleLogout = async () => {
@@ -310,6 +432,10 @@ const AdminPanel = () => {
 
   const filteredUsers = users.filter(u => 
     u.username.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const filteredNews = news.filter(n =>
+    n.heading.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const topRatedGames = [...games].sort((a, b) => b.averageRating - a.averageRating).slice(0, 5);
@@ -344,6 +470,12 @@ const AdminPanel = () => {
           Users
         </button>
         <button 
+          className={`tab-btn ${activeTab === 'news' ? 'active' : ''}`}
+          onClick={() => setActiveTab('news')}
+        >
+          News
+        </button>
+        <button 
           className={`tab-btn ${activeTab === 'purchases' ? 'active' : ''}`}
           onClick={() => setActiveTab('purchases')}
         >
@@ -363,7 +495,7 @@ const AdminPanel = () => {
             <div className="action-bar">
               <button 
                 className="primary-btn"
-                onClick={() => { setShowAddGame(!showAddGame); resetForm(); }}
+                onClick={() => { setShowAddGame(!showAddGame); resetGameForm(); }}
               >
                 {showAddGame ? 'Cancel' : 'Add New Game'}
               </button>
@@ -602,6 +734,107 @@ const AdminPanel = () => {
           </div>
         )}
 
+        {activeTab === 'news' && (
+          <div>
+            <div className="action-bar">
+              <button 
+                className="primary-btn"
+                onClick={() => { setShowAddNews(!showAddNews); resetNewsForm(); }}
+              >
+                {showAddNews ? 'Cancel' : 'Add New News'}
+              </button>
+              <input
+                type="text"
+                className="search-input-admin"
+                placeholder="Search news..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            </div>
+
+            {showAddNews && (
+              <div className="form-container">
+                <h2>{editingNews ? 'Edit News' : 'Add New News'}</h2>
+                <form onSubmit={handleAddNews}>
+                  <div className="form-group">
+                    <label>News Heading:</label>
+                    <input 
+                      type="text" 
+                      name="heading" 
+                      className="form-input"
+                      value={newsForm.heading} 
+                      onChange={handleNewsFormChange} 
+                      required 
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Description:</label>
+                    <textarea 
+                      name="description" 
+                      className="form-textarea"
+                      value={newsForm.description} 
+                      onChange={handleNewsFormChange} 
+                      required 
+                      rows="6"
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>News Image:</label>
+                    <input 
+                      type="file" 
+                      className="file-input"
+                      accept="image/*" 
+                      onChange={handleNewsImageChange}
+                      required={!editingNews}
+                    />
+                  </div>
+                  <button type="submit" className="submit-btn" disabled={loading}>
+                    {loading ? 'Saving...' : editingNews ? 'Update News' : 'Add News'}
+                  </button>
+                </form>
+              </div>
+            )}
+
+            <div className="news-list">
+              <h2>News List</h2>
+              <div className="news-grid">
+                {filteredNews.map(newsItem => (
+                  <div key={newsItem._id} className="news-card">
+                    {newsItem.image && (
+                      <img 
+                        src={`${BACKEND_URL}/uploads/${newsItem.image}`} 
+                        alt={newsItem.heading}
+                        className="news-card-image"
+                      />
+                    )}
+                    <div className="news-card-content">
+                      <h3>{newsItem.heading}</h3>
+                      <p className="news-description">{newsItem.description.substring(0, 150)}...</p>
+                      <p className="news-date">
+                        Posted: {new Date(newsItem.createdAt).toLocaleDateString()}
+                      </p>
+                      <div className="news-actions">
+                        <button 
+                          className="edit-btn-small" 
+                          onClick={() => handleEditNews(newsItem)}
+                        >
+                          Edit
+                        </button>
+                        <button 
+                          className="delete-btn-small" 
+                          onClick={() => handleDeleteNews(newsItem._id)}
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
         {activeTab === 'purchases' && (
           <div>
             <h2>Purchase Tracking</h2>
@@ -650,6 +883,10 @@ const AdminPanel = () => {
                 <div className="stat-card">
                   <p>Total Purchases</p>
                   <div className="stat-value">{purchases.length}</div>
+                </div>
+                <div className="stat-card">
+                  <p>Total News</p>
+                  <div className="stat-value">{news.length}</div>
                 </div>
               </div>
             </div>

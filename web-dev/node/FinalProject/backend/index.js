@@ -8,6 +8,7 @@ const path = require('path');
 const authRoutes = require('./routes/authRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const userRoutes = require('./routes/userRoutes');
+const newsRoutes = require('./routes/newsRoutes'); // Add this line
 
 // Load environment variables
 dotenv.config();
@@ -37,7 +38,7 @@ mongoose.connect(process.env.MONGO_URI, {
 app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/user', userRoutes);
-
+app.use('/api/news', newsRoutes); // Add this line for public news routes
 
 // Health check route
 app.get('/', (req, res) => {

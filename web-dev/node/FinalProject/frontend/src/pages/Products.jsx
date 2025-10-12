@@ -255,6 +255,16 @@ const Products = () => {
 
   return (
     <div className="products-page">
+      {/* ========== FILTER TOGGLE BUTTON - ADD THIS ========== */}
+      <button 
+        className="filter-toggle-btn" 
+        onClick={() => setSidebarOpen(true)}
+        aria-label="Open Filters"
+      >
+        <i className="fa-solid fa-filter"></i>
+        Filters
+      </button>
+
       {/* Filter Sidebar */}
       <FilterSidebar 
         isOpen={sidebarOpen}

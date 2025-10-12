@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import BACKEND_URL from '../utils/BackendURL';
-// import '../styles/CategorySection.css';
+import '../styles/CategorySection.css';
 
 const CategorySection = ({ title, games, showDiscount }) => {
   const scrollRef = useRef(null);

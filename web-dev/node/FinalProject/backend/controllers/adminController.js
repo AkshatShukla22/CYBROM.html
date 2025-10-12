@@ -2,6 +2,7 @@
 const Game = require('../models/Game');
 const User = require('../models/User');
 const Collection = require('../models/Collection');
+const News = require('../models/News');
 const fs = require('fs');
 const path = require('path');
 
@@ -246,5 +247,119 @@ const deleteFile = (filename) => {
   const filePath = path.join(__dirname, '../uploads', filename);
   if (fs.existsSync(filePath)) {
     fs.unlinkSync(filePath);
+  }
+};
+
+// Add News
+exports.addNews = async (req, res) => {
+  try {
+    const { heading, description } = req.body;
+
+    if (!heading || !description) {
+      return res.status(400).json({ message: 'Heading and description are required' });
+    }
+
+    if (!req.file) {
+      return res.status(400).json({ message: 'News image is required' });
+    }
+
+    const newsData = {
+      heading,
+      description,
+      image: req.file.filename
+    };
+
+    const news = new News(newsData);
+    await news.save();
+
+    res.status(201).json({
+      message: 'News added successfully!',
+      news
+    });
+  } catch (error) {
+    console.error('Add news error:', error);
+    res.status(500).json({ message: 'Server error. Please try again.' });
+  }
+};
+
+// Get All News
+exports.getAllNews = async (req, res) => {
+  try {
+    const news = await News.find().sort({ createdAt: -1 });
+    res.status(200).json({ news });
+  } catch (error) {
+    console.error('Get news error:', error);
+    res.status(500).json({ message: 'Server error.' });
+  }
+};
+
+// Get Single News
+exports.getNewsById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const news = await News.findById(id);
+    
+    if (!news) {
+      return res.status(404).json({ message: 'News not found' });
+    }
+
+    res.status(200).json({ news });
+  } catch (error) {
+    console.error('Get news error:', error);
+    res.status(500).json({ message: 'Server error.' });
+  }
+};
+
+// Update News
+exports.updateNews = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { heading, description } = req.body;
+
+    const news = await News.findById(id);
+    if (!news) {
+      return res.status(404).json({ message: 'News not found' });
+    }
+
+    if (heading) news.heading = heading;
+    if (description) news.description = description;
+
+    // Handle image upload
+    if (req.file) {
+      if (news.image) deleteFile(news.image);
+      news.image = req.file.filename;
+    }
+
+    await news.save();
+
+    res.status(200).json({
+      message: 'News updated successfully!',
+      news
+    });
+  } catch (error) {
+    console.error('Update news error:', error);
+    res.status(500).json({ message: 'Server error. Please try again.' });
+  }
+};
+
+// Delete News
+exports.deleteNews = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const news = await News.findById(id);
+
+    if (!news) {
+      return res.status(404).json({ message: 'News not found' });
+    }
+
+    // Delete associated image
+    if (news.image) deleteFile(news.image);
+
+    await News.findByIdAndDelete(id);
+
+    res.status(200).json({ message: 'News deleted successfully!' });
+  } catch (error) {
+    console.error('Delete news error:', error);
+    res.status(500).json({ message: 'Server error.' });
   }
 };
