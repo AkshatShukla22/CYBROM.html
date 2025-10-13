@@ -6,6 +6,7 @@ const NewsPage = () => {
   const [news, setNews] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
     fetchNews();
@@ -30,6 +31,11 @@ const NewsPage = () => {
     }
   };
 
+  const filteredNews = news.filter(n =>
+    n.heading.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (n.gameName && n.gameName.toLowerCase().includes(searchTerm.toLowerCase()))
+  );
+
   if (loading) {
     return (
       <div className="news-page">
@@ -51,27 +57,37 @@ const NewsPage = () => {
       <div className="news-header">
         <h1>Latest Gaming News</h1>
         <p>Stay updated with the latest news from Respawn Hub</p>
+        <input
+          type="text"
+          className="news-search-input"
+          placeholder="Search by heading or game name..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
       </div>
 
       <div className="news-container">
-        {news.length === 0 ? (
+        {filteredNews.length === 0 ? (
           <div className="no-news">
-            <p>No news available at the moment. Check back soon!</p>
+            <p>No news found matching your search.</p>
           </div>
         ) : (
-          news.map((newsItem) => (
+          filteredNews.map((newsItem) => (
             <details key={newsItem._id} className="news-item">
               <summary className="news-summary">
                 <div className="news-summary-content">
-                  {newsItem.image && (
+                  {newsItem.headingImage && (
                     <img 
-                      src={`${BACKEND_URL}/uploads/${newsItem.image}`} 
+                      src={`${BACKEND_URL}/uploads/${newsItem.headingImage}`} 
                       alt={newsItem.heading}
                       className="news-thumbnail"
                     />
                   )}
                   <div className="news-summary-text">
                     <h2>{newsItem.heading}</h2>
+                    {newsItem.gameName && (
+                      <span className="news-game-badge">🎮 {newsItem.gameName}</span>
+                    )}
                     <span className="news-date">
                       {new Date(newsItem.createdAt).toLocaleDateString('en-US', {
                         year: 'numeric',
@@ -85,9 +101,9 @@ const NewsPage = () => {
               </summary>
               
               <div className="news-details">
-                {newsItem.image && (
+                {newsItem.detailImage && (
                   <img 
-                    src={`${BACKEND_URL}/uploads/${newsItem.image}`} 
+                    src={`${BACKEND_URL}/uploads/${newsItem.detailImage}`} 
                     alt={newsItem.heading}
                     className="news-full-image"
                   />

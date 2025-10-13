@@ -253,21 +253,27 @@ const deleteFile = (filename) => {
 // Add News
 exports.addNews = async (req, res) => {
   try {
-    const { heading, description } = req.body;
+    const { heading, description, gameName } = req.body;
 
     if (!heading || !description) {
       return res.status(400).json({ message: 'Heading and description are required' });
     }
 
-    if (!req.file) {
-      return res.status(400).json({ message: 'News image is required' });
-    }
-
     const newsData = {
       heading,
       description,
-      image: req.file.filename
+      gameName: gameName || ''
     };
+
+    // Handle file uploads - both images are optional
+    if (req.files) {
+      if (req.files.headingImage) {
+        newsData.headingImage = req.files.headingImage[0].filename;
+      }
+      if (req.files.detailImage) {
+        newsData.detailImage = req.files.detailImage[0].filename;
+      }
+    }
 
     const news = new News(newsData);
     await news.save();
@@ -314,7 +320,7 @@ exports.getNewsById = async (req, res) => {
 exports.updateNews = async (req, res) => {
   try {
     const { id } = req.params;
-    const { heading, description } = req.body;
+    const { heading, description, gameName } = req.body;
 
     const news = await News.findById(id);
     if (!news) {
@@ -323,11 +329,18 @@ exports.updateNews = async (req, res) => {
 
     if (heading) news.heading = heading;
     if (description) news.description = description;
+    if (gameName !== undefined) news.gameName = gameName;
 
-    // Handle image upload
-    if (req.file) {
-      if (news.image) deleteFile(news.image);
-      news.image = req.file.filename;
+    // Handle file uploads
+    if (req.files) {
+      if (req.files.headingImage) {
+        if (news.headingImage) deleteFile(news.headingImage);
+        news.headingImage = req.files.headingImage[0].filename;
+      }
+      if (req.files.detailImage) {
+        if (news.detailImage) deleteFile(news.detailImage);
+        news.detailImage = req.files.detailImage[0].filename;
+      }
     }
 
     await news.save();
@@ -352,8 +365,9 @@ exports.deleteNews = async (req, res) => {
       return res.status(404).json({ message: 'News not found' });
     }
 
-    // Delete associated image
-    if (news.image) deleteFile(news.image);
+    // Delete associated images
+    if (news.headingImage) deleteFile(news.headingImage);
+    if (news.detailImage) deleteFile(news.detailImage);
 
     await News.findByIdAndDelete(id);
 

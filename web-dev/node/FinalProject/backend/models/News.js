@@ -11,9 +11,18 @@ const newsSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  image: {
+  gameName: {
     type: String,
-    required: true
+    trim: true,
+    default: ''
+  },
+  headingImage: {
+    type: String,
+    default: null
+  },
+  detailImage: {
+    type: String,
+    default: null
   },
   createdAt: {
     type: Date,

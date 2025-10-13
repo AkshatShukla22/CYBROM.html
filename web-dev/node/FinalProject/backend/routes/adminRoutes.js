@@ -2,6 +2,7 @@
 const express = require('express');
 const router = express.Router();
 const adminController = require('../controllers/adminController');
+const supportController = require('../controllers/supportController');
 const authenticateToken = require('../middleware/authMiddleware');
 const upload = require('../middleware/uploadMiddleware');
 
@@ -41,10 +42,26 @@ router.get('/users/:id', adminController.getUserDetails);
 router.get('/purchases', adminController.getAllPurchases);
 
 // News management
-router.post('/news', upload.single('image'), adminController.addNews);
+// Add these routes to your adminRoutes.js
+
+// News management
+router.post('/news', upload.fields([
+  { name: 'headingImage', maxCount: 1 },
+  { name: 'detailImage', maxCount: 1 }
+]), adminController.addNews);
 router.get('/news', adminController.getAllNews);
 router.get('/news/:id', adminController.getNewsById);
-router.put('/news/:id', upload.single('image'), adminController.updateNews);
+router.put('/news/:id', upload.fields([
+  { name: 'headingImage', maxCount: 1 },
+  { name: 'detailImage', maxCount: 1 }
+]), adminController.updateNews);
 router.delete('/news/:id', adminController.deleteNews);
+
+// Support Management (Admin)
+router.get('/support/tickets', supportController.getAllTickets);
+router.get('/support/tickets/:id', supportController.getTicketByIdAdmin);
+router.post('/support/tickets/:id/reply', supportController.addAdminReply);
+router.patch('/support/tickets/:id/status', supportController.updateTicketStatus);
+router.delete('/support/tickets/:id', supportController.deleteTicket);
 
 module.exports = router;

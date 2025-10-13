@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import BACKEND_URL from '../utils/BackendURL';
+import AdminSupportPanel from '../pages/AdminSupportPanel';
 import '../styles/AdminPanel.css';
 
 const AdminPanel = () => {
@@ -36,7 +37,9 @@ const AdminPanel = () => {
   const [newsForm, setNewsForm] = useState({
     heading: '',
     description: '',
-    image: null
+    gameName: '',
+    headingImage: null,
+    detailImage: null
   });
 
   const consoleOptions = ['PlayStation 5', 'PlayStation 4', 'Xbox Series X/S', 'Xbox One', 'Nintendo Switch', 'PC'];
@@ -177,8 +180,8 @@ const AdminPanel = () => {
     }
   };
 
-  const handleNewsImageChange = (e) => {
-    setNewsForm({ ...newsForm, image: e.target.files[0] });
+  const handleNewsImageChange = (e, field) => {
+    setNewsForm({ ...newsForm, [field]: e.target.files[0] });
   };
 
   const handleAddGame = async (e) => {
@@ -245,7 +248,9 @@ const AdminPanel = () => {
     const formData = new FormData();
     formData.append('heading', newsForm.heading);
     formData.append('description', newsForm.description);
-    if (newsForm.image) formData.append('image', newsForm.image);
+    formData.append('gameName', newsForm.gameName);
+    if (newsForm.headingImage) formData.append('headingImage', newsForm.headingImage);
+    if (newsForm.detailImage) formData.append('detailImage', newsForm.detailImage);
 
     try {
       const url = editingNews 
@@ -352,7 +357,9 @@ const AdminPanel = () => {
     setNewsForm({
       heading: newsItem.heading,
       description: newsItem.description,
-      image: null
+      gameName: newsItem.gameName || '',
+      headingImage: null,
+      detailImage: null
     });
     setShowAddNews(true);
   };
@@ -402,7 +409,9 @@ const AdminPanel = () => {
     setNewsForm({
       heading: '',
       description: '',
-      image: null
+      gameName: '',
+      headingImage: null,
+      detailImage: null
     });
     setEditingNews(null);
   };
@@ -435,7 +444,8 @@ const AdminPanel = () => {
   );
 
   const filteredNews = news.filter(n =>
-    n.heading.toLowerCase().includes(searchTerm.toLowerCase())
+    n.heading.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (n.gameName && n.gameName.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
   const topRatedGames = [...games].sort((a, b) => b.averageRating - a.averageRating).slice(0, 5);
@@ -486,6 +496,12 @@ const AdminPanel = () => {
           onClick={() => setActiveTab('stats')}
         >
           Statistics
+        </button>
+        <button 
+          className={`tab-btn ${activeTab === 'support' ? 'active' : ''}`}
+          onClick={() => setActiveTab('support')}
+        >
+          Support
         </button>
       </div>
 
@@ -746,7 +762,7 @@ const AdminPanel = () => {
               <input
                 type="text"
                 className="search-input-admin"
-                placeholder="Search news..."
+                placeholder="Search by heading or game name..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
@@ -768,6 +784,17 @@ const AdminPanel = () => {
                     />
                   </div>
                   <div className="form-group">
+                    <label>Game Name (Optional):</label>
+                    <input 
+                      type="text" 
+                      name="gameName" 
+                      className="form-input"
+                      placeholder="e.g., Grand Theft Auto V"
+                      value={newsForm.gameName} 
+                      onChange={handleNewsFormChange}
+                    />
+                  </div>
+                  <div className="form-group">
                     <label>Description:</label>
                     <textarea 
                       name="description" 
@@ -779,14 +806,28 @@ const AdminPanel = () => {
                     />
                   </div>
                   <div className="form-group">
-                    <label>News Image:</label>
+                    <label>Heading Image (Optional):</label>
                     <input 
                       type="file" 
                       className="file-input"
                       accept="image/*" 
-                      onChange={handleNewsImageChange}
-                      required={!editingNews}
+                      onChange={(e) => handleNewsImageChange(e, 'headingImage')}
                     />
+                    {editingNews && editingNews.headingImage && (
+                      <small>Current: {editingNews.headingImage}</small>
+                    )}
+                  </div>
+                  <div className="form-group">
+                    <label>Detail Image (Optional):</label>
+                    <input 
+                      type="file" 
+                      className="file-input"
+                      accept="image/*" 
+                      onChange={(e) => handleNewsImageChange(e, 'detailImage')}
+                    />
+                    {editingNews && editingNews.detailImage && (
+                      <small>Current: {editingNews.detailImage}</small>
+                    )}
                   </div>
                   <button type="submit" className="submit-btn" disabled={loading}>
                     {loading ? 'Saving...' : editingNews ? 'Update News' : 'Add News'}
@@ -800,15 +841,18 @@ const AdminPanel = () => {
               <div className="news-grid">
                 {filteredNews.map(newsItem => (
                   <div key={newsItem._id} className="news-card">
-                    {newsItem.image && (
+                    {newsItem.headingImage && (
                       <img 
-                        src={`${BACKEND_URL}/uploads/${newsItem.image}`} 
+                        src={`${BACKEND_URL}/uploads/${newsItem.headingImage}`} 
                         alt={newsItem.heading}
                         className="news-card-image"
                       />
                     )}
                     <div className="news-card-content">
                       <h3>{newsItem.heading}</h3>
+                      {newsItem.gameName && (
+                        <p className="news-game-name">🎮 {newsItem.gameName}</p>
+                      )}
                       <p className="news-description">{newsItem.description.substring(0, 150)}...</p>
                       <p className="news-date">
                         Posted: {new Date(newsItem.createdAt).toLocaleDateString()}
@@ -892,6 +936,8 @@ const AdminPanel = () => {
             </div>
           </div>
         )}
+
+        {activeTab === 'support' && <AdminSupportPanel />}
       </div>
     </div>
   );
