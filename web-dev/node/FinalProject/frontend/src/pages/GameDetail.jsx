@@ -1,12 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { addToCartAsync, clearSuccessMessage, clearError } from '../redux/cartSlice';
 import BACKEND_URL from '../utils/BackendURL';
 import GameCard from '../components/GameCard';
-// import '../styles/GameDetail.css';
 
 const GameDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  
+  // Get cart state from Redux
+  const cartLoading = useSelector(state => state.cart.loading);
+  const cartError = useSelector(state => state.cart.error);
+  const successMessage = useSelector(state => state.cart.successMessage);
+  
   const [game, setGame] = useState(null);
   const [relatedGames, setRelatedGames] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -19,10 +27,28 @@ const GameDetail = () => {
     window.scrollTo(0, 0);
   }, [id]);
 
+  // Clear messages after 3 seconds
+  useEffect(() => {
+    if (successMessage) {
+      const timer = setTimeout(() => {
+        dispatch(clearSuccessMessage());
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [successMessage, dispatch]);
+
+  useEffect(() => {
+    if (cartError) {
+      const timer = setTimeout(() => {
+        dispatch(clearError());
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [cartError, dispatch]);
+
   const fetchGameDetails = async () => {
     setLoading(true);
     try {
-      // Fetch game details
       const gameRes = await fetch(`${BACKEND_URL}/api/user/games/${id}`);
       const gameData = await gameRes.json();
       
@@ -30,13 +56,11 @@ const GameDetail = () => {
         setGame(gameData.game);
         setSelectedImage(gameData.game.gamePic);
         
-        // Fetch related games (same category)
         if (gameData.game.categories && gameData.game.categories.length > 0) {
           const category = gameData.game.categories[0];
           const relatedRes = await fetch(`${BACKEND_URL}/api/user/games/category/${category}`);
           const relatedData = await relatedRes.json();
           
-          // Filter out current game and limit to 8
           const filtered = relatedData.games
             .filter(g => g._id !== id)
             .slice(0, 8);
@@ -60,14 +84,14 @@ const GameDetail = () => {
     return game.price;
   };
 
-  const handleAddToCart = () => {
-    // Add to cart logic here
-    console.log('Add to cart:', game._id);
+  const handleAddToCart = async () => {
+    // Dispatch the async thunk - cookies are handled automatically by credentials: 'include'
+    dispatch(addToCartAsync({ gameId: game._id }));
   };
 
   const handleBuyNow = () => {
-    // Buy now logic here
     console.log('Buy now:', game._id);
+    // Navigate to checkout with game details
   };
 
   if (loading) {
@@ -80,6 +104,20 @@ const GameDetail = () => {
 
   return (
     <div className="game-detail-page">
+      {/* Success/Error Messages */}
+      {successMessage && (
+        <div className="toast-message success">
+          <i className="fa-solid fa-check-circle"></i>
+          {successMessage}
+        </div>
+      )}
+      {cartError && (
+        <div className="toast-message error">
+          <i className="fa-solid fa-exclamation-circle"></i>
+          {cartError}
+        </div>
+      )}
+
       {/* Back Button */}
       <button className="back-button" onClick={() => navigate(-1)}>
         <i className="fa-solid fa-arrow-left"></i> Back
@@ -326,9 +364,13 @@ const GameDetail = () => {
                   <i className="fa-solid fa-bolt"></i>
                   {game.price === 0 ? 'Play Now' : 'Buy Now'}
                 </button>
-                <button className="btn-add-cart" onClick={handleAddToCart}>
+                <button 
+                  className="btn-add-cart" 
+                  onClick={handleAddToCart}
+                  disabled={cartLoading}
+                >
                   <i className="fa-solid fa-cart-shopping"></i>
-                  Add to Cart
+                  {cartLoading ? 'Adding...' : 'Add to Cart'}
                 </button>
               </div>
 

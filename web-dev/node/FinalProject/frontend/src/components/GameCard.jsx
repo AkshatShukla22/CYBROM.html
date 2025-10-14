@@ -1,10 +1,15 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { addToCartAsync, clearSuccessMessage } from '../redux/cartSlice';
 import BACKEND_URL from '../utils/BackendURL';
 import '../styles/GameCard.css';
 
 const GameCard = ({ game }) => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const cartLoading = useSelector(state => state.cart.loading);
+  const [showToast, setShowToast] = useState(false);
 
   const calculateDiscountedPrice = () => {
     if (game.discount > 0) {
@@ -14,8 +19,20 @@ const GameCard = ({ game }) => {
   };
 
   const handleCardClick = () => {
-    // Navigate to game detail page (you'll create this later)
     navigate(`/game/${game._id}`);
+  };
+
+  const handleAddToCart = (e) => {
+    e.stopPropagation();
+    
+    // Dispatch the async thunk - cookies are handled automatically
+    dispatch(addToCartAsync({ gameId: game._id }));
+    setShowToast(true);
+    
+    setTimeout(() => {
+      setShowToast(false);
+      dispatch(clearSuccessMessage());
+    }, 2000);
   };
 
   return (
@@ -102,13 +119,36 @@ const GameCard = ({ game }) => {
         </div>
 
         {/* Buy Button */}
-        <button className="buy-btn" onClick={(e) => {
-          e.stopPropagation();
-          // Add to cart or buy logic here
-          console.log('Buy game:', game._id);
-        }}>
-          {game.price === 0 ? 'Play Now' : 'Add to Cart'}
+        <button 
+          className="buy-btn" 
+          onClick={handleAddToCart}
+          disabled={cartLoading}
+        >
+          {cartLoading ? (
+            <>
+              <i className="fa-solid fa-spinner fa-spin"></i>
+              Adding...
+            </>
+          ) : game.price === 0 ? (
+            <>
+              <i className="fa-solid fa-play"></i>
+              Play Now
+            </>
+          ) : (
+            <>
+              <i className="fa-solid fa-cart-shopping"></i>
+              Add to Cart
+            </>
+          )}
         </button>
+
+        {/* Toast Message */}
+        {showToast && (
+          <div className="toast-notification">
+            <i className="fa-solid fa-check"></i>
+            Added to cart!
+          </div>
+        )}
       </div>
     </div>
   );

@@ -1,6 +1,23 @@
 // models/User.js
 const mongoose = require('mongoose');
 
+const cartItemSchema = new mongoose.Schema({
+  gameId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Game',
+    required: true
+  },
+  quantity: {
+    type: Number,
+    default: 1,
+    min: 1
+  },
+  addedAt: {
+    type: Date,
+    default: Date.now
+  }
+});
+
 const userSchema = new mongoose.Schema({
   username: {
     type: String,
@@ -25,6 +42,7 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     default: false
   },
+  cart: [cartItemSchema],
   createdAt: {
     type: Date,
     default: Date.now

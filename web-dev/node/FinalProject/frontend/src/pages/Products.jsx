@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { addToCartAsync, clearSuccessMessage } from '../redux/cartSlice';
 import BACKEND_URL from '../utils/BackendURL';
 import FilterSidebar from '../components/FilterSidebar';
 import TopGamesCarousel from '../components/TopGamesCarousel';
@@ -7,6 +9,8 @@ import GameCardGrid from '../components/GameCardGrid';
 import '../styles/Products.css';
 
 const Products = () => {
+  const dispatch = useDispatch();
+  const cartLoading = useSelector(state => state.cart.loading);
   const [allGames, setAllGames] = useState([]);
   const [filteredGames, setFilteredGames] = useState([]);
   const [topRatedGames, setTopRatedGames] = useState([]);
@@ -19,6 +23,8 @@ const Products = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [activeCategory, setActiveCategory] = useState('All');
   const [scrollDirection, setScrollDirection] = useState('down');
+  const [showToast, setShowToast] = useState(false);
+  const [toastGameId, setToastGameId] = useState(null);
   const lastScrollY = useRef(0);
   const cardRefs = useRef([]);
   const [filters, setFilters] = useState({
@@ -240,9 +246,19 @@ const Products = () => {
     return price;
   };
 
-  const handleAddToCart = (gameId) => {
-    console.log('Add to cart:', gameId);
-    // Add your cart logic here
+  const handleAddToCart = (e, gameId) => {
+    e.stopPropagation();
+    
+    // Dispatch the async thunk - cookies are handled automatically
+    dispatch(addToCartAsync({ gameId }));
+    setToastGameId(gameId);
+    setShowToast(true);
+    
+    setTimeout(() => {
+      setShowToast(false);
+      setToastGameId(null);
+      dispatch(clearSuccessMessage());
+    }, 2000);
   };
 
   const handleGameClick = (gameId) => {
@@ -255,7 +271,7 @@ const Products = () => {
 
   return (
     <div className="products-page">
-      {/* ========== FILTER TOGGLE BUTTON - ADD THIS ========== */}
+      {/* Filter Toggle Button */}
       <button 
         className="filter-toggle-btn" 
         onClick={() => setSidebarOpen(true)}
@@ -424,14 +440,34 @@ const Products = () => {
                       {/* Add to Cart Button */}
                       <button 
                         className="add-to-cart-btn-horizontal"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleAddToCart(game._id);
-                        }}
+                        onClick={(e) => handleAddToCart(e, game._id)}
+                        disabled={cartLoading}
                       >
-                        <i className="fa-solid fa-cart-shopping"></i>
-                        Add to Cart
+                        {cartLoading && toastGameId === game._id ? (
+                          <>
+                            <i className="fa-solid fa-spinner fa-spin"></i>
+                            Adding...
+                          </>
+                        ) : game.price === 0 ? (
+                          <>
+                            <i className="fa-solid fa-play"></i>
+                            Play Now
+                          </>
+                        ) : (
+                          <>
+                            <i className="fa-solid fa-cart-shopping"></i>
+                            Add to Cart
+                          </>
+                        )}
                       </button>
+
+                      {/* Toast Notification */}
+                      {showToast && toastGameId === game._id && (
+                        <div className="toast-notification-horizontal">
+                          <i className="fa-solid fa-check"></i>
+                          Added to cart!
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
