@@ -6,32 +6,95 @@ const News = require('../models/News');
 const fs = require('fs');
 const path = require('path');
 
-// Add Game
+// Helper function to delete files
+const deleteFile = (filename) => {
+  const filePath = path.join(__dirname, '../uploads', filename);
+  if (fs.existsSync(filePath)) {
+    fs.unlinkSync(filePath);
+  }
+};
+
+// Add Game with all enhanced fields
 exports.addGame = async (req, res) => {
   try {
-    const { name, description, price, discount, ratings, categories, consoles } = req.body;
+    const {
+      name, description, developer, publisher, releaseDate, version,
+      genre, categories, tags, ratings, modes,
+      price, discount, offerDuration,
+      multiplayerSupport, crossPlatformSupport, cloudSaveSupport,
+      controllerSupport, vrSupport, gameEngine, gameSize,
+      availablePlatforms, consoles, languageSupport, subtitleLanguages, audioLanguages,
+      minimumRequirements, recommendedRequirements, supportedResolutions,
+      soundtrackAvailability, soundtrackUrl,
+      inGamePurchases, inGamePurchasesInfo,
+      isTrending, popularityLabel
+    } = req.body;
 
-    // Validate required fields
     if (!name || !description || !price) {
-      return res.status(400).json({ message: 'All required fields must be filled' });
+      return res.status(400).json({ message: 'Required fields: name, description, price' });
     }
 
     const gameData = {
       name,
       description,
+      developer: developer || '',
+      publisher: publisher || '',
+      releaseDate: releaseDate || null,
+      version: version || '1.0.0',
+      
+      genre: JSON.parse(genre || '[]'),
+      categories: JSON.parse(categories || '[]'),
+      tags: JSON.parse(tags || '[]'),
+      ratings: JSON.parse(ratings || '[]'),
+      modes: JSON.parse(modes || '[]'),
+      
       price: parseFloat(price),
       discount: parseFloat(discount) || 0,
-      ratings: JSON.parse(ratings || '[]'),
-      categories: JSON.parse(categories || '[]'),
-      consoles: JSON.parse(consoles || '[]')
+      offerDuration: offerDuration ? JSON.parse(offerDuration) : {},
+      
+      multiplayerSupport: multiplayerSupport === 'true',
+      crossPlatformSupport: crossPlatformSupport === 'true',
+      cloudSaveSupport: cloudSaveSupport === 'true',
+      controllerSupport: controllerSupport === 'true',
+      vrSupport: vrSupport === 'true',
+      gameEngine: gameEngine || '',
+      gameSize: parseFloat(gameSize) || 0,
+      
+      availablePlatforms: JSON.parse(availablePlatforms || '[]'),
+      consoles: JSON.parse(consoles || '[]'),
+      languageSupport: JSON.parse(languageSupport || '[]'),
+      subtitleLanguages: JSON.parse(subtitleLanguages || '[]'),
+      audioLanguages: JSON.parse(audioLanguages || '[]'),
+      
+      minimumRequirements: minimumRequirements ? JSON.parse(minimumRequirements) : {},
+      recommendedRequirements: recommendedRequirements ? JSON.parse(recommendedRequirements) : {},
+      supportedResolutions: JSON.parse(supportedResolutions || '[]'),
+      
+      soundtrackAvailability: soundtrackAvailability === 'true',
+      soundtrackUrl: soundtrackUrl || '',
+      
+      inGamePurchases: inGamePurchases === 'true',
+      inGamePurchasesInfo: inGamePurchasesInfo || '',
+      
+      isTrending: isTrending === 'true',
+      popularityLabel: popularityLabel || ''
     };
 
     // Handle file uploads
     if (req.files) {
-      if (req.files.gamePic) gameData.gamePic = req.files.gamePic[0].filename;
+      if (req.files.coverImage) gameData.coverImage = req.files.coverImage[0].filename;
       if (req.files.backgroundPic) gameData.backgroundPic = req.files.backgroundPic[0].filename;
-      if (req.files.video) gameData.video = req.files.video[0].filename;
+      if (req.files.trailer) gameData.trailer = req.files.trailer[0].filename;
       
+      // Additional Images
+      gameData.additionalImages = [];
+      for (let i = 0; i < 3; i++) {
+        if (req.files[`additionalImage${i}`]) {
+          gameData.additionalImages.push(req.files[`additionalImage${i}`][0].filename);
+        }
+      }
+      
+      // Gameplay Pictures
       gameData.gameplayPics = [];
       for (let i = 0; i < 4; i++) {
         if (req.files[`gameplayPic${i}`]) {
@@ -49,11 +112,11 @@ exports.addGame = async (req, res) => {
     });
   } catch (error) {
     console.error('Add game error:', error);
-    res.status(500).json({ message: 'Server error. Please try again.' });
+    res.status(500).json({ message: 'Server error. Please try again.', error: error.message });
   }
 };
 
-// Get All Games (simplified for list view)
+// Get All Games
 exports.getAllGames = async (req, res) => {
   try {
     const games = await Game.find().sort({ createdAt: -1 });
@@ -64,7 +127,7 @@ exports.getAllGames = async (req, res) => {
   }
 };
 
-// Get Single Game (detailed view)
+// Get Single Game
 exports.getGameById = async (req, res) => {
   try {
     const { id } = req.params;
@@ -85,37 +148,102 @@ exports.getGameById = async (req, res) => {
 exports.updateGame = async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, description, price, discount, ratings, categories, consoles } = req.body;
+    const {
+      name, description, developer, publisher, releaseDate, version,
+      genre, categories, tags, ratings, modes,
+      price, discount, offerDuration,
+      multiplayerSupport, crossPlatformSupport, cloudSaveSupport,
+      controllerSupport, vrSupport, gameEngine, gameSize,
+      availablePlatforms, consoles, languageSupport, subtitleLanguages, audioLanguages,
+      minimumRequirements, recommendedRequirements, supportedResolutions,
+      soundtrackAvailability, soundtrackUrl,
+      inGamePurchases, inGamePurchasesInfo,
+      isTrending, popularityLabel
+    } = req.body;
 
     const game = await Game.findById(id);
     if (!game) {
       return res.status(404).json({ message: 'Game not found' });
     }
 
-    // Update fields
+    // Update basic fields
     if (name) game.name = name;
     if (description) game.description = description;
-    if (price) game.price = parseFloat(price);
-    if (discount !== undefined) game.discount = parseFloat(discount);
-    if (ratings) game.ratings = JSON.parse(ratings);
+    if (developer !== undefined) game.developer = developer;
+    if (publisher !== undefined) game.publisher = publisher;
+    if (releaseDate !== undefined) game.releaseDate = releaseDate;
+    if (version !== undefined) game.version = version;
+    
+    // Update arrays
+    if (genre) game.genre = JSON.parse(genre);
     if (categories) game.categories = JSON.parse(categories);
+    if (tags) game.tags = JSON.parse(tags);
+    if (ratings) game.ratings = JSON.parse(ratings);
+    if (modes) game.modes = JSON.parse(modes);
+    
+    // Update pricing
+    if (price !== undefined) game.price = parseFloat(price);
+    if (discount !== undefined) game.discount = parseFloat(discount);
+    if (offerDuration) game.offerDuration = JSON.parse(offerDuration);
+    
+    // Update boolean features
+    if (multiplayerSupport !== undefined) game.multiplayerSupport = multiplayerSupport === 'true';
+    if (crossPlatformSupport !== undefined) game.crossPlatformSupport = crossPlatformSupport === 'true';
+    if (cloudSaveSupport !== undefined) game.cloudSaveSupport = cloudSaveSupport === 'true';
+    if (controllerSupport !== undefined) game.controllerSupport = controllerSupport === 'true';
+    if (vrSupport !== undefined) game.vrSupport = vrSupport === 'true';
+    
+    if (gameEngine !== undefined) game.gameEngine = gameEngine;
+    if (gameSize !== undefined) game.gameSize = parseFloat(gameSize);
+    
+    // Update platforms and languages
+    if (availablePlatforms) game.availablePlatforms = JSON.parse(availablePlatforms);
     if (consoles) game.consoles = JSON.parse(consoles);
+    if (languageSupport) game.languageSupport = JSON.parse(languageSupport);
+    if (subtitleLanguages) game.subtitleLanguages = JSON.parse(subtitleLanguages);
+    if (audioLanguages) game.audioLanguages = JSON.parse(audioLanguages);
+    
+    // Update system requirements
+    if (minimumRequirements) game.minimumRequirements = JSON.parse(minimumRequirements);
+    if (recommendedRequirements) game.recommendedRequirements = JSON.parse(recommendedRequirements);
+    if (supportedResolutions) game.supportedResolutions = JSON.parse(supportedResolutions);
+    
+    // Update soundtrack
+    if (soundtrackAvailability !== undefined) game.soundtrackAvailability = soundtrackAvailability === 'true';
+    if (soundtrackUrl !== undefined) game.soundtrackUrl = soundtrackUrl;
+    
+    // Update monetization
+    if (inGamePurchases !== undefined) game.inGamePurchases = inGamePurchases === 'true';
+    if (inGamePurchasesInfo !== undefined) game.inGamePurchasesInfo = inGamePurchasesInfo;
+    
+    // Update popularity
+    if (isTrending !== undefined) game.isTrending = isTrending === 'true';
+    if (popularityLabel !== undefined) game.popularityLabel = popularityLabel;
 
     // Handle file uploads and delete old files
     if (req.files) {
-      if (req.files.gamePic) {
-        if (game.gamePic) deleteFile(game.gamePic);
-        game.gamePic = req.files.gamePic[0].filename;
+      if (req.files.coverImage) {
+        if (game.coverImage) deleteFile(game.coverImage);
+        game.coverImage = req.files.coverImage[0].filename;
       }
       if (req.files.backgroundPic) {
         if (game.backgroundPic) deleteFile(game.backgroundPic);
         game.backgroundPic = req.files.backgroundPic[0].filename;
       }
-      if (req.files.video) {
-        if (game.video) deleteFile(game.video);
-        game.video = req.files.video[0].filename;
+      if (req.files.trailer) {
+        if (game.trailer) deleteFile(game.trailer);
+        game.trailer = req.files.trailer[0].filename;
       }
       
+      // Additional Images
+      for (let i = 0; i < 3; i++) {
+        if (req.files[`additionalImage${i}`]) {
+          if (game.additionalImages[i]) deleteFile(game.additionalImages[i]);
+          game.additionalImages[i] = req.files[`additionalImage${i}`][0].filename;
+        }
+      }
+      
+      // Gameplay Pictures
       for (let i = 0; i < 4; i++) {
         if (req.files[`gameplayPic${i}`]) {
           if (game.gameplayPics[i]) deleteFile(game.gameplayPics[i]);
@@ -132,7 +260,7 @@ exports.updateGame = async (req, res) => {
     });
   } catch (error) {
     console.error('Update game error:', error);
-    res.status(500).json({ message: 'Server error. Please try again.' });
+    res.status(500).json({ message: 'Server error. Please try again.', error: error.message });
   }
 };
 
@@ -146,10 +274,11 @@ exports.deleteGame = async (req, res) => {
       return res.status(404).json({ message: 'Game not found' });
     }
 
-    // Delete associated files
-    if (game.gamePic) deleteFile(game.gamePic);
+    // Delete all associated files
+    if (game.coverImage) deleteFile(game.coverImage);
     if (game.backgroundPic) deleteFile(game.backgroundPic);
-    if (game.video) deleteFile(game.video);
+    if (game.trailer) deleteFile(game.trailer);
+    game.additionalImages.forEach(pic => deleteFile(pic));
     game.gameplayPics.forEach(pic => deleteFile(pic));
 
     await Game.findByIdAndDelete(id);
@@ -242,15 +371,7 @@ exports.getAllPurchases = async (req, res) => {
   }
 };
 
-// Helper function to delete files
-const deleteFile = (filename) => {
-  const filePath = path.join(__dirname, '../uploads', filename);
-  if (fs.existsSync(filePath)) {
-    fs.unlinkSync(filePath);
-  }
-};
-
-// Add News
+// News Management
 exports.addNews = async (req, res) => {
   try {
     const { heading, description, gameName } = req.body;
@@ -265,7 +386,6 @@ exports.addNews = async (req, res) => {
       gameName: gameName || ''
     };
 
-    // Handle file uploads - both images are optional
     if (req.files) {
       if (req.files.headingImage) {
         newsData.headingImage = req.files.headingImage[0].filename;
@@ -288,7 +408,6 @@ exports.addNews = async (req, res) => {
   }
 };
 
-// Get All News
 exports.getAllNews = async (req, res) => {
   try {
     const news = await News.find().sort({ createdAt: -1 });
@@ -299,7 +418,6 @@ exports.getAllNews = async (req, res) => {
   }
 };
 
-// Get Single News
 exports.getNewsById = async (req, res) => {
   try {
     const { id } = req.params;
@@ -316,7 +434,6 @@ exports.getNewsById = async (req, res) => {
   }
 };
 
-// Update News
 exports.updateNews = async (req, res) => {
   try {
     const { id } = req.params;
@@ -331,7 +448,6 @@ exports.updateNews = async (req, res) => {
     if (description) news.description = description;
     if (gameName !== undefined) news.gameName = gameName;
 
-    // Handle file uploads
     if (req.files) {
       if (req.files.headingImage) {
         if (news.headingImage) deleteFile(news.headingImage);
@@ -355,7 +471,6 @@ exports.updateNews = async (req, res) => {
   }
 };
 
-// Delete News
 exports.deleteNews = async (req, res) => {
   try {
     const { id } = req.params;
@@ -365,7 +480,6 @@ exports.deleteNews = async (req, res) => {
       return res.status(404).json({ message: 'News not found' });
     }
 
-    // Delete associated images
     if (news.headingImage) deleteFile(news.headingImage);
     if (news.detailImage) deleteFile(news.detailImage);
 

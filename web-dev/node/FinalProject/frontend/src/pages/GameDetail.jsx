@@ -10,7 +10,6 @@ const GameDetail = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   
-  // Get cart state from Redux
   const cartLoading = useSelector(state => state.cart.loading);
   const cartError = useSelector(state => state.cart.error);
   const successMessage = useSelector(state => state.cart.successMessage);
@@ -27,7 +26,6 @@ const GameDetail = () => {
     window.scrollTo(0, 0);
   }, [id]);
 
-  // Clear messages after 3 seconds
   useEffect(() => {
     if (successMessage) {
       const timer = setTimeout(() => {
@@ -54,7 +52,7 @@ const GameDetail = () => {
       
       if (gameRes.ok) {
         setGame(gameData.game);
-        setSelectedImage(gameData.game.gamePic);
+        setSelectedImage(gameData.game.coverImage || gameData.game.gamePic);
         
         if (gameData.game.categories && gameData.game.categories.length > 0) {
           const category = gameData.game.categories[0];
@@ -85,13 +83,11 @@ const GameDetail = () => {
   };
 
   const handleAddToCart = async () => {
-    // Dispatch the async thunk - cookies are handled automatically by credentials: 'include'
     dispatch(addToCartAsync({ gameId: game._id }));
   };
 
   const handleBuyNow = () => {
     console.log('Buy now:', game._id);
-    // Navigate to checkout with game details
   };
 
   if (loading) {
@@ -104,7 +100,6 @@ const GameDetail = () => {
 
   return (
     <div className="game-detail-page">
-      {/* Success/Error Messages */}
       {successMessage && (
         <div className="toast-message success">
           <i className="fa-solid fa-check-circle"></i>
@@ -118,12 +113,11 @@ const GameDetail = () => {
         </div>
       )}
 
-      {/* Back Button */}
       <button className="back-button" onClick={() => navigate(-1)}>
         <i className="fa-solid fa-arrow-left"></i> Back
       </button>
 
-      {/* Hero Section with Background */}
+      {/* Hero Section */}
       <div 
         className="game-hero"
         style={{
@@ -136,7 +130,12 @@ const GameDetail = () => {
           <div className="hero-content">
             <h1 className="game-title">{game.name}</h1>
             
-            {/* Game Stats */}
+            {game.developer && <p className="developer-name">by {game.developer}</p>}
+            
+            {game.popularityLabel && (
+              <span className="popularity-badge">{game.popularityLabel}</span>
+            )}
+
             <div className="game-stats-bar">
               <div className="stat-item">
                 <i className="fa-solid fa-star"></i>
@@ -152,10 +151,9 @@ const GameDetail = () => {
               </div>
             </div>
 
-            {/* Categories and Ratings Tags */}
             <div className="tags-section">
-              {game.categories && game.categories.map(cat => (
-                <span key={cat} className="category-tag">{cat}</span>
+              {game.genre && game.genre.map(g => (
+                <span key={g} className="genre-tag">{g}</span>
               ))}
               {game.ratings && game.ratings.map(rating => (
                 <span key={rating} className="rating-tag">{rating}</span>
@@ -165,10 +163,9 @@ const GameDetail = () => {
         </div>
       </div>
 
-      {/* Main Content */}
       <div className="game-detail-content">
         <div className="content-grid">
-          {/* Left Section - Media & Info */}
+          {/* Left Section */}
           <div className="left-section">
             {/* Main Image Display */}
             <div className="main-image-container">
@@ -187,12 +184,12 @@ const GameDetail = () => {
 
             {/* Thumbnail Gallery */}
             <div className="thumbnail-gallery">
-              {game.gamePic && (
+              {game.coverImage && (
                 <img
-                  src={`${BACKEND_URL}/uploads/${game.gamePic}`}
-                  alt="Main"
-                  className={`thumbnail ${selectedImage === game.gamePic ? 'active' : ''}`}
-                  onClick={() => setSelectedImage(game.gamePic)}
+                  src={`${BACKEND_URL}/uploads/${game.coverImage}`}
+                  alt="Cover"
+                  className={`thumbnail ${selectedImage === game.coverImage ? 'active' : ''}`}
+                  onClick={() => setSelectedImage(game.coverImage)}
                 />
               )}
               
@@ -204,6 +201,16 @@ const GameDetail = () => {
                   onClick={() => setSelectedImage(game.backgroundPic)}
                 />
               )}
+
+              {game.additionalImages && game.additionalImages.map((img, index) => (
+                <img
+                  key={index}
+                  src={`${BACKEND_URL}/uploads/${img}`}
+                  alt={`Additional ${index + 1}`}
+                  className={`thumbnail ${selectedImage === img ? 'active' : ''}`}
+                  onClick={() => setSelectedImage(img)}
+                />
+              ))}
               
               {game.gameplayPics && game.gameplayPics.map((pic, index) => (
                 <img
@@ -215,24 +222,24 @@ const GameDetail = () => {
                 />
               ))}
 
-              {game.video && (
+              {game.trailer && (
                 <div 
                   className="video-thumbnail"
                   onClick={() => setShowVideo(!showVideo)}
                 >
                   <i className="fa-solid fa-play"></i>
-                  <span>Video</span>
+                  <span>Trailer</span>
                 </div>
               )}
             </div>
 
             {/* Video Player */}
-            {showVideo && game.video && (
+            {showVideo && game.trailer && (
               <div className="video-player-container">
                 <video 
                   controls 
                   className="game-video"
-                  src={`${BACKEND_URL}/uploads/${game.video}`}
+                  src={`${BACKEND_URL}/uploads/${game.trailer}`}
                   autoPlay
                 >
                   Your browser does not support the video tag.
@@ -256,6 +263,12 @@ const GameDetail = () => {
                   Specifications
                 </button>
                 <button 
+                  className={`tab-btn ${activeTab === 'requirements' ? 'active' : ''}`}
+                  onClick={() => setActiveTab('requirements')}
+                >
+                  System Requirements
+                </button>
+                <button 
                   className={`tab-btn ${activeTab === 'reviews' ? 'active' : ''}`}
                   onClick={() => setActiveTab('reviews')}
                 >
@@ -268,40 +281,223 @@ const GameDetail = () => {
                   <div className="about-content">
                     <h3>Description</h3>
                     <p>{game.description}</p>
+                    
+                    {game.publisher && (
+                      <div className="about-info">
+                        <strong>Publisher:</strong> {game.publisher}
+                      </div>
+                    )}
+                    
+                    {game.releaseDate && (
+                      <div className="about-info">
+                        <strong>Release Date:</strong> {new Date(game.releaseDate).toLocaleDateString()}
+                      </div>
+                    )}
+
+                    {game.gameSize && (
+                      <div className="about-info">
+                        <strong>Download Size:</strong> {game.gameSize} GB
+                      </div>
+                    )}
+
+                    {game.tags && game.tags.length > 0 && (
+                      <div className="about-info">
+                        <strong>Tags:</strong>
+                        <div className="tags-display">
+                          {game.tags.map(tag => (
+                            <span key={tag} className="tag-badge">{tag}</span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                   </div>
                 )}
 
                 {activeTab === 'specs' && (
                   <div className="specs-content">
                     <h3>Game Specifications</h3>
-                    <div className="spec-item">
-                      <strong>Platforms:</strong>
-                      <div className="platform-list">
-                        {game.consoles && game.consoles.map(console => (
-                          <span key={console} className="platform-badge">{console}</span>
-                        ))}
+                    
+                    {game.availablePlatforms && game.availablePlatforms.length > 0 && (
+                      <div className="spec-item">
+                        <strong>Platforms:</strong>
+                        <div className="platform-list">
+                          {game.availablePlatforms.map(platform => (
+                            <span key={platform} className="platform-badge">{platform}</span>
+                          ))}
+                        </div>
                       </div>
-                    </div>
-                    <div className="spec-item">
-                      <strong>Categories:</strong>
-                      <div className="category-list">
-                        {game.categories && game.categories.map(cat => (
-                          <span key={cat} className="category-badge">{cat}</span>
-                        ))}
+                    )}
+
+                    {game.categories && game.categories.length > 0 && (
+                      <div className="spec-item">
+                        <strong>Categories:</strong>
+                        <div className="category-list">
+                          {game.categories.map(cat => (
+                            <span key={cat} className="category-badge">{cat}</span>
+                          ))}
+                        </div>
                       </div>
-                    </div>
-                    <div className="spec-item">
-                      <strong>Age Ratings:</strong>
-                      <div className="rating-list">
-                        {game.ratings && game.ratings.map(rating => (
-                          <span key={rating} className="age-rating-badge">{rating}</span>
-                        ))}
+                    )}
+
+                    {game.modes && game.modes.length > 0 && (
+                      <div className="spec-item">
+                        <strong>Game Modes:</strong>
+                        <div className="mode-list">
+                          {game.modes.map(mode => (
+                            <span key={mode} className="mode-badge">{mode}</span>
+                          ))}
+                        </div>
                       </div>
-                    </div>
+                    )}
+
                     <div className="spec-item">
-                      <strong>Release Date:</strong>
-                      <span>{new Date(game.createdAt).toLocaleDateString()}</span>
+                      <strong>Features:</strong>
+                      <ul className="features-list">
+                        {game.multiplayerSupport && <li>✓ Multiplayer Support</li>}
+                        {game.crossPlatformSupport && <li>✓ Cross-Platform Play</li>}
+                        {game.cloudSaveSupport && <li>✓ Cloud Saves</li>}
+                        {game.controllerSupport && <li>✓ Controller Support</li>}
+                        {game.vrSupport && <li>✓ VR Support</li>}
+                      </ul>
                     </div>
+
+                    {game.languageSupport && game.languageSupport.length > 0 && (
+                      <div className="spec-item">
+                        <strong>Languages:</strong>
+                        <p>{game.languageSupport.join(', ')}</p>
+                      </div>
+                    )}
+
+                    {game.supportedResolutions && game.supportedResolutions.length > 0 && (
+                      <div className="spec-item">
+                        <strong>Supported Resolutions:</strong>
+                        <p>{game.supportedResolutions.join(', ')}</p>
+                      </div>
+                    )}
+
+                    {game.gameEngine && (
+                      <div className="spec-item">
+                        <strong>Game Engine:</strong>
+                        <p>{game.gameEngine}</p>
+                      </div>
+                    )}
+
+                    {game.inGamePurchases && (
+                      <div className="spec-item warning">
+                        <strong>⚠ In-Game Purchases:</strong>
+                        <p>{game.inGamePurchasesInfo || 'This game includes in-game purchases'}</p>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {activeTab === 'requirements' && (
+                  <div className="requirements-content">
+                    <h3>System Requirements</h3>
+                    
+                    {game.minimumRequirements && Object.keys(game.minimumRequirements).length > 0 && (
+                      <div className="req-section">
+                        <h4>Minimum</h4>
+                        <table className="req-table">
+                          <tbody>
+                            {game.minimumRequirements.os && (
+                              <tr>
+                                <td><strong>OS</strong></td>
+                                <td>{game.minimumRequirements.os}</td>
+                              </tr>
+                            )}
+                            {game.minimumRequirements.cpu && (
+                              <tr>
+                                <td><strong>Processor</strong></td>
+                                <td>{game.minimumRequirements.cpu}</td>
+                              </tr>
+                            )}
+                            {game.minimumRequirements.ram && (
+                              <tr>
+                                <td><strong>Memory</strong></td>
+                                <td>{game.minimumRequirements.ram}</td>
+                              </tr>
+                            )}
+                            {game.minimumRequirements.gpu && (
+                              <tr>
+                                <td><strong>Graphics</strong></td>
+                                <td>{game.minimumRequirements.gpu}</td>
+                              </tr>
+                            )}
+                            {game.minimumRequirements.storage && (
+                              <tr>
+                                <td><strong>Storage</strong></td>
+                                <td>{game.minimumRequirements.storage}</td>
+                              </tr>
+                            )}
+                            {game.minimumRequirements.directX && (
+                              <tr>
+                                <td><strong>DirectX</strong></td>
+                                <td>{game.minimumRequirements.directX}</td>
+                              </tr>
+                            )}
+                            {game.minimumRequirements.additional && (
+                              <tr>
+                                <td><strong>Additional Notes</strong></td>
+                                <td>{game.minimumRequirements.additional}</td>
+                              </tr>
+                            )}
+                          </tbody>
+                        </table>
+                      </div>
+                    )}
+
+                    {game.recommendedRequirements && Object.keys(game.recommendedRequirements).length > 0 && (
+                      <div className="req-section">
+                        <h4>Recommended</h4>
+                        <table className="req-table">
+                          <tbody>
+                            {game.recommendedRequirements.os && (
+                              <tr>
+                                <td><strong>OS</strong></td>
+                                <td>{game.recommendedRequirements.os}</td>
+                              </tr>
+                            )}
+                            {game.recommendedRequirements.cpu && (
+                              <tr>
+                                <td><strong>Processor</strong></td>
+                                <td>{game.recommendedRequirements.cpu}</td>
+                              </tr>
+                            )}
+                            {game.recommendedRequirements.ram && (
+                              <tr>
+                                <td><strong>Memory</strong></td>
+                                <td>{game.recommendedRequirements.ram}</td>
+                              </tr>
+                            )}
+                            {game.recommendedRequirements.gpu && (
+                              <tr>
+                                <td><strong>Graphics</strong></td>
+                                <td>{game.recommendedRequirements.gpu}</td>
+                              </tr>
+                            )}
+                            {game.recommendedRequirements.storage && (
+                              <tr>
+                                <td><strong>Storage</strong></td>
+                                <td>{game.recommendedRequirements.storage}</td>
+                              </tr>
+                            )}
+                            {game.recommendedRequirements.directX && (
+                              <tr>
+                                <td><strong>DirectX</strong></td>
+                                <td>{game.recommendedRequirements.directX}</td>
+                              </tr>
+                            )}
+                            {game.recommendedRequirements.additional && (
+                              <tr>
+                                <td><strong>Additional Notes</strong></td>
+                                <td>{game.recommendedRequirements.additional}</td>
+                              </tr>
+                            )}
+                          </tbody>
+                        </table>
+                      </div>
+                    )}
                   </div>
                 )}
 
@@ -359,6 +555,13 @@ const GameDetail = () => {
                 )}
               </div>
 
+              {game.offerDuration && game.offerDuration.endDate && (
+                <div className="offer-timer">
+                  <i className="fa-solid fa-clock"></i>
+                  Offer ends: {new Date(game.offerDuration.endDate).toLocaleDateString()}
+                </div>
+              )}
+
               <div className="purchase-buttons">
                 <button className="btn-buy-now" onClick={handleBuyNow}>
                   <i className="fa-solid fa-bolt"></i>
@@ -387,7 +590,23 @@ const GameDetail = () => {
                   <i className="fa-solid fa-headset"></i>
                   <span>24/7 Support</span>
                 </div>
+                {game.cloudSaveSupport && (
+                  <div className="info-row">
+                    <i className="fa-solid fa-cloud"></i>
+                    <span>Cloud Saves</span>
+                  </div>
+                )}
               </div>
+
+              {game.soundtrackAvailability && (
+                <div className="soundtrack-info">
+                  <i className="fa-solid fa-music"></i>
+                  <span>Includes Soundtrack</span>
+                  {game.soundtrackUrl && (
+                    <a href={game.soundtrackUrl} target="_blank" rel="noopener noreferrer">View</a>
+                  )}
+                </div>
+              )}
             </div>
           </div>
         </div>

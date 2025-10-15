@@ -39,9 +39,16 @@ const GameCard = ({ game }) => {
     <div className="game-card-component" onClick={handleCardClick}>
       {/* Game Image */}
       <div className="game-card-image-container">
-        {game.gamePic ? (
+        {/* FIXED: Changed from game.gamePic to game.coverImage */}
+        {game.coverImage ? (
           <img 
-            src={`${BACKEND_URL}/uploads/${game.gamePic}`} 
+            src={`${BACKEND_URL}/uploads/${game.coverImage}`} 
+            alt={game.name}
+            className="game-card-image"
+          />
+        ) : game.backgroundPic ? (
+          <img 
+            src={`${BACKEND_URL}/uploads/${game.backgroundPic}`} 
             alt={game.name}
             className="game-card-image"
           />
@@ -118,7 +125,7 @@ const GameCard = ({ game }) => {
           )}
         </div>
 
-        {/* Buy Button */}
+        {/* Buy Button - FIXED: Removed duplicate cart icon */}
         <button 
           className="buy-btn" 
           onClick={handleAddToCart}

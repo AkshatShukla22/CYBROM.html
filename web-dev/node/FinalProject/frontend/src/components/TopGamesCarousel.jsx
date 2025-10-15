@@ -69,9 +69,10 @@ const TopGamesCarousel = ({ games }) => {
               }}
               onClick={() => scrollToCard(index)}
             >
-              {game.gamePic ? (
+              {/* FIXED: Changed from game.gamePic to game.coverImage */}
+              {game.coverImage ? (
                 <img 
-                  src={`${BACKEND_URL}/uploads/${game.gamePic}`} 
+                  src={`${BACKEND_URL}/uploads/${game.coverImage}`} 
                   alt={game.name}
                   className="carousel-card-bg"
                 />

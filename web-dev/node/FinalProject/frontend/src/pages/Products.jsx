@@ -379,9 +379,10 @@ const Products = () => {
                 >
                   {/* Game Image - Left Side (Vertical Card) */}
                   <div className="game-horizontal-image">
-                    {game.gamePic ? (
+                    {/* FIXED: Changed from game.gamePic to game.coverImage */}
+                    {game.coverImage ? (
                       <img 
-                        src={`${BACKEND_URL}/uploads/${game.gamePic}`} 
+                        src={`${BACKEND_URL}/uploads/${game.coverImage}`} 
                         alt={game.name}
                       />
                     ) : game.backgroundPic ? (

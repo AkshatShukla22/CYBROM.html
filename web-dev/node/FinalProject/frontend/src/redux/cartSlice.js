@@ -79,7 +79,9 @@ export const removeFromCartAsync = createAsyncThunk(
         throw new Error(error.message || 'Failed to remove from cart');
       }
 
-      return gameId;
+      const data = await response.json();
+      // FIXED: Return the updated cart from backend instead of just gameId
+      return data.cart;
     } catch (error) {
       return rejectWithValue(error.message);
     }
@@ -196,7 +198,8 @@ const cartSlice = createSlice({
       })
       .addCase(removeFromCartAsync.fulfilled, (state, action) => {
         state.loading = false;
-        state.items = state.items.filter(item => item.gameId._id !== action.payload);
+        // FIXED: Use the updated cart from backend instead of filtering
+        state.items = action.payload;
         state.successMessage = 'Removed from cart';
       })
       .addCase(removeFromCartAsync.rejected, (state, action) => {

@@ -7,7 +7,7 @@ const Game = require('../models/Game');
 // Get All Games (Public - no auth required)
 exports.getAllGames = async (req, res) => {
   try {
-    const games = await Game.find().sort({ createdAt: -1 });
+    const games = await Game.find({ isActive: true }).sort({ createdAt: -1 });
     res.status(200).json({ games });
   } catch (error) {
     console.error('Get games error:', error);
@@ -19,7 +19,7 @@ exports.getAllGames = async (req, res) => {
 exports.getTopRatedGames = async (req, res) => {
   try {
     const limit = parseInt(req.query.limit) || 10;
-    const games = await Game.find()
+    const games = await Game.find({ isActive: true })
       .sort({ averageRating: -1, purchaseCount: -1 })
       .limit(limit);
     res.status(200).json({ games });
@@ -33,7 +33,7 @@ exports.getTopRatedGames = async (req, res) => {
 exports.getMostPurchasedGames = async (req, res) => {
   try {
     const limit = parseInt(req.query.limit) || 10;
-    const games = await Game.find()
+    const games = await Game.find({ isActive: true })
       .sort({ purchaseCount: -1 })
       .limit(limit);
     res.status(200).json({ games });
@@ -43,11 +43,27 @@ exports.getMostPurchasedGames = async (req, res) => {
   }
 };
 
+// Get Trending Games
+exports.getTrendingGames = async (req, res) => {
+  try {
+    const limit = parseInt(req.query.limit) || 10;
+    const games = await Game.find({ isActive: true, isTrending: true })
+      .sort({ purchaseCount: -1, createdAt: -1 })
+      .limit(limit);
+    res.status(200).json({ games });
+  } catch (error) {
+    console.error('Get trending games error:', error);
+    res.status(500).json({ message: 'Server error.' });
+  }
+};
+
 // Get Discounted Games
 exports.getDiscountedGames = async (req, res) => {
   try {
-    const games = await Game.find({ discount: { $gt: 0 } })
-      .sort({ discount: -1 });
+    const games = await Game.find({ 
+      isActive: true,
+      discount: { $gt: 0 } 
+    }).sort({ discount: -1 });
     res.status(200).json({ games });
   } catch (error) {
     console.error('Get discounted games error:', error);
@@ -58,7 +74,10 @@ exports.getDiscountedGames = async (req, res) => {
 // Get Free Games
 exports.getFreeGames = async (req, res) => {
   try {
-    const games = await Game.find({ price: 0 });
+    const games = await Game.find({ 
+      isActive: true,
+      price: 0 
+    });
     res.status(200).json({ games });
   } catch (error) {
     console.error('Get free games error:', error);
@@ -70,11 +89,88 @@ exports.getFreeGames = async (req, res) => {
 exports.getGamesByCategory = async (req, res) => {
   try {
     const { category } = req.params;
-    const games = await Game.find({ categories: category })
-      .sort({ averageRating: -1, purchaseCount: -1 });
+    const games = await Game.find({ 
+      isActive: true,
+      categories: category 
+    }).sort({ averageRating: -1, purchaseCount: -1 });
     res.status(200).json({ games });
   } catch (error) {
     console.error('Get games by category error:', error);
+    res.status(500).json({ message: 'Server error.' });
+  }
+};
+
+// Get Games by Genre
+exports.getGamesByGenre = async (req, res) => {
+  try {
+    const { genre } = req.params;
+    const games = await Game.find({ 
+      isActive: true,
+      genre: genre 
+    }).sort({ averageRating: -1, purchaseCount: -1 });
+    res.status(200).json({ games });
+  } catch (error) {
+    console.error('Get games by genre error:', error);
+    res.status(500).json({ message: 'Server error.' });
+  }
+};
+
+// Get Games by Platform
+exports.getGamesByPlatform = async (req, res) => {
+  try {
+    const { platform } = req.params;
+    const games = await Game.find({ 
+      isActive: true,
+      availablePlatforms: platform 
+    }).sort({ averageRating: -1, purchaseCount: -1 });
+    res.status(200).json({ games });
+  } catch (error) {
+    console.error('Get games by platform error:', error);
+    res.status(500).json({ message: 'Server error.' });
+  }
+};
+
+// Get Games by Developer
+exports.getGamesByDeveloper = async (req, res) => {
+  try {
+    const { developer } = req.params;
+    const games = await Game.find({ 
+      isActive: true,
+      developer: new RegExp(developer, 'i') 
+    }).sort({ createdAt: -1 });
+    res.status(200).json({ games });
+  } catch (error) {
+    console.error('Get games by developer error:', error);
+    res.status(500).json({ message: 'Server error.' });
+  }
+};
+
+// Get Games by Publisher
+exports.getGamesByPublisher = async (req, res) => {
+  try {
+    const { publisher } = req.params;
+    const games = await Game.find({ 
+      isActive: true,
+      publisher: new RegExp(publisher, 'i') 
+    }).sort({ createdAt: -1 });
+    res.status(200).json({ games });
+  } catch (error) {
+    console.error('Get games by publisher error:', error);
+    res.status(500).json({ message: 'Server error.' });
+  }
+};
+
+// Get Games by Popularity Label
+exports.getGamesByPopularityLabel = async (req, res) => {
+  try {
+    const { label } = req.params;
+    const games = await Game.find({ 
+      isActive: true,
+      popularityLabel: label 
+    }).sort({ purchaseCount: -1, averageRating: -1 });
+    res.status(200).json({ games });
+  } catch (error) {
+    console.error('Get games by popularity label error:', error);
     res.status(500).json({ message: 'Server error.' });
   }
 };
@@ -85,8 +181,10 @@ exports.getNewReleases = async (req, res) => {
     const thirtyDaysAgo = new Date();
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
     
-    const games = await Game.find({ createdAt: { $gte: thirtyDaysAgo } })
-      .sort({ createdAt: -1 });
+    const games = await Game.find({ 
+      isActive: true,
+      createdAt: { $gte: thirtyDaysAgo } 
+    }).sort({ createdAt: -1 });
     res.status(200).json({ games });
   } catch (error) {
     console.error('Get new releases error:', error);
@@ -94,26 +192,90 @@ exports.getNewReleases = async (req, res) => {
   }
 };
 
-// Filter Games
+// Get Games with Multiplayer Support
+exports.getMultiplayerGames = async (req, res) => {
+  try {
+    const games = await Game.find({ 
+      isActive: true,
+      multiplayerSupport: true 
+    }).sort({ purchaseCount: -1 });
+    res.status(200).json({ games });
+  } catch (error) {
+    console.error('Get multiplayer games error:', error);
+    res.status(500).json({ message: 'Server error.' });
+  }
+};
+
+// Get VR Games
+exports.getVRGames = async (req, res) => {
+  try {
+    const games = await Game.find({ 
+      isActive: true,
+      vrSupport: true 
+    }).sort({ averageRating: -1 });
+    res.status(200).json({ games });
+  } catch (error) {
+    console.error('Get VR games error:', error);
+    res.status(500).json({ message: 'Server error.' });
+  }
+};
+
+// Advanced Filter Games
 exports.filterGames = async (req, res) => {
   try {
     const {
       categories,
+      genre,
       consoles,
+      availablePlatforms,
       ratings,
+      modes,
       minPrice,
       maxPrice,
       minDiscount,
       minRating,
-      sortBy
+      maxSize,
+      multiplayerSupport,
+      crossPlatformSupport,
+      cloudSaveSupport,
+      controllerSupport,
+      vrSupport,
+      inGamePurchases,
+      soundtrackAvailability,
+      gameEngine,
+      language,
+      tags,
+      developer,
+      publisher,
+      popularityLabel,
+      isTrending,
+      sortBy,
+      search
     } = req.query;
 
-    let query = {};
+    let query = { isActive: true };
+
+    // Text search
+    if (search) {
+      query.$or = [
+        { name: new RegExp(search, 'i') },
+        { description: new RegExp(search, 'i') },
+        { developer: new RegExp(search, 'i') },
+        { publisher: new RegExp(search, 'i') },
+        { tags: new RegExp(search, 'i') }
+      ];
+    }
 
     // Category filter
     if (categories) {
       const categoryArray = categories.split(',');
       query.categories = { $in: categoryArray };
+    }
+
+    // Genre filter
+    if (genre) {
+      const genreArray = genre.split(',');
+      query.genre = { $in: genreArray };
     }
 
     // Console filter
@@ -122,10 +284,22 @@ exports.filterGames = async (req, res) => {
       query.consoles = { $in: consoleArray };
     }
 
+    // Platform filter
+    if (availablePlatforms) {
+      const platformArray = availablePlatforms.split(',');
+      query.availablePlatforms = { $in: platformArray };
+    }
+
     // Rating filter
     if (ratings) {
       const ratingArray = ratings.split(',');
       query.ratings = { $in: ratingArray };
+    }
+
+    // Modes filter
+    if (modes) {
+      const modeArray = modes.split(',');
+      query.modes = { $in: modeArray };
     }
 
     // Price range filter
@@ -145,6 +319,57 @@ exports.filterGames = async (req, res) => {
       query.averageRating = { $gte: parseFloat(minRating) };
     }
 
+    // Game size filter
+    if (maxSize !== undefined) {
+      query.gameSize = { $lte: parseFloat(maxSize) };
+    }
+
+    // Boolean feature filters
+    if (multiplayerSupport === 'true') query.multiplayerSupport = true;
+    if (crossPlatformSupport === 'true') query.crossPlatformSupport = true;
+    if (cloudSaveSupport === 'true') query.cloudSaveSupport = true;
+    if (controllerSupport === 'true') query.controllerSupport = true;
+    if (vrSupport === 'true') query.vrSupport = true;
+    if (inGamePurchases === 'false') query.inGamePurchases = false;
+    if (soundtrackAvailability === 'true') query.soundtrackAvailability = true;
+
+    // Game Engine filter
+    if (gameEngine) {
+      query.gameEngine = gameEngine;
+    }
+
+    // Language filter
+    if (language) {
+      const languageArray = language.split(',');
+      query.languageSupport = { $in: languageArray };
+    }
+
+    // Tags filter
+    if (tags) {
+      const tagsArray = tags.split(',');
+      query.tags = { $in: tagsArray };
+    }
+
+    // Developer filter
+    if (developer) {
+      query.developer = new RegExp(developer, 'i');
+    }
+
+    // Publisher filter
+    if (publisher) {
+      query.publisher = new RegExp(publisher, 'i');
+    }
+
+    // Popularity label filter
+    if (popularityLabel) {
+      query.popularityLabel = popularityLabel;
+    }
+
+    // Trending filter
+    if (isTrending === 'true') {
+      query.isTrending = true;
+    }
+
     // Sorting
     let sort = { createdAt: -1 }; // Default sort
     if (sortBy === 'price_asc') sort = { price: 1 };
@@ -152,10 +377,19 @@ exports.filterGames = async (req, res) => {
     else if (sortBy === 'rating') sort = { averageRating: -1 };
     else if (sortBy === 'popularity') sort = { purchaseCount: -1 };
     else if (sortBy === 'newest') sort = { createdAt: -1 };
+    else if (sortBy === 'oldest') sort = { createdAt: 1 };
     else if (sortBy === 'discount') sort = { discount: -1 };
+    else if (sortBy === 'name_asc') sort = { name: 1 };
+    else if (sortBy === 'name_desc') sort = { name: -1 };
+    else if (sortBy === 'size_asc') sort = { gameSize: 1 };
+    else if (sortBy === 'size_desc') sort = { gameSize: -1 };
 
     const games = await Game.find(query).sort(sort);
-    res.status(200).json({ games });
+    res.status(200).json({ 
+      games,
+      count: games.length,
+      filters: req.query
+    });
   } catch (error) {
     console.error('Filter games error:', error);
     res.status(500).json({ message: 'Server error.' });
@@ -175,6 +409,43 @@ exports.getGameById = async (req, res) => {
     res.status(200).json({ game });
   } catch (error) {
     console.error('Get game error:', error);
+    res.status(500).json({ message: 'Server error.' });
+  }
+};
+
+// Get Available Filters (for filter UI)
+exports.getAvailableFilters = async (req, res) => {
+  try {
+    const games = await Game.find({ isActive: true });
+
+    // Extract unique values for filters
+    const genres = [...new Set(games.flatMap(g => g.genre || []))];
+    const categories = [...new Set(games.flatMap(g => g.categories || []))];
+    const platforms = [...new Set(games.flatMap(g => g.availablePlatforms || []))];
+    const modes = [...new Set(games.flatMap(g => g.modes || []))];
+    const ratings = [...new Set(games.flatMap(g => g.ratings || []))];
+    const engines = [...new Set(games.map(g => g.gameEngine).filter(Boolean))];
+    const developers = [...new Set(games.map(g => g.developer).filter(Boolean))];
+    const publishers = [...new Set(games.map(g => g.publisher).filter(Boolean))];
+    const languages = [...new Set(games.flatMap(g => g.languageSupport || []))];
+    const tags = [...new Set(games.flatMap(g => g.tags || []))];
+    const popularityLabels = [...new Set(games.map(g => g.popularityLabel).filter(Boolean))];
+
+    res.status(200).json({
+      genres: genres.sort(),
+      categories: categories.sort(),
+      platforms: platforms.sort(),
+      modes: modes.sort(),
+      ratings: ratings.sort(),
+      engines: engines.sort(),
+      developers: developers.sort(),
+      publishers: publishers.sort(),
+      languages: languages.sort(),
+      tags: tags.sort(),
+      popularityLabels: popularityLabels.sort()
+    });
+  } catch (error) {
+    console.error('Get available filters error:', error);
     res.status(500).json({ message: 'Server error.' });
   }
 };

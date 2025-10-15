@@ -25,7 +25,8 @@ const Cart = () => {
 
   const handleQuantityChange = (gameId, newQuantity) => {
     if (newQuantity < 1) return;
-    dispatch(updateCartQuantity(gameId, newQuantity));
+    // Dispatch the async thunk with correct action name
+    dispatch(updateCartQuantity({ gameId, quantity: newQuantity }));
   };
 
   const calculateTotals = () => {
@@ -54,7 +55,7 @@ const Cart = () => {
 
   const totals = calculateTotals();
 
-  if (loading) {
+  if (loading && cart.length === 0) {
     return <div className="loading-container">Loading cart...</div>;
   }
 
@@ -93,6 +94,11 @@ const Cart = () => {
         <div className="cart-content">
           {/* Cart Items */}
           <div className="cart-items-section">
+            {loading && (
+              <div className="cart-loading-overlay">
+                <i className="fa-solid fa-spinner fa-spin"></i>
+              </div>
+            )}
             <div className="cart-items-list">
               {cart.map(item => {
                 const game = item.gameId;
@@ -104,11 +110,16 @@ const Cart = () => {
 
                 return (
                   <div key={game._id} className="cart-item">
-                    {/* Game Image */}
+                    {/* Game Image - FIXED: Changed from game.gamePic to game.coverImage */}
                     <div className="cart-item-image">
-                      {game.gamePic ? (
+                      {game.coverImage ? (
                         <img
-                          src={`${BACKEND_URL}/uploads/${game.gamePic}`}
+                          src={`${BACKEND_URL}/uploads/${game.coverImage}`}
+                          alt={game.name}
+                        />
+                      ) : game.backgroundPic ? (
+                        <img
+                          src={`${BACKEND_URL}/uploads/${game.backgroundPic}`}
                           alt={game.name}
                         />
                       ) : (
@@ -148,19 +159,22 @@ const Cart = () => {
                       <button
                         className="qty-btn"
                         onClick={() => handleQuantityChange(game._id, item.quantity - 1)}
+                        disabled={loading}
                       >
                         <i className="fa-solid fa-minus"></i>
                       </button>
                       <input
                         type="number"
                         value={item.quantity}
-                        onChange={(e) => handleQuantityChange(game._id, parseInt(e.target.value))}
+                        onChange={(e) => handleQuantityChange(game._id, parseInt(e.target.value) || 1)}
                         className="qty-input"
                         min="1"
+                        disabled={loading}
                       />
                       <button
                         className="qty-btn"
                         onClick={() => handleQuantityChange(game._id, item.quantity + 1)}
+                        disabled={loading}
                       >
                         <i className="fa-solid fa-plus"></i>
                       </button>
@@ -176,6 +190,7 @@ const Cart = () => {
                       className="remove-btn"
                       onClick={() => handleRemoveFromCart(game._id)}
                       title="Remove from cart"
+                      disabled={loading}
                     >
                       <i className="fa-solid fa-trash"></i>
                     </button>
@@ -208,7 +223,7 @@ const Cart = () => {
               <span>₹{totals.totalDiscountedPrice}</span>
             </div>
 
-            <button className="checkout-btn">
+            <button className="checkout-btn" disabled={loading}>
               <i className="fa-solid fa-credit-card"></i>
               Proceed to Checkout
             </button>

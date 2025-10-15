@@ -347,7 +347,6 @@
 }
 
 .game-card-component .buy-btn::before {
-  content: '\f07a';
   font-family: 'Font Awesome 6 Free';
   font-weight: 900;
   font-size: 14px;
