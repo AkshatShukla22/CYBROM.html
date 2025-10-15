@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { addToCartAsync, clearSuccessMessage, clearError } from '../redux/cartSlice';
 import BACKEND_URL from '../utils/BackendURL';
 import GameCard from '../components/GameCard';
+import '../styles/GameDetail.css';
 
 const GameDetail = () => {
   const { id } = useParams();
@@ -114,7 +115,7 @@ const GameDetail = () => {
       )}
 
       <button className="back-button" onClick={() => navigate(-1)}>
-        <i className="fa-solid fa-arrow-left"></i> Back
+        <i className="fa-solid fa-arrow-left"></i>
       </button>
 
       {/* Hero Section */}
