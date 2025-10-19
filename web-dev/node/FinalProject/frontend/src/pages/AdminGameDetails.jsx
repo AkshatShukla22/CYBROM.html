@@ -535,4 +535,3 @@ const AdminGameDetails = () => {
 };
 
 export default AdminGameDetails;
-// I have to edit it 
