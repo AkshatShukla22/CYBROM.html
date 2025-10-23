@@ -1,0 +1,267 @@
+/* ==================== ADMIN NEWS PANEL STYLES ==================== */
+
+/* News List Container */
+.news-list {
+  animation: fadeIn 0.6s ease-out;
+}
+
+.news-list h2 {
+  font-size: 24px;
+  font-weight: 700;
+  color: #E6EDF3;
+  margin: 0 0 25px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid rgba(51, 204, 255, 0.2);
+}
+
+/* News Grid - Vertical Long Cards */
+.news-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 25px;
+  margin-top: 30px;
+  animation: fadeIn 0.6s ease-out;
+}
+
+/* News Card - Vertical Layout */
+.news-card {
+  display: flex;
+  flex-direction: column;
+  background: rgba(30, 41, 59, 0.6);
+  backdrop-filter: blur(10px);
+  border-radius: 15px;
+  overflow: hidden;
+  border: 1px solid rgba(51, 204, 255, 0.2);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  animation: scaleIn 0.5s ease-out backwards;
+  height: 100%;
+  min-height: 500px;
+}
+
+.news-card:nth-child(1) { animation-delay: 0.1s; }
+.news-card:nth-child(2) { animation-delay: 0.2s; }
+.news-card:nth-child(3) { animation-delay: 0.3s; }
+.news-card:nth-child(4) { animation-delay: 0.4s; }
+.news-card:nth-child(5) { animation-delay: 0.5s; }
+.news-card:nth-child(6) { animation-delay: 0.6s; }
+
+.news-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 40px rgba(0, 191, 255, 0.4);
+  border-color: #00BFFF;
+}
+
+/* News Card Image */
+.news-card-image {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+  background: linear-gradient(135deg, #1a2332, #243447);
+  flex-shrink: 0;
+}
+
+/* News Card Content */
+.news-card-content {
+  padding: 25px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1;
+}
+
+.news-card-content h3 {
+  font-size: 20px;
+  font-weight: 700;
+  color: #E6EDF3;
+  margin: 0;
+  line-height: 1.4;
+  min-height: 56px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* News Game Name Badge */
+.news-game-name {
+  font-size: 13px;
+  color: #00BFFF;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  padding: 8px 12px;
+  background: rgba(0, 191, 255, 0.1);
+  border-radius: 8px;
+  border: 1px solid rgba(0, 191, 255, 0.3);
+  width: fit-content;
+}
+
+.news-game-name i {
+  font-size: 14px;
+}
+
+/* News Description */
+.news-description {
+  font-size: 14px;
+  color: #8B949E;
+  line-height: 1.7;
+  margin: 0;
+  flex: 1;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  min-height: 90px;
+}
+
+/* News Date */
+.news-date {
+  font-size: 13px;
+  color: #8B949E;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  padding-top: 10px;
+  border-top: 1px solid rgba(51, 204, 255, 0.1);
+}
+
+.news-date i {
+  color: #00BFFF;
+  font-size: 14px;
+}
+
+/* News Actions */
+.news-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 15px;
+}
+
+.edit-btn,
+.delete-btn {
+  flex: 1;
+  padding: 12px;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.edit-btn {
+  background: linear-gradient(135deg, #007BFF, #00BFFF);
+  color: #E6EDF3;
+  box-shadow: 0 3px 12px rgba(0, 191, 255, 0.3);
+}
+
+.edit-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 20px rgba(0, 191, 255, 0.5);
+  background: linear-gradient(135deg, #00BFFF, #007BFF);
+}
+
+.edit-btn:active {
+  transform: translateY(0);
+}
+
+.delete-btn {
+  background: linear-gradient(135deg, #e74c3c, #c0392b);
+  color: #E6EDF3;
+  box-shadow: 0 3px 12px rgba(231, 76, 60, 0.3);
+}
+
+.delete-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 20px rgba(231, 76, 60, 0.5);
+  background: linear-gradient(135deg, #c0392b, #e74c3c);
+}
+
+.delete-btn:active {
+  transform: translateY(0);
+}
+
+.edit-btn i,
+.delete-btn i {
+  font-size: 14px;
+}
+
+/* Responsive Design for News Panel */
+@media (max-width: 1024px) {
+  .news-grid {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+  }
+
+  .news-card {
+    min-height: 480px;
+  }
+
+  .news-card-image {
+    height: 200px;
+  }
+
+  .news-card-content {
+    padding: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .news-grid {
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  }
+
+  .news-card {
+    min-height: 520px;
+  }
+
+  .news-card-content h3 {
+    font-size: 18px;
+    min-height: 50px;
+  }
+
+  .news-description {
+    font-size: 13px;
+    min-height: 85px;
+  }
+}
+
+@media (max-width: 480px) {
+  .news-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .news-card {
+    min-height: 500px;
+  }
+
+  .news-card-image {
+    height: 180px;
+  }
+
+  .news-card-content {
+    padding: 18px;
+  }
+
+  .news-card-content h3 {
+    font-size: 17px;
+  }
+
+  .news-actions {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .edit-btn,
+  .delete-btn {
+    width: 100%;
+  }
+}

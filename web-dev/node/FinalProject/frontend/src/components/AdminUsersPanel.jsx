@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import BACKEND_URL from '../utils/BackendURL';
+import '../styles/AdminUsersPanel.css';
 
 const AdminUsersPanel = ({ setMessage, navigate }) => {
   const [users, setUsers] = useState([]);

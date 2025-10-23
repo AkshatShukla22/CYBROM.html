@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import BACKEND_URL from '../utils/BackendURL';
+import '../styles/AdminPurchasesPanel.css';
 
 const AdminPurchasesPanel = ({ setMessage, navigate }) => {
   const [purchases, setPurchases] = useState([]);

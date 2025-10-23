@@ -1,0 +1,114 @@
+/* ==================== ADMIN PURCHASES PANEL STYLES ==================== */
+
+/* Purchases List Container */
+.purchases-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  animation: fadeIn 0.6s ease-out;
+}
+
+/* Purchase Card */
+.purchase-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 25px;
+  background: rgba(30, 41, 59, 0.6);
+  backdrop-filter: blur(10px);
+  border-radius: 15px;
+  border: 1px solid rgba(51, 204, 255, 0.2);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+  animation: slideInLeft 0.5s ease-out backwards;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.purchase-card:nth-child(1) { animation-delay: 0.1s; }
+.purchase-card:nth-child(2) { animation-delay: 0.2s; }
+.purchase-card:nth-child(3) { animation-delay: 0.3s; }
+.purchase-card:nth-child(4) { animation-delay: 0.4s; }
+.purchase-card:nth-child(5) { animation-delay: 0.5s; }
+
+.purchase-card:hover {
+  transform: translateX(5px);
+  border-color: #00BFFF;
+  box-shadow: 0 6px 25px rgba(0, 191, 255, 0.3);
+}
+
+/* Purchase Info & Details Sections */
+.purchase-info,
+.purchase-details {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.purchase-info {
+  flex: 1;
+  min-width: 250px;
+}
+
+.purchase-details {
+  flex: 0.8;
+  min-width: 200px;
+}
+
+.purchase-card p {
+  font-size: 14px;
+  color: #8B949E;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  line-height: 1.6;
+}
+
+.purchase-card strong {
+  color: #E6EDF3;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.purchase-card i {
+  color: #00BFFF;
+  font-size: 15px;
+  min-width: 16px;
+}
+
+/* Responsive Design for Purchases Panel */
+@media (max-width: 768px) {
+  .purchase-card {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 20px;
+  }
+
+  .purchase-info,
+  .purchase-details {
+    width: 100%;
+    min-width: 100%;
+  }
+
+  .purchase-card p {
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 480px) {
+  .purchase-card {
+    padding: 15px;
+    gap: 15px;
+  }
+
+  .purchase-card p {
+    font-size: 12px;
+  }
+
+  .purchase-card i {
+    font-size: 14px;
+  }
+}

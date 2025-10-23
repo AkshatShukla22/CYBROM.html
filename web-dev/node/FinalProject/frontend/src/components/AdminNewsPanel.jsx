@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import BACKEND_URL from '../utils/BackendURL';
+import '../styles/AdminNewsPanel.css';
 
 const AdminNewsPanel = ({ setMessage, navigate }) => {
   const [news, setNews] = useState([]);

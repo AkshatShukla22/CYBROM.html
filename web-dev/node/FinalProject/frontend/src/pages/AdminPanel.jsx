@@ -4,7 +4,7 @@ import BACKEND_URL from '../utils/BackendURL';
 import AdminGamesPanel from '../components/AdminGamesPanel';
 import AdminUsersPanel from '../components/AdminUsersPanel';
 import AdminNewsPanel from '../components/AdminNewsPanel';
-import AdminSupportPanel from './AdminSupportPanel';
+import AdminSupportPanel from '../components/AdminSupportPanel';
 import AdminPurchasesPanel from '../components/AdminPurchasesPanel';
 import '../styles/AdminPanel.css';
 

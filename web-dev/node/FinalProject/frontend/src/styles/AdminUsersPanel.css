@@ -1,0 +1,372 @@
+/* ==================== ADMIN USERS PANEL STYLES ==================== */
+
+/* Users List Container */
+.users-list {
+  animation: fadeIn 0.6s ease-out;
+}
+
+.users-list h2 {
+  font-size: 24px;
+  font-weight: 700;
+  color: #E6EDF3;
+  margin: 0 0 25px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid rgba(51, 204, 255, 0.2);
+}
+
+/* User Card */
+.user-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 25px;
+  margin-bottom: 20px;
+  background: rgba(30, 41, 59, 0.6);
+  backdrop-filter: blur(10px);
+  border-radius: 15px;
+  border: 1px solid rgba(51, 204, 255, 0.2);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+  animation: slideInLeft 0.5s ease-out backwards;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.user-card:nth-child(2) { animation-delay: 0.1s; }
+.user-card:nth-child(3) { animation-delay: 0.2s; }
+.user-card:nth-child(4) { animation-delay: 0.3s; }
+.user-card:nth-child(5) { animation-delay: 0.4s; }
+.user-card:nth-child(6) { animation-delay: 0.5s; }
+
+.user-card:hover {
+  transform: translateX(5px);
+  border-color: #00BFFF;
+  box-shadow: 0 6px 25px rgba(0, 191, 255, 0.3);
+}
+
+/* User Info Section */
+.user-info {
+  flex: 1;
+  min-width: 250px;
+}
+
+.user-info h3 {
+  font-size: 20px;
+  font-weight: 700;
+  color: #E6EDF3;
+  margin: 0 0 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.user-info h3 i {
+  color: #00BFFF;
+  font-size: 18px;
+}
+
+.user-info p {
+  font-size: 14px;
+  color: #8B949E;
+  margin: 8px 0;
+  line-height: 1.6;
+}
+
+.user-info strong {
+  color: #E6EDF3;
+  font-weight: 600;
+  margin-right: 8px;
+}
+
+/* View Button */
+.view-btn {
+  padding: 12px 24px;
+  background: linear-gradient(135deg, #007BFF, #00BFFF);
+  color: #E6EDF3;
+  border: 1px solid #33CCFF;
+  border-radius: 25px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 191, 255, 0.3);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.view-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 25px rgba(0, 191, 255, 0.5);
+  background: linear-gradient(135deg, #00BFFF, #007BFF);
+}
+
+.view-btn:active {
+  transform: translateY(0);
+}
+
+/* User Details Panel (Modal/Overlay) */
+.user-details-panel {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  max-width: 700px;
+  width: 90%;
+  max-height: 80vh;
+  background: rgba(30, 41, 59, 0.95);
+  backdrop-filter: blur(20px);
+  border-radius: 20px;
+  border: 2px solid rgba(51, 204, 255, 0.3);
+  box-shadow: 0 10px 50px rgba(0, 0, 0, 0.5);
+  padding: 35px;
+  z-index: 1000;
+  overflow-y: auto;
+  animation: modalSlideIn 0.3s ease-out;
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -45%);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+}
+
+/* Custom Scrollbar for Details Panel */
+.user-details-panel::-webkit-scrollbar {
+  width: 8px;
+}
+
+.user-details-panel::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.4);
+  border-radius: 10px;
+}
+
+.user-details-panel::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #007BFF, #00BFFF);
+  border-radius: 10px;
+}
+
+.user-details-panel::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #00BFFF, #007BFF);
+}
+
+/* User Details Header */
+.user-details-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid rgba(51, 204, 255, 0.2);
+}
+
+.user-details-header h2 {
+  font-size: 24px;
+  font-weight: 700;
+  color: #E6EDF3;
+  margin: 0;
+}
+
+.close-btn {
+  background: rgba(231, 76, 60, 0.2);
+  border: 2px solid #e74c3c;
+  color: #e74c3c;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
+
+.close-btn:hover {
+  background: linear-gradient(135deg, #e74c3c, #c0392b);
+  color: #E6EDF3;
+  transform: rotate(90deg);
+  box-shadow: 0 4px 15px rgba(231, 76, 60, 0.4);
+}
+
+.user-details-panel > p {
+  font-size: 15px;
+  color: #8B949E;
+  margin: 0 0 25px;
+  line-height: 1.6;
+}
+
+.user-details-panel > p strong {
+  color: #E6EDF3;
+  font-weight: 600;
+  margin-right: 8px;
+}
+
+.user-details-panel h3 {
+  font-size: 20px;
+  font-weight: 700;
+  color: #00BFFF;
+  margin: 25px 0 20px;
+}
+
+/* Collection List */
+.collection-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.collection-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 15px 20px;
+  background: rgba(15, 23, 42, 0.5);
+  border: 1px solid rgba(51, 204, 255, 0.2);
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.collection-item:hover {
+  background: rgba(15, 23, 42, 0.7);
+  border-color: #00BFFF;
+  transform: translateX(5px);
+}
+
+.collection-item i {
+  color: #00BFFF;
+  font-size: 16px;
+  min-width: 18px;
+}
+
+.collection-item > span:first-of-type {
+  flex: 1;
+  font-size: 15px;
+  font-weight: 600;
+  color: #E6EDF3;
+  min-width: 150px;
+}
+
+.purchase-date {
+  font-size: 13px;
+  color: #8B949E;
+  white-space: nowrap;
+}
+
+.no-games {
+  text-align: center;
+  padding: 40px 20px;
+  color: #8B949E;
+  font-size: 15px;
+  font-style: italic;
+}
+
+/* Backdrop Overlay */
+.user-details-panel::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: -1;
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* Responsive Design for Users Panel */
+@media (max-width: 768px) {
+  .user-card {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 20px;
+  }
+
+  .user-info {
+    width: 100%;
+    min-width: 100%;
+  }
+
+  .view-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .user-details-panel {
+    width: 95%;
+    max-height: 85vh;
+    padding: 25px 20px;
+  }
+
+  .user-details-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+
+  .close-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+  }
+
+  .user-details-header h2 {
+    font-size: 20px;
+    padding-right: 50px;
+  }
+
+  .collection-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .collection-item > span:first-of-type {
+    min-width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .user-card {
+    padding: 15px;
+  }
+
+  .user-info h3 {
+    font-size: 18px;
+  }
+
+  .user-info p {
+    font-size: 13px;
+  }
+
+  .user-details-panel {
+    padding: 20px 15px;
+  }
+
+  .user-details-header h2 {
+    font-size: 18px;
+  }
+
+  .user-details-panel h3 {
+    font-size: 18px;
+  }
+
+  .collection-item {
+    padding: 12px 15px;
+  }
+
+  .collection-item > span:first-of-type {
+    font-size: 14px;
+  }
+
+  .purchase-date {
+    font-size: 12px;
+  }
+}
