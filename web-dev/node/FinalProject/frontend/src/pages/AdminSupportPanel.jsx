@@ -13,7 +13,7 @@ const AdminSupportPanel = () => {
 
   useEffect(() => {
     fetchTickets();
-    const interval = setInterval(fetchTickets, 10000); // Refresh every 10 seconds
+    const interval = setInterval(fetchTickets, 10000); 
     return () => clearInterval(interval);
   }, []);
 
