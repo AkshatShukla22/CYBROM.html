@@ -2,8 +2,6 @@
 const User = require('../models/User');
 const Game = require('../models/Game');
 
-// ============ GAME ENDPOINTS ============
-
 // Get All Games (Public - no auth required)
 exports.getAllGames = async (req, res) => {
   try {
@@ -626,6 +624,262 @@ exports.clearCart = async (req, res) => {
     });
   } catch (error) {
     console.error('Clear cart error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+// Add Review and Rating to Game
+exports.addReview = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { gameId } = req.params;
+    const { rating, comment } = req.body;
+
+    // Validation
+    if (!rating || rating < 1 || rating > 5) {
+      return res.status(400).json({ message: 'Rating must be between 1 and 5' });
+    }
+
+    // Check if user is admin
+    if (req.user.isAdmin) {
+      return res.status(403).json({ message: 'Admins cannot review games' });
+    }
+
+    const game = await Game.findById(gameId);
+    if (!game) {
+      return res.status(404).json({ message: 'Game not found' });
+    }
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Check if user already reviewed this game
+    const existingReviewIndex = game.reviews.findIndex(
+      review => review.user.toString() === userId
+    );
+
+    if (existingReviewIndex !== -1) {
+      return res.status(400).json({ 
+        message: 'You have already reviewed this game. Use the edit option to update your review.' 
+      });
+    }
+
+    // Add new review
+    game.reviews.push({
+      user: userId,
+      rating: Number(rating),
+      comment: comment || '',
+      createdAt: new Date()
+    });
+
+    // Recalculate average rating
+    const totalRating = game.reviews.reduce((sum, review) => sum + review.rating, 0);
+    game.averageRating = (totalRating / game.reviews.length).toFixed(2);
+
+    await game.save();
+
+    // Populate user info for the response
+    const updatedGame = await Game.findById(gameId)
+      .populate('reviews.user', 'username email');
+
+    res.status(201).json({
+      message: 'Review added successfully',
+      reviews: updatedGame.reviews,
+      averageRating: updatedGame.averageRating
+    });
+  } catch (error) {
+    console.error('Add review error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+// Update Review
+exports.updateReview = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { gameId } = req.params;
+    const { rating, comment } = req.body;
+
+    // Validation
+    if (!rating || rating < 1 || rating > 5) {
+      return res.status(400).json({ message: 'Rating must be between 1 and 5' });
+    }
+
+    // Check if user is admin
+    if (req.user.isAdmin) {
+      return res.status(403).json({ message: 'Admins cannot review games' });
+    }
+
+    const game = await Game.findById(gameId);
+    if (!game) {
+      return res.status(404).json({ message: 'Game not found' });
+    }
+
+    // Find user's review
+    const reviewIndex = game.reviews.findIndex(
+      review => review.user.toString() === userId
+    );
+
+    if (reviewIndex === -1) {
+      return res.status(404).json({ message: 'Review not found' });
+    }
+
+    // Update review
+    game.reviews[reviewIndex].rating = Number(rating);
+    game.reviews[reviewIndex].comment = comment || '';
+    game.reviews[reviewIndex].updatedAt = new Date();
+
+    // Recalculate average rating
+    const totalRating = game.reviews.reduce((sum, review) => sum + review.rating, 0);
+    game.averageRating = (totalRating / game.reviews.length).toFixed(2);
+
+    await game.save();
+
+    // Populate user info for the response
+    const updatedGame = await Game.findById(gameId)
+      .populate('reviews.user', 'username email');
+
+    res.status(200).json({
+      message: 'Review updated successfully',
+      reviews: updatedGame.reviews,
+      averageRating: updatedGame.averageRating
+    });
+  } catch (error) {
+    console.error('Update review error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+// Delete Review
+exports.deleteReview = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { gameId } = req.params;
+
+    const game = await Game.findById(gameId);
+    if (!game) {
+      return res.status(404).json({ message: 'Game not found' });
+    }
+
+    // Find user's review
+    const reviewIndex = game.reviews.findIndex(
+      review => review.user.toString() === userId
+    );
+
+    if (reviewIndex === -1) {
+      return res.status(404).json({ message: 'Review not found' });
+    }
+
+    // Remove review
+    game.reviews.splice(reviewIndex, 1);
+
+    // Recalculate average rating
+    if (game.reviews.length > 0) {
+      const totalRating = game.reviews.reduce((sum, review) => sum + review.rating, 0);
+      game.averageRating = (totalRating / game.reviews.length).toFixed(2);
+    } else {
+      game.averageRating = 0;
+    }
+
+    await game.save();
+
+    // Populate user info for the response
+    const updatedGame = await Game.findById(gameId)
+      .populate('reviews.user', 'username email');
+
+    res.status(200).json({
+      message: 'Review deleted successfully',
+      reviews: updatedGame.reviews,
+      averageRating: updatedGame.averageRating
+    });
+  } catch (error) {
+    console.error('Delete review error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+// Get All Reviews for a Game
+exports.getGameReviews = async (req, res) => {
+  try {
+    const { gameId } = req.params;
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const sortBy = req.query.sortBy || 'newest'; // newest, oldest, highest, lowest
+
+    const game = await Game.findById(gameId)
+      .populate('reviews.user', 'username email');
+
+    if (!game) {
+      return res.status(404).json({ message: 'Game not found' });
+    }
+
+    let reviews = [...game.reviews];
+
+    // Sort reviews
+    if (sortBy === 'newest') {
+      reviews.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    } else if (sortBy === 'oldest') {
+      reviews.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+    } else if (sortBy === 'highest') {
+      reviews.sort((a, b) => b.rating - a.rating);
+    } else if (sortBy === 'lowest') {
+      reviews.sort((a, b) => a.rating - b.rating);
+    }
+
+    // Pagination
+    const startIndex = (page - 1) * limit;
+    const endIndex = startIndex + limit;
+    const paginatedReviews = reviews.slice(startIndex, endIndex);
+
+    // Calculate rating distribution
+    const ratingDistribution = {
+      5: reviews.filter(r => r.rating === 5).length,
+      4: reviews.filter(r => r.rating === 4).length,
+      3: reviews.filter(r => r.rating === 3).length,
+      2: reviews.filter(r => r.rating === 2).length,
+      1: reviews.filter(r => r.rating === 1).length
+    };
+
+    res.status(200).json({
+      reviews: paginatedReviews,
+      totalReviews: reviews.length,
+      averageRating: game.averageRating,
+      ratingDistribution,
+      currentPage: page,
+      totalPages: Math.ceil(reviews.length / limit)
+    });
+  } catch (error) {
+    console.error('Get reviews error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+// Get User's Review for a Game
+exports.getUserReview = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { gameId } = req.params;
+
+    const game = await Game.findById(gameId)
+      .populate('reviews.user', 'username email');
+
+    if (!game) {
+      return res.status(404).json({ message: 'Game not found' });
+    }
+
+    const userReview = game.reviews.find(
+      review => review.user._id.toString() === userId
+    );
+
+    if (!userReview) {
+      return res.status(404).json({ message: 'No review found' });
+    }
+
+    res.status(200).json({ review: userReview });
+  } catch (error) {
+    console.error('Get user review error:', error);
     res.status(500).json({ message: 'Server error' });
   }
 };
