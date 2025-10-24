@@ -134,9 +134,10 @@ const AdminNewsPanel = ({ setMessage, navigate }) => {
   );
 
   return (
-    <div>
+    <div className="content-container">
       <div className="action-bar">
         <button className="primary-btn" onClick={() => { setShowAddNews(!showAddNews); resetNewsForm(); }}>
+          <i className={`fas fa-${showAddNews ? 'times' : 'plus'}`}></i>
           {showAddNews ? 'Cancel' : 'Add New News'}
         </button>
         <input 
@@ -153,7 +154,7 @@ const AdminNewsPanel = ({ setMessage, navigate }) => {
           <h2>{editingNews ? 'Edit News' : 'Add New News'}</h2>
           <form onSubmit={handleAddNews}>
             <fieldset>
-              <legend>News Information</legend>
+              <legend><i className="fas fa-newspaper"></i> News Information</legend>
               <div className="form-row">
                 <div className="form-group full-width">
                   <label>Heading *</label>
@@ -189,12 +190,13 @@ const AdminNewsPanel = ({ setMessage, navigate }) => {
                     className="form-input" 
                     value={newsForm.gameName} 
                     onChange={handleNewsFormChange} 
+                    placeholder="Enter related game name"
                   />
                 </div>
               </div>
               <div className="form-row">
                 <div className="form-group">
-                  <label>Heading Image</label>
+                  <label><i className="fas fa-image"></i> Heading Image</label>
                   <input 
                     type="file" 
                     className="file-input" 
@@ -202,11 +204,11 @@ const AdminNewsPanel = ({ setMessage, navigate }) => {
                     onChange={(e) => handleNewsImageChange(e, 'headingImage')} 
                   />
                   {editingNews && editingNews.headingImage && (
-                    <small>Current: {editingNews.headingImage}</small>
+                    <small className="file-info">Current: {editingNews.headingImage}</small>
                   )}
                 </div>
                 <div className="form-group">
-                  <label>Detail Image</label>
+                  <label><i className="fas fa-image"></i> Detail Image</label>
                   <input 
                     type="file" 
                     className="file-input" 
@@ -214,46 +216,62 @@ const AdminNewsPanel = ({ setMessage, navigate }) => {
                     onChange={(e) => handleNewsImageChange(e, 'detailImage')} 
                   />
                   {editingNews && editingNews.detailImage && (
-                    <small>Current: {editingNews.detailImage}</small>
+                    <small className="file-info">Current: {editingNews.detailImage}</small>
                   )}
                 </div>
               </div>
             </fieldset>
 
             <button type="submit" className="submit-btn" disabled={loading}>
+              <i className={`fas fa-${loading ? 'spinner fa-spin' : editingNews ? 'save' : 'plus'}`}></i>
               {loading ? 'Saving...' : editingNews ? 'Update News' : 'Add News'}
             </button>
           </form>
         </div>
       )}
 
-      <div className="news-list">
-        <h2>News List</h2>
-        <div className="news-grid">
+      <div className="news-list-section">
+        <h2><i className="fas fa-list"></i> News List</h2>
+        <div className="news-list-horizontal">
           {filteredNews.map(newsItem => (
-            <div key={newsItem._id} className="news-card">
-              {newsItem.headingImage && (
-                <img 
-                  src={`${BACKEND_URL}/uploads/${newsItem.headingImage}`} 
-                  alt={newsItem.heading} 
-                  className="news-card-image" 
-                />
-              )}
-              <div className="news-card-content">
+            <div key={newsItem._id} className="news-card-horizontal">
+              <div className="news-card-left">
+                {newsItem.headingImage ? (
+                  <img 
+                    src={`${BACKEND_URL}/uploads/${newsItem.headingImage}`} 
+                    alt={newsItem.heading} 
+                    className="news-thumbnail" 
+                  />
+                ) : (
+                  <div className="news-thumbnail-placeholder">
+                    <i className="fas fa-newspaper"></i>
+                  </div>
+                )}
+              </div>
+
+              <div className="news-card-center">
                 <h3>{newsItem.heading}</h3>
-                {newsItem.gameName && <p className="news-game-name"><i className="fas fa-gamepad"></i> {newsItem.gameName}</p>}
-                <p className="news-description">{newsItem.description.substring(0, 150)}...</p>
-                <p className="news-date">
-                  <i className="far fa-calendar"></i> {new Date(newsItem.createdAt).toLocaleDateString()}
+                {newsItem.gameName && (
+                  <p className="news-game-name">
+                    <i className="fas fa-gamepad"></i> {newsItem.gameName}
+                  </p>
+                )}
+                <p className="news-description">
+                  {newsItem.description.substring(0, 120)}...
                 </p>
-                <div className="news-actions">
-                  <button className="edit-btn" onClick={() => handleEditNews(newsItem)}>
-                    <i className="fas fa-edit"></i> Edit
-                  </button>
-                  <button className="delete-btn" onClick={() => handleDeleteNews(newsItem._id)}>
-                    <i className="fas fa-trash"></i> Delete
-                  </button>
-                </div>
+                <p className="news-date">
+                  <i className="far fa-calendar"></i> 
+                  {new Date(newsItem.createdAt).toLocaleDateString()}
+                </p>
+              </div>
+
+              <div className="news-card-right">
+                <button className="edit-btn" onClick={() => handleEditNews(newsItem)}>
+                  <i className="fas fa-edit"></i> Edit
+                </button>
+                <button className="delete-btn" onClick={() => handleDeleteNews(newsItem._id)}>
+                  <i className="fas fa-trash"></i> Delete
+                </button>
               </div>
             </div>
           ))}

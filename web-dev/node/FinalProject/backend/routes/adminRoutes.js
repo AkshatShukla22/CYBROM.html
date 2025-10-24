@@ -2,6 +2,7 @@
 const express = require('express');
 const router = express.Router();
 const adminController = require('../controllers/adminController');
+const supportController = require('../controllers/supportController');
 const authenticateToken = require('../middleware/authMiddleware');
 const upload = require('../middleware/uploadMiddleware');
 
@@ -63,5 +64,14 @@ router.put('/news/:id', upload.fields([
 ]), adminController.updateNews);
 
 router.delete('/news/:id', adminController.deleteNews);
+
+// ========== SUPPORT MANAGEMENT ROUTES ==========
+router.get('/support/tickets', supportController.getAllTickets);
+router.get('/support/tickets/:id', supportController.getTicketByIdAdmin);
+router.post('/support/tickets/:id/reply', supportController.addAdminReply);
+router.patch('/support/tickets/:id/status', supportController.updateTicketStatus);
+router.delete('/support/tickets/:id', supportController.deleteTicket);
+
+console.log('[ADMIN ROUTES] All admin routes including support registered successfully');
 
 module.exports = router;

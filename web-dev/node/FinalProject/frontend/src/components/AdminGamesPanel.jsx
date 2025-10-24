@@ -222,9 +222,10 @@ const AdminGamesPanel = ({ setMessage, navigate }) => {
   const filteredGames = games.filter(game => game.name.toLowerCase().includes(searchTerm.toLowerCase()));
 
   return (
-    <div>
+    <div className="content-container">
       <div className="action-bar">
         <button className="primary-btn" onClick={() => { setShowAddGame(!showAddGame); resetGameForm(); }}>
+          <i className={`fas fa-${showAddGame ? 'times' : 'plus'}`}></i>
           {showAddGame ? 'Cancel' : 'Add New Game'}
         </button>
         <input type="text" className="search-input-admin" placeholder="Search games..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
@@ -236,7 +237,7 @@ const AdminGamesPanel = ({ setMessage, navigate }) => {
           <form onSubmit={handleAddGame}>
             {/* BASIC INFORMATION */}
             <fieldset>
-              <legend>Basic Information</legend>
+              <legend><i className="fas fa-info-circle"></i> Basic Information</legend>
               <div className="form-row">
                 <div className="form-group">
                   <label>Game Name *</label>
@@ -275,7 +276,7 @@ const AdminGamesPanel = ({ setMessage, navigate }) => {
 
             {/* MEDIA */}
             <fieldset>
-              <legend>Media Assets</legend>
+              <legend><i className="fas fa-image"></i> Media Assets</legend>
               <div className="form-row">
                 <div className="form-group">
                   <label>Cover Image</label>
@@ -310,7 +311,7 @@ const AdminGamesPanel = ({ setMessage, navigate }) => {
 
             {/* CLASSIFICATION */}
             <fieldset>
-              <legend>Classification & Tags</legend>
+              <legend><i className="fas fa-tags"></i> Classification & Tags</legend>
               <div className="form-group">
                 <label>Genre</label>
                 <div className="checkbox-group">
@@ -350,7 +351,7 @@ const AdminGamesPanel = ({ setMessage, navigate }) => {
                 <div className="tags-display">
                   {gameForm.tags.map(tag => (
                     <span key={tag} className="tag-badge">
-                      {tag} <button type="button" onClick={() => removeTag(tag)}>✕</button>
+                      {tag} <button type="button" onClick={() => removeTag(tag)}><i className="fas fa-times"></i></button>
                     </span>
                   ))}
                 </div>
@@ -359,7 +360,7 @@ const AdminGamesPanel = ({ setMessage, navigate }) => {
 
             {/* GAMEPLAY & MODES */}
             <fieldset>
-              <legend>Gameplay & Modes</legend>
+              <legend><i className="fas fa-gamepad"></i> Gameplay & Modes</legend>
               <div className="form-group">
                 <label>Game Modes</label>
                 <div className="checkbox-group">
@@ -395,7 +396,7 @@ const AdminGamesPanel = ({ setMessage, navigate }) => {
 
             {/* FEATURES & TECH */}
             <fieldset>
-              <legend>Features & Technology</legend>
+              <legend><i className="fas fa-cogs"></i> Features & Technology</legend>
               <div className="form-row">
                 <div className="form-group">
                   <label>Game Engine</label>
@@ -432,7 +433,7 @@ const AdminGamesPanel = ({ setMessage, navigate }) => {
 
             {/* PLATFORMS */}
             <fieldset>
-              <legend>Available Platforms</legend>
+              <legend><i className="fas fa-laptop"></i> Available Platforms</legend>
               <div className="form-group">
                 <label>Platforms</label>
                 <div className="checkbox-group">
@@ -448,7 +449,7 @@ const AdminGamesPanel = ({ setMessage, navigate }) => {
 
             {/* LANGUAGES */}
             <fieldset>
-              <legend>Language Support</legend>
+              <legend><i className="fas fa-language"></i> Language Support</legend>
               <div className="form-group">
                 <label>Supported Languages</label>
                 <div className="checkbox-group">
@@ -464,7 +465,7 @@ const AdminGamesPanel = ({ setMessage, navigate }) => {
 
             {/* SYSTEM REQUIREMENTS */}
             <fieldset>
-              <legend>System Requirements</legend>
+              <legend><i className="fas fa-desktop"></i> System Requirements</legend>
               <h4>Minimum Requirements</h4>
               <div className="form-row">
                 <div className="form-group">
@@ -536,7 +537,7 @@ const AdminGamesPanel = ({ setMessage, navigate }) => {
 
             {/* PRICING */}
             <fieldset>
-              <legend>Pricing & Offers</legend>
+              <legend><i className="fas fa-dollar-sign"></i> Pricing & Offers</legend>
               <div className="form-row">
                 <div className="form-group">
                   <label>Price (₹) *</label>
@@ -575,7 +576,7 @@ const AdminGamesPanel = ({ setMessage, navigate }) => {
 
             {/* AUDIO & SOUNDTRACK */}
             <fieldset>
-              <legend>Audio & Soundtrack</legend>
+              <legend><i className="fas fa-music"></i> Audio & Soundtrack</legend>
               <div className="form-row">
                 <div className="form-group checkbox-group">
                   <label className="checkbox-label">
@@ -594,7 +595,7 @@ const AdminGamesPanel = ({ setMessage, navigate }) => {
 
             {/* POPULARITY */}
             <fieldset>
-              <legend>Popularity & Trending</legend>
+              <legend><i className="fas fa-fire"></i> Popularity & Trending</legend>
               <div className="form-row">
                 <div className="form-group checkbox-group">
                   <label className="checkbox-label">
@@ -619,39 +620,72 @@ const AdminGamesPanel = ({ setMessage, navigate }) => {
         </div>
       )}
 
-      <div className="games-list">
-        <h2>Games List</h2>
-        <div className="games-grid">
+      <div className="games-list-section">
+        <h2><i className="fas fa-list"></i> Games List</h2>
+        <div className="games-list">
           {filteredGames.map(game => (
             <div 
               key={game._id} 
-              className="game-card-simple" 
+              className="game-card-horizontal" 
               onClick={() => navigate(`/admin/game/${game._id}`)}
-              style={{ cursor: 'pointer' }}
             >
-              {game.coverImage ? (
-                <img src={`${BACKEND_URL}/uploads/${game.coverImage}`} alt={game.name} className="game-card-image" />
-              ) : game.gamePic ? (
-                <img src={`${BACKEND_URL}/uploads/${game.gamePic}`} alt={game.name} className="game-card-image" />
-              ) : null}
-              <div className="game-card-content">
+              <div className="game-card-left">
+                {game.coverImage ? (
+                  <img src={`${BACKEND_URL}/uploads/${game.coverImage}`} alt={game.name} className="game-thumbnail" />
+                ) : game.gamePic ? (
+                  <img src={`${BACKEND_URL}/uploads/${game.gamePic}`} alt={game.name} className="game-thumbnail" />
+                ) : (
+                  <div className="game-thumbnail-placeholder">
+                    <i className="fas fa-gamepad"></i>
+                  </div>
+                )}
+              </div>
+              
+              <div className="game-card-center">
                 <h3>{game.name}</h3>
-                {game.developer && <p className="developer-name">{game.developer}</p>}
-                <div className="game-price-info">
-                  {game.discount > 0 ? (
-                    <>
+                {game.developer && (
+                  <p className="developer-name">
+                    <i className="fas fa-code"></i> {game.developer}
+                  </p>
+                )}
+                <div className="game-meta">
+                  {game.genre && game.genre.length > 0 && (
+                    <div className="game-tags">
+                      {game.genre.slice(0, 3).map((g, idx) => (
+                        <span key={idx} className="game-tag">
+                          <i className="fas fa-tag"></i> {g}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                  <div className="game-rating">
+                    <i className="fas fa-star"></i>
+                    <span>{game.averageRating ? game.averageRating.toFixed(1) : '0.0'}</span>
+                  </div>
+                </div>
+                {game.popularityLabel && (
+                  <span className="popularity-badge">
+                    <i className="fas fa-crown"></i> {game.popularityLabel}
+                  </span>
+                )}
+              </div>
+
+              <div className="game-card-right">
+                {game.discount > 0 ? (
+                  <div className="price-section">
+                    <span className="discount-badge">
+                      <i className="fas fa-percentage"></i> -{game.discount}%
+                    </span>
+                    <div className="price-details">
                       <span className="original-price">₹{game.price}</span>
                       <span className="discounted-price">₹{calculateDiscountedPrice(game.price, game.discount).toFixed(2)}</span>
-                      <span className="discount-badge">-{game.discount}%</span>
-                    </>
-                  ) : (
+                    </div>
+                  </div>
+                ) : (
+                  <div className="price-section">
                     <span className="current-price">₹{game.price}</span>
-                  )}
-                </div>
-                <div className="game-rating-info">
-                  <span className="star-rating">⭐ {game.averageRating ? game.averageRating.toFixed(1) : '0.0'}/5</span>
-                </div>
-                {game.popularityLabel && <span className="popularity-badge">{game.popularityLabel}</span>}
+                  </div>
+                )}
               </div>
             </div>
           ))}
@@ -667,4 +701,4 @@ const AdminGamesPanel = ({ setMessage, navigate }) => {
   );
 };
 
-export default AdminGamesPanel
+export default AdminGamesPanel;
