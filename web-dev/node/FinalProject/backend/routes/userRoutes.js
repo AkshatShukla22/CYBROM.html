@@ -51,17 +51,9 @@ router.delete('/cart/clear', authenticateToken, userController.clearCart);
 
 // Get all reviews for a game (public)
 router.get('/games/:gameId/reviews', userController.getGameReviews);
-
-// Get user's own review for a game (protected)
 router.get('/games/:gameId/reviews/my-review', authenticateToken, userController.getUserReview);
-
-// Add review (protected)
 router.post('/games/:gameId/reviews', authenticateToken, userController.addReview);
-
-// Update review (protected)
 router.put('/games/:gameId/reviews', authenticateToken, userController.updateReview);
-
-// Delete review (protected)
 router.delete('/games/:gameId/reviews', authenticateToken, userController.deleteReview);
 
 module.exports = router;
