@@ -19,8 +19,8 @@ const GameDetail = () => {
   const [relatedGames, setRelatedGames] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedImage, setSelectedImage] = useState(null);
+  const [selectedType, setSelectedType] = useState('image'); // 'image' or 'video'
   const [activeTab, setActiveTab] = useState('about');
-  const [showVideo, setShowVideo] = useState(false);
 
   // Review states
   const [reviews, setReviews] = useState([]);
@@ -106,7 +106,15 @@ const GameDetail = () => {
       
       if (gameRes.ok) {
         setGame(gameData.game);
-        setSelectedImage(gameData.game.coverImage || gameData.game.gamePic);
+        
+        // PRIORITY: Set trailer as default if it exists, otherwise use cover image
+        if (gameData.game.trailer) {
+          setSelectedImage(gameData.game.trailer);
+          setSelectedType('video');
+        } else {
+          setSelectedImage(gameData.game.coverImage || gameData.game.gamePic);
+          setSelectedType('image');
+        }
         
         if (gameData.game.categories && gameData.game.categories.length > 0) {
           const category = gameData.game.categories[0];
@@ -310,6 +318,12 @@ const GameDetail = () => {
     console.log('Buy now:', game._id);
   };
 
+  // Handle thumbnail click - switch between image and video
+  const handleThumbnailClick = (media, type) => {
+    setSelectedImage(media);
+    setSelectedType(type);
+  };
+
   if (loading) {
     return <div className="gd-loading-container">Loading game details...</div>;
   }
@@ -399,14 +413,26 @@ const GameDetail = () => {
         <div className="gd-content-grid">
           {/* Left Section */}
           <div className="gd-left-section">
-            {/* Main Image Display */}
+            {/* Main Image/Video Display */}
             <div className="gd-main-image-container">
               {selectedImage ? (
-                <img 
-                  src={`${BACKEND_URL}/uploads/${selectedImage}`} 
-                  alt={game.name}
-                  className="gd-main-image"
-                />
+                selectedType === 'video' ? (
+                  <video 
+                    controls 
+                    className="gd-game-video"
+                    src={`${BACKEND_URL}/uploads/${selectedImage}`}
+                    autoPlay
+                    loop
+                  >
+                    Your browser does not support the video tag.
+                  </video>
+                ) : (
+                  <img 
+                    src={`${BACKEND_URL}/uploads/${selectedImage}`} 
+                    alt={game.name}
+                    className="gd-main-image"
+                  />
+                )
               ) : (
                 <div className="gd-no-image-placeholder">
                   <i className="fa-solid fa-gamepad"></i>
@@ -416,12 +442,23 @@ const GameDetail = () => {
 
             {/* Thumbnail Gallery */}
             <div className="gd-thumbnail-gallery">
+              {/* Video Thumbnail - Show FIRST if trailer exists */}
+              {game.trailer && (
+                <div 
+                  className={`gd-video-thumbnail ${selectedImage === game.trailer && selectedType === 'video' ? 'gd-thumbnail-active' : ''}`}
+                  onClick={() => handleThumbnailClick(game.trailer, 'video')}
+                >
+                  <i className="fa-solid fa-play"></i>
+                  <span>Trailer</span>
+                </div>
+              )}
+
               {game.coverImage && (
                 <img
                   src={`${BACKEND_URL}/uploads/${game.coverImage}`}
                   alt="Cover"
-                  className={`gd-thumbnail ${selectedImage === game.coverImage ? 'gd-thumbnail-active' : ''}`}
-                  onClick={() => setSelectedImage(game.coverImage)}
+                  className={`gd-thumbnail ${selectedImage === game.coverImage && selectedType === 'image' ? 'gd-thumbnail-active' : ''}`}
+                  onClick={() => handleThumbnailClick(game.coverImage, 'image')}
                 />
               )}
               
@@ -429,8 +466,8 @@ const GameDetail = () => {
                 <img
                   src={`${BACKEND_URL}/uploads/${game.backgroundPic}`}
                   alt="Background"
-                  className={`gd-thumbnail ${selectedImage === game.backgroundPic ? 'gd-thumbnail-active' : ''}`}
-                  onClick={() => setSelectedImage(game.backgroundPic)}
+                  className={`gd-thumbnail ${selectedImage === game.backgroundPic && selectedType === 'image' ? 'gd-thumbnail-active' : ''}`}
+                  onClick={() => handleThumbnailClick(game.backgroundPic, 'image')}
                 />
               )}
 
@@ -439,8 +476,8 @@ const GameDetail = () => {
                   key={index}
                   src={`${BACKEND_URL}/uploads/${img}`}
                   alt={`Additional ${index + 1}`}
-                  className={`gd-thumbnail ${selectedImage === img ? 'gd-thumbnail-active' : ''}`}
-                  onClick={() => setSelectedImage(img)}
+                  className={`gd-thumbnail ${selectedImage === img && selectedType === 'image' ? 'gd-thumbnail-active' : ''}`}
+                  onClick={() => handleThumbnailClick(img, 'image')}
                 />
               ))}
               
@@ -449,35 +486,11 @@ const GameDetail = () => {
                   key={index}
                   src={`${BACKEND_URL}/uploads/${pic}`}
                   alt={`Gameplay ${index + 1}`}
-                  className={`gd-thumbnail ${selectedImage === pic ? 'gd-thumbnail-active' : ''}`}
-                  onClick={() => setSelectedImage(pic)}
+                  className={`gd-thumbnail ${selectedImage === pic && selectedType === 'image' ? 'gd-thumbnail-active' : ''}`}
+                  onClick={() => handleThumbnailClick(pic, 'image')}
                 />
               ))}
-
-              {game.trailer && (
-                <div 
-                  className="gd-video-thumbnail"
-                  onClick={() => setShowVideo(!showVideo)}
-                >
-                  <i className="fa-solid fa-play"></i>
-                  <span>Trailer</span>
-                </div>
-              )}
             </div>
-
-            {/* Video Player */}
-            {showVideo && game.trailer && (
-              <div className="gd-video-player-container">
-                <video 
-                  controls 
-                  className="gd-game-video"
-                  src={`${BACKEND_URL}/uploads/${game.trailer}`}
-                  autoPlay
-                >
-                  Your browser does not support the video tag.
-                </video>
-              </div>
-            )}
 
             {/* Tabs Section */}
             <div className="gd-info-tabs">

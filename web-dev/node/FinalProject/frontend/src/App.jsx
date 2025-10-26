@@ -12,6 +12,8 @@ import AdminGameDetails from './pages/AdminGameDetails';
 import GameDetail from './pages/GameDetail';
 import SupportPage from './pages/SupportPage';
 import TicketDetailPage from './pages/TicketDetailPage';
+// Import UserProfile when you create it
+// import UserProfile from './pages/UserProfile';
 
 function App() {
 
@@ -27,15 +29,14 @@ function App() {
           <Route path="/support/:id" element={<TicketDetailPage />} />
           <Route path="cart" element={<Cart />} />
           <Route path="/game/:id" element={<GameDetail />} />
-
-
+          <Route path="userprofile" element={<h1 style={{marginTop: '100px', textAlign: 'center'}}>User Profile Page - Coming Soon</h1>} />
         </Route>
 
-        <Route path="*" element={<h1>404 Not Found</h1>} />
         <Route path="login" element={<Login />} />
         <Route path="register" element={<Register />} />
         <Route path="admin" element={<AdminPanel />} />
         <Route path="/admin/game/:id" element={<AdminGameDetails />} />
+        <Route path="*" element={<h1 style={{marginTop: '100px', textAlign: 'center'}}>404 Not Found</h1>} />
       </Routes>
     </BrowserRouter>
   )
