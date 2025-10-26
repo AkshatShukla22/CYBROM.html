@@ -42,6 +42,10 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     default: false
   },
+  profilePicUrl: {
+    type: String,
+    default: ''
+  },
   cart: [cartItemSchema],
   createdAt: {
     type: Date,

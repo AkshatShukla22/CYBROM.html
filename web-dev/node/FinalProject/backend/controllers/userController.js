@@ -2,6 +2,106 @@
 const User = require('../models/User');
 const Game = require('../models/Game');
 
+// Get user's game collection
+exports.getUserCollection = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const collection = await Collection.find({ user: userId })
+      .populate('game')
+      .sort({ purchasedAt: -1 });
+    
+    res.status(200).json({ collection });
+  } catch (error) {
+    console.error('Get collection error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+// Change password
+exports.changePassword = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { currentPassword, newPassword } = req.body;
+    
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    
+    const validPassword = await bcrypt.compare(currentPassword, user.password);
+    if (!validPassword) {
+      return res.status(400).json({ message: 'Current password is incorrect' });
+    }
+    
+    const salt = await bcrypt.genSalt(10);
+    user.password = await bcrypt.hash(newPassword, salt);
+    await user.save();
+    
+    res.status(200).json({ message: 'Password changed successfully' });
+  } catch (error) {
+    console.error('Change password error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+// Change email
+exports.changeEmail = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { newEmail, password } = req.body;
+    
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    
+    const validPassword = await bcrypt.compare(password, user.password);
+    if (!validPassword) {
+      return res.status(400).json({ message: 'Password is incorrect' });
+    }
+    
+    const existingUser = await User.findOne({ email: newEmail });
+    if (existingUser) {
+      return res.status(400).json({ message: 'Email already in use' });
+    }
+    
+    user.email = newEmail;
+    await user.save();
+    
+    res.status(200).json({ message: 'Email changed successfully' });
+  } catch (error) {
+    console.error('Change email error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+// Upload profile picture
+exports.uploadProfilePic = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    
+    if (!req.file) {
+      return res.status(400).json({ message: 'No file uploaded' });
+    }
+    
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    
+    user.profilePicUrl = `/uploads/${req.file.filename}`;
+    await user.save();
+    
+    res.status(200).json({ 
+      message: 'Profile picture uploaded successfully',
+      profilePicUrl: user.profilePicUrl
+    });
+  } catch (error) {
+    console.error('Upload profile pic error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
 // Get All Games (Public - no auth required)
 exports.getAllGames = async (req, res) => {
   try {

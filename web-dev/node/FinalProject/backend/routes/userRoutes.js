@@ -3,8 +3,15 @@ const express = require('express');
 const router = express.Router();
 const userController = require('../controllers/userController');
 const authenticateToken = require('../middleware/authMiddleware');
+const upload = require('../middleware/uploadMiddleware');
 
 // ============ PUBLIC ROUTES (No Auth Required) ============
+
+// Profile Routes
+router.get('/collection', authenticateToken, userController.getUserCollection);
+router.put('/change-password', authenticateToken, userController.changePassword);
+router.put('/change-email', authenticateToken, userController.changeEmail);
+router.post('/upload-profile-pic', authenticateToken, upload.single('profilePic'), userController.uploadProfilePic);
 
 // Basic Game Routes
 router.get('/games', userController.getAllGames);
