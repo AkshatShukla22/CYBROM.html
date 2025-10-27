@@ -421,6 +421,7 @@ const GameDetail = () => {
                     controls 
                     className="gd-game-video"
                     src={`${BACKEND_URL}/uploads/${selectedImage}`}
+                    muted
                     autoPlay
                     loop
                   >
@@ -930,7 +931,36 @@ const GameDetail = () => {
                                 <div className="gd-review-header">
                                   <div className="gd-reviewer-info">
                                     <div className="gd-reviewer-avatar">
-                                      <i className="fa-solid fa-user"></i>
+                                      {review.user?.profilePicUrl ? (
+                                        <img 
+                                          src={review.user.profilePicUrl.startsWith('http') 
+                                            ? review.user.profilePicUrl 
+                                            : `${BACKEND_URL}${review.user.profilePicUrl}`
+                                          } 
+                                          alt={review.user.username || 'User'}
+                                          onError={(e) => {
+                                            e.target.style.display = 'none';
+                                            e.target.nextElementSibling.style.display = 'flex';
+                                          }}
+                                        />
+                                      ) : null}
+                                      <div 
+                                        className="gd-avatar-placeholder" 
+                                        style={{ 
+                                          display: review.user?.profilePicUrl ? 'none' : 'flex',
+                                          width: '40px',
+                                          height: '40px',
+                                          borderRadius: '50%',
+                                          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                                          color: 'white',
+                                          fontSize: '18px',
+                                          fontWeight: 'bold',
+                                          alignItems: 'center',
+                                          justifyContent: 'center'
+                                        }}
+                                      >
+                                        {review.user?.username?.charAt(0).toUpperCase() || 'U'}
+                                      </div>
                                     </div>
                                     <div className="gd-reviewer-details">
                                       <span className="gd-reviewer-name">

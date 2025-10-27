@@ -780,9 +780,9 @@ exports.addReview = async (req, res) => {
 
     await game.save();
 
-    // Populate user info for the response
+    // Populate user info for the response - UPDATED TO INCLUDE profilePicUrl
     const updatedGame = await Game.findById(gameId)
-      .populate('reviews.user', 'username email');
+      .populate('reviews.user', 'username email profilePicUrl');
 
     res.status(201).json({
       message: 'Review added successfully',
@@ -837,9 +837,9 @@ exports.updateReview = async (req, res) => {
 
     await game.save();
 
-    // Populate user info for the response
+    // Populate user info for the response - UPDATED TO INCLUDE profilePicUrl
     const updatedGame = await Game.findById(gameId)
-      .populate('reviews.user', 'username email');
+      .populate('reviews.user', 'username email profilePicUrl');
 
     res.status(200).json({
       message: 'Review updated successfully',
@@ -885,9 +885,9 @@ exports.deleteReview = async (req, res) => {
 
     await game.save();
 
-    // Populate user info for the response
+    // Populate user info for the response - UPDATED TO INCLUDE profilePicUrl
     const updatedGame = await Game.findById(gameId)
-      .populate('reviews.user', 'username email');
+      .populate('reviews.user', 'username email profilePicUrl');
 
     res.status(200).json({
       message: 'Review deleted successfully',
@@ -908,8 +908,9 @@ exports.getGameReviews = async (req, res) => {
     const limit = parseInt(req.query.limit) || 10;
     const sortBy = req.query.sortBy || 'newest'; // newest, oldest, highest, lowest
 
+    // UPDATED TO INCLUDE profilePicUrl
     const game = await Game.findById(gameId)
-      .populate('reviews.user', 'username email');
+      .populate('reviews.user', 'username email profilePicUrl');
 
     if (!game) {
       return res.status(404).json({ message: 'Game not found' });
@@ -962,8 +963,9 @@ exports.getUserReview = async (req, res) => {
     const userId = req.user.id;
     const { gameId } = req.params;
 
+    // UPDATED TO INCLUDE profilePicUrl
     const game = await Game.findById(gameId)
-      .populate('reviews.user', 'username email');
+      .populate('reviews.user', 'username email profilePicUrl');
 
     if (!game) {
       return res.status(404).json({ message: 'Game not found' });

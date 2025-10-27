@@ -33,6 +33,22 @@ const AdminUsersPanel = ({ setMessage, navigate }) => {
     }
   };
 
+  const getProfilePicUrl = (profilePicUrl) => {
+    if (!profilePicUrl) return null;
+    
+    // Handle full URLs (Google OAuth, etc.)
+    if (profilePicUrl.startsWith('http')) {
+      return profilePicUrl;
+    }
+    
+    // Handle relative URLs from backend
+    return `${BACKEND_URL}${profilePicUrl}`;
+  };
+
+  const getUserInitial = (username) => {
+    return username?.charAt(0).toUpperCase() || 'U';
+  };
+
   const filteredUsers = users.filter(u => 
     u.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
     u.email.toLowerCase().includes(searchTerm.toLowerCase())
@@ -54,8 +70,29 @@ const AdminUsersPanel = ({ setMessage, navigate }) => {
         <h2>Users List</h2>
         {filteredUsers.map(user => (
           <div key={user._id} className="user-card">
+            <div className="user-avatar-section">
+              {user.profilePicUrl && !user.profilePicUrl.includes('undefined') ? (
+                <img 
+                  src={getProfilePicUrl(user.profilePicUrl)}
+                  alt={user.username}
+                  className="user-avatar-img"
+                  onError={(e) => {
+                    e.target.style.display = 'none';
+                    e.target.nextElementSibling.style.display = 'flex';
+                  }}
+                />
+              ) : null}
+              <div 
+                className="user-avatar-placeholder"
+                style={{
+                  display: user.profilePicUrl && !user.profilePicUrl.includes('undefined') ? 'none' : 'flex'
+                }}
+              >
+                {getUserInitial(user.username)}
+              </div>
+            </div>
             <div className="user-info">
-              <h3><i className="fas fa-user"></i> {user.username}</h3>
+              <h3>{user.username}</h3>
               <p><strong>Email:</strong> {user.email}</p>
               <p><strong>Joined:</strong> {new Date(user.createdAt).toLocaleDateString()}</p>
             </div>
@@ -75,12 +112,37 @@ const AdminUsersPanel = ({ setMessage, navigate }) => {
       {selectedUser && (
         <div className="user-details-panel">
           <div className="user-details-header">
-            <h2>User Details: {selectedUser.user.username}</h2>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+              <div className="user-detail-avatar-section">
+                {selectedUser.user.profilePicUrl && !selectedUser.user.profilePicUrl.includes('undefined') ? (
+                  <img 
+                    src={getProfilePicUrl(selectedUser.user.profilePicUrl)}
+                    alt={selectedUser.user.username}
+                    className="user-detail-avatar-img"
+                    onError={(e) => {
+                      e.target.style.display = 'none';
+                      e.target.nextElementSibling.style.display = 'flex';
+                    }}
+                  />
+                ) : null}
+                <div 
+                  className="user-detail-avatar-placeholder"
+                  style={{
+                    display: selectedUser.user.profilePicUrl && !selectedUser.user.profilePicUrl.includes('undefined') ? 'none' : 'flex'
+                  }}
+                >
+                  {getUserInitial(selectedUser.user.username)}
+                </div>
+              </div>
+              <div>
+                <h2>User Details: {selectedUser.user.username}</h2>
+                <p><strong>Email:</strong> {selectedUser.user.email}</p>
+              </div>
+            </div>
             <button className="close-btn" onClick={() => setSelectedUser(null)}>
               <i className="fas fa-times"></i>
             </button>
           </div>
-          <p><strong>Email:</strong> {selectedUser.user.email}</p>
           <h3>Game Collection ({selectedUser.collection.length} games)</h3>
           <div className="collection-list">
             {selectedUser.collection.map(item => (

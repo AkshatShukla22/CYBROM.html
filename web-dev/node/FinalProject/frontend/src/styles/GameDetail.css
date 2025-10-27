@@ -305,7 +305,7 @@
   box-sizing: border-box;
 }
 
-/* Main Media Container - Clean with subtle glow */
+/* Main Media Container */
 .gd-main-image-container {
   width: 100%;
   height: 550px;
@@ -507,8 +507,6 @@
   transform: scale(1.05);
   background: linear-gradient(135deg, rgba(0, 123, 255, 0.4), rgba(0, 191, 255, 0.4));
 }
-
-/* Video Player - Removed separate container, video now shows in main container */
 
 /* ==================== INFO TABS ==================== */
 .gd-info-tabs {
@@ -1301,6 +1299,7 @@
   gap: 12px;
 }
 
+/* FIXED: Profile Picture Avatar Styles */
 .gd-reviewer-avatar {
   width: 45px;
   height: 45px;
@@ -1311,19 +1310,51 @@
   justify-content: center;
   color: #fff;
   font-size: 20px;
+  font-weight: 700;
   box-shadow: 0 4px 15px rgba(0, 191, 255, 0.3);
+  overflow: hidden;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.gd-reviewer-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.gd-avatar-placeholder {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  font-size: 20px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
 }
 
 .gd-reviewer-details {
   display: flex;
   flex-direction: column;
   gap: 4px;
+  min-width: 0;
 }
 
 .gd-reviewer-name {
   font-size: 15px;
   font-weight: 700;
   color: #E6EDF3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .gd-review-edited {
@@ -1792,6 +1823,7 @@
 .gd-error-container {
   color: #e74c3c;
 }
+
 
 /* ==================== ANIMATIONS ==================== */
 @keyframes slideInRight {
