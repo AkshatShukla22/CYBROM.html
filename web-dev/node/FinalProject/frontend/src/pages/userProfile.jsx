@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import BACKEND_URL from '../utils/BackendURL';
 import '../styles/userProfile.css';
 
 const UserProfile = () => {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('overview');
   const [user, setUser] = useState(null);
   const [collection, setCollection] = useState([]);
@@ -12,6 +14,7 @@ const UserProfile = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [showSecurityDropdown, setShowSecurityDropdown] = useState(false);
   const [securityAction, setSecurityAction] = useState('');
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   
   const [editForm, setEditForm] = useState({
     username: '',
@@ -84,6 +87,31 @@ const UserProfile = () => {
       }
     } catch (err) {
       setCollection([]);
+    }
+  };
+
+  const handleLogout = async () => {
+    try {
+      const response = await fetch(`${BACKEND_URL}/api/auth/logout`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (response.ok) {
+        // Clear any local storage or session storage if you're using it
+        localStorage.removeItem('user');
+        sessionStorage.clear();
+        
+        // Redirect to login page
+        navigate('/login');
+      } else {
+        setError('Failed to logout. Please try again.');
+      }
+    } catch (err) {
+      setError('Error logging out: ' + err.message);
     }
   };
 
@@ -418,10 +446,19 @@ const UserProfile = () => {
                       </button>
                     </>
                   ) : (
-                    <button className="up-btn up-btn-edit" onClick={handleEditToggle}>
-                      <i className="fas fa-edit"></i>
-                      Edit Profile
-                    </button>
+                    <>
+                      <button className="up-btn up-btn-edit" onClick={handleEditToggle}>
+                        <i className="fas fa-edit"></i>
+                        Edit Profile
+                      </button>
+                      <button 
+                        className="up-btn up-btn-logout" 
+                        onClick={() => setShowLogoutConfirm(true)}
+                      >
+                        <i className="fas fa-sign-out-alt"></i>
+                        Logout
+                      </button>
+                    </>
                   )}
                 </div>
               </div>
@@ -680,6 +717,37 @@ const UserProfile = () => {
           </div>
         )}
       </div>
+
+      {/* Logout Confirmation Modal */}
+      {showLogoutConfirm && (
+        <div className="up-modal-overlay" onClick={() => setShowLogoutConfirm(false)}>
+          <div className="up-modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="up-modal-header">
+              <i className="fas fa-sign-out-alt"></i>
+              <h3>Confirm Logout</h3>
+            </div>
+            <div className="up-modal-body">
+              <p>Are you sure you want to logout?</p>
+            </div>
+            <div className="up-modal-actions">
+              <button 
+                className="up-btn up-btn-cancel" 
+                onClick={() => setShowLogoutConfirm(false)}
+              >
+                <i className="fas fa-times"></i>
+                Cancel
+              </button>
+              <button 
+                className="up-btn up-btn-logout-confirm" 
+                onClick={handleLogout}
+              >
+                <i className="fas fa-sign-out-alt"></i>
+                Logout
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

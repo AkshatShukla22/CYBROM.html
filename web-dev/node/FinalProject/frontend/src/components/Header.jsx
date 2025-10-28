@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchCartAsync } from '../redux/cartSlice';
@@ -11,20 +11,101 @@ const Header = () => {
   
   const [searchActive, setSearchActive] = useState(false);
   const [searchValue, setSearchValue] = useState('');
+  const [searchSuggestions, setSearchSuggestions] = useState([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [userProfile, setUserProfile] = useState(null);
+  const [loadingSuggestions, setLoadingSuggestions] = useState(false);
   
-  // Get cart items from Redux store
+  const searchRef = useRef(null);
+  
   const cart = useSelector(state => state.cart.items);
   const cartItemCount = cart.length;
 
-  // Fetch cart on component mount to ensure count is accurate
   useEffect(() => {
     dispatch(fetchCartAsync());
   }, [dispatch]);
+
+  useEffect(() => {
+    checkAuth();
+  }, [location]);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (searchRef.current && !searchRef.current.contains(event.target)) {
+        setShowSuggestions(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const checkAuth = async () => {
+    try {
+      const response = await fetch('http://localhost:5000/api/auth/verify', {
+        credentials: 'include'
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        setIsAuthenticated(true);
+        
+        const userResponse = await fetch('http://localhost:5000/api/auth/user', {
+          credentials: 'include'
+        });
+        
+        if (userResponse.ok) {
+          const userData = await userResponse.json();
+          setUserProfile(userData.user);
+        }
+      } else {
+        setIsAuthenticated(false);
+        setUserProfile(null);
+      }
+    } catch (error) {
+      console.error('Auth check error:', error);
+      setIsAuthenticated(false);
+      setUserProfile(null);
+    }
+  };
 
   const toggleSearch = () => {
     setSearchActive(!searchActive);
     if (searchActive) {
       setSearchValue('');
+      setShowSuggestions(false);
+      setSearchSuggestions([]);
+    }
+  };
+
+  const handleSearchChange = async (e) => {
+    const value = e.target.value;
+    setSearchValue(value);
+
+    if (value.trim().length < 2) {
+      setSearchSuggestions([]);
+      setShowSuggestions(false);
+      return;
+    }
+
+    setLoadingSuggestions(true);
+    setShowSuggestions(true);
+
+    try {
+      const response = await fetch(
+        `http://localhost:5000/api/user/games/filter?search=${encodeURIComponent(value)}&sortBy=popularity`,
+        { credentials: 'include' }
+      );
+      
+      if (response.ok) {
+        const data = await response.json();
+        setSearchSuggestions(data.games.slice(0, 5));
+      }
+    } catch (error) {
+      console.error('Search error:', error);
+    } finally {
+      setLoadingSuggestions(false);
     }
   };
 
@@ -38,13 +119,19 @@ const Header = () => {
   const handleSearch = (e) => {
     e.preventDefault();
     if (searchValue.trim()) {
-      // Navigate to products with search query
       navigate(`/products?search=${encodeURIComponent(searchValue)}`);
       setSearchActive(false);
+      setShowSuggestions(false);
     }
   };
 
-  // Check if current path is active
+  const handleSuggestionClick = (gameId) => {
+    navigate(`/game/${gameId}`);
+    setSearchActive(false);
+    setShowSuggestions(false);
+    setSearchValue('');
+  };
+
   const isActive = (path) => {
     if (path === '/home') {
       return location.pathname === '/' || location.pathname === '/home';
@@ -52,11 +139,28 @@ const Header = () => {
     return location.pathname === path || location.pathname.startsWith(path + '/');
   };
 
+  const renderStars = (rating) => {
+    const stars = [];
+    const fullStars = Math.floor(rating);
+    const hasHalfStar = rating % 1 >= 0.5;
+
+    for (let i = 0; i < fullStars; i++) {
+      stars.push(<i key={`full-${i}`} className="fas fa-star"></i>);
+    }
+    if (hasHalfStar) {
+      stars.push(<i key="half" className="fas fa-star-half-alt"></i>);
+    }
+    const emptyStars = 5 - Math.ceil(rating);
+    for (let i = 0; i < emptyStars; i++) {
+      stars.push(<i key={`empty-${i}`} className="far fa-star"></i>);
+    }
+    return stars;
+  };
+
   return (
     <>
       <nav className="navbar">
         <div className="nav-container">
-          {/* Logo and Brand */}
           <div 
             className="brand" 
             onClick={(e) => handleNavigation('/home', e)} 
@@ -68,7 +172,6 @@ const Header = () => {
             <span className="brand-name">Respawn Hub</span>
           </div>
 
-          {/* Navigation Links */}
           <div className="nav-links">
             <button 
               onClick={(e) => handleNavigation('/home', e)} 
@@ -112,27 +215,100 @@ const Header = () => {
             </button>
           </div>
 
-          {/* Right Side Actions */}
           <div className="nav-actions">
-            <form onSubmit={handleSearch} className={`search-wrapper ${searchActive ? 'active' : ''}`}>
-              <input
-                type="text"
-                className="search-input"
-                placeholder="Search games..."
-                value={searchValue}
-                onChange={(e) => setSearchValue(e.target.value)}
-              />
-              <button type="button" className="search-btn" onClick={toggleSearch}>
-                <i className="fas fa-search"></i>
-              </button>
-            </form>
+            <div ref={searchRef} className={`search-wrapper ${searchActive ? 'active' : ''}`}>
+              <form onSubmit={handleSearch}>
+                <input
+                  type="text"
+                  className="search-input"
+                  placeholder="Search games, genres, categories..."
+                  value={searchValue}
+                  onChange={handleSearchChange}
+                  onFocus={() => searchValue.trim().length >= 2 && setShowSuggestions(true)}
+                />
+                <button type="button" className="search-btn" onClick={toggleSearch}>
+                  <i className="fas fa-search"></i>
+                </button>
+              </form>
+
+              {showSuggestions && searchActive && (
+                <div className="search-suggestions">
+                  {loadingSuggestions ? (
+                    <div className="suggestion-loading">
+                      <i className="fas fa-spinner fa-spin"></i>
+                      <span>Searching...</span>
+                    </div>
+                  ) : searchSuggestions.length > 0 ? (
+                    <>
+                      {searchSuggestions.map((game) => (
+                        <div
+                          key={game._id}
+                          className="suggestion-item"
+                          onClick={() => handleSuggestionClick(game._id)}
+                        >
+                          <div className="suggestion-image">
+                            <img 
+                              src={game.coverImage || '/placeholder-game.jpg'} 
+                              alt={game.name}
+                              onError={(e) => {
+                                e.target.style.display = 'none';
+                              }}
+                            />
+                          </div>
+                          <div className="suggestion-details">
+                            <div className="suggestion-name">{game.name}</div>
+                            <div className="suggestion-rating">
+                              {renderStars(game.averageRating || 0)}
+                              <span className="rating-value">
+                                {(game.averageRating || 0).toFixed(1)}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                      <div className="suggestion-view-all" onClick={handleSearch}>
+                        <i className="fas fa-search"></i>
+                        <span>View all results for "{searchValue}"</span>
+                      </div>
+                    </>
+                  ) : (
+                    <div className="suggestion-empty">
+                      <i className="fas fa-search"></i>
+                      <span>No games found</span>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
             
-            <button 
-              className="profile-btn"
-              onClick={(e) => handleNavigation('/userprofile', e)}
-            >
-              <i className="fas fa-user"></i>
-            </button>
+            {isAuthenticated ? (
+              <button 
+                className="profile-btn"
+                onClick={(e) => handleNavigation('/userprofile', e)}
+                title={userProfile?.username || 'Profile'}
+              >
+                {userProfile?.profilePicUrl ? (
+                  <img 
+                    src={`http://localhost:5000${userProfile.profilePicUrl}`}
+                    alt="Profile"
+                    className="profile-pic"
+                    onError={(e) => {
+                      e.target.style.display = 'none';
+                      e.target.nextSibling.style.display = 'flex';
+                    }}
+                  />
+                ) : null}
+                <i className="fas fa-user" style={{ display: userProfile?.profilePicUrl ? 'none' : 'block' }}></i>
+              </button>
+            ) : (
+              <button 
+                className="login-btn"
+                onClick={(e) => handleNavigation('/login', e)}
+              >
+                <i className="fas fa-sign-in-alt"></i>
+                <span>Login</span>
+              </button>
+            )}
           </div>
         </div>
       </nav>
