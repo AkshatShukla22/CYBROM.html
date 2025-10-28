@@ -6,6 +6,47 @@ const News = require('../models/News');
 const fs = require('fs');
 const path = require('path');
 
+// Update User Admin Status
+exports.updateUserAdminStatus = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { isAdmin } = req.body;
+
+    // Validation
+    if (typeof isAdmin !== 'boolean') {
+      return res.status(400).json({ message: 'isAdmin must be a boolean value' });
+    }
+
+    // Check if trying to modify self
+    if (req.user.id === id) {
+      return res.status(400).json({ message: 'You cannot modify your own admin status' });
+    }
+
+    const user = await User.findById(id);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Update admin status
+    user.isAdmin = isAdmin;
+    await user.save();
+
+    res.status(200).json({
+      message: `Successfully ${isAdmin ? 'granted' : 'revoked'} admin privileges for ${user.username}`,
+      user: {
+        id: user._id,
+        username: user.username,
+        email: user.email,
+        isAdmin: user.isAdmin
+      }
+    });
+  } catch (error) {
+    console.error('Update admin status error:', error);
+    res.status(500).json({ message: 'Server error. Please try again.' });
+  }
+};
+
+
 // Helper function to delete files
 const deleteFile = (filename) => {
   const filePath = path.join(__dirname, '../uploads', filename);

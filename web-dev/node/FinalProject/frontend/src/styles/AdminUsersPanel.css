@@ -74,12 +74,6 @@
   border: 2px solid #667eea;
 }
 
-.user-card {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-}
-
 .user-detail-avatar-section {
   position: relative;
   width: 60px;
@@ -131,6 +125,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
+  flex-wrap: wrap;
 }
 
 .user-info h3 i {
@@ -149,6 +144,63 @@
   color: #E6EDF3;
   font-weight: 600;
   margin-right: 8px;
+}
+
+/* Admin Badge */
+.admin-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  background: linear-gradient(135deg, #f39c12, #e67e22);
+  color: #fff;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  box-shadow: 0 2px 10px rgba(243, 156, 18, 0.3);
+  animation: shimmer 2s infinite;
+}
+
+.admin-badge i {
+  font-size: 12px;
+  color: #fff !important;
+}
+
+.admin-badge-detail {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  background: linear-gradient(135deg, #f39c12, #e67e22);
+  color: #fff;
+  border-radius: 25px;
+  font-size: 14px;
+  font-weight: 600;
+  box-shadow: 0 3px 15px rgba(243, 156, 18, 0.4);
+  margin-left: 12px;
+  animation: shimmer 2s infinite;
+}
+
+.admin-badge-detail i {
+  font-size: 14px;
+  color: #fff !important;
+}
+
+@keyframes shimmer {
+  0%, 100% {
+    box-shadow: 0 2px 10px rgba(243, 156, 18, 0.3);
+  }
+  50% {
+    box-shadow: 0 2px 20px rgba(243, 156, 18, 0.6);
+  }
+}
+
+/* User Actions Container */
+.user-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
 }
 
 /* View Button */
@@ -176,6 +228,248 @@
 }
 
 .view-btn:active {
+  transform: translateY(0);
+}
+
+/* Make Admin Button */
+.make-admin-btn {
+  padding: 12px 24px;
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: #fff;
+  border: 1px solid #34d399;
+  border-radius: 25px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.make-admin-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 25px rgba(16, 185, 129, 0.5);
+  background: linear-gradient(135deg, #059669, #047857);
+}
+
+.make-admin-btn:active {
+  transform: translateY(0);
+}
+
+.make-admin-btn i {
+  font-size: 14px;
+}
+
+/* Remove Admin Button */
+.remove-admin-btn {
+  padding: 12px 24px;
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: #fff;
+  border: 1px solid #f87171;
+  border-radius: 25px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.remove-admin-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 25px rgba(239, 68, 68, 0.5);
+  background: linear-gradient(135deg, #dc2626, #b91c1c);
+}
+
+.remove-admin-btn:active {
+  transform: translateY(0);
+}
+
+.remove-admin-btn i {
+  font-size: 14px;
+}
+
+/* Confirmation Modal Overlay */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(5px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* Confirmation Modal */
+.confirm-modal {
+  background: rgba(30, 41, 59, 0.98);
+  backdrop-filter: blur(20px);
+  border-radius: 20px;
+  border: 2px solid rgba(51, 204, 255, 0.3);
+  box-shadow: 0 10px 50px rgba(0, 0, 0, 0.6);
+  padding: 0;
+  max-width: 500px;
+  width: 90%;
+  animation: modalBounceIn 0.4s ease-out;
+  overflow: hidden;
+}
+
+@keyframes modalBounceIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.8) translateY(-20px);
+  }
+  60% {
+    transform: scale(1.05) translateY(0);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* Modal Header */
+.modal-header {
+  background: linear-gradient(135deg, rgba(0, 123, 255, 0.2), rgba(0, 191, 255, 0.2));
+  padding: 25px 30px;
+  border-bottom: 2px solid rgba(51, 204, 255, 0.3);
+}
+
+.modal-header h3 {
+  font-size: 22px;
+  font-weight: 700;
+  color: #E6EDF3;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.modal-header h3 i {
+  font-size: 24px;
+  color: #00BFFF;
+}
+
+/* Modal Body */
+.modal-body {
+  padding: 30px;
+}
+
+.modal-body p {
+  font-size: 16px;
+  color: #E6EDF3;
+  line-height: 1.6;
+  margin: 0 0 20px;
+}
+
+.modal-body p strong {
+  color: #00BFFF;
+  font-weight: 700;
+}
+
+/* Warning Message */
+.warning-message {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 15px;
+  background: rgba(243, 156, 18, 0.15);
+  border: 1px solid rgba(243, 156, 18, 0.3);
+  border-radius: 12px;
+  margin-top: 15px;
+}
+
+.warning-message i {
+  color: #f39c12;
+  font-size: 20px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.warning-message span {
+  font-size: 14px;
+  color: #E6EDF3;
+  line-height: 1.5;
+}
+
+/* Modal Actions */
+.modal-actions {
+  display: flex;
+  gap: 15px;
+  padding: 25px 30px;
+  background: rgba(15, 23, 42, 0.4);
+  border-top: 1px solid rgba(51, 204, 255, 0.2);
+}
+
+.modal-actions button {
+  flex: 1;
+  padding: 14px 24px;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+/* Cancel Button */
+.cancel-btn {
+  background: rgba(100, 116, 139, 0.2);
+  color: #E6EDF3;
+  border: 2px solid rgba(100, 116, 139, 0.4);
+}
+
+.cancel-btn:hover {
+  background: rgba(100, 116, 139, 0.3);
+  border-color: rgba(100, 116, 139, 0.6);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(100, 116, 139, 0.3);
+}
+
+/* Confirm Button (Make Admin) */
+.confirm-btn {
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: #fff;
+  border: 2px solid #34d399;
+  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+}
+
+.confirm-btn:hover {
+  background: linear-gradient(135deg, #059669, #047857);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 25px rgba(16, 185, 129, 0.5);
+}
+
+/* Danger Button (Remove Admin) */
+.danger-btn {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: #fff;
+  border: 2px solid #f87171;
+  box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+}
+
+.danger-btn:hover {
+  background: linear-gradient(135deg, #dc2626, #b91c1c);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 25px rgba(239, 68, 68, 0.5);
+}
+
+.modal-actions button:active {
   transform: translateY(0);
 }
 
@@ -244,6 +538,10 @@
   font-weight: 700;
   color: #E6EDF3;
   margin: 0;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
 .close-btn {
@@ -259,6 +557,7 @@
   align-items: center;
   justify-content: center;
   font-size: 18px;
+  flex-shrink: 0;
 }
 
 .close-btn:hover {
@@ -368,8 +667,15 @@
     min-width: 100%;
   }
 
-  .view-btn {
+  .user-actions {
     width: 100%;
+    justify-content: stretch;
+  }
+
+  .view-btn,
+  .make-admin-btn,
+  .remove-admin-btn {
+    flex: 1;
     justify-content: center;
   }
 
@@ -404,6 +710,19 @@
   .collection-item > span:first-of-type {
     min-width: 100%;
   }
+
+  .confirm-modal {
+    width: 95%;
+  }
+
+  .modal-actions {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .modal-actions button {
+    width: 100%;
+  }
 }
 
 @media (max-width: 480px) {
@@ -417,6 +736,24 @@
 
   .user-info p {
     font-size: 13px;
+  }
+
+  .user-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .view-btn,
+  .make-admin-btn,
+  .remove-admin-btn {
+    width: 100%;
+    padding: 10px 20px;
+    font-size: 14px;
+  }
+
+  .admin-badge {
+    font-size: 11px;
+    padding: 3px 10px;
   }
 
   .user-details-panel {
@@ -441,5 +778,21 @@
 
   .purchase-date {
     font-size: 12px;
+  }
+
+  .modal-header {
+    padding: 20px;
+  }
+
+  .modal-header h3 {
+    font-size: 18px;
+  }
+
+  .modal-body {
+    padding: 20px;
+  }
+
+  .modal-actions {
+    padding: 20px;
   }
 }

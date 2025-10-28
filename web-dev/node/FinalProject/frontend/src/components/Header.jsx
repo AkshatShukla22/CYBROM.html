@@ -157,6 +157,17 @@ const Header = () => {
     return stars;
   };
 
+  // Helper function to get the image URL
+  const getImageUrl = (imagePath) => {
+    if (!imagePath) return '/placeholder-game.jpg';
+    // Check if it's already a full URL
+    if (imagePath.startsWith('http')) return imagePath;
+    // Check if it already has /uploads/ prefix
+    if (imagePath.startsWith('/uploads/')) return `http://localhost:5000${imagePath}`;
+    // Otherwise, add the full path
+    return `http://localhost:5000/uploads/${imagePath}`;
+  };
+
   return (
     <>
       <nav className="navbar">
@@ -248,10 +259,10 @@ const Header = () => {
                         >
                           <div className="suggestion-image">
                             <img 
-                              src={game.coverImage || '/placeholder-game.jpg'} 
+                              src={getImageUrl(game.coverImage)} 
                               alt={game.name}
                               onError={(e) => {
-                                e.target.style.display = 'none';
+                                e.target.src = '/placeholder-game.jpg';
                               }}
                             />
                           </div>

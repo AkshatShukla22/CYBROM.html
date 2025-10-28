@@ -13,9 +13,9 @@ import GameDetail from './pages/GameDetail';
 import SupportPage from './pages/SupportPage';
 import TicketDetailPage from './pages/TicketDetailPage';
 import UserProfile from './pages/userProfile';
+import ProtectedAdminRoute from './components/ProtectedAdminRoute'; // ADD THIS
 
 function App() {
-
   return (
     <BrowserRouter>
       <Routes>
@@ -33,8 +33,25 @@ function App() {
 
         <Route path="login" element={<Login />} />
         <Route path="register" element={<Register />} />
-        <Route path="admin" element={<AdminPanel />} />
-        <Route path="/admin/game/:id" element={<AdminGameDetails />} />
+        
+        {/* Protected Admin Routes */}
+        <Route 
+          path="admin" 
+          element={
+            <ProtectedAdminRoute>
+              <AdminPanel />
+            </ProtectedAdminRoute>
+          } 
+        />
+        <Route 
+          path="/admin/game/:id" 
+          element={
+            <ProtectedAdminRoute>
+              <AdminGameDetails />
+            </ProtectedAdminRoute>
+          } 
+        />
+        
         <Route path="*" element={<h1 style={{marginTop: '100px', textAlign: 'center'}}>404 Not Found</h1>} />
       </Routes>
     </BrowserRouter>

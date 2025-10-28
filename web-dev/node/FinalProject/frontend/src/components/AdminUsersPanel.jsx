@@ -6,6 +6,9 @@ const AdminUsersPanel = ({ setMessage, navigate }) => {
   const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [userToModify, setUserToModify] = useState(null);
+  const [actionType, setActionType] = useState(''); // 'makeAdmin' or 'removeAdmin'
 
   useEffect(() => {
     fetchUsers();
@@ -30,6 +33,67 @@ const AdminUsersPanel = ({ setMessage, navigate }) => {
       if (response.ok) setSelectedUser(data);
     } catch (error) {
       console.error('Error fetching user details:', error);
+    }
+  };
+
+  const handleAdminStatusChange = (user, action) => {
+    setUserToModify(user);
+    setActionType(action);
+    setShowConfirmModal(true);
+  };
+
+  const confirmAdminStatusChange = async () => {
+    try {
+      const response = await fetch(
+        `${BACKEND_URL}/api/admin/users/${userToModify._id}/admin-status`,
+        {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include',
+          body: JSON.stringify({
+            isAdmin: actionType === 'makeAdmin'
+          })
+        }
+      );
+
+      if (response.status === 401) {
+        navigate('/login');
+        return;
+      }
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setMessage({
+          type: 'success',
+          text: data.message || `Successfully ${actionType === 'makeAdmin' ? 'granted' : 'revoked'} admin privileges`
+        });
+        
+        // Refresh users list
+        fetchUsers();
+        
+        // Update selected user if they're currently viewing
+        if (selectedUser && selectedUser.user._id === userToModify._id) {
+          fetchUserDetails(userToModify._id);
+        }
+      } else {
+        setMessage({
+          type: 'error',
+          text: data.message || 'Failed to update admin status'
+        });
+      }
+    } catch (error) {
+      console.error('Error updating admin status:', error);
+      setMessage({
+        type: 'error',
+        text: 'An error occurred while updating admin status'
+      });
+    } finally {
+      setShowConfirmModal(false);
+      setUserToModify(null);
+      setActionType('');
     }
   };
 
@@ -92,13 +156,39 @@ const AdminUsersPanel = ({ setMessage, navigate }) => {
               </div>
             </div>
             <div className="user-info">
-              <h3>{user.username}</h3>
+              <h3>
+                {user.username}
+                {user.isAdmin && (
+                  <span className="admin-badge">
+                    <i className="fas fa-crown"></i> Admin
+                  </span>
+                )}
+              </h3>
               <p><strong>Email:</strong> {user.email}</p>
               <p><strong>Joined:</strong> {new Date(user.createdAt).toLocaleDateString()}</p>
             </div>
-            <button className="view-btn" onClick={() => fetchUserDetails(user._id)}>
-              View Collection
-            </button>
+            <div className="user-actions">
+              <button className="view-btn" onClick={() => fetchUserDetails(user._id)}>
+                View Collection
+              </button>
+              {user.isAdmin ? (
+                <button 
+                  className="remove-admin-btn"
+                  onClick={() => handleAdminStatusChange(user, 'removeAdmin')}
+                  title="Remove admin privileges"
+                >
+                  <i className="fas fa-user-minus"></i> Remove Admin
+                </button>
+              ) : (
+                <button 
+                  className="make-admin-btn"
+                  onClick={() => handleAdminStatusChange(user, 'makeAdmin')}
+                  title="Grant admin privileges"
+                >
+                  <i className="fas fa-user-shield"></i> Make Admin
+                </button>
+              )}
+            </div>
           </div>
         ))}
         {filteredUsers.length === 0 && (
@@ -135,7 +225,14 @@ const AdminUsersPanel = ({ setMessage, navigate }) => {
                 </div>
               </div>
               <div>
-                <h2>User Details: {selectedUser.user.username}</h2>
+                <h2>
+                  User Details: {selectedUser.user.username}
+                  {selectedUser.user.isAdmin && (
+                    <span className="admin-badge-detail">
+                      <i className="fas fa-crown"></i> Admin
+                    </span>
+                  )}
+                </h2>
                 <p><strong>Email:</strong> {selectedUser.user.email}</p>
               </div>
             </div>
@@ -157,6 +254,46 @@ const AdminUsersPanel = ({ setMessage, navigate }) => {
             {selectedUser.collection.length === 0 && (
               <p className="no-games">No games in collection</p>
             )}
+          </div>
+        </div>
+      )}
+
+      {/* Confirmation Modal */}
+      {showConfirmModal && (
+        <div className="modal-overlay" onClick={() => setShowConfirmModal(false)}>
+          <div className="confirm-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h3>
+                <i className={`fas ${actionType === 'makeAdmin' ? 'fa-user-shield' : 'fa-user-minus'}`}></i>
+                {actionType === 'makeAdmin' ? ' Grant Admin Privileges' : ' Remove Admin Privileges'}
+              </h3>
+            </div>
+            <div className="modal-body">
+              <p>
+                Are you sure you want to {actionType === 'makeAdmin' ? 'grant admin privileges to' : 'remove admin privileges from'}{' '}
+                <strong>{userToModify?.username}</strong>?
+              </p>
+              {actionType === 'makeAdmin' && (
+                <div className="warning-message">
+                  <i className="fas fa-exclamation-triangle"></i>
+                  <span>This user will have full access to the admin panel and can manage all games, users, and content.</span>
+                </div>
+              )}
+            </div>
+            <div className="modal-actions">
+              <button 
+                className="cancel-btn" 
+                onClick={() => setShowConfirmModal(false)}
+              >
+                Cancel
+              </button>
+              <button 
+                className={actionType === 'makeAdmin' ? 'confirm-btn' : 'danger-btn'}
+                onClick={confirmAdminStatusChange}
+              >
+                {actionType === 'makeAdmin' ? 'Grant Access' : 'Remove Access'}
+              </button>
+            </div>
           </div>
         </div>
       )}

@@ -4,10 +4,12 @@ const router = express.Router();
 const adminController = require('../controllers/adminController');
 const supportController = require('../controllers/supportController');
 const authenticateToken = require('../middleware/authMiddleware');
+const verifyAdmin = require('../middleware/adminMiddleware'); // ADD THIS
 const upload = require('../middleware/uploadMiddleware');
 
-// All admin routes require authentication
-router.use(authenticateToken);
+// All admin routes require authentication AND admin privileges
+router.use(authenticateToken); // First authenticate
+router.use(verifyAdmin);       // Then verify admin status - ADD THIS LINE
 
 // Game management with enhanced file uploads
 router.post('/games', upload.fields([
@@ -46,6 +48,9 @@ router.patch('/games/:id/discount', adminController.setDiscount);
 router.get('/users', adminController.getAllUsers);
 router.get('/users/:id', adminController.getUserDetails);
 
+// Update user admin status
+router.patch('/users/:id/admin-status', adminController.updateUserAdminStatus);
+
 // Purchase tracking
 router.get('/purchases', adminController.getAllPurchases);
 
@@ -65,13 +70,13 @@ router.put('/news/:id', upload.fields([
 
 router.delete('/news/:id', adminController.deleteNews);
 
-// ========== SUPPORT MANAGEMENT ROUTES ==========
+// Support management routes
 router.get('/support/tickets', supportController.getAllTickets);
 router.get('/support/tickets/:id', supportController.getTicketByIdAdmin);
 router.post('/support/tickets/:id/reply', supportController.addAdminReply);
 router.patch('/support/tickets/:id/status', supportController.updateTicketStatus);
 router.delete('/support/tickets/:id', supportController.deleteTicket);
 
-console.log('[ADMIN ROUTES] All admin routes including support registered successfully');
+console.log('[ADMIN ROUTES] All admin routes including support registered successfully with admin verification');
 
 module.exports = router;
