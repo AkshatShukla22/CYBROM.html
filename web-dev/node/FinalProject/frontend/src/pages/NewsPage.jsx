@@ -38,57 +38,57 @@ const NewsPage = () => {
 
   if (loading) {
     return (
-      <div className="news-page">
-        <div className="loading-spinner">Loading news...</div>
+      <div className="rh-news-page">
+        <div className="rh-news-loading-spinner">Loading news...</div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="news-page">
-        <div className="error-message">{error}</div>
+      <div className="rh-news-page">
+        <div className="rh-news-error-message">{error}</div>
       </div>
     );
   }
 
   return (
-    <div className="news-page">
-      <div className="news-header">
+    <div className="rh-news-page">
+      <div className="rh-news-header">
         <h1>Latest Gaming News</h1>
         <p>Stay updated with the latest news from Respawn Hub</p>
         <input
           type="text"
-          className="news-search-input"
+          className="rh-news-search-input"
           placeholder="Search by heading or game name..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
       </div>
 
-      <div className="news-container">
+      <div className="rh-news-container">
         {filteredNews.length === 0 ? (
-          <div className="no-news">
+          <div className="rh-news-no-news">
             <p>No news found matching your search.</p>
           </div>
         ) : (
-          filteredNews.map((newsItem) => (
-            <details key={newsItem._id} className="news-item">
-              <summary className="news-summary">
-                <div className="news-summary-content">
+          filteredNews.map((newsItem, index) => (
+            <details key={newsItem._id} className="rh-news-item" style={{'--index': index}}>
+              <summary className="rh-news-summary">
+                <div className="rh-news-summary-content">
                   {newsItem.headingImage && (
                     <img 
                       src={`${BACKEND_URL}/uploads/${newsItem.headingImage}`} 
                       alt={newsItem.heading}
-                      className="news-thumbnail"
+                      className="rh-news-thumbnail"
                     />
                   )}
-                  <div className="news-summary-text">
+                  <div className="rh-news-summary-text">
                     <h2>{newsItem.heading}</h2>
                     {newsItem.gameName && (
-                      <span className="news-game-badge">🎮 {newsItem.gameName}</span>
+                      <span className="rh-news-game-badge">🎮 {newsItem.gameName}</span>
                     )}
-                    <span className="news-date">
+                    <span className="rh-news-date">
                       {new Date(newsItem.createdAt).toLocaleDateString('en-US', {
                         year: 'numeric',
                         month: 'long',
@@ -97,18 +97,18 @@ const NewsPage = () => {
                     </span>
                   </div>
                 </div>
-                <span className="expand-icon">▼</span>
+                <span className="rh-news-expand-icon">▼</span>
               </summary>
               
-              <div className="news-details">
+              <div className="rh-news-details">
                 {newsItem.detailImage && (
                   <img 
                     src={`${BACKEND_URL}/uploads/${newsItem.detailImage}`} 
                     alt={newsItem.heading}
-                    className="news-full-image"
+                    className="rh-news-full-image"
                   />
                 )}
-                <div className="news-description">
+                <div className="rh-news-description">
                   <p>{newsItem.description}</p>
                 </div>
               </div>
