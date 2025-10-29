@@ -498,7 +498,20 @@ exports.filterGames = async (req, res) => {
 exports.getGameById = async (req, res) => {
   try {
     const { id } = req.params;
-    const game = await Game.findById(id);
+    const { trackView } = req.query; // Optional query param to track view
+    
+    let game;
+    
+    // If trackView is true, increment view count
+    if (trackView === 'true') {
+      game = await Game.findByIdAndUpdate(
+        id,
+        { $inc: { viewCount: 1 } },
+        { new: true }
+      );
+    } else {
+      game = await Game.findById(id);
+    }
     
     if (!game) {
       return res.status(404).json({ message: 'Game not found' });
@@ -983,5 +996,58 @@ exports.getUserReview = async (req, res) => {
   } catch (error) {
     console.error('Get user review error:', error);
     res.status(500).json({ message: 'Server error' });
+  }
+};
+
+// Get Featured Games (Public)
+exports.getFeaturedGames = async (req, res) => {
+  try {
+    const limit = parseInt(req.query.limit) || 10;
+    const games = await Game.find({ isActive: true, isFeatured: true })
+      .sort({ featuredOrder: 1, createdAt: -1 })
+      .limit(limit);
+    res.status(200).json({ games });
+  } catch (error) {
+    console.error('Get featured games error:', error);
+    res.status(500).json({ message: 'Server error.' });
+  }
+};
+
+// Get Trending Games (Public) - UPDATED to track views
+exports.getTrendingGames = async (req, res) => {
+  try {
+    const limit = parseInt(req.query.limit) || 10;
+    const games = await Game.find({ isActive: true, isTrending: true })
+      .sort({ trendingOrder: 1, viewCount: -1, purchaseCount: -1, createdAt: -1 })
+      .limit(limit);
+    res.status(200).json({ games });
+  } catch (error) {
+    console.error('Get trending games error:', error);
+    res.status(500).json({ message: 'Server error.' });
+  }
+};
+
+// Increment View Count when user visits game page
+exports.incrementViewCount = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const game = await Game.findByIdAndUpdate(
+      id,
+      { $inc: { viewCount: 1 } },
+      { new: true }
+    );
+
+    if (!game) {
+      return res.status(404).json({ message: 'Game not found' });
+    }
+
+    res.status(200).json({ 
+      message: 'View counted',
+      viewCount: game.viewCount 
+    });
+  } catch (error) {
+    console.error('Increment view count error:', error);
+    res.status(500).json({ message: 'Server error.' });
   }
 };

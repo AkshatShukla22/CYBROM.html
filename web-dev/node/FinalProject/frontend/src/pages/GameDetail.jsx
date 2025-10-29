@@ -98,6 +98,20 @@ const GameDetail = () => {
     }
   };
 
+  // NEW: Track game view
+  const trackGameView = async (gameId) => {
+    try {
+      await fetch(`${BACKEND_URL}/api/user/games/${gameId}/view`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+    } catch (error) {
+      console.error('Error tracking game view:', error);
+    }
+  };
+
   const fetchGameDetails = async () => {
     setLoading(true);
     try {
@@ -106,6 +120,9 @@ const GameDetail = () => {
       
       if (gameRes.ok) {
         setGame(gameData.game);
+        
+        // NEW: Track view when game details are loaded
+        trackGameView(id);
         
         // PRIORITY: Set trailer as default if it exists, otherwise use cover image
         if (gameData.game.trailer) {
@@ -392,12 +409,26 @@ const GameDetail = () => {
                 <span>{game.purchaseCount || 0} purchases</span>
               </div>
               <div className="gd-stat-item">
+                <i className="fa-solid fa-eye"></i>
+                <span>{game.viewCount || 0} views</span>
+              </div>
+              <div className="gd-stat-item">
                 <i className="fa-solid fa-comment"></i>
                 <span>{reviewStats.totalReviews || 0} reviews</span>
               </div>
             </div>
 
             <div className="gd-tags-section">
+              {game.isFeatured && (
+                <span className="gd-badge-featured">
+                  <i className="fa-solid fa-crown"></i> Featured
+                </span>
+              )}
+              {game.isTrending && (
+                <span className="gd-badge-trending">
+                  <i className="fa-solid fa-fire"></i> Trending
+                </span>
+              )}
               {game.genre && game.genre.map(g => (
                 <span key={g} className="gd-genre-tag">{g}</span>
               ))}

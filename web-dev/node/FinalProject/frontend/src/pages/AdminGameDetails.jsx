@@ -11,6 +11,10 @@ const AdminGameDetails = () => {
   const [message, setMessage] = useState({ type: '', text: '' });
   const [discountInput, setDiscountInput] = useState(0);
   
+  // NEW: Featured/Trending States
+  const [featuredInput, setFeaturedInput] = useState({ isFeatured: false, order: 0 });
+  const [trendingInput, setTrendingInput] = useState({ isTrending: false, order: 0 });
+  
   // Edit mode states
   const [isEditing, setIsEditing] = useState(false);
   const [editData, setEditData] = useState(null);
@@ -36,6 +40,16 @@ const AdminGameDetails = () => {
       if (response.ok) {
         setGame(data.game);
         setDiscountInput(data.game.discount || 0);
+        
+        // NEW: Set featured/trending states
+        setFeaturedInput({
+          isFeatured: data.game.isFeatured || false,
+          order: data.game.featuredOrder || 0
+        });
+        setTrendingInput({
+          isTrending: data.game.isTrending || false,
+          order: data.game.trendingOrder || 0
+        });
       } else {
         setMessage({ type: 'error', text: 'Failed to load game details' });
       }
@@ -290,6 +304,66 @@ const AdminGameDetails = () => {
     } catch (error) {
       setMessage({ type: 'error', text: 'Network error' });
       console.error('Set discount error:', error);
+    }
+  };
+
+  // NEW: Handle Featured Status
+  const handleSetFeatured = async () => {
+    try {
+      const response = await fetch(`${BACKEND_URL}/api/admin/games/${id}/featured`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({
+          isFeatured: featuredInput.isFeatured,
+          featuredOrder: parseInt(featuredInput.order) || 0
+        })
+      });
+
+      if (response.status === 401) {
+        navigate('/login');
+        return;
+      }
+
+      if (response.ok) {
+        setMessage({ type: 'success', text: `Game ${featuredInput.isFeatured ? 'added to' : 'removed from'} featured!` });
+        fetchGameDetails();
+      } else {
+        setMessage({ type: 'error', text: 'Failed to update featured status' });
+      }
+    } catch (error) {
+      setMessage({ type: 'error', text: 'Network error' });
+      console.error('Set featured error:', error);
+    }
+  };
+
+  // NEW: Handle Trending Status
+  const handleSetTrending = async () => {
+    try {
+      const response = await fetch(`${BACKEND_URL}/api/admin/games/${id}/trending`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({
+          isTrending: trendingInput.isTrending,
+          trendingOrder: parseInt(trendingInput.order) || 0
+        })
+      });
+
+      if (response.status === 401) {
+        navigate('/login');
+        return;
+      }
+
+      if (response.ok) {
+        setMessage({ type: 'success', text: `Game ${trendingInput.isTrending ? 'added to' : 'removed from'} trending!` });
+        fetchGameDetails();
+      } else {
+        setMessage({ type: 'error', text: 'Failed to update trending status' });
+      }
+    } catch (error) {
+      setMessage({ type: 'error', text: 'Network error' });
+      console.error('Set trending error:', error);
     }
   };
 
@@ -985,6 +1059,116 @@ const AdminGameDetails = () => {
       )}
 
       <div className="details-content">
+        {/* NEW: Featured & Trending Management Section */}
+        <section className="detail-section featured-trending-section">
+          <h2>🌟 Featured & Trending Management</h2>
+          
+          <div className="management-grid">
+            {/* Featured Management */}
+            <div className="management-card">
+              <h3>Featured Game</h3>
+              <div className="status-badge">
+                {game.isFeatured ? (
+                  <span className="badge-active">✓ Featured</span>
+                ) : (
+                  <span className="badge-inactive">Not Featured</span>
+                )}
+              </div>
+              
+              <div className="management-controls">
+                <label className="checkbox-label">
+                  <input
+                    type="checkbox"
+                    checked={featuredInput.isFeatured}
+                    onChange={(e) => setFeaturedInput(prev => ({ ...prev, isFeatured: e.target.checked }))}
+                  />
+                  <span>Set as Featured</span>
+                </label>
+                
+                {featuredInput.isFeatured && (
+                  <div className="order-input-group">
+                    <label>Display Order:</label>
+                    <input
+                      type="number"
+                      min="0"
+                      value={featuredInput.order}
+                      onChange={(e) => setFeaturedInput(prev => ({ ...prev, order: e.target.value }))}
+                      className="order-input"
+                      placeholder="0"
+                    />
+                    <small>Lower numbers appear first</small>
+                  </div>
+                )}
+                
+                <button 
+                  className="apply-btn featured-btn" 
+                  onClick={handleSetFeatured}
+                >
+                  {featuredInput.isFeatured ? 'Add to Featured' : 'Remove from Featured'}
+                </button>
+              </div>
+              
+              {game.isFeatured && (
+                <div className="current-status">
+                  <small>Current Order: {game.featuredOrder || 0}</small>
+                </div>
+              )}
+            </div>
+
+            {/* Trending Management */}
+            <div className="management-card">
+              <h3>Trending Game</h3>
+              <div className="status-badge">
+                {game.isTrending ? (
+                  <span className="badge-active">🔥 Trending</span>
+                ) : (
+                  <span className="badge-inactive">Not Trending</span>
+                )}
+              </div>
+              
+              <div className="management-controls">
+                <label className="checkbox-label">
+                  <input
+                    type="checkbox"
+                    checked={trendingInput.isTrending}
+                    onChange={(e) => setTrendingInput(prev => ({ ...prev, isTrending: e.target.checked }))}
+                  />
+                  <span>Set as Trending</span>
+                </label>
+                
+                {trendingInput.isTrending && (
+                  <div className="order-input-group">
+                    <label>Display Order:</label>
+                    <input
+                      type="number"
+                      min="0"
+                      value={trendingInput.order}
+                      onChange={(e) => setTrendingInput(prev => ({ ...prev, order: e.target.value }))}
+                      className="order-input"
+                      placeholder="0"
+                    />
+                    <small>Lower numbers appear first</small>
+                  </div>
+                )}
+                
+                <button 
+                  className="apply-btn trending-btn" 
+                  onClick={handleSetTrending}
+                >
+                  {trendingInput.isTrending ? 'Add to Trending' : 'Remove from Trending'}
+                </button>
+              </div>
+              
+              {game.isTrending && (
+                <div className="current-status">
+                  <small>Current Order: {game.trendingOrder || 0}</small>
+                  <small>Views: {game.viewCount || 0}</small>
+                </div>
+              )}
+            </div>
+          </div>
+        </section>
+
         {/* Basic Information */}
         <section className="detail-section">
           <h2>Basic Information</h2>
@@ -1357,8 +1541,12 @@ const AdminGameDetails = () => {
           <h2>Popularity & Stats</h2>
           <div className="info-grid">
             <div className="info-item">
+              <strong>Featured:</strong>
+              <p>{game.isFeatured ? `✓ Yes (Order: ${game.featuredOrder || 0})` : '✗ No'}</p>
+            </div>
+            <div className="info-item">
               <strong>Trending:</strong>
-              <p>{game.isTrending ? '✓ Yes' : '✗ No'}</p>
+              <p>{game.isTrending ? `🔥 Yes (Order: ${game.trendingOrder || 0})` : '✗ No'}</p>
             </div>
             {game.popularityLabel && (
               <div className="info-item">
@@ -1369,6 +1557,10 @@ const AdminGameDetails = () => {
             <div className="info-item">
               <strong>Purchases:</strong>
               <p>{game.purchaseCount || 0}</p>
+            </div>
+            <div className="info-item">
+              <strong>Views:</strong>
+              <p>{game.viewCount || 0}</p>
             </div>
             <div className="info-item">
               <strong>Average Rating:</strong>

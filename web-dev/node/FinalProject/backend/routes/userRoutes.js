@@ -17,7 +17,11 @@ router.post('/upload-profile-pic', authenticateToken, upload.single('profilePic'
 router.get('/games', userController.getAllGames);
 router.get('/games/top-rated', userController.getTopRatedGames);
 router.get('/games/most-purchased', userController.getMostPurchasedGames);
+
+// NEW: Featured & Trending Routes
+router.get('/games/featured', userController.getFeaturedGames);
 router.get('/games/trending', userController.getTrendingGames);
+
 router.get('/games/discounted', userController.getDiscountedGames);
 router.get('/games/free', userController.getFreeGames);
 router.get('/games/new-releases', userController.getNewReleases);
@@ -44,8 +48,11 @@ router.get('/games/filter', userController.filterGames);
 // Get Available Filters (for building filter UI)
 router.get('/games/filters/available', userController.getAvailableFilters);
 
-// Single Game Details
+// Single Game Details (with optional view tracking)
 router.get('/games/:id', userController.getGameById);
+
+// NEW: Increment view count
+router.post('/games/:id/view', userController.incrementViewCount);
 
 // ============ PROTECTED ROUTES (Auth Required) ============
 
@@ -56,7 +63,7 @@ router.delete('/cart/remove/:gameId', authenticateToken, userController.removeFr
 router.put('/cart/update/:gameId', authenticateToken, userController.updateCartQuantity);
 router.delete('/cart/clear', authenticateToken, userController.clearCart);
 
-// Get all reviews for a game (public)
+// Review Routes
 router.get('/games/:gameId/reviews', userController.getGameReviews);
 router.get('/games/:gameId/reviews/my-review', authenticateToken, userController.getUserReview);
 router.post('/games/:gameId/reviews', authenticateToken, userController.addReview);

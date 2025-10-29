@@ -177,19 +177,35 @@ const gameSchema = new mongoose.Schema({
     default: false
   },
   inGamePurchasesInfo: {
-    type: String // Description of in-game purchases
+    type: String
   },
 
-  // Popularity & Trending
+  // Popularity & Trending - UPDATED SECTION
   isTrending: {
     type: Boolean,
     default: false
+  },
+  trendingOrder: {
+    type: Number,
+    default: 0  // Lower numbers appear first in trending
+  },
+  isFeatured: {
+    type: Boolean,
+    default: false
+  },
+  featuredOrder: {
+    type: Number,
+    default: 0  // Lower numbers appear first in featured
   },
   popularityLabel: {
     type: String,
     enum: ['New Release', 'Trending', 'Best Seller', 'Editor\'s Choice', 'Hidden Gem', 'Classic']
   },
   purchaseCount: {
+    type: Number,
+    default: 0
+  },
+  viewCount: {
     type: Number,
     default: 0
   },
@@ -204,15 +220,24 @@ const gameSchema = new mongoose.Schema({
   reviews: [{
     user: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'User'
+      ref: 'User',
+      required: true
     },
     rating: {
       type: Number,
+      required: true,
       min: 1,
       max: 5
     },
-    comment: String,
+    comment: {
+      type: String,
+      default: ''
+    },
     createdAt: {
+      type: Date,
+      default: Date.now
+    },
+    updatedAt: {
       type: Date,
       default: Date.now
     }
@@ -230,33 +255,7 @@ const gameSchema = new mongoose.Schema({
   updatedAt: {
     type: Date,
     default: Date.now
-  },
-  // Reviews & Engagement
-reviews: [{
-  user: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true
-  },
-  rating: {
-    type: Number,
-    required: true,
-    min: 1,
-    max: 5
-  },
-  comment: {
-    type: String,
-    default: ''
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now
-  },
-  updatedAt: {
-    type: Date,
-    default: Date.now
   }
-  }]
 }, {
   timestamps: true
 });

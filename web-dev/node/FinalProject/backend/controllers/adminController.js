@@ -532,3 +532,157 @@ exports.deleteNews = async (req, res) => {
     res.status(500).json({ message: 'Server error.' });
   }
 };
+
+// Set Featured Status
+exports.setFeaturedStatus = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { isFeatured, featuredOrder } = req.body;
+
+    if (typeof isFeatured !== 'boolean') {
+      return res.status(400).json({ message: 'isFeatured must be a boolean value' });
+    }
+
+    const game = await Game.findById(id);
+    if (!game) {
+      return res.status(404).json({ message: 'Game not found' });
+    }
+
+    game.isFeatured = isFeatured;
+    if (featuredOrder !== undefined) {
+      game.featuredOrder = parseInt(featuredOrder);
+    }
+
+    await game.save();
+
+    res.status(200).json({
+      message: `Game ${isFeatured ? 'added to' : 'removed from'} featured successfully!`,
+      game
+    });
+  } catch (error) {
+    console.error('Set featured status error:', error);
+    res.status(500).json({ message: 'Server error.' });
+  }
+};
+
+// Set Trending Status
+exports.setTrendingStatus = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { isTrending, trendingOrder } = req.body;
+
+    if (typeof isTrending !== 'boolean') {
+      return res.status(400).json({ message: 'isTrending must be a boolean value' });
+    }
+
+    const game = await Game.findById(id);
+    if (!game) {
+      return res.status(404).json({ message: 'Game not found' });
+    }
+
+    game.isTrending = isTrending;
+    if (trendingOrder !== undefined) {
+      game.trendingOrder = parseInt(trendingOrder);
+    }
+
+    await game.save();
+
+    res.status(200).json({
+      message: `Game ${isTrending ? 'added to' : 'removed from'} trending successfully!`,
+      game
+    });
+  } catch (error) {
+    console.error('Set trending status error:', error);
+    res.status(500).json({ message: 'Server error.' });
+  }
+};
+
+// Get All Featured Games
+exports.getFeaturedGames = async (req, res) => {
+  try {
+    const games = await Game.find({ isFeatured: true, isActive: true })
+      .sort({ featuredOrder: 1, createdAt: -1 });
+    res.status(200).json({ games });
+  } catch (error) {
+    console.error('Get featured games error:', error);
+    res.status(500).json({ message: 'Server error.' });
+  }
+};
+
+// Get All Trending Games (with view count tracking)
+exports.getTrendingGames = async (req, res) => {
+  try {
+    const games = await Game.find({ isTrending: true, isActive: true })
+      .sort({ trendingOrder: 1, viewCount: -1, purchaseCount: -1 });
+    res.status(200).json({ games });
+  } catch (error) {
+    console.error('Get trending games error:', error);
+    res.status(500).json({ message: 'Server error.' });
+  }
+};
+
+// Bulk Update Featured Games Order
+exports.updateFeaturedOrder = async (req, res) => {
+  try {
+    const { games } = req.body; // Array of { id, order }
+
+    if (!Array.isArray(games)) {
+      return res.status(400).json({ message: 'Games must be an array' });
+    }
+
+    const updates = games.map(({ id, order }) => 
+      Game.findByIdAndUpdate(id, { featuredOrder: parseInt(order) })
+    );
+
+    await Promise.all(updates);
+
+    res.status(200).json({ message: 'Featured games order updated successfully!' });
+  } catch (error) {
+    console.error('Update featured order error:', error);
+    res.status(500).json({ message: 'Server error.' });
+  }
+};
+
+// Bulk Update Trending Games Order
+exports.updateTrendingOrder = async (req, res) => {
+  try {
+    const { games } = req.body; // Array of { id, order }
+
+    if (!Array.isArray(games)) {
+      return res.status(400).json({ message: 'Games must be an array' });
+    }
+
+    const updates = games.map(({ id, order }) => 
+      Game.findByIdAndUpdate(id, { trendingOrder: parseInt(order) })
+    );
+
+    await Promise.all(updates);
+
+    res.status(200).json({ message: 'Trending games order updated successfully!' });
+  } catch (error) {
+    console.error('Update trending order error:', error);
+    res.status(500).json({ message: 'Server error.' });
+  }
+};
+
+// Increment View Count (called when user views a game)
+exports.incrementViewCount = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const game = await Game.findByIdAndUpdate(
+      id,
+      { $inc: { viewCount: 1 } },
+      { new: true }
+    );
+
+    if (!game) {
+      return res.status(404).json({ message: 'Game not found' });
+    }
+
+    res.status(200).json({ viewCount: game.viewCount });
+  } catch (error) {
+    console.error('Increment view count error:', error);
+    res.status(500).json({ message: 'Server error.' });
+  }
+};

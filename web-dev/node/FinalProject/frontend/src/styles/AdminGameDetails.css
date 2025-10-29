@@ -73,6 +73,18 @@
   border: 1px solid rgba(239, 68, 68, 0.5);
 }
 
+.message-success::before {
+  content: "✓";
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.message-error::before {
+  content: "✗";
+  font-size: 20px;
+  font-weight: bold;
+}
+
 @keyframes slideInDown {
   from {
     opacity: 0;
@@ -132,6 +144,344 @@
 
 .error {
   color: #ef4444;
+}
+
+/* ==================== FEATURED & TRENDING MANAGEMENT SECTION ==================== */
+.featured-trending-section {
+  background: rgba(30, 41, 59, 0.6);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  padding: 35px;
+  margin-bottom: 40px;
+  border: 1px solid rgba(51, 204, 255, 0.2);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.featured-trending-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    linear-gradient(135deg, rgba(0, 191, 255, 0.03) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(0, 123, 255, 0.05) 0%, transparent 40%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.featured-trending-section h2 {
+  color: #00BFFF;
+  margin-bottom: 30px;
+  font-size: 28px;
+  font-weight: 800;
+  text-shadow: 0 0 20px rgba(0, 191, 255, 0.3);
+  border-bottom: 2px solid rgba(51, 204, 255, 0.3);
+  padding-bottom: 15px;
+  position: relative;
+  z-index: 1;
+}
+
+.management-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 30px;
+  position: relative;
+  z-index: 1;
+}
+
+.management-card {
+  background: rgba(15, 23, 42, 0.8);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  padding: 28px;
+  border: 1px solid rgba(51, 204, 255, 0.3);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.management-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #007BFF, #00BFFF);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.management-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 32px rgba(0, 191, 255, 0.4);
+  border-color: #00BFFF;
+}
+
+.management-card:hover::before {
+  opacity: 1;
+}
+
+.management-card h3 {
+  font-size: 22px;
+  color: #00BFFF;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.status-badge {
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+}
+
+.badge-active {
+  background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+  color: #fff;
+  padding: 8px 20px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.5);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border: 1px solid rgba(16, 185, 129, 0.5);
+}
+
+.badge-inactive {
+  background: rgba(30, 41, 59, 0.8);
+  color: #8B949E;
+  padding: 8px 20px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border: 1px solid rgba(139, 148, 158, 0.3);
+}
+
+.management-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.management-controls .checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 14px 18px;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  color: #E6EDF3;
+  background: rgba(30, 41, 59, 0.5);
+  border: 1px solid rgba(51, 204, 255, 0.2);
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+.management-controls .checkbox-label:hover {
+  background: rgba(30, 41, 59, 0.8);
+  border-color: #00BFFF;
+  transform: translateX(5px);
+  box-shadow: 0 4px 15px rgba(0, 191, 255, 0.2);
+}
+
+.management-controls .checkbox-label input[type="checkbox"] {
+  width: 22px;
+  height: 22px;
+  cursor: pointer;
+  accent-color: #00BFFF;
+  border-radius: 4px;
+}
+
+.management-controls .checkbox-label span {
+  user-select: none;
+}
+
+.order-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px;
+  background: rgba(15, 23, 42, 0.5);
+  border-radius: 12px;
+  border: 2px dashed rgba(51, 204, 255, 0.4);
+}
+
+.order-input-group label {
+  font-size: 13px;
+  font-weight: 700;
+  color: #00BFFF;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.order-input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid rgba(51, 204, 255, 0.3);
+  border-radius: 10px;
+  font-size: 18px;
+  font-weight: 700;
+  color: #E6EDF3;
+  transition: all 0.3s ease;
+  background: rgba(30, 41, 59, 0.8);
+}
+
+.order-input:focus {
+  outline: none;
+  border-color: #00BFFF;
+  box-shadow: 0 0 20px rgba(0, 191, 255, 0.4);
+  background: rgba(30, 41, 59, 0.95);
+}
+
+.order-input-group small {
+  color: #8B949E;
+  font-size: 12px;
+  font-style: italic;
+  font-weight: 500;
+}
+
+.apply-btn {
+  padding: 14px 28px;
+  border: none;
+  border-radius: 25px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  position: relative;
+  overflow: hidden;
+}
+
+.apply-btn::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+}
+
+.apply-btn:hover::before {
+  width: 300px;
+  height: 300px;
+}
+
+.featured-btn {
+  background: linear-gradient(135deg, #007BFF, #00BFFF);
+  color: white;
+  box-shadow: 0 4px 20px rgba(0, 191, 255, 0.3);
+  border: 1px solid rgba(0, 191, 255, 0.4);
+}
+
+.featured-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 30px rgba(0, 191, 255, 0.5);
+}
+
+.featured-btn:active {
+  transform: translateY(-1px);
+}
+
+.trending-btn {
+  background: linear-gradient(135deg, #e74c3c, #c0392b);
+  color: white;
+  box-shadow: 0 4px 20px rgba(231, 76, 60, 0.3);
+  border: 1px solid rgba(231, 76, 60, 0.4);
+}
+
+.trending-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 30px rgba(231, 76, 60, 0.5);
+}
+
+.trending-btn:active {
+  transform: translateY(-1px);
+}
+
+.current-status {
+  margin-top: 16px;
+  padding: 14px 18px;
+  background: rgba(15, 23, 42, 0.5);
+  border-radius: 10px;
+  border-left: 4px solid #00BFFF;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.current-status small {
+  color: #E6EDF3;
+  font-size: 14px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.current-status small::before {
+  content: '▸';
+  color: #00BFFF;
+  font-size: 16px;
+  font-weight: 900;
+}
+
+/* Animation for status changes */
+@keyframes statusChange {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.status-badge.animating {
+  animation: statusChange 0.3s ease;
+}
+
+/* Gaming glow effect */
+@keyframes glow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(0, 191, 255, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(0, 191, 255, 0.5);
+  }
+}
+
+.management-card:hover {
+  animation: glow 2s ease-in-out infinite;
 }
 
 /* ==================== VIEW MODE - CONTENT ==================== */
@@ -443,14 +793,14 @@
 .popularity-badge {
   display: inline-block;
   padding: 10px 20px;
-  background: linear-gradient(135deg, #e74c3c, #c0392b);
-  color: #fff;
+  background: linear-gradient(135deg, #ffa751 0%, #ffe259 100%);
+  color: #333;
   font-size: 16px;
   font-weight: 700;
   border-radius: 20px;
   text-transform: uppercase;
   letter-spacing: 1px;
-  box-shadow: 0 4px 15px rgba(231, 76, 60, 0.5);
+  box-shadow: 0 4px 15px rgba(255, 167, 81, 0.4);
 }
 
 /* Discount Management */
@@ -763,6 +1113,10 @@
   .details-header h1 {
     font-size: 36px;
   }
+
+  .management-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (max-width: 1024px) {
@@ -794,6 +1148,14 @@
 
   .action-buttons {
     flex-direction: column;
+  }
+
+  .management-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .featured-trending-section {
+    padding: 28px;
   }
 }
 
@@ -843,6 +1205,27 @@
     padding: 14px 30px;
     font-size: 15px;
   }
+
+  .featured-trending-section {
+    padding: 24px 20px;
+  }
+
+  .featured-trending-section h2 {
+    font-size: 24px;
+  }
+
+  .management-card {
+    padding: 20px;
+  }
+
+  .management-card h3 {
+    font-size: 20px;
+  }
+
+  .management-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
 }
 
 @media (max-width: 640px) {
@@ -877,6 +1260,55 @@
     font-size: 12px;
     padding: 6px 12px;
   }
+
+  .featured-trending-section {
+    padding: 20px 16px;
+  }
+
+  .featured-trending-section h2 {
+    font-size: 20px;
+  }
+
+  .management-card {
+    padding: 18px;
+  }
+
+  .management-card h3 {
+    font-size: 18px;
+  }
+
+  .badge-active,
+  .badge-inactive {
+    font-size: 13px;
+    padding: 6px 16px;
+  }
+
+  .checkbox-label {
+    font-size: 14px;
+    padding: 10px 14px;
+  }
+
+  .order-input-group {
+    padding: 12px;
+  }
+
+  .order-input {
+    font-size: 16px;
+    padding: 10px 14px;
+  }
+
+  .apply-btn {
+    padding: 12px 24px;
+    font-size: 14px;
+  }
+
+  .current-status {
+    padding: 12px 14px;
+  }
+
+  .current-status small {
+    font-size: 13px;
+  }
 }
 
 /* ==================== ANIMATIONS ==================== */
@@ -889,6 +1321,49 @@
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+/* Apply subtle animations to sections */
+.detail-section {
+  animation: fadeIn 0.5s ease-out;
+}
+
+.management-card {
+  animation: fadeIn 0.6s ease-out;
+}
+
+/* Hover effect for important elements */
+.apply-btn,
+.edit-btn,
+.delete-btn,
+.save-btn {
+  position: relative;
+  overflow: hidden;
+}
+
+.apply-btn:active,
+.edit-btn:active,
+.delete-btn:active,
+.save-btn:active {
+  transform: scale(0.98);
 }
 
 /* ==================== SMOOTH SCROLLING ==================== */
@@ -905,4 +1380,102 @@ html {
 ::-moz-selection {
   background: rgba(0, 191, 255, 0.3);
   color: #E6EDF3;
+}
+
+/* ==================== SCROLLBAR STYLING ==================== */
+::-webkit-scrollbar {
+  width: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.5);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  border-radius: 10px;
+  border: 2px solid rgba(15, 23, 42, 0.5);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #764ba2, #667eea);
+}
+
+/* ==================== LOADING SPINNER (Optional Enhancement) ==================== */
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.loading::after {
+  content: '';
+  display: inline-block;
+  width: 40px;
+  height: 40px;
+  margin-left: 15px;
+  border: 4px solid rgba(0, 191, 255, 0.3);
+  border-top-color: #00BFFF;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+/* ==================== TOOLTIP STYLES (For Enhanced UX) ==================== */
+.tooltip {
+  position: relative;
+  display: inline-block;
+}
+
+.tooltip::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: 125%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(30, 41, 59, 0.95);
+  color: #E6EDF3;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  border: 1px solid rgba(51, 204, 255, 0.3);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+}
+
+.tooltip:hover::after {
+  opacity: 1;
+}
+
+/* ==================== FOCUS VISIBLE FOR ACCESSIBILITY ==================== */
+*:focus-visible {
+  outline: 2px solid #00BFFF;
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* ==================== PRINT STYLES ==================== */
+@media print {
+  .admin-game-details {
+    background: white;
+    color: black;
+  }
+
+  .back-btn,
+  .action-buttons,
+  .featured-trending-section .management-controls {
+    display: none;
+  }
+
+  .detail-section {
+    page-break-inside: avoid;
+    border: 1px solid #ddd;
+  }
 }
