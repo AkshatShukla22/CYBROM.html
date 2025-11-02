@@ -1152,3 +1152,5 @@ const GameDetail = () => {
 };
 
 export default GameDetail;
+
+// Implement payment getway in this.
