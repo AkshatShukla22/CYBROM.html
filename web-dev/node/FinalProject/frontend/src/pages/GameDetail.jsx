@@ -1152,3 +1152,5 @@ const GameDetail = () => {
 };
 
 export default GameDetail;
+
+// I will start workiing on it after a while
