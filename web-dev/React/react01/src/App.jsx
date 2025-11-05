@@ -29,3 +29,5 @@ const App = () => {
 }
 
 export default App;
+
+// React classes ended
