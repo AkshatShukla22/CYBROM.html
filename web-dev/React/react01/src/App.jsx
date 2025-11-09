@@ -29,5 +29,3 @@ const App = () => {
 }
 
 export default App;
-
-// i am Sharing it
