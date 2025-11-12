@@ -59,5 +59,3 @@ function App() {
 }
 
 export default App;
-
-// Middleware is throwing error
