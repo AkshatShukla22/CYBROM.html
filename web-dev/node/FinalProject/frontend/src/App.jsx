@@ -59,5 +59,3 @@ function App() {
 }
 
 export default App;
-
-// from monday
