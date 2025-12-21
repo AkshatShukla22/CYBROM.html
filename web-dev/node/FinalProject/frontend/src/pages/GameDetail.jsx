@@ -19,8 +19,10 @@ const GameDetail = () => {
   const [relatedGames, setRelatedGames] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedImage, setSelectedImage] = useState(null);
-  const [selectedType, setSelectedType] = useState('image'); // 'image' or 'video'
+  const [selectedType, setSelectedType] = useState('image');
   const [activeTab, setActiveTab] = useState('about');
+  const [ownsGame, setOwnsGame] = useState(false);
+  const [checkingOwnership, setCheckingOwnership] = useState(true);
 
   // Review states
   const [reviews, setReviews] = useState([]);
@@ -53,6 +55,14 @@ const GameDetail = () => {
     checkAuth();
     window.scrollTo(0, 0);
   }, [id]);
+
+  useEffect(() => {
+    if (isAuthenticated && game) {
+      checkGameOwnership();
+    } else {
+      setCheckingOwnership(false);
+    }
+  }, [isAuthenticated, game]);
 
   useEffect(() => {
     if (successMessage) {
@@ -98,10 +108,28 @@ const GameDetail = () => {
     }
   };
 
-  // NEW: Track game view
+  const checkGameOwnership = async () => {
+    try {
+      const response = await fetch(`${BACKEND_URL}/api/users/collection`, {
+        credentials: 'include'
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        const owned = data.collection.some(item => item.game._id === game._id);
+        setOwnsGame(owned);
+      }
+    } catch (error) {
+      console.error('Error checking game ownership:', error);
+      setOwnsGame(false);
+    } finally {
+      setCheckingOwnership(false);
+    }
+  };
+
   const trackGameView = async (gameId) => {
     try {
-      await fetch(`${BACKEND_URL}/api/user/games/${gameId}/view`, {
+      await fetch(`${BACKEND_URL}/api/users/games/${gameId}/view`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -115,16 +143,13 @@ const GameDetail = () => {
   const fetchGameDetails = async () => {
     setLoading(true);
     try {
-      const gameRes = await fetch(`${BACKEND_URL}/api/user/games/${id}`);
+      const gameRes = await fetch(`${BACKEND_URL}/api/users/games/${id}`);
       const gameData = await gameRes.json();
       
       if (gameRes.ok) {
         setGame(gameData.game);
-        
-        // NEW: Track view when game details are loaded
         trackGameView(id);
         
-        // PRIORITY: Set trailer as default if it exists, otherwise use cover image
         if (gameData.game.trailer) {
           setSelectedImage(gameData.game.trailer);
           setSelectedType('video');
@@ -135,7 +160,7 @@ const GameDetail = () => {
         
         if (gameData.game.categories && gameData.game.categories.length > 0) {
           const category = gameData.game.categories[0];
-          const relatedRes = await fetch(`${BACKEND_URL}/api/user/games/category/${category}`);
+          const relatedRes = await fetch(`${BACKEND_URL}/api/users/games/category/${category}`);
           const relatedData = await relatedRes.json();
           
           const filtered = relatedData.games
@@ -157,7 +182,7 @@ const GameDetail = () => {
   const fetchReviews = async () => {
     try {
       const response = await fetch(
-        `${BACKEND_URL}/api/user/games/${id}/reviews?page=${currentPage}&limit=10&sortBy=${sortBy}`
+        `${BACKEND_URL}/api/users/games/${id}/reviews?page=${currentPage}&limit=10&sortBy=${sortBy}`
       );
       const data = await response.json();
       
@@ -178,7 +203,7 @@ const GameDetail = () => {
   const fetchUserReview = async () => {
     try {
       const response = await fetch(
-        `${BACKEND_URL}/api/user/games/${id}/reviews/my-review`,
+        `${BACKEND_URL}/api/users/games/${id}/reviews/my-review`,
         { credentials: 'include' }
       );
       
@@ -208,7 +233,7 @@ const GameDetail = () => {
     setReviewSuccess('');
 
     try {
-      const url = `${BACKEND_URL}/api/user/games/${id}/reviews`;
+      const url = `${BACKEND_URL}/api/users/games/${id}/reviews`;
       const method = isEditMode ? 'PUT' : 'POST';
       
       const response = await fetch(url, {
@@ -256,7 +281,7 @@ const GameDetail = () => {
 
     try {
       const response = await fetch(
-        `${BACKEND_URL}/api/user/games/${id}/reviews`,
+        `${BACKEND_URL}/api/users/games/${id}/reviews`,
         {
           method: 'DELETE',
           credentials: 'include'
@@ -288,6 +313,210 @@ const GameDetail = () => {
     setRating(userReview?.rating || 0);
     setComment(userReview?.comment || '');
     setReviewError('');
+  };
+
+  const handleBuyNow = async () => {
+    console.log('Buy Now clicked!', { 
+      isAuthenticated, 
+      gameId: game._id, 
+      gamePrice: game.price 
+    });
+
+    if (!isAuthenticated) {
+      alert('Please login to purchase');
+      navigate('/login');
+      return;
+    }
+
+    if (game.price === 0) {
+      try {
+        const response = await fetch(`${BACKEND_URL}/api/users/collection/add-free-game`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include',
+          body: JSON.stringify({ gameId: game._id })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          alert('🎉 Game added to your collection!');
+          setOwnsGame(true);
+          await checkGameOwnership();
+        } else {
+          alert(data.message || 'Failed to add game to collection');
+        }
+      } catch (error) {
+        console.error('Error adding free game:', error);
+        alert('Failed to add game to collection');
+      }
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      const orderResponse = await fetch(`${BACKEND_URL}/api/users/payment/create-order-single`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+          gameId: game._id,
+          quantity: 1
+        })
+      });
+
+      const orderData = await orderResponse.json();
+
+      if (!orderResponse.ok) {
+        throw new Error(orderData.message || 'Failed to create order');
+      }
+
+      const options = {
+        key: orderData.keyId,
+        amount: orderData.amount,
+        currency: orderData.currency,
+        order_id: orderData.orderId,
+        name: 'Game Store',
+        description: `Purchase ${game.name}`,
+        handler: async function (response) {
+          try {
+            const verifyResponse = await fetch(`${BACKEND_URL}/api/users/payment/verify`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              credentials: 'include',
+              body: JSON.stringify({
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_signature: response.razorpay_signature
+              })
+            });
+
+            const verifyData = await verifyResponse.json();
+
+            if (verifyData.success) {
+              alert('🎉 Purchase successful! Game added to your collection.');
+              setOwnsGame(true);
+              await checkGameOwnership();
+            } else {
+              alert(verifyData.message || 'Payment verification failed');
+            }
+          } catch (error) {
+            console.error('Payment verification error:', error);
+            alert('Payment verification failed. Please contact support.');
+          } finally {
+            setLoading(false);
+          }
+        },
+        prefill: {
+          name: '',
+          email: '',
+          contact: ''
+        },
+        theme: {
+          color: '#3399cc'
+        },
+        modal: {
+          ondismiss: function() {
+            setLoading(false);
+          }
+        }
+      };
+
+      const script = document.createElement('script');
+      script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+      script.onload = () => {
+        const razorpay = new window.Razorpay(options);
+        razorpay.open();
+      };
+      script.onerror = () => {
+        alert('Failed to load payment gateway. Please try again.');
+        setLoading(false);
+      };
+      document.body.appendChild(script);
+
+    } catch (error) {
+      console.error('Buy now error:', error);
+      alert(error.message || 'Failed to process payment');
+      setLoading(false);
+    }
+  };
+
+  const handleDownload = () => {
+    const greetingMessage = `
+╔══════════════════════════════════════════════════════╗
+║                                                      ║
+║         🎮 THANK YOU FOR YOUR PURCHASE! 🎮          ║
+║                                                      ║
+╚══════════════════════════════════════════════════════╝
+
+Game: ${game.name}
+Developer: ${game.developer || 'N/A'}
+Purchase Date: ${new Date().toLocaleDateString()}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Welcome to ${game.name}!
+
+Thank you for choosing to play this amazing game. We hope you 
+enjoy every moment of your gaming experience!
+
+INSTALLATION INSTRUCTIONS:
+1. Extract the game files to your desired location
+2. Run the installer or executable file
+3. Follow the on-screen instructions
+4. Launch the game and have fun!
+
+GAME DETAILS:
+${game.description ? game.description.substring(0, 200) + '...' : 'No description available'}
+
+SYSTEM REQUIREMENTS:
+Minimum:
+- OS: ${game.minimumRequirements?.os || 'N/A'}
+- CPU: ${game.minimumRequirements?.cpu || 'N/A'}
+- RAM: ${game.minimumRequirements?.ram || 'N/A'}
+- GPU: ${game.minimumRequirements?.gpu || 'N/A'}
+- Storage: ${game.minimumRequirements?.storage || 'N/A'}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+SUPPORT & HELP:
+- 24/7 Customer Support
+- Email: support@gamestore.com
+- Phone: +91-1800-XXX-XXXX
+
+For game updates and patches, please visit your game library.
+
+IMPORTANT NOTES:
+⚠ Keep this file for your records
+⚠ Do not share your game key with others
+⚠ Visit our support page for troubleshooting
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Thank you for being a valued customer!
+Happy Gaming! 🎮
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+© ${new Date().getFullYear()} Game Store. All rights reserved.
+  `;
+
+    const blob = new Blob([greetingMessage], { type: 'text/plain' });
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `${game.name.replace(/[^a-z0-9]/gi, '_')}_Download_Info.txt`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(url);
   };
 
   const renderStars = (ratingValue, interactive = false, size = 24) => {
@@ -331,11 +560,6 @@ const GameDetail = () => {
     dispatch(addToCartAsync({ gameId: game._id }));
   };
 
-  const handleBuyNow = () => {
-    console.log('Buy now:', game._id);
-  };
-
-  // Handle thumbnail click - switch between image and video
   const handleThumbnailClick = (media, type) => {
     setSelectedImage(media);
     setSelectedType(type);
@@ -380,7 +604,6 @@ const GameDetail = () => {
         <i className="fa-solid fa-arrow-left"></i>
       </button>
 
-      {/* Hero Section */}
       <div 
         className="gd-game-hero"
         style={{
@@ -442,9 +665,7 @@ const GameDetail = () => {
 
       <div className="gd-game-detail-content">
         <div className="gd-content-grid">
-          {/* Left Section */}
           <div className="gd-left-section">
-            {/* Main Image/Video Display */}
             <div className="gd-main-image-container">
               {selectedImage ? (
                 selectedType === 'video' ? (
@@ -472,9 +693,7 @@ const GameDetail = () => {
               )}
             </div>
 
-            {/* Thumbnail Gallery */}
             <div className="gd-thumbnail-gallery">
-              {/* Video Thumbnail - Show FIRST if trailer exists */}
               {game.trailer && (
                 <div 
                   className={`gd-video-thumbnail ${selectedImage === game.trailer && selectedType === 'video' ? 'gd-thumbnail-active' : ''}`}
@@ -524,7 +743,6 @@ const GameDetail = () => {
               ))}
             </div>
 
-            {/* Tabs Section */}
             <div className="gd-info-tabs">
               <div className="gd-tab-buttons">
                 <button 
@@ -639,518 +857,522 @@ const GameDetail = () => {
                     </div>
 
                     {game.languageSupport && game.languageSupport.length > 0 && (
-                      <div className="gd-spec-item">
-                        <strong>Languages:</strong>
-                        <p>{game.languageSupport.join(', ')}</p>
-                      </div>
-                    )}
-
-                    {game.supportedResolutions && game.supportedResolutions.length > 0 && (
-                      <div className="gd-spec-item">
-                        <strong>Supported Resolutions:</strong>
-                        <p>{game.supportedResolutions.join(', ')}</p>
-                      </div>
-                    )}
-
-                    {game.gameEngine && (
-                      <div className="gd-spec-item">
-                        <strong>Game Engine:</strong>
-                        <p>{game.gameEngine}</p>
-                      </div>
-                    )}
-
-                    {game.inGamePurchases && (
-                      <div className="gd-spec-item gd-spec-warning">
-                        <strong>⚠ In-Game Purchases:</strong>
-                        <p>{game.inGamePurchasesInfo || 'This game includes in-game purchases'}</p>
-                      </div>
-                    )}
+<div className="gd-spec-item">
+<strong>Languages:</strong>
+<p>{game.languageSupport.join(', ')}</p>
+</div>
+)}
+                {game.supportedResolutions && game.supportedResolutions.length > 0 && (
+                  <div className="gd-spec-item">
+                    <strong>Supported Resolutions:</strong>
+                    <p>{game.supportedResolutions.join(', ')}</p>
                   </div>
                 )}
 
-                {activeTab === 'requirements' && (
-                  <div className="gd-requirements-content">
-                    <h3>System Requirements</h3>
-                    
-                    {game.minimumRequirements && Object.keys(game.minimumRequirements).length > 0 && (
-                      <div className="gd-req-section">
-                        <h4>Minimum</h4>
-                        <table className="gd-req-table">
-                          <tbody>
-                            {game.minimumRequirements.os && (
-                              <tr>
-                                <td><strong>OS</strong></td>
-                                <td>{game.minimumRequirements.os}</td>
-                              </tr>
-                            )}
-                            {game.minimumRequirements.cpu && (
-                              <tr>
-                                <td><strong>Processor</strong></td>
-                                <td>{game.minimumRequirements.cpu}</td>
-                              </tr>
-                            )}
-                            {game.minimumRequirements.ram && (
-                              <tr>
-                                <td><strong>Memory</strong></td>
-                                <td>{game.minimumRequirements.ram}</td>
-                              </tr>
-                            )}
-                            {game.minimumRequirements.gpu && (
-                              <tr>
-                                <td><strong>Graphics</strong></td>
-                                <td>{game.minimumRequirements.gpu}</td>
-                              </tr>
-                            )}
-                            {game.minimumRequirements.storage && (
-                              <tr>
-                                <td><strong>Storage</strong></td>
-                                <td>{game.minimumRequirements.storage}</td>
-                              </tr>
-                            )}
-                            {game.minimumRequirements.directX && (
-                              <tr>
-                                <td><strong>DirectX</strong></td>
-                                <td>{game.minimumRequirements.directX}</td>
-                              </tr>
-                            )}
-                            {game.minimumRequirements.additional && (
-                              <tr>
-                                <td><strong>Additional Notes</strong></td>
-                                <td>{game.minimumRequirements.additional}</td>
-                              </tr>
-                            )}
-                          </tbody>
-                        </table>
-                      </div>
-                    )}
-
-                    {game.recommendedRequirements && Object.keys(game.recommendedRequirements).length > 0 && (
-                      <div className="gd-req-section">
-                        <h4>Recommended</h4>
-                        <table className="gd-req-table">
-                          <tbody>
-                            {game.recommendedRequirements.os && (
-                              <tr>
-                                <td><strong>OS</strong></td>
-                                <td>{game.recommendedRequirements.os}</td>
-                              </tr>
-                            )}
-                            {game.recommendedRequirements.cpu && (
-                              <tr>
-                                <td><strong>Processor</strong></td>
-                                <td>{game.recommendedRequirements.cpu}</td>
-                              </tr>
-                            )}
-                            {game.recommendedRequirements.ram && (
-                              <tr>
-                                <td><strong>Memory</strong></td>
-                                <td>{game.recommendedRequirements.ram}</td>
-                              </tr>
-                            )}
-                            {game.recommendedRequirements.gpu && (
-                              <tr>
-                                <td><strong>Graphics</strong></td>
-                                <td>{game.recommendedRequirements.gpu}</td>
-                              </tr>
-                            )}
-                            {game.recommendedRequirements.storage && (
-                              <tr>
-                                <td><strong>Storage</strong></td>
-                                <td>{game.recommendedRequirements.storage}</td>
-                              </tr>
-                            )}
-                            {game.recommendedRequirements.directX && (
-                              <tr>
-                                <td><strong>DirectX</strong></td>
-                                <td>{game.recommendedRequirements.directX}</td>
-                              </tr>
-                            )}
-                            {game.recommendedRequirements.additional && (
-                              <tr>
-                                <td><strong>Additional Notes</strong></td>
-                                <td>{game.recommendedRequirements.additional}</td>
-                              </tr>
-                            )}
-                          </tbody>
-                        </table>
-                      </div>
-                    )}
+                {game.gameEngine && (
+                  <div className="gd-spec-item">
+                    <strong>Game Engine:</strong>
+                    <p>{game.gameEngine}</p>
                   </div>
                 )}
 
-                {activeTab === 'reviews' && (
-                  <div className="gd-reviews-content">
-                    {/* Review Stats Overview */}
-                    <div className="gd-review-stats-overview">
-                      <div className="gd-average-rating-box">
-                        <div className="gd-rating-number-large">
-                          {reviewStats.averageRating ? reviewStats.averageRating.toFixed(1) : '0.0'}
-                        </div>
-                        {renderStars(Math.round(reviewStats.averageRating || 0), false, 28)}
-                        <div className="gd-total-reviews-text">
-                          {reviewStats.totalReviews} review{reviewStats.totalReviews !== 1 ? 's' : ''}
-                        </div>
-                      </div>
+                {game.inGamePurchases && (
+                  <div className="gd-spec-item gd-spec-warning">
+                    <strong>⚠ In-Game Purchases:</strong>
+                    <p>{game.inGamePurchasesInfo || 'This game includes in-game purchases'}</p>
+                  </div>
+                )}
+              </div>
+            )}
 
-                      <div className="gd-rating-distribution-box">
-                        {[5, 4, 3, 2, 1].map((star) => {
-                          const count = reviewStats.ratingDistribution[star] || 0;
-                          const percentage = reviewStats.totalReviews > 0
-                            ? (count / reviewStats.totalReviews) * 100
-                            : 0;
-                          
-                          return (
-                            <div key={star} className="gd-rating-bar-row">
-                              <span className="gd-star-label">{star} ★</span>
-                              <div className="gd-bar-container">
-                                <div 
-                                  className="gd-bar-fill" 
-                                  style={{ width: `${percentage}%` }}
-                                />
-                              </div>
-                              <span className="gd-count-label">{count}</span>
-                            </div>
-                          );
-                        })}
-                      </div>
+            {activeTab === 'requirements' && (
+              <div className="gd-requirements-content">
+                <h3>System Requirements</h3>
+                
+                {game.minimumRequirements && Object.keys(game.minimumRequirements).length > 0 && (
+                  <div className="gd-req-section">
+                    <h4>Minimum</h4>
+                    <table className="gd-req-table">
+                      <tbody>
+                        {game.minimumRequirements.os && (
+                          <tr>
+                            <td><strong>OS</strong></td>
+                            <td>{game.minimumRequirements.os}</td>
+                          </tr>
+                        )}
+                        {game.minimumRequirements.cpu && (
+                          <tr>
+                            <td><strong>Processor</strong></td>
+                            <td>{game.minimumRequirements.cpu}</td>
+                          </tr>
+                        )}
+                        {game.minimumRequirements.ram && (
+                          <tr>
+                            <td><strong>Memory</strong></td>
+                            <td>{game.minimumRequirements.ram}</td>
+                          </tr>
+                        )}
+                        {game.minimumRequirements.gpu && (
+                          <tr>
+                            <td><strong>Graphics</strong></td>
+                            <td>{game.minimumRequirements.gpu}</td>
+                          </tr>
+                        )}
+                        {game.minimumRequirements.storage && (
+                          <tr>
+                            <td><strong>Storage</strong></td>
+                            <td>{game.minimumRequirements.storage}</td>
+                          </tr>
+                        )}
+                        {game.minimumRequirements.directX && (
+                          <tr>
+                            <td><strong>DirectX</strong></td>
+                            <td>{game.minimumRequirements.directX}</td>
+                          </tr>
+                        )}
+                        {game.minimumRequirements.additional && (
+                          <tr>
+                            <td><strong>Additional Notes</strong></td>
+                            <td>{game.minimumRequirements.additional}</td>
+                          </tr>
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+
+                {game.recommendedRequirements && Object.keys(game.recommendedRequirements).length > 0 && (
+                  <div className="gd-req-section">
+                    <h4>Recommended</h4>
+                    <table className="gd-req-table">
+                      <tbody>
+                        {game.recommendedRequirements.os && (
+                          <tr>
+                            <td><strong>OS</strong></td>
+                            <td>{game.recommendedRequirements.os}</td>
+                          </tr>
+                        )}
+                        {game.recommendedRequirements.cpu && (
+                          <tr>
+                            <td><strong>Processor</strong></td>
+                            <td>{game.recommendedRequirements.cpu}</td>
+                          </tr>
+                        )}
+                        {game.recommendedRequirements.ram && (
+                          <tr>
+                            <td><strong>Memory</strong></td>
+                            <td>{game.recommendedRequirements.ram}</td>
+                          </tr>
+                        )}
+                        {game.recommendedRequirements.gpu && (
+                          <tr>
+                            <td><strong>Graphics</strong></td>
+                            <td>{game.recommendedRequirements.gpu}</td>
+                          </tr>
+                        )}
+                        {game.recommendedRequirements.storage && (
+                          <tr>
+                            <td><strong>Storage</strong></td>
+                            <td>{game.recommendedRequirements.storage}</td>
+                          </tr>
+                        )}
+                        {game.recommendedRequirements.directX && (
+                          <tr>
+                            <td><strong>DirectX</strong></td>
+                            <td>{game.recommendedRequirements.directX}</td>
+                          </tr>
+                        )}
+                        {game.recommendedRequirements.additional && (
+                          <tr>
+                            <td><strong>Additional Notes</strong></td>
+                            <td>{game.recommendedRequirements.additional}</td>
+                          </tr>
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {activeTab === 'reviews' && (
+              <div className="gd-reviews-content">
+                <div className="gd-review-stats-overview">
+                  <div className="gd-average-rating-box">
+                    <div className="gd-rating-number-large">
+                      {reviewStats.averageRating ? reviewStats.averageRating.toFixed(1) : '0.0'}
                     </div>
+                    {renderStars(Math.round(reviewStats.averageRating || 0), false, 28)}
+                    <div className="gd-total-reviews-text">
+                      {reviewStats.totalReviews} review{reviewStats.totalReviews !== 1 ? 's' : ''}
+                    </div>
+                  </div>
 
-                    {/* User Review Section */}
-                    {isAuthenticated && !isAdmin && (
-                      <div className="gd-user-review-section">
-                        {userReview && !showReviewForm && (
-                          <div className="gd-user-existing-review">
-                            <h3>Your Review</h3>
-                            <div className="gd-review-card gd-user-review-card">
-                              <div className="gd-review-header-row">
-                                {renderStars(userReview.rating, false, 20)}
-                                <span className="gd-review-date">
-                                  {formatDate(userReview.createdAt)}
-                                </span>
-                              </div>
-                              {userReview.comment && (
-                                <p className="gd-review-comment">{userReview.comment}</p>
-                              )}
-                              <div className="gd-review-actions">
-                                <button 
-                                  className="gd-btn-edit"
-                                  onClick={handleEditReview}
-                                >
-                                  <i className="fa-solid fa-edit"></i> Edit
-                                </button>
-                                <button 
-                                  className="gd-btn-delete"
-                                  onClick={handleDeleteReview}
-                                >
-                                  <i className="fa-solid fa-trash"></i> Delete
-                                </button>
-                              </div>
-                            </div>
+                  <div className="gd-rating-distribution-box">
+                    {[5, 4, 3, 2, 1].map((star) => {
+                      const count = reviewStats.ratingDistribution[star] || 0;
+                      const percentage = reviewStats.totalReviews > 0
+                        ? (count / reviewStats.totalReviews) * 100
+                        : 0;
+                      
+                      return (
+                        <div key={star} className="gd-rating-bar-row">
+                          <span className="gd-star-label">{star} ★</span>
+                          <div className="gd-bar-container">
+                            <div 
+                              className="gd-bar-fill" 
+                              style={{ width: `${percentage}%` }}
+                            />
                           </div>
-                        )}
+                          <span className="gd-count-label">{count}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
 
-                        {!userReview && !showReviewForm && (
-                          <button
-                            className="gd-btn-write-review"
-                            onClick={() => setShowReviewForm(true)}
-                          >
-                            <i className="fa-solid fa-pen"></i> Write a Review
-                          </button>
-                        )}
-
-                        {showReviewForm && (
-                          <div className="gd-review-form-container">
-                            <h3>{isEditMode ? 'Edit Your Review' : 'Write a Review'}</h3>
-                            <form onSubmit={handleSubmitReview}>
-                              <div className="gd-form-group">
-                                <label>Rating *</label>
-                                {renderStars(rating, true, 32)}
-                              </div>
-
-                              <div className="gd-form-group">
-                                <label htmlFor="comment">Your Review (Optional)</label>
-                                <textarea
-                                  id="comment"
-                                  value={comment}
-                                  onChange={(e) => setComment(e.target.value)}
-                                  placeholder="Share your thoughts about this game..."
-                                  rows="5"
-                                  maxLength="1000"
-                                  className="gd-review-textarea"
-                                />
-                                <small>{comment.length}/1000 characters</small>
-                              </div>
-
-                              <div className="gd-form-actions">
-                                <button 
-                                  type="submit"
-                                  className="gd-btn-submit-review"
-                                  disabled={reviewLoading || rating === 0}
-                                >
-                                  {reviewLoading ? (
-                                    <>
-                                      <i className="fa-solid fa-spinner fa-spin"></i> Submitting...
-                                    </>
-                                  ) : (
-                                    <>
-                                      <i className="fa-solid fa-check"></i> {isEditMode ? 'Update Review' : 'Submit Review'}
-                                    </>
-                                  )}
-                                </button>
-                                <button 
-                                  type="button"
-                                  className="gd-btn-cancel-review"
-                                  onClick={handleCancelReview}
-                                  disabled={reviewLoading}
-                                >
-                                  <i className="fa-solid fa-times"></i> Cancel
-                                </button>
-                              </div>
-                            </form>
+                {isAuthenticated && !isAdmin && (
+                  <div className="gd-user-review-section">
+                    {userReview && !showReviewForm && (
+                      <div className="gd-user-existing-review">
+                        <h3>Your Review</h3>
+                        <div className="gd-review-card gd-user-review-card">
+                          <div className="gd-review-header-row">
+                            {renderStars(userReview.rating, false, 20)}
+                            <span className="gd-review-date">
+                              {formatDate(userReview.createdAt)}
+                            </span>
                           </div>
-                        )}
-                      </div>
-                    )}
-
-                    {!isAuthenticated && (
-                      <div className="gd-login-prompt">
-                        <i className="fa-solid fa-lock"></i>
-                        <p>Please log in to write a review</p>
-                        <button 
-                          className="gd-btn-login"
-                          onClick={() => navigate('/login')}
-                        >
-                          Log In
-                        </button>
-                      </div>
-                    )}
-
-                    {isAdmin && (
-                      <div className="gd-admin-notice">
-                        <i className="fa-solid fa-info-circle"></i>
-                        <p>Admins cannot review games</p>
-                      </div>
-                    )}
-
-                    {/* Reviews List */}
-                    <div className="gd-reviews-list-section">
-                      <div className="gd-reviews-header">
-                        <h3>All Reviews</h3>
-                        <div className="gd-sort-controls">
-                          <label>Sort by:</label>
-                          <select 
-                            value={sortBy} 
-                            onChange={(e) => {
-                              setSortBy(e.target.value);
-                              setCurrentPage(1);
-                            }}
-                            className="gd-sort-select"
-                          >
-                            <option value="newest">Newest First</option>
-                            <option value="oldest">Oldest First</option>
-                            <option value="highest">Highest Rating</option>
-                            <option value="lowest">Lowest Rating</option>
-                          </select>
+                          {userReview.comment && (
+                            <p className="gd-review-comment">{userReview.comment}</p>
+                          )}
+                          <div className="gd-review-actions">
+                            <button 
+                              className="gd-btn-edit"
+                              onClick={handleEditReview}
+                            >
+                              <i className="fa-solid fa-edit"></i> Edit
+                            </button>
+                            <button 
+                              className="gd-btn-delete"
+                              onClick={handleDeleteReview}
+                            >
+                              <i className="fa-solid fa-trash"></i> Delete
+                            </button>
+                          </div>
                         </div>
                       </div>
+                    )}
 
-                      {reviews.length > 0 ? (
-                        <>
-                          <div className="gd-reviews-list">
-                            {reviews.map((review) => (
-                              <div key={review._id} className="gd-review-item">
-                                <div className="gd-review-header">
-                                  <div className="gd-reviewer-info">
-                                    <div className="gd-reviewer-avatar">
-                                      {review.user?.profilePicUrl ? (
-                                        <img 
-                                          src={review.user.profilePicUrl.startsWith('http') 
-                                            ? review.user.profilePicUrl 
-                                            : `${BACKEND_URL}${review.user.profilePicUrl}`
-                                          } 
-                                          alt={review.user.username || 'User'}
-                                          onError={(e) => {
-                                            e.target.style.display = 'none';
-                                            e.target.nextElementSibling.style.display = 'flex';
-                                          }}
-                                        />
-                                      ) : null}
-                                      <div 
-                                        className="gd-avatar-placeholder" 
-                                        style={{ 
-                                          display: review.user?.profilePicUrl ? 'none' : 'flex',
-                                          width: '40px',
-                                          height: '40px',
-                                          borderRadius: '50%',
-                                          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                                          color: 'white',
-                                          fontSize: '18px',
-                                          fontWeight: 'bold',
-                                          alignItems: 'center',
-                                          justifyContent: 'center'
-                                        }}
-                                      >
-                                        {review.user?.username?.charAt(0).toUpperCase() || 'U'}
-                                      </div>
-                                    </div>
-                                    <div className="gd-reviewer-details">
-                                      <span className="gd-reviewer-name">
-                                        {review.user?.username || 'Anonymous'}
-                                      </span>
-                                      <span className="gd-review-date">
-                                        {formatDate(review.createdAt)}
-                                      </span>
-                                    </div>
-                                  </div>
-                                  {renderStars(review.rating, false, 18)}
-                                </div>
-                                {review.comment && (
-                                  <p className="gd-review-comment">{review.comment}</p>
-                                )}
-                                {review.updatedAt && review.updatedAt !== review.createdAt && (
-                                  <div className="gd-review-edited">
-                                    <i className="fa-solid fa-pencil"></i>
-                                    <span>Edited on {formatDate(review.updatedAt)}</span>
-                                  </div>
-                                )}
-                              </div>
-                            ))}
+                    {!userReview && !showReviewForm && (
+                      <button
+                        className="gd-btn-write-review"
+                        onClick={() => setShowReviewForm(true)}
+                      >
+                        <i className="fa-solid fa-pen"></i> Write a Review
+                      </button>
+                    )}
+
+                    {showReviewForm && (
+                      <div className="gd-review-form-container">
+                        <h3>{isEditMode ? 'Edit Your Review' : 'Write a Review'}</h3>
+                        <form onSubmit={handleSubmitReview}>
+                          <div className="gd-form-group">
+                            <label>Rating *</label>
+                            {renderStars(rating, true, 32)}
                           </div>
 
-                          {/* Pagination */}
-                          {totalPages > 1 && (
-                            <div className="gd-pagination">
-                              <button
-                                className="gd-pagination-btn"
-                                onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
-                                disabled={currentPage === 1}
-                              >
-                                <i className="fa-solid fa-chevron-left"></i> Previous
-                              </button>
-                              
-                              <div className="gd-pagination-info">
-                                Page {currentPage} of {totalPages}
-                              </div>
+                          <div className="gd-form-group">
+                            <label htmlFor="comment">Your Review (Optional)</label>
+                            <textarea
+                              id="comment"
+                              value={comment}
+                              onChange={(e) => setComment(e.target.value)}
+                              placeholder="Share your thoughts about this game..."
+                              rows="5"
+                              maxLength="1000"
+                              className="gd-review-textarea"
+                            />
+                            <small>{comment.length}/1000 characters</small>
+                          </div>
 
-                              <button
-                                className="gd-pagination-btn"
-                                onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
-                                disabled={currentPage === totalPages}
-                              >
-                                Next <i className="fa-solid fa-chevron-right"></i>
-                              </button>
+                          <div className="gd-form-actions">
+                            <button 
+                              type="submit"
+                              className="gd-btn-submit-review"
+                              disabled={reviewLoading || rating === 0}
+                            >
+                              {reviewLoading ? (
+                                <>
+                                  <i className="fa-solid fa-spinner fa-spin"></i> Submitting...
+                                </>
+                              ) : (
+                                <>
+                                  <i className="fa-solid fa-check"></i> {isEditMode ? 'Update Review' : 'Submit Review'}
+                                </>
+                              )}
+                            </button>
+                            <button 
+                              type="button"
+                              className="gd-btn-cancel-review"
+                              onClick={handleCancelReview}
+                              disabled={reviewLoading}
+                            >
+                              <i className="fa-solid fa-times"></i> Cancel
+                            </button>
+                          </div>
+                        </form>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {!isAuthenticated && (
+                  <div className="gd-login-prompt">
+                    <i className="fa-solid fa-lock"></i>
+                    <p>Please log in to write a review</p>
+                    <button 
+                      className="gd-btn-login"
+                      onClick={() => navigate('/login')}
+                    >
+                      Log In
+                    </button>
+                  </div>
+                )}
+
+                {isAdmin && (
+                  <div className="gd-admin-notice">
+                    <i className="fa-solid fa-info-circle"></i>
+                    <p>Admins cannot review games</p>
+                  </div>
+                )}
+
+                <div className="gd-reviews-list-section">
+                  <div className="gd-reviews-header">
+                    <h3>All Reviews</h3>
+                    <div className="gd-sort-controls">
+                      <label>Sort by:</label>
+                      <select 
+                        value={sortBy} 
+                        onChange={(e) => {
+                          setSortBy(e.target.value);
+                          setCurrentPage(1);
+                        }}
+                        className="gd-sort-select"
+                      >
+                        <option value="newest">Newest First</option>
+                        <option value="oldest">Oldest First</option>
+                        <option value="highest">Highest Rating</option>
+                        <option value="lowest">Lowest Rating</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  {reviews.length > 0 ? (
+                    <>
+                      <div className="gd-reviews-list">
+                        {reviews.map((review) => (
+                          <div key={review._id} className="gd-review-item">
+                            <div className="gd-review-header">
+                              <div className="gd-reviewer-info">
+                                <div className="gd-reviewer-avatar">
+                                  {review.user?.profilePicUrl ? (
+                                    <img 
+                                      src={review.user.profilePicUrl.startsWith('http') 
+                                        ? review.user.profilePicUrl 
+                                        : `${BACKEND_URL}${review.user.profilePicUrl}`
+                                      } 
+                                      alt={review.user.username || 'User'}
+                                      onError={(e) => {
+                                        e.target.style.display = 'none';
+                                        e.target.nextElementSibling.style.display = 'flex';
+                                      }}
+                                    />
+                                  ) : null}
+                                  <div 
+                                    className="gd-avatar-placeholder" 
+                                    style={{ 
+                                      display: review.user?.profilePicUrl ? 'none' : 'flex',
+                                      width: '40px',
+                                      height: '40px',
+                                      borderRadius: '50%',
+                                      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                                      color: 'white',
+                                      fontSize: '18px',
+                                      fontWeight: 'bold',
+                                      alignItems: 'center',
+                                      justifyContent: 'center'
+                                    }}
+                                  >
+                                    {review.user?.username?.charAt(0).toUpperCase() || 'U'}
+                                  </div>
+                                </div>
+                                <div className="gd-reviewer-details">
+                                  <span className="gd-reviewer-name">
+                                    {review.user?.username || 'Anonymous'}
+                                  </span>
+                                  <span className="gd-review-date">
+                                    {formatDate(review.createdAt)}
+                                  </span>
+                                </div>
+                              </div>
+                              {renderStars(review.rating, false, 18)}
                             </div>
-                          )}
-                        </>
-                      ) : (
-                        <div className="gd-no-reviews">
-                          <i className="fa-solid fa-comment-slash"></i>
-                          <p>No reviews yet. Be the first to review this game!</p>
+                            {review.comment && (
+                              <p className="gd-review-comment">{review.comment}</p>
+                            )}
+                            {review.updatedAt && review.updatedAt !== review.createdAt && (
+                              <div className="gd-review-edited">
+                                <i className="fa-solid fa-pencil"></i>
+                                <span>Edited on {formatDate(review.updatedAt)}</span>
+                              </div>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+
+                      {totalPages > 1 && (
+                        <div className="gd-pagination">
+                          <button
+                            className="gd-pagination-btn"
+                            onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                            disabled={currentPage === 1}
+                          >
+                            <i className="fa-solid fa-chevron-left"></i> Previous
+                          </button>
+                          
+                          <div className="gd-pagination-info">
+                            Page {currentPage} of {totalPages}
+                          </div>
+
+                          <button
+                            className="gd-pagination-btn"
+                            onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                            disabled={currentPage === totalPages}
+                          >
+                            Next <i className="fa-solid fa-chevron-right"></i>
+                          </button>
                         </div>
                       )}
+                    </>
+                  ) : (
+                    <div className="gd-no-reviews">
+                      <i className="fa-solid fa-comment-slash"></i>
+                      <p>No reviews yet. Be the first to review this game!</p>
                     </div>
-                  </div>
-                )}
+                  )}
+                </div>
               </div>
-            </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      <div className="gd-right-section">
+        <div className="gd-purchase-card">
+          <div className="gd-price-section">
+            {game.price === 0 ? (
+              <div className="gd-free-game">
+                <span className="gd-free-label">FREE TO PLAY</span>
+              </div>
+            ) : game.discount > 0 ? (
+              <div className="gd-discounted-price-section">
+                <div className="gd-discount-badge-large">-{game.discount}%</div>
+                <div className="gd-price-info">
+                  <span className="gd-original-price-large">₹{game.price}</span>
+                  <span className="gd-final-price-large">₹{calculateDiscountedPrice()}</span>
+                </div>
+                <span className="gd-savings">You save ₹{(game.price - calculateDiscountedPrice()).toFixed(2)}</span>
+              </div>
+            ) : (
+              <div className="gd-regular-price-section">
+                <span className="gd-price-large">₹{game.price}</span>
+              </div>
+            )}
           </div>
 
-          {/* Right Section - Purchase Card */}
-          <div className="gd-right-section">
-            <div className="gd-purchase-card">
-              <div className="gd-price-section">
-                {game.price === 0 ? (
-                  <div className="gd-free-game">
-                    <span className="gd-free-label">FREE TO PLAY</span>
-                  </div>
-                ) : game.discount > 0 ? (
-                  <div className="gd-discounted-price-section">
-                    <div className="gd-discount-badge-large">-{game.discount}%</div>
-                    <div className="gd-price-info">
-                      <span className="gd-original-price-large">₹{game.price}</span>
-                      <span className="gd-final-price-large">₹{calculateDiscountedPrice()}</span>
-                    </div>
-                    <span className="gd-savings">You save ₹{(game.price - calculateDiscountedPrice()).toFixed(2)}</span>
-                  </div>
-                ) : (
-                  <div className="gd-regular-price-section">
-                    <span className="gd-price-large">₹{game.price}</span>
-                  </div>
-                )}
-              </div>
+          {game.offerDuration && game.offerDuration.endDate && (
+            <div className="gd-offer-timer">
+              <i className="fa-solid fa-clock"></i>
+              Offer ends: {new Date(game.offerDuration.endDate).toLocaleDateString()}
+            </div>
+          )}
 
-              {game.offerDuration && game.offerDuration.endDate && (
-                <div className="gd-offer-timer">
-                  <i className="fa-solid fa-clock"></i>
-                  Offer ends: {new Date(game.offerDuration.endDate).toLocaleDateString()}
-                </div>
-              )}
-
-              <div className="gd-purchase-buttons">
-                <button className="gd-btn-buy-now" onClick={handleBuyNow}>
+          <div className="gd-purchase-buttons">
+            {ownsGame ? (
+              <button className="gd-btn-download" onClick={handleDownload}>
+                <i className="fa-solid fa-download"></i>
+                Download Game
+              </button>
+            ) : (
+              <>
+                <button 
+                  className="gd-btn-buy-now" 
+                  onClick={handleBuyNow}
+                  disabled={loading || checkingOwnership}
+                >
                   <i className="fa-solid fa-bolt"></i>
-                  {game.price === 0 ? 'Play Now' : 'Buy Now'}
+                  {loading ? 'Processing...' : (game.price === 0 ? 'Get Now' : 'Buy Now')}
                 </button>
                 <button 
                   className="gd-btn-add-cart" 
                   onClick={handleAddToCart}
-                  disabled={cartLoading}
+                  disabled={cartLoading || checkingOwnership}
                 >
                   <i className="fa-solid fa-cart-shopping"></i>
                   {cartLoading ? 'Adding...' : 'Add to Cart'}
                 </button>
-              </div>
+              </>
+            )}
+          </div>
 
-              <div className="gd-additional-info">
-                <div className="gd-info-row">
-                  <i className="fa-solid fa-shield-halved"></i>
-                  <span>Secure Payment</span>
-                </div>
-                <div className="gd-info-row">
-                  <i className="fa-solid fa-download"></i>
-                  <span>Instant Download</span>
-                </div>
-                <div className="gd-info-row">
-                  <i className="fa-solid fa-headset"></i>
-                  <span>24/7 Support</span>
-                </div>
-                {game.cloudSaveSupport && (
-                  <div className="gd-info-row">
-                    <i className="fa-solid fa-cloud"></i>
-                    <span>Cloud Saves</span>
-                  </div>
-                )}
+          <div className="gd-additional-info">
+            <div className="gd-info-row">
+              <i className="fa-solid fa-shield-halved"></i>
+              <span>Secure Payment</span>
+            </div>
+            <div className="gd-info-row">
+              <i className="fa-solid fa-download"></i>
+              <span>Instant Download</span>
+            </div>
+            <div className="gd-info-row">
+              <i className="fa-solid fa-headset"></i>
+              <span>24/7 Support</span>
+            </div>
+            {game.cloudSaveSupport && (
+              <div className="gd-info-row">
+                <i className="fa-solid fa-cloud"></i>
+                <span>Cloud Saves</span>
               </div>
+            )}
+          </div>
 
-              {game.soundtrackAvailability && (
-                <div className="gd-soundtrack-info">
-                  <i className="fa-solid fa-music"></i>
-                  <span>Includes Soundtrack</span>
-                  {game.soundtrackUrl && (
-                    <a href={game.soundtrackUrl} target="_blank" rel="noopener noreferrer">View</a>
-                  )}
-                </div>
+          {game.soundtrackAvailability && (
+            <div className="gd-soundtrack-info">
+              <i className="fa-solid fa-music"></i>
+              <span>Includes Soundtrack</span>
+              {game.soundtrackUrl && (
+                <a href={game.soundtrackUrl} target="_blank" rel="noopener noreferrer">View</a>
               )}
             </div>
-          </div>
+          )}
         </div>
-
-        {/* Related Games Section */}
-        {relatedGames.length > 0 && (
-          <div className="gd-related-games-section">
-            <h2 className="gd-section-title">You May Also Like</h2>
-            <div className="gd-related-games-grid">
-              {relatedGames.map(relatedGame => (
-                <GameCard key={relatedGame._id} game={relatedGame} />
-              ))}
-            </div>
-          </div>
-        )}
       </div>
     </div>
-  );
+
+    {relatedGames.length > 0 && (
+      <div className="gd-related-games-section">
+        <h2 className="gd-section-title">You May Also Like</h2>
+        <div className="gd-related-games-grid">
+          {relatedGames.map(relatedGame => (
+            <GameCard key={relatedGame._id} game={relatedGame} />
+          ))}
+        </div>
+      </div>
+    )}
+  </div>
+</div>
+);
 };
 
 export default GameDetail;
-
-// I will start workiing on it after a while

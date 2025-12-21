@@ -94,7 +94,7 @@ const Header = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:5000/api/user/games/filter?search=${encodeURIComponent(value)}&sortBy=popularity`,
+        `http://localhost:5000/api/users/games/filter?search=${encodeURIComponent(value)}&sortBy=popularity`,
         { credentials: 'include' }
       );
       

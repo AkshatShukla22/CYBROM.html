@@ -1,24 +1,17 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import BACKEND_URL from '../utils/BackendURL';
 
-// Helper function to get token from cookies
-const getAuthToken = () => {
-  // Since your backend uses cookies, the token is automatically sent with credentials
-  // We don't need to manually retrieve it - fetch will handle it with credentials: 'include'
-  return true;
-};
-
 // Async thunk for adding to cart via backend
 export const addToCartAsync = createAsyncThunk(
   'cart/addToCart',
   async ({ gameId }, { rejectWithValue }) => {
     try {
-      const response = await fetch(`${BACKEND_URL}/api/user/cart/add`, {
+      const response = await fetch(`${BACKEND_URL}/api/users/cart/add`, { // FIXED: users (plural)
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        credentials: 'include', // Include cookies automatically
+        credentials: 'include',
         body: JSON.stringify({ gameId, quantity: 1 })
       });
 
@@ -40,12 +33,12 @@ export const fetchCartAsync = createAsyncThunk(
   'cart/fetchCart',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await fetch(`${BACKEND_URL}/api/user/cart`, {
+      const response = await fetch(`${BACKEND_URL}/api/users/cart`, { // FIXED: users (plural)
         method: 'GET',
         headers: {
           'Content-Type': 'application/json'
         },
-        credentials: 'include' // Include cookies automatically
+        credentials: 'include'
       });
 
       if (!response.ok) {
@@ -66,7 +59,7 @@ export const removeFromCartAsync = createAsyncThunk(
   'cart/removeFromCart',
   async (gameId, { rejectWithValue }) => {
     try {
-      const response = await fetch(`${BACKEND_URL}/api/user/cart/remove/${gameId}`, {
+      const response = await fetch(`${BACKEND_URL}/api/users/cart/remove/${gameId}`, { // FIXED: users (plural)
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json'
@@ -80,7 +73,6 @@ export const removeFromCartAsync = createAsyncThunk(
       }
 
       const data = await response.json();
-      // FIXED: Return the updated cart from backend instead of just gameId
       return data.cart;
     } catch (error) {
       return rejectWithValue(error.message);
@@ -93,7 +85,7 @@ export const updateCartQuantity = createAsyncThunk(
   'cart/updateQuantity',
   async ({ gameId, quantity }, { rejectWithValue }) => {
     try {
-      const response = await fetch(`${BACKEND_URL}/api/user/cart/update/${gameId}`, {
+      const response = await fetch(`${BACKEND_URL}/api/users/cart/update/${gameId}`, { // FIXED: users (plural)
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'
@@ -120,7 +112,7 @@ export const clearCartAsync = createAsyncThunk(
   'cart/clearCart',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await fetch(`${BACKEND_URL}/api/user/cart/clear`, {
+      const response = await fetch(`${BACKEND_URL}/api/users/cart/clear`, { // FIXED: users (plural)
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json'
@@ -198,7 +190,6 @@ const cartSlice = createSlice({
       })
       .addCase(removeFromCartAsync.fulfilled, (state, action) => {
         state.loading = false;
-        // FIXED: Use the updated cart from backend instead of filtering
         state.items = action.payload;
         state.successMessage = 'Removed from cart';
       })

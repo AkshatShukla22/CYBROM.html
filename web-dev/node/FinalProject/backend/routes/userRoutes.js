@@ -70,4 +70,10 @@ router.post('/games/:gameId/reviews', authenticateToken, userController.addRevie
 router.put('/games/:gameId/reviews', authenticateToken, userController.updateReview);
 router.delete('/games/:gameId/reviews', authenticateToken, userController.deleteReview);
 
+// Payment Routes
+router.post('/payment/create-order', authenticateToken, userController.createOrder);
+router.post('/payment/verify', authenticateToken, userController.verifyPayment);
+router.post('/payment/create-order-single', authenticateToken, userController.createOrderSingle);
+
+
 module.exports = router;

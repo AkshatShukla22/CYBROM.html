@@ -13,7 +13,7 @@ import GameDetail from './pages/GameDetail';
 import SupportPage from './pages/SupportPage';
 import TicketDetailPage from './pages/TicketDetailPage';
 import UserProfile from './pages/userProfile';
-import ProtectedAdminRoute from './components/ProtectedAdminRoute'; // ADD THIS
+import ProtectedAdminRoute from './components/ProtectedAdminRoute'; 
 
 function App() {
   return (

@@ -582,6 +582,149 @@
   background: linear-gradient(135deg, #00BFFF, #007BFF);
 }
 
+/* Payment Modal Styles */
+.payment-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  animation: fadeIn 0.3s ease;
+}
+
+.payment-modal {
+  background: white;
+  border-radius: 20px;
+  padding: 40px;
+  max-width: 500px;
+  width: 90%;
+  text-align: center;
+  animation: slideUp 0.4s ease;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.success-icon {
+  font-size: 80px;
+  color: #22c55e;
+  margin-bottom: 20px;
+  animation: scaleIn 0.5s ease;
+}
+
+.payment-modal h2 {
+  color: #1e293b;
+  margin-bottom: 10px;
+  font-size: 28px;
+}
+
+.payment-modal p {
+  color: #64748b;
+  margin-bottom: 30px;
+  font-size: 16px;
+}
+
+.purchased-games-list {
+  background: #f8fafc;
+  border-radius: 12px;
+  padding: 20px;
+  margin: 20px 0;
+  text-align: left;
+}
+
+.purchased-games-list h3 {
+  color: #1e293b;
+  font-size: 18px;
+  margin-bottom: 15px;
+}
+
+.purchased-games-list ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.purchased-games-list li {
+  color: #475569;
+  padding: 8px 0;
+  border-bottom: 1px solid #e2e8f0;
+  font-size: 15px;
+}
+
+.purchased-games-list li:last-child {
+  border-bottom: none;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 15px;
+  margin-top: 30px;
+}
+
+.view-collection-btn,
+.continue-shopping-modal-btn {
+  flex: 1;
+  padding: 15px 25px;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.view-collection-btn {
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+  color: white;
+}
+
+.view-collection-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(59, 130, 246, 0.4);
+}
+
+.continue-shopping-modal-btn {
+  background: #f1f5f9;
+  color: #1e293b;
+}
+
+.continue-shopping-modal-btn:hover {
+  background: #e2e8f0;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scaleIn {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
 /* ==================== ANIMATIONS ==================== */
 @keyframes fadeInUp {
   from {

@@ -1,6 +1,10 @@
 // controllers/userController.js
+const Razorpay = require('razorpay');
+const crypto = require('crypto');
+const bcrypt = require('bcryptjs');
 const User = require('../models/User');
 const Game = require('../models/Game');
+const Collection = require('../models/Collection');
 
 // Get user's game collection
 exports.getUserCollection = async (req, res) => {
@@ -1049,5 +1053,306 @@ exports.incrementViewCount = async (req, res) => {
   } catch (error) {
     console.error('Increment view count error:', error);
     res.status(500).json({ message: 'Server error.' });
+  }
+};
+
+// Helper function to get Razorpay instance
+const getRazorpayInstance = () => {
+  if (!process.env.RAZORPAY_KEY_ID || !process.env.RAZORPAY_KEY_SECRET) {
+    throw new Error('Razorpay credentials not configured');
+  }
+  
+  return new Razorpay({
+    key_id: process.env.RAZORPAY_KEY_ID,
+    key_secret: process.env.RAZORPAY_KEY_SECRET,
+  });
+};
+
+// Create Razorpay Order
+exports.createOrder = async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    const user = await User.findById(userId).populate('cart.gameId');
+    if (!user || user.cart.length === 0) {
+      return res.status(400).json({ message: 'Cart is empty' });
+    }
+
+    // Calculate total
+    let totalDiscountedPrice = 0;
+    user.cart.forEach(item => {
+      if (item.gameId) {
+        const discountedPrice = item.gameId.discount > 0
+          ? (item.gameId.price - (item.gameId.price * item.gameId.discount / 100)) * item.quantity
+          : item.gameId.price * item.quantity;
+        totalDiscountedPrice += discountedPrice;
+      }
+    });
+
+    const amountInPaise = Math.round(totalDiscountedPrice * 100);
+
+    // Get Razorpay instance
+    const razorpay = getRazorpayInstance();
+
+    // FIXED: Generate shorter receipt (max 40 chars)
+    const timestamp = Date.now().toString().slice(-10); // Last 10 digits
+    const userIdShort = userId.toString().slice(-8); // Last 8 chars of user ID
+    const receipt = `rcpt_${userIdShort}_${timestamp}`; // Format: rcpt_XXXXXXXX_XXXXXXXXXX (max 30 chars)
+
+    // Create Razorpay order
+    const options = {
+      amount: amountInPaise,
+      currency: 'INR',
+      receipt: receipt, // Now guaranteed to be under 40 chars
+      notes: {
+        userId: userId,
+        itemCount: user.cart.length
+      }
+    };
+
+    const order = await razorpay.orders.create(options);
+
+    res.status(200).json({
+      orderId: order.id,
+      amount: order.amount,
+      currency: order.currency,
+      keyId: process.env.RAZORPAY_KEY_ID
+    });
+  } catch (error) {
+    console.error('Create order error:', error);
+    res.status(500).json({ 
+      message: 'Failed to create order', 
+      error: error.message || 'Unknown error'
+    });
+  }
+};
+
+// Verify Payment and Add to Collection 
+exports.verifyPayment = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
+
+    // Validate required fields
+    if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
+      return res.status(400).json({ 
+        success: false,
+        message: 'Missing payment details' 
+      });
+    }
+
+    // Verify signature
+    const body = razorpay_order_id + '|' + razorpay_payment_id;
+    const expectedSignature = crypto
+      .createHmac('sha256', process.env.RAZORPAY_KEY_SECRET)
+      .update(body.toString())
+      .digest('hex');
+
+    if (expectedSignature !== razorpay_signature) {
+      return res.status(400).json({ 
+        success: false,
+        message: 'Invalid payment signature' 
+      });
+    }
+
+    // Get Razorpay instance to fetch order details
+    const razorpay = getRazorpayInstance();
+    
+    // Fetch order to check if it's a single purchase
+    const order = await razorpay.orders.fetch(razorpay_order_id);
+    const isSinglePurchase = order.notes?.type === 'single_game_purchase';
+
+    if (isSinglePurchase) {
+      // Handle single game purchase
+      const gameId = order.notes.gameId;
+      const quantity = parseInt(order.notes.quantity) || 1;
+      
+      const game = await Game.findById(gameId);
+      if (!game) {
+        return res.status(404).json({ 
+          success: false, 
+          message: 'Game not found' 
+        });
+      }
+
+      const finalPrice = game.discount > 0
+        ? game.price - (game.price * game.discount / 100)
+        : game.price;
+
+      // Check if already owned
+      const existingCollection = await Collection.findOne({
+        user: userId,
+        game: gameId
+      });
+
+      if (existingCollection) {
+        return res.status(200).json({
+          success: true,
+          message: 'You already own this game!',
+          purchasedGames: [],
+          alreadyOwned: [game.name],
+          paymentId: razorpay_payment_id
+        });
+      }
+
+      // Add to collection
+      await Collection.create({
+        user: userId,
+        game: gameId,
+        price: finalPrice,
+        purchasedAt: new Date()
+      });
+
+      // Increment purchase count
+      await Game.findByIdAndUpdate(gameId, {
+        $inc: { purchaseCount: quantity }
+      });
+
+      return res.status(200).json({
+        success: true,
+        message: 'Payment successful! Game added to your collection.',
+        purchasedGames: [{ name: game.name, quantity }],
+        alreadyOwned: [],
+        paymentId: razorpay_payment_id
+      });
+    }
+
+    // Handle cart purchase
+    const user = await User.findById(userId).populate('cart.gameId');
+    if (!user) {
+      return res.status(404).json({ 
+        success: false,
+        message: 'User not found' 
+      });
+    }
+
+    if (user.cart.length === 0) {
+      return res.status(400).json({ 
+        success: false,
+        message: 'Cart is empty' 
+      });
+    }
+
+    const purchasedGames = [];
+    const alreadyOwned = [];
+
+    // Process each cart item
+    for (const item of user.cart) {
+      if (!item.gameId) continue;
+
+      const game = item.gameId;
+      const finalPrice = game.discount > 0
+        ? game.price - (game.price * game.discount / 100)
+        : game.price;
+
+      // Check if user already owns this game
+      const existingCollection = await Collection.findOne({
+        user: userId,
+        game: game._id
+      });
+
+      if (existingCollection) {
+        alreadyOwned.push(game.name);
+        continue;
+      }
+
+      // Add to collection (respecting quantity)
+      for (let i = 0; i < item.quantity; i++) {
+        await Collection.create({
+          user: userId,
+          game: game._id,
+          price: finalPrice,
+          purchasedAt: new Date()
+        });
+      }
+
+      // Increment purchase count
+      await Game.findByIdAndUpdate(game._id, {
+        $inc: { purchaseCount: item.quantity }
+      });
+
+      purchasedGames.push({
+        name: game.name,
+        quantity: item.quantity
+      });
+    }
+
+    // Clear cart after successful purchase
+    user.cart = [];
+    await user.save();
+
+    res.status(200).json({
+      success: true,
+      message: 'Payment successful! Games added to your collection.',
+      purchasedGames,
+      alreadyOwned,
+      paymentId: razorpay_payment_id
+    });
+  } catch (error) {
+    console.error('Verify payment error:', error);
+    res.status(500).json({ 
+      success: false,
+      message: 'Payment verification failed',
+      error: error.message
+    });
+  }
+};
+
+// Create Order for Single Game (Buy Now)
+exports.createOrderSingle = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { gameId, quantity = 1 } = req.body;
+
+    if (!gameId) {
+      return res.status(400).json({ message: 'Game ID is required' });
+    }
+
+    const game = await Game.findById(gameId);
+    if (!game) {
+      return res.status(404).json({ message: 'Game not found' });
+    }
+
+    // Calculate price
+    const discountedPrice = game.discount > 0
+      ? game.price - (game.price * game.discount / 100)
+      : game.price;
+    
+    const totalPrice = discountedPrice * quantity;
+    const amountInPaise = Math.round(totalPrice * 100);
+
+    // Get Razorpay instance
+    const razorpay = getRazorpayInstance();
+
+    const timestamp = Date.now().toString().slice(-10);
+    const userIdShort = userId.toString().slice(-8);
+    const receipt = `rcpt_${userIdShort}_${timestamp}`;
+
+    const options = {
+      amount: amountInPaise,
+      currency: 'INR',
+      receipt: receipt,
+      notes: {
+        userId: userId,
+        gameId: gameId,
+        quantity: quantity,
+        type: 'single_game_purchase'
+      }
+    };
+
+    const order = await razorpay.orders.create(options);
+
+    res.status(200).json({
+      orderId: order.id,
+      amount: order.amount,
+      currency: order.currency,
+      keyId: process.env.RAZORPAY_KEY_ID
+    });
+  } catch (error) {
+    console.error('Create single game order error:', error);
+    res.status(500).json({ 
+      message: 'Failed to create order', 
+      error: error.message || 'Unknown error'
+    });
   }
 };

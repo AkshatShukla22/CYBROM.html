@@ -71,7 +71,7 @@ const UserProfile = () => {
 
   const fetchUserCollection = async () => {
     try {
-      const response = await fetch(`${BACKEND_URL}/api/user/collection`, {
+      const response = await fetch(`${BACKEND_URL}/api/users/collection`, {
         method: 'GET',
         credentials: 'include',
         headers: {
@@ -161,7 +161,7 @@ const UserProfile = () => {
 
     try {
       if (editForm.username !== user.username) {
-        const response = await fetch(`${BACKEND_URL}/api/user/update-username`, {
+        const response = await fetch(`${BACKEND_URL}/api/users/update-username`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json'
@@ -181,7 +181,7 @@ const UserProfile = () => {
         const formData = new FormData();
         formData.append('profilePic', editForm.profilePic);
 
-        const response = await fetch(`${BACKEND_URL}/api/user/upload-profile-pic`, {
+        const response = await fetch(`${BACKEND_URL}/api/users/upload-profile-pic`, {
           method: 'POST',
           credentials: 'include',
           body: formData
@@ -223,7 +223,7 @@ const UserProfile = () => {
     }
 
     try {
-      const response = await fetch(`${BACKEND_URL}/api/user/change-password`, {
+      const response = await fetch(`${BACKEND_URL}/api/users/change-password`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'
@@ -265,7 +265,7 @@ const UserProfile = () => {
     }
 
     try {
-      const response = await fetch(`${BACKEND_URL}/api/user/change-email`, {
+      const response = await fetch(`${BACKEND_URL}/api/users/change-email`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'

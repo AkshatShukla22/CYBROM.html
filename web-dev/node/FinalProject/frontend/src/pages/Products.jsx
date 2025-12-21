@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { addToCartAsync, clearSuccessMessage } from '../redux/cartSlice';
 import BACKEND_URL from '../utils/BackendURL';
@@ -13,19 +13,11 @@ const Products = () => {
   const cartLoading = useSelector(state => state.cart.loading);
   const [allGames, setAllGames] = useState([]);
   const [filteredGames, setFilteredGames] = useState([]);
-  const [topRatedGames, setTopRatedGames] = useState([]);
-  const [mostPurchasedGames, setMostPurchasedGames] = useState([]);
-  const [discountedGames, setDiscountedGames] = useState([]);
-  const [freeGames, setFreeGames] = useState([]);
-  const [newReleases, setNewReleases] = useState([]);
-  const [randomGames, setRandomGames] = useState([]);
   const [loading, setLoading] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [activeCategory, setActiveCategory] = useState('All');
-  const [scrollDirection, setScrollDirection] = useState('down');
   const [showToast, setShowToast] = useState(false);
   const [toastGameId, setToastGameId] = useState(null);
-  const lastScrollY = useRef(0);
   const cardRefs = useRef([]);
   const [filters, setFilters] = useState({
     categories: [],
@@ -48,107 +40,74 @@ const Products = () => {
     applyFilters();
   }, [filters, activeCategory, allGames]);
 
-  // Scroll Animation Effect
+  // ✨ OPTIMIZED: Smooth Scroll Animation with requestAnimationFrame
   useEffect(() => {
-    const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-      
-      // Determine scroll direction
-      if (currentScrollY > lastScrollY.current) {
-        setScrollDirection('down');
-      } else {
-        setScrollDirection('up');
-      }
-      lastScrollY.current = currentScrollY;
+    let ticking = false;
 
-      // Animate cards based on viewport position
-      cardRefs.current.forEach((card, index) => {
-        if (card) {
-          const rect = card.getBoundingClientRect();
-          const windowHeight = window.innerHeight;
-          const cardCenter = rect.top + rect.height / 2;
-          const viewportCenter = windowHeight / 2;
-          
-          // Calculate distance from viewport center
-          const distanceFromCenter = Math.abs(cardCenter - viewportCenter);
-          const maxDistance = windowHeight / 2;
-          
-          // Card is visible in viewport
-          if (rect.top < windowHeight && rect.bottom > 0) {
-            card.classList.add('scroll-visible');
-            
-            // Card is near center of viewport - scale up
-            if (distanceFromCenter < maxDistance * 0.3) {
-              card.classList.add('scroll-scale-up');
-              card.classList.remove('scroll-scale-down');
-            } 
-            // Card is far from center - scale down
-            else if (distanceFromCenter > maxDistance * 0.6) {
-              card.classList.add('scroll-scale-down');
-              card.classList.remove('scroll-scale-up');
+    const handleScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          cardRefs.current.forEach((card) => {
+            if (card) {
+              const rect = card.getBoundingClientRect();
+              const windowHeight = window.innerHeight;
+              const cardCenter = rect.top + rect.height / 2;
+              const viewportCenter = windowHeight / 2;
+              
+              const distanceFromCenter = Math.abs(cardCenter - viewportCenter);
+              const maxDistance = windowHeight / 2;
+              
+              // Card is in viewport
+              if (rect.top < windowHeight && rect.bottom > 0) {
+                card.classList.add('scroll-visible');
+                
+                // Near center - subtle scale up
+                if (distanceFromCenter < maxDistance * 0.25) {
+                  card.classList.add('scroll-scale-up');
+                  card.classList.remove('scroll-scale-down');
+                } 
+                // Far from center - subtle fade
+                else if (distanceFromCenter > maxDistance * 0.7) {
+                  card.classList.add('scroll-scale-down');
+                  card.classList.remove('scroll-scale-up');
+                }
+                // Middle zone - normal
+                else {
+                  card.classList.remove('scroll-scale-up');
+                  card.classList.remove('scroll-scale-down');
+                }
+              } else {
+                card.classList.remove('scroll-visible');
+                card.classList.remove('scroll-scale-up');
+                card.classList.remove('scroll-scale-down');
+              }
             }
-            // Card is in middle zone - normal size
-            else {
-              card.classList.remove('scroll-scale-up');
-              card.classList.remove('scroll-scale-down');
-            }
-          } else {
-            card.classList.remove('scroll-visible');
-            card.classList.remove('scroll-scale-up');
-            card.classList.remove('scroll-scale-down');
-          }
-        }
-      });
+          });
+          ticking = false;
+        });
+        ticking = true;
+      }
     };
 
-    window.addEventListener('scroll', handleScroll);
-    handleScroll(); // Initial check
+    // Throttled scroll listener
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    
+    // Initial check after a small delay to ensure cards are rendered
+    const initialCheck = setTimeout(handleScroll, 100);
 
-    return () => window.removeEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      clearTimeout(initialCheck);
+    };
   }, [filteredGames]);
-
-  const getRandomGames = (games, count = 10) => {
-    const shuffled = [...games].sort(() => 0.5 - Math.random());
-    return shuffled.slice(0, count);
-  };
 
   const fetchAllData = async () => {
     setLoading(true);
     try {
-      // Fetch all games
-      const gamesRes = await fetch(`${BACKEND_URL}/api/user/games`);
+      const gamesRes = await fetch(`${BACKEND_URL}/api/users/games`);
       const gamesData = await gamesRes.json();
       setAllGames(gamesData.games);
       setFilteredGames(gamesData.games);
-      
-      // Set random games
-      setRandomGames(getRandomGames(gamesData.games, 10));
-
-      // Fetch top rated
-      const topRatedRes = await fetch(`${BACKEND_URL}/api/user/games/top-rated?limit=10`);
-      const topRatedData = await topRatedRes.json();
-      setTopRatedGames(topRatedData.games);
-
-      // Fetch most purchased
-      const mostPurchasedRes = await fetch(`${BACKEND_URL}/api/user/games/most-purchased?limit=10`);
-      const mostPurchasedData = await mostPurchasedRes.json();
-      setMostPurchasedGames(mostPurchasedData.games);
-
-      // Fetch discounted
-      const discountedRes = await fetch(`${BACKEND_URL}/api/user/games/discounted`);
-      const discountedData = await discountedRes.json();
-      setDiscountedGames(discountedData.games);
-
-      // Fetch free games
-      const freeRes = await fetch(`${BACKEND_URL}/api/user/games/free`);
-      const freeData = await freeRes.json();
-      setFreeGames(freeData.games);
-
-      // Fetch new releases
-      const newReleasesRes = await fetch(`${BACKEND_URL}/api/user/games/new-releases`);
-      const newReleasesData = await newReleasesRes.json();
-      setNewReleases(newReleasesData.games);
-
     } catch (error) {
       console.error('Error fetching data:', error);
     } finally {
@@ -156,72 +115,137 @@ const Products = () => {
     }
   };
 
+  // Apply all filters
   const applyFilters = () => {
     let filtered = [...allGames];
 
-    // Category filter
+    // Category filter from tabs
     if (activeCategory !== 'All') {
       filtered = filtered.filter(game => 
-        game.categories && game.categories.includes(activeCategory)
+        game.categories && 
+        Array.isArray(game.categories) && 
+        game.categories.includes(activeCategory)
       );
     }
 
-    // Apply sidebar filters
+    // Sidebar filters - Categories
     if (filters.categories.length > 0) {
       filtered = filtered.filter(game =>
-        game.categories && game.categories.some(cat => filters.categories.includes(cat))
+        game.categories && 
+        Array.isArray(game.categories) && 
+        game.categories.some(cat => filters.categories.includes(cat))
       );
     }
 
+    // Console/Platform filter
     if (filters.consoles.length > 0) {
-      filtered = filtered.filter(game =>
-        game.consoles && game.consoles.some(con => filters.consoles.includes(con))
-      );
+      filtered = filtered.filter(game => {
+        const platforms = game.availablePlatforms || game.consoles || [];
+        return Array.isArray(platforms) && 
+               platforms.some(platform => filters.consoles.includes(platform));
+      });
     }
 
+    // Age Ratings filter
     if (filters.ratings.length > 0) {
-      filtered = filtered.filter(game =>
-        game.ratings && game.ratings.some(rat => filters.ratings.includes(rat))
-      );
+      filtered = filtered.filter(game => {
+        const gameRatings = game.ratings || [];
+        return Array.isArray(gameRatings) && 
+               gameRatings.some(rating => filters.ratings.includes(rating));
+      });
     }
 
     // Price range
-    if (filters.minPrice !== '') {
-      filtered = filtered.filter(game => game.price >= parseFloat(filters.minPrice));
+    if (filters.minPrice !== '' && filters.minPrice !== null) {
+      const minPrice = parseFloat(filters.minPrice);
+      if (!isNaN(minPrice)) {
+        filtered = filtered.filter(game => (parseFloat(game.price) || 0) >= minPrice);
+      }
     }
-    if (filters.maxPrice !== '') {
-      filtered = filtered.filter(game => game.price <= parseFloat(filters.maxPrice));
+    
+    if (filters.maxPrice !== '' && filters.maxPrice !== null) {
+      const maxPrice = parseFloat(filters.maxPrice);
+      if (!isNaN(maxPrice)) {
+        filtered = filtered.filter(game => (parseFloat(game.price) || 0) <= maxPrice);
+      }
     }
 
     // Discount filter
-    if (filters.minDiscount !== '') {
-      filtered = filtered.filter(game => game.discount >= parseFloat(filters.minDiscount));
+    if (filters.minDiscount !== '' && filters.minDiscount !== null) {
+      const minDiscount = parseFloat(filters.minDiscount);
+      if (!isNaN(minDiscount)) {
+        filtered = filtered.filter(game => (parseFloat(game.discount) || 0) >= minDiscount);
+      }
     }
 
     // Rating filter
-    if (filters.minRating !== '') {
-      filtered = filtered.filter(game => game.averageRating >= parseFloat(filters.minRating));
+    if (filters.minRating !== '' && filters.minRating !== null) {
+      const minRating = parseFloat(filters.minRating);
+      if (!isNaN(minRating)) {
+        filtered = filtered.filter(game => (parseFloat(game.averageRating) || 0) >= minRating);
+      }
     }
 
     // Sorting
-    if (filters.sortBy === 'price_asc') {
-      filtered.sort((a, b) => a.price - b.price);
-    } else if (filters.sortBy === 'price_desc') {
-      filtered.sort((a, b) => b.price - a.price);
-    } else if (filters.sortBy === 'rating') {
-      filtered.sort((a, b) => b.averageRating - a.averageRating);
-    } else if (filters.sortBy === 'popularity') {
-      filtered.sort((a, b) => b.purchaseCount - a.purchaseCount);
-    } else if (filters.sortBy === 'newest') {
-      filtered.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-    } else if (filters.sortBy === 'discount') {
-      filtered.sort((a, b) => b.discount - a.discount);
+    const sortFunctions = {
+      'price_asc': (a, b) => (parseFloat(a.price) || 0) - (parseFloat(b.price) || 0),
+      'price_desc': (a, b) => (parseFloat(b.price) || 0) - (parseFloat(a.price) || 0),
+      'rating': (a, b) => (parseFloat(b.averageRating) || 0) - (parseFloat(a.averageRating) || 0),
+      'popularity': (a, b) => (parseInt(b.purchaseCount) || 0) - (parseInt(a.purchaseCount) || 0),
+      'newest': (a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0),
+      'oldest': (a, b) => new Date(a.createdAt || 0) - new Date(b.createdAt || 0),
+      'discount': (a, b) => (parseFloat(b.discount) || 0) - (parseFloat(a.discount) || 0),
+      'name_asc': (a, b) => (a.name || '').localeCompare(b.name || ''),
+      'name_desc': (a, b) => (b.name || '').localeCompare(a.name || '')
+    };
+
+    const sortFunction = sortFunctions[filters.sortBy];
+    if (sortFunction) {
+      filtered.sort(sortFunction);
     }
 
+    console.log(`✅ Filtered ${filtered.length} games from ${allGames.length} total`);
     setFilteredGames(filtered);
   };
 
+  // ✨ DERIVE ALL SECTIONS FROM FILTERED GAMES DYNAMICALLY ✨
+  const topRatedGames = useMemo(() => {
+    return [...filteredGames]
+      .sort((a, b) => (parseFloat(b.averageRating) || 0) - (parseFloat(a.averageRating) || 0))
+      .slice(0, 10);
+  }, [filteredGames]);
+
+  const mostPurchasedGames = useMemo(() => {
+    return [...filteredGames]
+      .sort((a, b) => (parseInt(b.purchaseCount) || 0) - (parseInt(a.purchaseCount) || 0))
+      .slice(0, 10);
+  }, [filteredGames]);
+
+  const discountedGames = useMemo(() => {
+    return filteredGames
+      .filter(game => (parseFloat(game.discount) || 0) > 0)
+      .sort((a, b) => (parseFloat(b.discount) || 0) - (parseFloat(a.discount) || 0));
+  }, [filteredGames]);
+
+  const freeGames = useMemo(() => {
+    return filteredGames.filter(game => (parseFloat(game.price) || 0) === 0);
+  }, [filteredGames]);
+
+  const newReleases = useMemo(() => {
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+    return filteredGames
+      .filter(game => new Date(game.createdAt) >= thirtyDaysAgo)
+      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  }, [filteredGames]);
+
+  const randomGames = useMemo(() => {
+    const shuffled = [...filteredGames].sort(() => 0.5 - Math.random());
+    return shuffled.slice(0, 10);
+  }, [filteredGames]);
+
   const handleFilterChange = (newFilters) => {
+    console.log('🎯 Filter changed:', newFilters);
     setFilters(newFilters);
   };
 
@@ -248,8 +272,6 @@ const Products = () => {
 
   const handleAddToCart = (e, gameId) => {
     e.stopPropagation();
-    
-    // Dispatch the async thunk - cookies are handled automatically
     dispatch(addToCartAsync({ gameId }));
     setToastGameId(gameId);
     setShowToast(true);
@@ -266,7 +288,12 @@ const Products = () => {
   };
 
   if (loading) {
-    return <div className="loading-container">Loading games...</div>;
+    return (
+      <div className="loading-container">
+        <i className="fa-solid fa-spinner fa-spin"></i>
+        <p>Loading games...</p>
+      </div>
+    );
   }
 
   return (
@@ -293,11 +320,13 @@ const Products = () => {
       {/* Main Content */}
       <div className={`products-content ${sidebarOpen ? 'sidebar-open' : ''}`}>
         
-        {/* Top Games Carousel */}
-        <section className="top-games-section">
-          <h2 className="section-title">Top Games</h2>
-          <TopGamesCarousel games={topRatedGames} />
-        </section>
+        {/* Top Games Carousel - NOW SHOWS FILTERED GAMES */}
+        {topRatedGames.length > 0 && (
+          <section className="top-games-section">
+            <h2 className="section-title">Top Rated Games</h2>
+            <TopGamesCarousel games={topRatedGames} />
+          </section>
+        )}
 
         {/* Category Tabs */}
         <section className="category-tabs-section">
@@ -314,7 +343,7 @@ const Products = () => {
           </div>
         </section>
 
-        {/* Special Sections */}
+        {/* Special Sections - ALL NOW SHOW FILTERED GAMES */}
         {activeCategory === 'All' && (
           <>
             {/* Discounted Games Section */}
@@ -359,7 +388,7 @@ const Products = () => {
           </>
         )}
 
-        {/* All Games / Filtered Games - Horizontal Layout */}
+        {/* All Games / Filtered Games */}
         <section className="all-games-section">
           <div className="section-header">
             <h2 className="section-title">
@@ -377,9 +406,8 @@ const Products = () => {
                   className="game-card-horizontal"
                   onClick={() => handleGameClick(game._id)}
                 >
-                  {/* Game Image - Left Side (Vertical Card) */}
+                  {/* Game Image */}
                   <div className="game-horizontal-image">
-                    {/* FIXED: Changed from game.gamePic to game.coverImage */}
                     {game.coverImage ? (
                       <img 
                         src={`${BACKEND_URL}/uploads/${game.coverImage}`} 
@@ -397,9 +425,8 @@ const Products = () => {
                     )}
                   </div>
 
-                  {/* Game Details - Single Horizontal Section */}
+                  {/* Game Details */}
                   <div className="game-horizontal-details">
-                    {/* Left Section - Name, Rating, Purchases */}
                     <div className="game-info-left">
                       <h3 className="game-horizontal-name">{game.name}</h3>
                       
@@ -415,9 +442,7 @@ const Products = () => {
                       </div>
                     </div>
 
-                    {/* Right Section - Price and Cart */}
                     <div className="game-horizontal-price">
-                      {/* Price Info */}
                       <div className="price-info">
                         {game.price === 0 ? (
                           <span className="free-label-horizontal">FREE TO PLAY</span>
@@ -426,7 +451,7 @@ const Products = () => {
                             <div className="discount-badge-horizontal">
                               -{game.discount}%
                             </div>
-                            <div className="price-display">
+                            <div className="product-price-display">
                               <span className="original-price-horizontal">₹{game.price}</span>
                               <span className="final-price-horizontal">
                                 ₹{calculateDiscountedPrice(game.price, game.discount)}
@@ -438,7 +463,6 @@ const Products = () => {
                         )}
                       </div>
 
-                      {/* Add to Cart Button */}
                       <button 
                         className="add-to-cart-btn-horizontal"
                         onClick={(e) => handleAddToCart(e, game._id)}
@@ -462,7 +486,6 @@ const Products = () => {
                         )}
                       </button>
 
-                      {/* Toast Notification */}
                       {showToast && toastGameId === game._id && (
                         <div className="toast-notification-horizontal">
                           <i className="fa-solid fa-check"></i>
@@ -476,8 +499,10 @@ const Products = () => {
             </div>
           ) : (
             <div className="no-games-message">
+              <i className="fa-solid fa-circle-exclamation"></i>
               <p>No games found matching your filters.</p>
               <button className="reset-filters-btn" onClick={resetFilters}>
+                <i className="fa-solid fa-rotate-left"></i>
                 Reset Filters
               </button>
             </div>

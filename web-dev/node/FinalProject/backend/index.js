@@ -11,7 +11,6 @@ const userRoutes = require('./routes/userRoutes');
 const newsRoutes = require('./routes/newsRoutes');
 const supportRoutes = require('./routes/supportRoutes');
 
-// Load environment variables
 dotenv.config();
 
 const app = express();
@@ -38,7 +37,7 @@ mongoose.connect(process.env.MONGO_URI, {
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes);
-app.use('/api/user', userRoutes);
+app.use('/api/users', userRoutes);
 app.use('/api/news', newsRoutes); 
 app.use('/api/support', supportRoutes);
 
@@ -52,6 +51,12 @@ app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({ message: 'Something went wrong!' });
 });
+
+require('dotenv').config();
+
+// Add this temporarily to check if env vars are loaded
+console.log('Razorpay Key ID:', process.env.RAZORPAY_KEY_ID ? 'Loaded' : 'NOT LOADED');
+console.log('Razorpay Secret:', process.env.RAZORPAY_KEY_SECRET ? 'Loaded' : 'NOT LOADED');
 
 // Start server
 const PORT = process.env.PORT || 5000;

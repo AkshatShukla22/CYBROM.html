@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchCartAsync, removeFromCartAsync, updateCartQuantity } from '../redux/cartSlice';
@@ -13,9 +13,11 @@ const Cart = () => {
   const loading = useSelector(state => state.cart.loading);
   const error = useSelector(state => state.cart.error);
 
+  const [isProcessingPayment, setIsProcessingPayment] = useState(false);
+  const [paymentSuccess, setPaymentSuccess] = useState(false);
+  const [purchasedGames, setPurchasedGames] = useState([]);
+
   useEffect(() => {
-    // Fetch cart when component mounts
-    // Cookies are automatically sent with credentials: 'include'
     dispatch(fetchCartAsync());
   }, [dispatch]);
 
@@ -25,7 +27,6 @@ const Cart = () => {
 
   const handleQuantityChange = (gameId, newQuantity) => {
     if (newQuantity < 1) return;
-    // Dispatch the async thunk with correct action name
     dispatch(updateCartQuantity({ gameId, quantity: newQuantity }));
   };
 
@@ -54,6 +55,112 @@ const Cart = () => {
   };
 
   const totals = calculateTotals();
+
+  const handleCheckout = async () => {
+    try {
+      setIsProcessingPayment(true);
+
+      // Create Razorpay order - credentials: 'include' will send the httpOnly cookie
+      const orderResponse = await fetch(`${BACKEND_URL}/api/users/payment/create-order`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include' // This sends the httpOnly cookie
+      });
+
+      const orderData = await orderResponse.json();
+
+      if (!orderResponse.ok) {
+        // If unauthorized, redirect to login
+        if (orderResponse.status === 401) {
+          alert('Please login to continue');
+          navigate('/login');
+          return;
+        }
+        throw new Error(orderData.message || 'Failed to create order');
+      }
+
+      // Razorpay payment options
+      const options = {
+        key: orderData.keyId,
+        amount: orderData.amount,
+        currency: orderData.currency,
+        order_id: orderData.orderId,
+        name: 'Game Store',
+        description: 'Purchase Games',
+        handler: async function (response) {
+          try {
+            // Verify payment
+            const verifyResponse = await fetch(`${BACKEND_URL}/api/users/payment/verify`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              credentials: 'include', // This sends the httpOnly cookie
+              body: JSON.stringify({
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_signature: response.razorpay_signature
+              })
+            });
+
+            const verifyData = await verifyResponse.json();
+
+            if (verifyData.success) {
+              setPurchasedGames(verifyData.purchasedGames);
+              setPaymentSuccess(true);
+              // Refresh cart
+              dispatch(fetchCartAsync());
+            } else {
+              alert(verifyData.message || 'Payment verification failed');
+            }
+          } catch (error) {
+            console.error('Payment verification error:', error);
+            alert('Payment verification failed. Please contact support.');
+          } finally {
+            setIsProcessingPayment(false);
+          }
+        },
+        prefill: {
+          name: '',
+          email: '',
+          contact: ''
+        },
+        theme: {
+          color: '#3399cc'
+        },
+        modal: {
+          ondismiss: function() {
+            setIsProcessingPayment(false);
+          }
+        }
+      };
+
+      // Load Razorpay script and open payment modal
+      const script = document.createElement('script');
+      script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+      script.onload = () => {
+        const razorpay = new window.Razorpay(options);
+        razorpay.open();
+      };
+      script.onerror = () => {
+        alert('Failed to load payment gateway. Please try again.');
+        setIsProcessingPayment(false);
+      };
+      document.body.appendChild(script);
+
+    } catch (error) {
+      console.error('Checkout error:', error);
+      alert(error.message || 'Failed to process payment');
+      setIsProcessingPayment(false);
+    }
+  };
+
+  const closeSuccessModal = () => {
+    setPaymentSuccess(false);
+    navigate('/collection');
+  };
 
   if (loading && cart.length === 0) {
     return <div className="loading-container">Loading cart...</div>;
@@ -92,7 +199,6 @@ const Cart = () => {
         </div>
       ) : (
         <div className="cart-content">
-          {/* Cart Items */}
           <div className="cart-items-section">
             {loading && (
               <div className="cart-loading-overlay">
@@ -110,7 +216,6 @@ const Cart = () => {
 
                 return (
                   <div key={game._id} className="cart-item">
-                    {/* Game Image - FIXED: Changed from game.gamePic to game.coverImage */}
                     <div className="cart-item-image">
                       {game.coverImage ? (
                         <img
@@ -129,11 +234,9 @@ const Cart = () => {
                       )}
                     </div>
 
-                    {/* Game Info */}
                     <div className="cart-item-info">
                       <h3 className="item-name">{game.name}</h3>
                       
-                      {/* Categories */}
                       {game.categories && game.categories.length > 0 && (
                         <div className="item-categories">
                           {game.categories.slice(0, 2).map(cat => (
@@ -142,7 +245,6 @@ const Cart = () => {
                         </div>
                       )}
 
-                      {/* Price Info */}
                       <div className="item-price-info">
                         {game.discount > 0 && (
                           <div className="discount-info">
@@ -154,7 +256,6 @@ const Cart = () => {
                       </div>
                     </div>
 
-                    {/* Quantity Controls */}
                     <div className="quantity-controls">
                       <button
                         className="qty-btn"
@@ -180,12 +281,10 @@ const Cart = () => {
                       </button>
                     </div>
 
-                    {/* Item Total */}
                     <div className="item-total">
                       ₹{(discountedPrice * item.quantity).toFixed(2)}
                     </div>
 
-                    {/* Remove Button */}
                     <button
                       className="remove-btn"
                       onClick={() => handleRemoveFromCart(game._id)}
@@ -200,7 +299,6 @@ const Cart = () => {
             </div>
           </div>
 
-          {/* Order Summary */}
           <div className="order-summary">
             <h2 className="summary-title">Order Summary</h2>
             
@@ -223,9 +321,22 @@ const Cart = () => {
               <span>₹{totals.totalDiscountedPrice}</span>
             </div>
 
-            <button className="checkout-btn" disabled={loading}>
-              <i className="fa-solid fa-credit-card"></i>
-              Proceed to Checkout
+            <button 
+              className="checkout-btn" 
+              onClick={handleCheckout}
+              disabled={loading || isProcessingPayment}
+            >
+              {isProcessingPayment ? (
+                <>
+                  <i className="fa-solid fa-spinner fa-spin"></i>
+                  Processing...
+                </>
+              ) : (
+                <>
+                  <i className="fa-solid fa-credit-card"></i>
+                  Proceed to Checkout
+                </>
+              )}
             </button>
 
             <button 
@@ -234,6 +345,47 @@ const Cart = () => {
             >
               Continue Shopping
             </button>
+          </div>
+        </div>
+      )}
+
+      {/* Payment Success Modal */}
+      {paymentSuccess && (
+        <div className="payment-modal-overlay">
+          <div className="payment-modal">
+            <div className="success-icon">
+              <i className="fa-solid fa-circle-check"></i>
+            </div>
+            <h2>Payment Successful!</h2>
+            <p>Your games have been added to your collection.</p>
+            
+            {purchasedGames.length > 0 && (
+              <div className="purchased-games-list">
+                <h3>Purchased Games:</h3>
+                <ul>
+                  {purchasedGames.map((game, index) => (
+                    <li key={index}>
+                      {game.name} {game.quantity > 1 && `(x${game.quantity})`}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            <div className="modal-actions">
+              <button className="view-collection-btn" onClick={closeSuccessModal}>
+                View Collection
+              </button>
+              <button 
+                className="continue-shopping-modal-btn" 
+                onClick={() => {
+                  setPaymentSuccess(false);
+                  navigate('/products');
+                }}
+              >
+                Continue Shopping
+              </button>
+            </div>
           </div>
         </div>
       )}
