@@ -599,8 +599,17 @@ const UserProfile = () => {
                   {collection.map((item) => (
                     <div key={item._id} className="up-collection-card">
                       <div className="up-collection-card-image">
-                        {item.game?.imageUrl ? (
-                          <img src={item.game.imageUrl} alt={item.game.name} />
+                        {/* FIXED: Check for coverImage and backgroundPic like in GameCard */}
+                        {item.game?.coverImage ? (
+                          <img 
+                            src={`${BACKEND_URL}/uploads/${item.game.coverImage}`} 
+                            alt={item.game.name} 
+                          />
+                        ) : item.game?.backgroundPic ? (
+                          <img 
+                            src={`${BACKEND_URL}/uploads/${item.game.backgroundPic}`} 
+                            alt={item.game.name} 
+                          />
                         ) : (
                           <div className="up-image-placeholder">
                             <i className="fas fa-gamepad"></i>
@@ -630,6 +639,7 @@ const UserProfile = () => {
                     </div>
                   ))}
                 </div>
+
               )}
             </div>
           </div>

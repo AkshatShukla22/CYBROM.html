@@ -86,53 +86,75 @@ const Register = () => {
 
   return (
     <div className="register-container">
+      {/* Animated Background Elements */}
+      <div className="register-bg-shapes">
+        <div className="register-shape register-shape-1"></div>
+        <div className="register-shape register-shape-2"></div>
+        <div className="register-shape register-shape-3"></div>
+      </div>
+
       <div className="register-card">
         <div className="register-header">
           <h1>Respawn Hub</h1>
-          <p>Create a new account</p>
+          <p>Create your gaming account</p>
         </div>
 
         {error && (
           <div className="register-alert-message register-alert-error">
-            {error}
+            <i className="fas fa-exclamation-circle"></i>
+            <span>{error}</span>
           </div>
         )}
         {success && (
           <div className="register-alert-message register-alert-success">
-            {success}
+            <i className="fas fa-check-circle"></i>
+            <span>{success}</span>
           </div>
         )}
 
         <form className="register-form" onSubmit={handleRegister}>
           <div className="register-form-group">
-            <label>Username</label>
-            <input
-              className="register-form-input"
-              type="text"
-              name="username"
-              value={registerData.username}
-              onChange={handleChange}
-              required
-              placeholder="Choose a username"
-            />
+            <label>
+              <i className="fas fa-user"></i>
+              Username
+            </label>
+            <div className="register-input-wrapper">
+              <input
+                className="register-form-input"
+                type="text"
+                name="username"
+                value={registerData.username}
+                onChange={handleChange}
+                required
+                placeholder="Choose a username"
+              />
+            </div>
           </div>
 
           <div className="register-form-group">
-            <label>Email</label>
-            <input
-              className="register-form-input"
-              type="email"
-              name="email"
-              value={registerData.email}
-              onChange={handleChange}
-              required
-              placeholder="Enter your email"
-            />
+            <label>
+              <i className="fas fa-envelope"></i>
+              Email Address
+            </label>
+            <div className="register-input-wrapper">
+              <input
+                className="register-form-input"
+                type="email"
+                name="email"
+                value={registerData.email}
+                onChange={handleChange}
+                required
+                placeholder="Enter your email"
+              />
+            </div>
           </div>
 
           <div className="register-form-group">
-            <label>Password</label>
-            <div className="register-password-wrapper">
+            <label>
+              <i className="fas fa-lock"></i>
+              Password
+            </label>
+            <div className="register-input-wrapper">
               <input
                 className="register-form-input"
                 type={showPassword ? 'text' : 'password'}
@@ -146,34 +168,51 @@ const Register = () => {
                 className="register-password-toggle-btn"
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
+                title={showPassword ? 'Hide password' : 'Show password'}
               >
-                {showPassword ? 'Hide' : 'Show'}
+                <i className={`fas ${showPassword ? 'fa-eye-slash' : 'fa-eye'}`}></i>
               </button>
             </div>
           </div>
 
           <div className="register-form-group">
-            <label>Confirm Password</label>
-            <input
-              className="register-form-input"
-              type={showPassword ? 'text' : 'password'}
-              name="confirmPassword"
-              value={registerData.confirmPassword}
-              onChange={handleChange}
-              required
-              placeholder="Confirm your password"
-            />
+            <label>
+              <i className="fas fa-shield-alt"></i>
+              Confirm Password
+            </label>
+            <div className="register-input-wrapper">
+              <input
+                className="register-form-input"
+                type={showPassword ? 'text' : 'password'}
+                name="confirmPassword"
+                value={registerData.confirmPassword}
+                onChange={handleChange}
+                required
+                placeholder="Confirm your password"
+              />
+            </div>
           </div>
 
           <button className="register-submit-btn" type="submit" disabled={loading}>
-            {loading ? 'Creating account...' : 'Register'}
+            {loading ? (
+              <>
+                <i className="fas fa-spinner fa-spin"></i>
+                Creating account...
+              </>
+            ) : (
+              <>
+                <i className="fas fa-user-plus"></i>
+                Create Account
+              </>
+            )}
           </button>
         </form>
 
         <div className="register-footer">
           <p>
-            Already have an account?{' '}
+            Already have an account?
             <button className="register-login-btn" onClick={() => navigate('/login')}>
+              <i className="fas fa-sign-in-alt"></i>
               Login here
             </button>
           </p>

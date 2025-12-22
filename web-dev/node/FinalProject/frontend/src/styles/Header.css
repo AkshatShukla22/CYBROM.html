@@ -263,6 +263,7 @@
 }
 
 .search-input:focus {
+  border-radius: 25px;
   border-color: #0a4d9e;
   box-shadow: 0 0 20px rgba(6, 57, 119, 0.3);
   background: linear-gradient(135deg, rgba(210, 220, 240, 0.98), rgba(230, 236, 248, 0.98));

@@ -38,7 +38,8 @@ const Home = () => {
   ];
 
   useEffect(() => {
-    fetchGames();
+    fetchFeaturedGames();
+    fetchTrendingGames();
     
     const interval = setInterval(() => {
       setCurrentBannerIndex((prevIndex) => 
@@ -49,9 +50,10 @@ const Home = () => {
     return () => clearInterval(interval);
   }, []);
 
-  const fetchGames = async () => {
+  // Fetch Featured Games using the new endpoint
+  const fetchFeaturedGames = async () => {
     try {
-      const response = await fetch(`${BACKEND_URL}/api/games`, {
+      const response = await fetch(`${BACKEND_URL}/api/users/games/featured?limit=6`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json'
@@ -60,13 +62,38 @@ const Home = () => {
 
       if (response.ok) {
         const data = await response.json();
-        setFeaturedGames(data.games?.slice(0, 6) || []);
-        setTrendingGames(data.games?.slice(6, 12) || []);
+        console.log('Featured Games Response:', data); // Debug log
+        setFeaturedGames(data.games || []);
+      } else {
+        console.error('Failed to fetch featured games');
       }
     } catch (err) {
-      console.error('Error fetching games:', err);
+      console.error('Error fetching featured games:', err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  // Fetch Trending Games - sorted by view count (most viewed first)
+  const fetchTrendingGames = async () => {
+    try {
+      const response = await fetch(`${BACKEND_URL}/api/users/games/trending?limit=6`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log('Trending Games Response:', data); // Debug log
+        // Games are already sorted by viewCount on backend
+        setTrendingGames(data.games || []);
+      } else {
+        console.error('Failed to fetch trending games');
+      }
+    } catch (err) {
+      console.error('Error fetching trending games:', err);
     }
   };
 
@@ -193,37 +220,63 @@ const Home = () => {
               <div className="hm-loading-spinner"></div>
               <p>Loading games...</p>
             </div>
+          ) : featuredGames.length === 0 ? (
+            <div className="hm-empty-state">
+              <i className="fas fa-gamepad"></i>
+              <p>No featured games available at the moment</p>
+            </div>
           ) : (
             <div className="hm-games-grid">
               {featuredGames.map((game) => (
                 <div
                   key={game._id}
-                  className="hm-game-card"
+                  className="hm-game-item"
                   onClick={() => navigate(`/game/${game._id}`)}
                 >
                   <div className="hm-game-image">
-                    {game.imageUrl ? (
-                      <img src={game.imageUrl} alt={game.name} />
+                    {game.coverImage ? (
+                      <img 
+                        src={`${BACKEND_URL}/uploads/${game.coverImage}`} 
+                        alt={game.name} 
+                      />
+                    ) : game.backgroundPic ? (
+                      <img 
+                        src={`${BACKEND_URL}/uploads/${game.backgroundPic}`} 
+                        alt={game.name} 
+                      />
                     ) : (
                       <div className="hm-image-placeholder">
                         <i className="fas fa-gamepad"></i>
                       </div>
                     )}
-                    {game.discount && (
-                      <div className="hm-discount-badge">-{game.discount}%</div>
+                    {game.discount > 0 && (
+                      <div className="hm-discount-badge">
+                        <i className="fas fa-tag"></i> {game.discount}%
+                      </div>
+                    )}
+                    {game.popularityLabel && (
+                      <div className="hm-popularity-badge">
+                        <i className="fas fa-crown"></i> {game.popularityLabel}
+                      </div>
                     )}
                   </div>
                   <div className="hm-game-content">
                     <h3 className="hm-game-title">{game.name}</h3>
                     <div className="hm-game-meta">
                       <span className="hm-game-genre">
-                        <i className="fas fa-tag"></i>
-                        {game.genre?.[0] || 'Game'}
+                        <i className="fas fa-hashtag"></i>
+                        {game.genre?.[0] || game.categories?.[0] || 'Game'}
+                      </span>
+                      <span className="hm-game-rating">
+                        <i className="fas fa-star"></i>
+                        {game.averageRating ? game.averageRating.toFixed(1) : '0.0'}
                       </span>
                     </div>
                     <div className="hm-game-footer">
                       <div className="hm-game-price">
-                        {game.discount ? (
+                        {game.price === 0 ? (
+                          <span className="hm-free-price">FREE</span>
+                        ) : game.discount > 0 ? (
                           <>
                             <span className="hm-original-price">₹{game.price}</span>
                             <span className="hm-discounted-price">
@@ -234,7 +287,7 @@ const Home = () => {
                           <span className="hm-current-price">₹{game.price}</span>
                         )}
                       </div>
-                      <button className="hm-game-btn">
+                      <button className="hm-game-btn" onClick={(e) => e.stopPropagation()}>
                         <i className="fas fa-shopping-cart"></i>
                       </button>
                     </div>
@@ -263,37 +316,77 @@ const Home = () => {
             </button>
           </div>
 
-          {!loading && (
+          {loading ? (
+            <div className="hm-loading-container">
+              <div className="hm-loading-spinner"></div>
+              <p>Loading trending games...</p>
+            </div>
+          ) : trendingGames.length === 0 ? (
+            <div className="hm-empty-state">
+              <i className="fas fa-fire"></i>
+              <p>No trending games available at the moment</p>
+            </div>
+          ) : (
             <div className="hm-games-grid">
-              {trendingGames.map((game) => (
+              {trendingGames.map((game, index) => (
                 <div
                   key={game._id}
-                  className="hm-game-card"
+                  className="hm-game-item"
                   onClick={() => navigate(`/game/${game._id}`)}
                 >
                   <div className="hm-game-image">
-                    {game.imageUrl ? (
-                      <img src={game.imageUrl} alt={game.name} />
+                    {game.coverImage ? (
+                      <img 
+                        src={`${BACKEND_URL}/uploads/${game.coverImage}`} 
+                        alt={game.name} 
+                      />
+                    ) : game.backgroundPic ? (
+                      <img 
+                        src={`${BACKEND_URL}/uploads/${game.backgroundPic}`} 
+                        alt={game.name} 
+                      />
                     ) : (
                       <div className="hm-image-placeholder">
                         <i className="fas fa-gamepad"></i>
                       </div>
                     )}
-                    {game.discount && (
-                      <div className="hm-discount-badge">-{game.discount}%</div>
+                    {/* Trending Rank Badge */}
+                    <div className="hm-trending-rank">
+                      <i className="fas fa-fire"></i> #{index + 1}
+                    </div>
+                    {game.discount > 0 && (
+                      <div className="hm-discount-badge">
+                        <i className="fas fa-tag"></i> {game.discount}%
+                      </div>
                     )}
                   </div>
                   <div className="hm-game-content">
                     <h3 className="hm-game-title">{game.name}</h3>
                     <div className="hm-game-meta">
                       <span className="hm-game-genre">
-                        <i className="fas fa-tag"></i>
-                        {game.genre?.[0] || 'Game'}
+                        <i className="fas fa-hashtag"></i>
+                        {game.genre?.[0] || game.categories?.[0] || 'Game'}
+                      </span>
+                      <span className="hm-game-views">
+                        <i className="fas fa-eye"></i>
+                        {game.viewCount || 0} views
+                      </span>
+                    </div>
+                    <div className="hm-game-stats">
+                      <span className="hm-stat-item">
+                        <i className="fas fa-star"></i>
+                        {game.averageRating ? game.averageRating.toFixed(1) : '0.0'}
+                      </span>
+                      <span className="hm-stat-item">
+                        <i className="fas fa-users"></i>
+                        {game.purchaseCount || 0}
                       </span>
                     </div>
                     <div className="hm-game-footer">
                       <div className="hm-game-price">
-                        {game.discount ? (
+                        {game.price === 0 ? (
+                          <span className="hm-free-price">FREE</span>
+                        ) : game.discount > 0 ? (
                           <>
                             <span className="hm-original-price">₹{game.price}</span>
                             <span className="hm-discounted-price">
@@ -304,7 +397,7 @@ const Home = () => {
                           <span className="hm-current-price">₹{game.price}</span>
                         )}
                       </div>
-                      <button className="hm-game-btn">
+                      <button className="hm-game-btn" onClick={(e) => e.stopPropagation()}>
                         <i className="fas fa-shopping-cart"></i>
                       </button>
                     </div>

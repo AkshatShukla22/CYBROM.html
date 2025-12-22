@@ -121,11 +121,11 @@ const FilterSidebar = ({ isOpen, onClose, filters, onFilterChange, onReset }) =>
               onChange={(e) => handleInputChange('minRating', e.target.value)}
             >
               <option value="">Any Rating</option>
-              <option value="1">⭐ 1+ Stars</option>
-              <option value="2">⭐⭐ 2+ Stars</option>
-              <option value="3">⭐⭐⭐ 3+ Stars</option>
-              <option value="4">⭐⭐⭐⭐ 4+ Stars</option>
-              <option value="4.5">⭐⭐⭐⭐⭐ 4.5+ Stars</option>
+              <option value="1"> 1+ Stars</option>
+              <option value="2"> 2+ Stars</option>
+              <option value="3"> 3+ Stars</option>
+              <option value="4"> 4+ Stars</option>
+              <option value="4.5"> 4.5+ Stars</option>
             </select>
           </div>
 
