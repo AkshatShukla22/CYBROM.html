@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Edit Employee</title>
+</head>
+<body>
+  <div class="container">
+    <h1>Edit Employee</h1>
+    <a href="/employees" class="btn">Back to List</a>
+    
+    <form action="/employees/edit/<%= employee._id %>" method="POST" class="form">
+      <div class="form-group">
+        <label>Name:</label>
+        <input type="text" name="name" value="<%= employee.name %>" required>
+      </div>
+      
+      <div class="form-group">
+        <label>Position:</label>
+        <input type="text" name="position" value="<%= employee.position %>" required>
+      </div>
+      
+      <div class="form-group">
+        <label>Department:</label>
+        <select name="department" required>
+          <% departments.forEach(dept => { %>
+            <option value="<%= dept._id %>" <%= employee.department._id.toString() === dept._id.toString() ? 'selected' : '' %>>
+              <%= dept.name %>
+            </option>
+          <% }) %>
+        </select>
+      </div>
+      
+      <div class="form-group">
+        <label>Email:</label>
+        <input type="email" name="email" value="<%= employee.email %>" required>
+      </div>
+      
+      <div class="form-group">
+        <label>Age:</label>
+        <input type="number" name="age" value="<%= employee.age %>" min="18" max="100" required>
+      </div>
+      
+      <div class="form-group">
+        <label>Hire Date:</label>
+        <input type="date" name="hireDate" value="<%= employee.hireDate.toISOString().split('T')[0] %>" required>
+      </div>
+      
+      <div class="form-group">
+        <label>Salary:</label>
+        <input type="number" name="salaryAmount" value="<%= employee.salary.amount %>" min="0" step="0.01" required>
+      </div>
+      
+      <button type="submit" class="btn">Update Employee</button>
+    </form>
+  </div>
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Register</title>
+</head>
+<body>
+  <div class="container">
+    <div class="auth-container">
+      <h1>Register</h1>
+      <form action="/auth/register" method="POST" class="form">
+        <div class="form-group">
+          <label>Username:</label>
+          <input type="text" name="username" required>
+        </div>
+        
+        <div class="form-group">
+          <label>Email:</label>
+          <input type="email" name="email" required>
+        </div>
+        
+        <div class="form-group">
+          <label>Password:</label>
+          <input type="password" name="password" required minlength="6">
+        </div>
+        
+        <div class="form-group">
+          <label>Role:</label>
+          <select name="role">
+            <option value="user">User</option>
+            <option value="admin">Admin</option>
+          </select>
+        </div>
+        
+        <button type="submit" class="btn">Register</button>
+      </form>
+      
+      <p style="margin-top: 20px;">
+        Already have an account? <a href="/auth/login">Login here</a>
+      </p>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Add Employee</title>
+</head>
+<body>
+  <div class="container">
+    <h1>Add New Employee</h1>
+    <a href="/employees" class="btn">Back to List</a>
+    
+    <form action="/employees/add" method="POST" class="form">
+      <div class="form-group">
+        <label>Name:</label>
+        <input type="text" name="name" required>
+      </div>
+      
+      <div class="form-group">
+        <label>Position:</label>
+        <input type="text" name="position" required>
+      </div>
+      
+      <div class="form-group">
+        <label>Department:</label>
+        <select name="department" required>
+          <option value="">Select Department</option>
+          <% departments.forEach(dept => { %>
+            <option value="<%= dept._id %>"><%= dept.name %></option>
+          <% }) %>
+        </select>
+      </div>
+      
+      <div class="form-group">
+        <label>Email:</label>
+        <input type="email" name="email" required>
+      </div>
+      
+      <div class="form-group">
+        <label>Age:</label>
+        <input type="number" name="age" min="18" max="100" required>
+      </div>
+      
+      <div class="form-group">
+        <label>Hire Date:</label>
+        <input type="date" name="hireDate" required>
+      </div>
+      
+      <div class="form-group">
+        <label>Salary:</label>
+        <input type="number" name="salaryAmount" min="0" step="0.01" required>
+      </div>
+      
+      <button type="submit" class="btn">Add Employee</button>
+    </form>
+  </div>
+</body>
+</html>
