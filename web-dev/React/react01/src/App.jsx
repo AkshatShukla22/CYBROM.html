@@ -29,5 +29,3 @@ const App = () => {
 }
 
 export default App;
-
-// npm install react-router-dom@6
