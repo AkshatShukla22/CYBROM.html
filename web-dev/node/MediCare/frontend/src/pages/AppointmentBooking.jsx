@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import backendUrl from '../utils/BackendURL';
+import LoadingSpinner from '../components/LoadingSpinner';
 import '../styles/AppointmentBooking.css';
 
 const AppointmentBooking = () => {
@@ -12,6 +13,7 @@ const AppointmentBooking = () => {
   const [currentUser, setCurrentUser] = useState(null);
   const [selectedDate, setSelectedDate] = useState('');
   const [availability, setAvailability] = useState([]);
+  const [upcomingAvailability, setUpcomingAvailability] = useState([]);
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [symptoms, setSymptoms] = useState('');
   const [notes, setNotes] = useState('');
@@ -55,6 +57,7 @@ const AppointmentBooking = () => {
   useEffect(() => {
     fetchCurrentUser();
     fetchDoctorProfile();
+    fetchUpcomingAvailability();
   }, [doctorId]);
 
   useEffect(() => {
@@ -62,6 +65,13 @@ const AppointmentBooking = () => {
       fetchDoctorAvailability();
     }
   }, [selectedDate, doctorId]);
+
+  const getSlotKey = (slot) => {
+    if (!slot) return '';
+    return `${slot.date || selectedDate}-${slot.locationId}-${slot.slotId || ''}-${slot.timeSlot?.startTime}-${slot.timeSlot?.endTime}`;
+  };
+
+  const displayedAvailability = selectedDate ? availability : upcomingAvailability;
 
   const fetchCurrentUser = async () => {
     try {
@@ -132,6 +142,40 @@ const AppointmentBooking = () => {
     }
   };
 
+  const fetchUpcomingAvailability = async () => {
+    setAvailabilityLoading(true);
+    try {
+      const response = await fetch(
+        `${backendUrl}/api/appointments/doctors/${doctorId}/availability-range?startDate=${getMinDate()}&days=30`
+      );
+      const data = await response.json();
+
+      if (response.ok) {
+        const slots = (data.results || []).flatMap((day) =>
+          (day.availability || []).map((slot) => ({
+            ...slot,
+            date: slot.date || day.date
+          }))
+        );
+        setUpcomingAvailability(slots);
+      } else {
+        setUpcomingAvailability([]);
+      }
+    } catch (error) {
+      setUpcomingAvailability([]);
+      console.error('Upcoming availability fetch error:', error);
+    } finally {
+      setAvailabilityLoading(false);
+    }
+  };
+
+  const handleSelectSlot = (slot) => {
+    if (slot.date && slot.date !== selectedDate) {
+      setSelectedDate(slot.date);
+    }
+    setSelectedLocation(slot);
+  };
+
   const handleBookAppointment = async () => {
     if (!currentUser) {
       setError('Please login to book appointments');
@@ -148,7 +192,9 @@ const AppointmentBooking = () => {
 
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`${backendUrl}/api/appointments/doctors/${doctorId}/book`, {
+
+      // 1) Create appointment first (will be marked paid after payment verification)
+      const createResp = await fetch(`${backendUrl}/api/appointments/doctors/${doctorId}/book`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -157,25 +203,105 @@ const AppointmentBooking = () => {
         body: JSON.stringify({
           appointmentDate: selectedDate,
           practiceLocationId: selectedLocation.locationId,
+          timeSlot: selectedLocation.timeSlot,
           symptoms: symptoms.trim(),
           notes: notes.trim()
         })
       });
 
-      const data = await response.json();
-
-      if (response.ok) {
-        setSuccessMessage('Appointment booked successfully!');
-        // Optionally redirect to appointments page
-        setTimeout(() => {
-          navigate('/appointments');
-        }, 2000);
-      } else {
-        setError(data.message || 'Failed to book appointment');
+      const createData = await createResp.json();
+      if (!createResp.ok) {
+        setError(createData.message || 'Failed to create appointment');
+        setBookingLoading(false);
+        return;
       }
+
+      const appointmentId = createData.data?.appointmentId || createData.data?.appointment?._id || createData.appointmentId || createData.data?.id;
+      const amount = selectedLocation.consultationFee || createData.data?.consultationFee || selectedLocation.consultationFee || 0;
+
+      // 2) Create Razorpay order
+      const orderResp = await fetch(`${backendUrl}/api/payments/razorpay/order`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ amount: amount, currency: 'INR', appointmentId })
+      });
+
+      const orderData = await orderResp.json();
+      if (!orderResp.ok) {
+        setError(orderData.message || 'Failed to create payment order');
+        setBookingLoading(false);
+        return;
+      }
+
+      const { order, keyId } = orderData;
+
+      // Load Razorpay checkout script if not loaded
+      if (!window.Razorpay) {
+        await new Promise((resolve, reject) => {
+          const script = document.createElement('script');
+          script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+          script.onload = resolve;
+          script.onerror = reject;
+          document.body.appendChild(script);
+        });
+      }
+
+      const options = {
+        key: keyId || import.meta.env.VITE_RAZORPAY_KEY,
+        amount: order.amount,
+        currency: order.currency,
+        name: 'MediCare',
+        description: `Consultation with Dr. ${doctor.name}`,
+        order_id: order.id,
+        handler: async function (response) {
+          try {
+            // Verify payment on backend
+            const verifyResp = await fetch(`${backendUrl}/api/payments/razorpay/verify`, {
+              method: 'POST',
+              headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_signature: response.razorpay_signature,
+                appointmentId
+              })
+            });
+
+            const verifyData = await verifyResp.json();
+            if (verifyResp.ok) {
+              setSuccessMessage('Payment successful and appointment confirmed!');
+              setTimeout(() => navigate('/appointments'), 2000);
+            } else {
+              setError(verifyData.message || 'Payment verification failed');
+            }
+          } catch (err) {
+            console.error('Payment verification error:', err);
+            setError('Payment verification failed');
+          }
+        },
+        prefill: {
+          name: currentUser?.name || '',
+          email: currentUser?.email || '',
+          contact: currentUser?.phone || ''
+        },
+        notes: {
+          appointmentId: appointmentId || ''
+        },
+        theme: { color: '#007bff' }
+      };
+
+      const rzp = new window.Razorpay(options);
+      rzp.open();
+
     } catch (error) {
       setError('Network error. Please try again.');
-      console.error('Booking error:', error);
+      console.error('Booking/payment error:', error);
     } finally {
       setBookingLoading(false);
     }
@@ -199,12 +325,7 @@ const AppointmentBooking = () => {
 
   if (loading) {
     return (
-      <div className="appointment-page-container">
-        <div className="appointment-loading-spinner">
-          <i className="fas fa-spinner fa-spin"></i>
-          <span>Loading doctor information...</span>
-        </div>
-      </div>
+      <LoadingSpinner message="Loading doctor information..." />
     );
   }
 
@@ -302,59 +423,83 @@ const AppointmentBooking = () => {
             value={selectedDate}
             min={getMinDate()}
             max={getMaxDate()}
-            onChange={(e) => setSelectedDate(e.target.value)}
+            onChange={(e) => {
+              setSelectedDate(e.target.value);
+              setSelectedLocation(null);
+            }}
             className="form-input date-input"
           />
         </div>
 
         {/* Available Slots */}
-        {selectedDate && (
-          <div className="available-slots-section">
-            <label className="form-label">Available Time Slots</label>
-            
-            {availabilityLoading ? (
-              <div className="availability-loading">
-                <i className="fas fa-spinner fa-spin"></i>
-                <p>Checking availability...</p>
-              </div>
-            ) : availability.length > 0 ? (
-              <div className="slots-list">
-                {availability.map((slot, index) => (
-                  <div
-                    key={index}
-                    className={`slot-card ${
-                      selectedLocation?.locationId === slot.locationId ? 'selected' : ''
-                    }`}
-                    onClick={() => setSelectedLocation(slot)}
-                  >
-                    <div className="slot-info">
-                      <h4>{slot.locationName}</h4>
-                      <p className="location-address">
-                        <i className="fas fa-map-marker-alt"></i>
-                        {slot.address?.city && `${slot.address.city}, ${slot.address.state}`}
-                      </p>
-                      <p className="time-slot">
-                        <i className="fas fa-clock"></i>
-                        {slot.timeSlot.startTime} - {slot.timeSlot.endTime}
-                      </p>
-                    </div>
-                    <div className="slot-details">
-                      <div className="fee">₹{slot.consultationFee}</div>
-                      <div className="queue-info">Queue: #{slot.nextQueueNumber}</div>
-                      <div className="availability-info">{slot.availableSpots} slots available</div>
-                      <div className="wait-time">Est. wait: {slot.estimatedWaitTime}</div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className="no-slots-message">
-                <i className="fas fa-calendar-times"></i>
-                <p>No available slots for the selected date. Please choose another date.</p>
-              </div>
+        <div className="available-slots-section">
+          <div className="slots-section-heading">
+            <label className="form-label">
+              {selectedDate ? 'Available Time Slots' : 'Upcoming Available Slots'}
+            </label>
+            {!availabilityLoading && displayedAvailability.length > 0 && (
+              <span>{displayedAvailability.length} slots found</span>
             )}
           </div>
-        )}
+
+          {availabilityLoading ? (
+            <div className="availability-loading">
+              <i className="fas fa-spinner fa-spin"></i>
+              <p>Checking availability...</p>
+            </div>
+          ) : displayedAvailability.length > 0 ? (
+            <div className="slots-list">
+              {displayedAvailability.map((slot, index) => (
+                <div
+                  key={getSlotKey(slot) || index}
+                  className={`slot-card ${
+                    getSlotKey(selectedLocation) === getSlotKey(slot) ? 'selected' : ''
+                  }`}
+                  onClick={() => handleSelectSlot(slot)}
+                >
+                  <div className="slot-info">
+                    <h4>{slot.locationName}</h4>
+                    {!selectedDate && slot.date && (
+                      <p className="slot-date">
+                        <i className="fas fa-calendar-day"></i>
+                        {new Date(slot.date).toLocaleDateString('en-IN', {
+                          weekday: 'long',
+                          day: 'numeric',
+                          month: 'short'
+                        })}
+                      </p>
+                    )}
+                    <p className="location-address">
+                      <i className="fas fa-map-marker-alt"></i>
+                      {slot.address?.city
+                        ? `${slot.address.city}, ${slot.address.state || ''}`
+                        : 'Clinic location'}
+                    </p>
+                    <p className="time-slot">
+                      <i className="fas fa-clock"></i>
+                      {slot.timeSlot.startTime} - {slot.timeSlot.endTime}
+                    </p>
+                  </div>
+                  <div className="slot-details">
+                    <div className="fee">Rs. {slot.consultationFee}</div>
+                    <div className="queue-info">Queue: #{slot.nextQueueNumber}</div>
+                    <div className="availability-info">{slot.availableSpots} slots available</div>
+                    <div className="wait-time">Est. wait: {slot.estimatedWaitTime || '0 minutes'}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="no-slots-message">
+              <i className="fas fa-calendar-times"></i>
+              <p>
+                {selectedDate
+                  ? 'No available slots for the selected date. Please choose another date.'
+                  : 'No upcoming slots are available for this doctor right now.'}
+              </p>
+            </div>
+          )}
+        </div>
 
         {/* Symptoms & Notes */}
         {selectedLocation && (

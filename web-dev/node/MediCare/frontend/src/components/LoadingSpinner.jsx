@@ -1,21 +1,20 @@
 import React from 'react';
 import '../styles/LoadingSpinner.css';
 
-const LoadingSpinner = ({ size = 'large', message = 'Loading doctors...' }) => {
+const LoadingSpinner = ({ size = 'large', message = 'Loading...' }) => {
   return (
     <div className={`loading-spinner-container ${size}`}>
       <div className="loading-content">
-        {/* Main spinner */}
-        <div className="spinner">
-          <div className="spinner-circle"></div>
-          <div className="spinner-circle"></div>
-          <div className="spinner-circle"></div>
+        <div className="loader-mark" aria-hidden="true">
+          <div className="loader-ring"></div>
+          <div className="loader-ring loader-ring--inner"></div>
+          <div className="loader-pulse">
+            <i className="fas fa-heartbeat"></i>
+          </div>
         </div>
         
-        {/* Loading message */}
         <p className="loading-message">{message}</p>
         
-        {/* Loading skeleton cards for better UX */}
         {size === 'large' && (
           <div className="loading-skeleton">
             <div className="skeleton-cards">

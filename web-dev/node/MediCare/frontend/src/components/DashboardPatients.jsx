@@ -175,7 +175,7 @@ const DashboardPatients = ({
                   </div>
                   <div className="patients-detail-item">
                     <i className="fas fa-rupee-sign"></i>
-                    <span>₹{appointment.consultationFee}</span>
+                    <span>Rs. {appointment.consultationFee}</span>
                   </div>
                 </div>
 

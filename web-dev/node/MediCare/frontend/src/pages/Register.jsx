@@ -98,6 +98,29 @@ const Register = () => {
         <div className="auth-shape shape-2"></div>
         <div className="auth-shape shape-3"></div>
       </div>
+
+      <aside className="auth-showcase">
+        <div className="auth-showcase-badge">
+          <i className="fas fa-user-shield"></i>
+          Verified health network
+        </div>
+        <h1>Create one account for the whole care journey.</h1>
+        <p>Join as a patient or doctor with structured profiles, appointment tools, secure messages, and review history.</p>
+        <div className="auth-showcase-grid">
+          <div>
+            <strong>Fast</strong>
+            <span>Booking</span>
+          </div>
+          <div>
+            <strong>Safe</strong>
+            <span>Records</span>
+          </div>
+          <div>
+            <strong>Live</strong>
+            <span>Care</span>
+          </div>
+        </div>
+      </aside>
       
       <div className="auth-card register-card">
         <div className="auth-header">

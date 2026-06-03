@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import backendUrl from '../utils/BackendURL';
+import LoadingSpinner from '../components/LoadingSpinner';
 import '../styles/Rating.css';
 
 const DoctorProfileView = () => {
@@ -292,12 +293,7 @@ const DoctorProfileView = () => {
 
   if (loading) {
     return (
-      <div className="profile-page-container">
-        <div className="profile-loading-spinner">
-          <i className="fas fa-spinner fa-spin"></i>
-          <span>Loading doctor profile...</span>
-        </div>
-      </div>
+      <LoadingSpinner message="Loading doctor profile..." />
     );
   }
 

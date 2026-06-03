@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import backendUrl from '../utils/BackendURL';
 import '../styles/Auth.css';
@@ -13,6 +13,32 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const existingScript = document.getElementById('google-ids-script');
+
+    const initializeGoogle = () => {
+      if (!window.google?.accounts || window._googleInitialized) return;
+
+      window.google.accounts.id.initialize({
+        client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID,
+        callback: handleGoogleCredentialResponse
+      });
+      window._googleInitialized = true;
+    };
+
+    if (!existingScript) {
+      const script = document.createElement('script');
+      script.src = 'https://accounts.google.com/gsi/client';
+      script.id = 'google-ids-script';
+      script.async = true;
+      script.defer = true;
+      script.onload = initializeGoogle;
+      document.body.appendChild(script);
+    } else {
+      initializeGoogle();
+    }
+  }, []);
 
   const handleChange = (e) => {
     setFormData({
@@ -59,6 +85,45 @@ const Login = () => {
     }
   };
 
+  const handleGoogleCredentialResponse = async (response) => {
+    if (!response?.credential) return;
+
+    setLoading(true);
+    setError('');
+
+    try {
+      const res = await fetch(`${backendUrl}/api/auth/google`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ idToken: response.credential })
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('user', JSON.stringify(data.user));
+        navigate('/');
+        window.location.reload();
+      } else {
+        setError(data.message || 'Google sign-in failed');
+      }
+    } catch (err) {
+      console.error('Google sign-in error:', err);
+      setError('Google sign-in failed.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleGoogleSignIn = () => {
+    if (window.google?.accounts) {
+      window.google.accounts.id.prompt();
+    } else {
+      setError('Google Sign-In is still loading. Please try again.');
+    }
+  };
+
   return (
     <div className="auth-container">
       <div className="auth-background">
@@ -66,6 +131,29 @@ const Login = () => {
         <div className="auth-shape shape-2"></div>
         <div className="auth-shape shape-3"></div>
       </div>
+
+      <aside className="auth-showcase">
+        <div className="auth-showcase-badge">
+          <i className="fas fa-shield-heart"></i>
+          Secure care access
+        </div>
+        <h1>Manage your care from one calm dashboard.</h1>
+        <p>Book appointments, message doctors, and keep your medical conversations organized with a protected MediCare account.</p>
+        <div className="auth-showcase-grid">
+          <div>
+            <strong>24/7</strong>
+            <span>Access</span>
+          </div>
+          <div>
+            <strong>50+</strong>
+            <span>Doctors</span>
+          </div>
+          <div>
+            <strong>1:1</strong>
+            <span>Messages</span>
+          </div>
+        </div>
+      </aside>
       
       <div className="auth-card">
         <div className="auth-header">
@@ -153,27 +241,22 @@ const Login = () => {
           </button>
         </form>
 
+        <button
+          type="button"
+          className="google-auth-button"
+          onClick={handleGoogleSignIn}
+          disabled={loading}
+        >
+          <i className="fab fa-google"></i>
+          Continue with Google
+        </button>
+
         <div className="auth-footer">
           <p>Don't have an account?</p>
           <Link to="/register" className="auth-link">
             Create Account
             <i className="fas fa-arrow-right"></i>
           </Link>
-        </div>
-
-        <div className="auth-divider">
-          <span>or continue with</span>
-        </div>
-
-        <div className="social-login">
-          <button className="social-button google">
-            <i className="fab fa-google"></i>
-            Google
-          </button>
-          <button className="social-button facebook">
-            <i className="fab fa-facebook-f"></i>
-            Facebook
-          </button>
         </div>
       </div>
     </div>

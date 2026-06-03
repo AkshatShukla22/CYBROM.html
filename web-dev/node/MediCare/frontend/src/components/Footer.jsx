@@ -7,9 +7,28 @@ const Footer = () => {
   return (
     <footer className="footer">
       <div className="footer__container">
-        {/* Main Footer Content */}
+        <div className="footer__top">
+          <div className="footer__cta">
+            <span className="footer__eyebrow">
+              <i className="fas fa-shield-heart"></i>
+              MediCare Network
+            </span>
+            <h2>Healthcare access that stays organized.</h2>
+            <p>Find doctors, manage appointments, and keep patient conversations in one secure place.</p>
+          </div>
+          <div className="footer__actions">
+            <Link to="/doctors" className="footer__primary-action">
+              <i className="fas fa-user-md"></i>
+              Find Doctors
+            </Link>
+            <Link to="/appointments" className="footer__secondary-action">
+              <i className="fas fa-calendar-check"></i>
+              Appointments
+            </Link>
+          </div>
+        </div>
+
         <div className="footer__main">
-          {/* Company Info */}
           <div className="footer__section footer__section--about">
             <div className="footer__logo">
               <div className="logo__icon">
@@ -22,25 +41,21 @@ const Footer = () => {
               Your health is our priority, and we're here to serve you 24/7.
             </p>
             <div className="footer__social">
-              <a href="#" className="social-link" aria-label="Facebook">
+              <a href="https://facebook.com" className="social-link" aria-label="Facebook" target="_blank" rel="noreferrer">
                 <i className="fab fa-facebook-f"></i>
               </a>
-              <a href="#" className="social-link" aria-label="Twitter">
+              <a href="https://x.com" className="social-link" aria-label="Twitter" target="_blank" rel="noreferrer">
                 <i className="fab fa-twitter"></i>
               </a>
-              <a href="#" className="social-link" aria-label="Instagram">
+              <a href="https://instagram.com" className="social-link" aria-label="Instagram" target="_blank" rel="noreferrer">
                 <i className="fab fa-instagram"></i>
               </a>
-              <a href="#" className="social-link" aria-label="LinkedIn">
+              <a href="https://linkedin.com" className="social-link" aria-label="LinkedIn" target="_blank" rel="noreferrer">
                 <i className="fab fa-linkedin-in"></i>
-              </a>
-              <a href="#" className="social-link" aria-label="YouTube">
-                <i className="fab fa-youtube"></i>
               </a>
             </div>
           </div>
 
-          {/* Quick Links */}
           <div className="footer__section">
             <h4 className="footer__title">
               <i className="fas fa-link"></i>
@@ -48,31 +63,29 @@ const Footer = () => {
             </h4>
             <ul className="footer__links">
               <li><Link to="/" className="footer__link">Home</Link></li>
-              <li><Link to="/about" className="footer__link">About Us</Link></li>
-              <li><Link to="/services" className="footer__link">Services</Link></li>
+              <li><Link to="/profile" className="footer__link">Profile</Link></li>
               <li><Link to="/doctors" className="footer__link">Our Doctors</Link></li>
-              <li><Link to="/appointments" className="footer__link">Book Appointment</Link></li>
-              <li><Link to="/contact" className="footer__link">Contact</Link></li>
+              <li><Link to="/messages" className="footer__link">Messages</Link></li>
+              <li><Link to="/appointments" className="footer__link">Appointments</Link></li>
+              <li><Link to="/settings" className="footer__link">Settings</Link></li>
             </ul>
           </div>
 
-          {/* Medical Services */}
           <div className="footer__section">
             <h4 className="footer__title">
               <i className="fas fa-stethoscope"></i>
               Medical Services
             </h4>
             <ul className="footer__links">
-              <li><a href="#" className="footer__link">Emergency Care</a></li>
-              <li><a href="#" className="footer__link">Cardiology</a></li>
-              <li><a href="#" className="footer__link">Neurology</a></li>
-              <li><a href="#" className="footer__link">Pediatrics</a></li>
-              <li><a href="#" className="footer__link">Orthopedics</a></li>
-              <li><a href="#" className="footer__link">Radiology</a></li>
+              <li><Link to="/doctors?specialization=general" className="footer__link">General Care</Link></li>
+              <li><Link to="/doctors?specialization=cardiology" className="footer__link">Cardiology</Link></li>
+              <li><Link to="/doctors?specialization=neurology" className="footer__link">Neurology</Link></li>
+              <li><Link to="/doctors?specialization=pediatrics" className="footer__link">Pediatrics</Link></li>
+              <li><Link to="/doctors?specialization=orthopedics" className="footer__link">Orthopedics</Link></li>
+              <li><Link to="/doctors?specialization=dermatology" className="footer__link">Dermatology</Link></li>
             </ul>
           </div>
 
-          {/* Contact Info */}
           <div className="footer__section">
             <h4 className="footer__title">
               <i className="fas fa-phone-alt"></i>
@@ -111,7 +124,6 @@ const Footer = () => {
           </div>
         </div>
 
-        {/* Newsletter Signup */}
         <div className="footer__newsletter">
           <div className="newsletter__content">
             <h3 className="newsletter__title">
@@ -122,7 +134,7 @@ const Footer = () => {
               Subscribe to our newsletter for the latest health news, tips, and medical updates.
             </p>
           </div>
-          <form className="newsletter__form">
+          <form className="newsletter__form" onSubmit={(event) => event.preventDefault()}>
             <div className="newsletter__input-group">
               <input 
                 type="email" 
@@ -138,17 +150,15 @@ const Footer = () => {
           </form>
         </div>
 
-        {/* Bottom Footer */}
         <div className="footer__bottom">
           <div className="footer__bottom-content">
             <div className="footer__copyright">
-              <p>&copy; 2024 MediCare Health Services. All rights reserved.</p>
+              <p>&copy; 2026 MediCare Health Services. All rights reserved.</p>
             </div>
             <div className="footer__legal">
-              <a href="#" className="legal-link">Privacy Policy</a>
-              <a href="#" className="legal-link">Terms of Service</a>
-              <a href="#" className="legal-link">Cookie Policy</a>
-              <a href="#" className="legal-link">HIPAA Compliance</a>
+              <Link to="/settings" className="legal-link">Privacy Controls</Link>
+              <Link to="/settings" className="legal-link">Terms</Link>
+              <Link to="/settings" className="legal-link">Security</Link>
             </div>
             <div className="footer__certifications">
               <div className="certification">

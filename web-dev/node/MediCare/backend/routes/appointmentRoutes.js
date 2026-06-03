@@ -3,6 +3,7 @@ const express = require('express');
 const auth = require('../middleware/auth');
 const {
   getDoctorAvailability,
+  getDoctorAvailabilityRange,
   bookAppointment,
   getPatientAppointments,
   getDoctorAppointments,
@@ -15,6 +16,7 @@ const router = express.Router();
 
 // Public routes
 router.get('/doctors/:doctorId/availability', getDoctorAvailability);
+router.get('/doctors/:doctorId/availability-range', getDoctorAvailabilityRange);
 
 // Protected routes (require authentication)
 router.post('/doctors/:doctorId/book', auth, bookAppointment);

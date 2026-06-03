@@ -18,10 +18,8 @@ const validateAppointmentDate = (date) => {
   return appointmentDate >= today && appointmentDate <= maxDate;
 };
 
-// FIXED: Helper function to check if appointment date falls on available day
-const isDateAvailableForLocation = (appointmentDate, location, doctor = null) => {
+const getMatchingAvailableSlots = (appointmentDate, location, doctor = null) => {
   try {
-    // Get day name in multiple formats to handle different data structures
     const dayNames = {
       full: appointmentDate.toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase(),
       short: appointmentDate.toLocaleDateString('en-US', { weekday: 'short' }).toLowerCase(),
@@ -30,54 +28,60 @@ const isDateAvailableForLocation = (appointmentDate, location, doctor = null) =>
 
     console.log('Checking availability for:', dayNames);
 
-    // First, try to find slots in the practice location
+    const matchesDay = (slot) => {
+      if (!slot || !slot.isActive) return false;
+      const slotDay = slot.day ? slot.day.toLowerCase() : '';
+      console.log('Comparing slot day:', slotDay, 'with:', dayNames);
+
+      return slotDay === dayNames.full ||
+             slotDay === dayNames.short ||
+             slotDay === dayNames.full.substring(0, 3);
+    };
+
     if (location && location.availableSlots && Array.isArray(location.availableSlots)) {
       console.log('Checking location availableSlots:', location.availableSlots);
-      
-      const availableSlot = location.availableSlots.find(slot => {
-        if (!slot || !slot.isActive) return false;
-        
-        const slotDay = slot.day ? slot.day.toLowerCase() : '';
-        console.log('Comparing slot day:', slotDay, 'with:', dayNames);
-        
-        return slotDay === dayNames.full || 
-               slotDay === dayNames.short || 
-               slotDay === dayNames.full.substring(0, 3); // mon, tue, etc.
-      });
-      
-      if (availableSlot) {
-        console.log('Found available slot in location:', availableSlot);
-        return availableSlot;
+
+      const availableSlots = location.availableSlots.filter(matchesDay);
+
+      if (availableSlots.length > 0) {
+        console.log('Found available slots in location:', availableSlots);
+        return availableSlots;
       }
     }
 
-    // Fallback: Check doctor's legacy availableSlots if location doesn't have any
     if (doctor && doctor.availableSlots && Array.isArray(doctor.availableSlots)) {
       console.log('Checking doctor availableSlots:', doctor.availableSlots);
-      
-      const availableSlot = doctor.availableSlots.find(slot => {
-        if (!slot || !slot.isActive) return false;
-        
-        const slotDay = slot.day ? slot.day.toLowerCase() : '';
-        console.log('Comparing doctor slot day:', slotDay, 'with:', dayNames);
-        
-        return slotDay === dayNames.full || 
-               slotDay === dayNames.short || 
-               slotDay === dayNames.full.substring(0, 3);
-      });
-      
-      if (availableSlot) {
-        console.log('Found available slot in doctor slots:', availableSlot);
-        return availableSlot;
+
+      const availableSlots = doctor.availableSlots.filter(matchesDay);
+
+      if (availableSlots.length > 0) {
+        console.log('Found available slots in doctor slots:', availableSlots);
+        return availableSlots;
       }
     }
     
-    console.log('No available slot found for this day');
-    return null;
+    console.log('No available slots found for this day');
+    return [];
   } catch (error) {
-    console.error('Error in isDateAvailableForLocation:', error);
-    return null;
+    console.error('Error in getMatchingAvailableSlots:', error);
+    return [];
   }
+};
+
+// FIXED: Helper function to check if appointment date falls on available day
+const isDateAvailableForLocation = (appointmentDate, location, doctor = null) => {
+  return getMatchingAvailableSlots(appointmentDate, location, doctor)[0] || null;
+};
+
+const findRequestedSlot = (slots, requestedTimeSlot) => {
+  if (!requestedTimeSlot?.startTime || !requestedTimeSlot?.endTime) {
+    return slots[0] || null;
+  }
+
+  return slots.find(slot =>
+    slot.startTime === requestedTimeSlot.startTime &&
+    slot.endTime === requestedTimeSlot.endTime
+  ) || null;
 };
 
 // @desc    Get doctor's available slots for a specific date
@@ -163,10 +167,10 @@ const getDoctorAvailability = async (req, res) => {
             continue;
           }
           
-          const availableSlot = isDateAvailableForLocation(appointmentDate, location, doctor);
-          console.log('Available slot for location:', location.name, ':', availableSlot);
-          
-          if (availableSlot) {
+          const availableSlots = getMatchingAvailableSlots(appointmentDate, location, doctor);
+          console.log('Available slots for location:', location.name, ':', availableSlots);
+
+          if (availableSlots.length > 0) {
             // Check current bookings for this location and date
             const patientsPerDay = location.patientsPerDay || 10; // Default to 10 if not set
             
@@ -201,24 +205,27 @@ const getDoctorAvailability = async (req, res) => {
                 isActive: true
               });
               
-              const availabilitySlot = {
-                locationId: location._id,
-                locationName: location.name || 'Unnamed Location',
-                address: location.address || {},
-                consultationFee: location.consultationFee || doctor.consultationFee || 500,
-                timeSlot: {
-                  startTime: availableSlot.startTime || '09:00',
-                  endTime: availableSlot.endTime || '17:00'
-                },
-                availableSpots: Math.max(0, patientsPerDay - currentBookings),
-                totalCapacity: patientsPerDay,
-                nextQueueNumber,
-                currentBookings,
-                estimatedWaitTime: `${Math.max(0, (nextQueueNumber - 1) * 15)} minutes`
-              };
-              
-              console.log('Adding availability slot:', availabilitySlot);
-              availability.push(availabilitySlot);
+              availableSlots.forEach((availableSlot, slotIndex) => {
+                const availabilitySlot = {
+                  slotId: availableSlot._id || `${location._id}-${slotIndex}`,
+                  locationId: location._id,
+                  locationName: location.name || 'Unnamed Location',
+                  address: location.address || {},
+                  consultationFee: location.consultationFee || doctor.consultationFee || 500,
+                  timeSlot: {
+                    startTime: availableSlot.startTime || '09:00',
+                    endTime: availableSlot.endTime || '17:00'
+                  },
+                  availableSpots: Math.max(0, patientsPerDay - currentBookings),
+                  totalCapacity: patientsPerDay,
+                  nextQueueNumber,
+                  currentBookings,
+                  estimatedWaitTime: `${Math.max(0, (nextQueueNumber - 1) * 15)} minutes`
+                };
+
+                console.log('Adding availability slot:', availabilitySlot);
+                availability.push(availabilitySlot);
+              });
             }
           }
         } catch (locationError) {
@@ -230,10 +237,10 @@ const getDoctorAvailability = async (req, res) => {
       // FIXED: Fallback to legacy system - create a default location using doctor's availableSlots
       console.log('No practice locations found, using legacy system');
       
-      const availableSlot = isDateAvailableForLocation(appointmentDate, null, doctor);
-      console.log('Available slot from legacy system:', availableSlot);
-      
-      if (availableSlot) {
+      const availableSlots = getMatchingAvailableSlots(appointmentDate, null, doctor);
+      console.log('Available slots from legacy system:', availableSlots);
+
+      if (availableSlots.length > 0) {
         // Create a virtual location using doctor's information
         const virtualLocationId = new mongoose.Types.ObjectId(); // Generate a temp ID
         const patientsPerDay = 10; // Default capacity
@@ -256,25 +263,28 @@ const getDoctorAvailability = async (req, res) => {
         
         if (currentBookings < patientsPerDay) {
           const nextQueueNumber = currentBookings + 1;
-          
-          const availabilitySlot = {
-            locationId: virtualLocationId,
-            locationName: `${doctor.name}'s Clinic`,
-            address: doctor.address || {},
-            consultationFee: doctor.consultationFee || 500,
-            timeSlot: {
-              startTime: availableSlot.startTime || '09:00',
-              endTime: availableSlot.endTime || '17:00'
-            },
-            availableSpots: Math.max(0, patientsPerDay - currentBookings),
-            totalCapacity: patientsPerDay,
-            nextQueueNumber,
-            currentBookings,
-            estimatedWaitTime: `${Math.max(0, (nextQueueNumber - 1) * 15)} minutes`
-          };
-          
-          console.log('Adding legacy availability slot:', availabilitySlot);
-          availability.push(availabilitySlot);
+
+          availableSlots.forEach((availableSlot, slotIndex) => {
+            const availabilitySlot = {
+              slotId: availableSlot._id || `legacy-${slotIndex}`,
+              locationId: virtualLocationId,
+              locationName: `${doctor.name}'s Clinic`,
+              address: doctor.address || {},
+              consultationFee: doctor.consultationFee || 500,
+              timeSlot: {
+                startTime: availableSlot.startTime || '09:00',
+                endTime: availableSlot.endTime || '17:00'
+              },
+              availableSpots: Math.max(0, patientsPerDay - currentBookings),
+              totalCapacity: patientsPerDay,
+              nextQueueNumber,
+              currentBookings,
+              estimatedWaitTime: `${Math.max(0, (nextQueueNumber - 1) * 15)} minutes`
+            };
+
+            console.log('Adding legacy availability slot:', availabilitySlot);
+            availability.push(availabilitySlot);
+          });
         }
       }
     }
@@ -309,6 +319,7 @@ const bookAppointment = async (req, res) => {
     const { 
       appointmentDate, 
       practiceLocationId, 
+      timeSlot,
       symptoms, 
       notes 
     } = req.body;
@@ -390,11 +401,14 @@ const bookAppointment = async (req, res) => {
     }
     
     // Check if the date is available
-    const availableSlot = isDateAvailableForLocation(appointmentDateObj, practiceLocation, doctor);
+    const matchingSlots = getMatchingAvailableSlots(appointmentDateObj, practiceLocation, doctor);
+    const availableSlot = findRequestedSlot(matchingSlots, timeSlot);
     if (!availableSlot) {
       return res.status(400).json({
         success: false,
-        message: 'Doctor is not available on the selected date'
+        message: timeSlot?.startTime
+          ? 'Doctor is not available for the selected time slot'
+          : 'Doctor is not available on the selected date'
       });
     }
     
@@ -833,8 +847,150 @@ const updateAppointmentStatus = async (req, res) => {
   }
 };
 
+// Export functions (including availability range)
+
+// @desc    Get doctor's available slots for a date range (day-wise)
+// @access  Public
+const getDoctorAvailabilityRange = async (req, res) => {
+  try {
+    const { doctorId } = req.params;
+    const { startDate, days = 7 } = req.query;
+
+    if (!doctorId) {
+      return res.status(400).json({ success: false, message: 'Doctor ID is required' });
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(doctorId)) {
+      return res.status(400).json({ success: false, message: 'Invalid doctor ID format' });
+    }
+
+    const start = startDate ? new Date(startDate) : new Date();
+    start.setHours(0,0,0,0);
+
+    const daysNum = Math.min(30, parseInt(days) || 7);
+    const results = [];
+
+    const doctor = await User.findOne({ _id: doctorId, userType: 'doctor', isActive: true }).select('-password').lean();
+    if (!doctor) {
+      return res.status(404).json({ success: false, message: 'Doctor not found or inactive' });
+    }
+
+    for (let i = 0; i < daysNum; i++) {
+      const date = new Date(start);
+      date.setDate(start.getDate() + i);
+
+      // reuse existing logic per date (simplified)
+      const appointmentDate = date;
+      const availability = [];
+
+      if (doctor.practiceLocations && Array.isArray(doctor.practiceLocations) && doctor.practiceLocations.length > 0) {
+        for (const location of doctor.practiceLocations) {
+          if (!location.isActive) continue;
+          const availableSlots = getMatchingAvailableSlots(appointmentDate, location, doctor);
+          if (availableSlots.length === 0) continue;
+
+          const patientsPerDay = location.patientsPerDay || 10;
+          const hasCapacity = await Appointment.checkLocationCapacity(
+            doctorId,
+            location._id,
+            appointmentDate,
+            patientsPerDay
+          );
+
+          if (!hasCapacity) continue;
+
+          const nextQueueNumber = await Appointment.getNextQueueNumber(
+            doctorId,
+            location._id,
+            appointmentDate
+          );
+
+          const startOfDay = new Date(appointmentDate);
+          startOfDay.setHours(0,0,0,0);
+          const endOfDay = new Date(appointmentDate);
+          endOfDay.setHours(23,59,59,999);
+
+          const currentBookings = await Appointment.countDocuments({
+            doctorId,
+            practiceLocationId: location._id,
+            appointmentDate: { $gte: startOfDay, $lte: endOfDay },
+            status: { $nin: ['cancelled', 'no-show'] },
+            isActive: true
+          });
+
+          availableSlots.forEach((availableSlot, slotIndex) => {
+            availability.push({
+              date: appointmentDate.toISOString().split('T')[0],
+              slotId: availableSlot._id || `${location._id}-${slotIndex}`,
+              locationId: location._id,
+              locationName: location.name || 'Unnamed Location',
+              address: location.address || {},
+              consultationFee: location.consultationFee || doctor.consultationFee || 500,
+              timeSlot: {
+                startTime: availableSlot.startTime || '09:00',
+                endTime: availableSlot.endTime || '17:00'
+              },
+              availableSpots: Math.max(0, patientsPerDay - currentBookings),
+              totalCapacity: patientsPerDay,
+              nextQueueNumber,
+              currentBookings,
+              estimatedWaitTime: `${Math.max(0, (nextQueueNumber - 1) * 15)} minutes`
+            });
+          });
+        }
+      } else {
+        const availableSlots = getMatchingAvailableSlots(appointmentDate, null, doctor);
+        if (availableSlots.length > 0) {
+          const patientsPerDay = 10;
+          const startOfDay = new Date(appointmentDate);
+          startOfDay.setHours(0,0,0,0);
+          const endOfDay = new Date(appointmentDate);
+          endOfDay.setHours(23,59,59,999);
+          const currentBookings = await Appointment.countDocuments({
+            doctorId,
+            appointmentDate: { $gte: startOfDay, $lte: endOfDay },
+            status: { $nin: ['cancelled', 'no-show'] },
+            isActive: true
+          });
+          if (currentBookings < patientsPerDay) {
+            const virtualLocationId = new mongoose.Types.ObjectId();
+
+            availableSlots.forEach((availableSlot, slotIndex) => {
+              availability.push({
+                date: appointmentDate.toISOString().split('T')[0],
+                slotId: availableSlot._id || `legacy-${slotIndex}`,
+                locationId: virtualLocationId,
+                locationName: `${doctor.name}'s Clinic`,
+                address: doctor.address || {},
+                consultationFee: doctor.consultationFee || 500,
+                timeSlot: {
+                  startTime: availableSlot.startTime || '09:00',
+                  endTime: availableSlot.endTime || '17:00'
+                },
+                availableSpots: Math.max(0, patientsPerDay - currentBookings),
+                totalCapacity: patientsPerDay,
+                nextQueueNumber: currentBookings + 1,
+                currentBookings,
+                estimatedWaitTime: `${Math.max(0, currentBookings * 15)} minutes`
+              });
+            });
+          }
+        }
+      }
+
+      results.push({ date: appointmentDate.toISOString().split('T')[0], availability });
+    }
+
+    res.json({ success: true, doctorId, doctorName: doctor.name, startDate: start.toISOString().split('T')[0], days: daysNum, results });
+  } catch (error) {
+    console.error('Get doctor availability range error:', error);
+    res.status(500).json({ success: false, message: 'Server error while fetching availability range', error: process.env.NODE_ENV === 'development' ? error.message : 'Internal server error' });
+  }
+};
+
 module.exports = {
   getDoctorAvailability,
+  getDoctorAvailabilityRange,
   bookAppointment,
   getPatientAppointments,
   getDoctorAppointments,

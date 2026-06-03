@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import DashboardPatients from '../components/DashboardPatients';
 import DashboardAnalytics from '../components/DashboardAnalytics';
 import backendUrl from '../utils/BackendURL';
+import LoadingSpinner from '../components/LoadingSpinner';
 import '../styles/Dashboard.css';
 
 const Dashboard = () => {
   const [appointments, setAppointments] = useState([]);
   const [currentUser, setCurrentUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [appointmentsLoading, setAppointmentsLoading] = useState(false);
   const [error, setError] = useState('');
   const [filter, setFilter] = useState('all');
   const [cancellingId, setCancellingId] = useState(null);
@@ -60,7 +63,7 @@ const Dashboard = () => {
   };
 
   const fetchAppointments = async () => {
-    setLoading(true);
+    setAppointmentsLoading(true);
     try {
       const token = localStorage.getItem('token');
       const endpoint = '/api/appointments/doctor/appointments';
@@ -90,7 +93,7 @@ const Dashboard = () => {
       console.error('Network error:', error);
       setError('Network error. Please try again.');
     } finally {
-      setLoading(false);
+      setAppointmentsLoading(false);
     }
   };
 
@@ -162,16 +165,39 @@ const Dashboard = () => {
     }
   };
 
+  const todayAppointments = appointments.filter((appointment) => {
+    const appointmentDate = new Date(appointment.appointmentDate);
+    const today = new Date();
+    return appointmentDate.toDateString() === today.toDateString();
+  }).length;
+
+  const activeAppointments = appointments.filter((appointment) =>
+    ['scheduled', 'confirmed', 'in-progress'].includes(appointment.status)
+  ).length;
+
+  const completionRate = stats.total > 0 ? Math.round((stats.completed / stats.total) * 100) : 0;
+
+  const nextAppointment = [...appointments]
+    .filter((appointment) => ['scheduled', 'confirmed', 'in-progress'].includes(appointment.status))
+    .sort((a, b) => new Date(a.appointmentDate) - new Date(b.appointmentDate))[0];
+
+  const formatCompactDate = (dateString) => {
+    if (!dateString) return 'Not scheduled';
+    return new Date(dateString).toLocaleDateString('en-IN', {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric'
+    });
+  };
+
+  const formatSlot = (appointment) => {
+    if (!appointment?.timeSlot) return 'Time pending';
+    return `${appointment.timeSlot.startTime} - ${appointment.timeSlot.endTime}`;
+  };
+
   if (loading) {
     return (
-      <div className="dashboard-page-wrapper">
-        <div className="dashboard-loading-container">
-          <div className="dashboard-loading-spinner">
-            <i className="fas fa-spinner"></i>
-            <span>Loading dashboard...</span>
-          </div>
-        </div>
-      </div>
+      <LoadingSpinner message="Loading dashboard..." />
     );
   }
 
@@ -179,11 +205,16 @@ const Dashboard = () => {
     return (
       <div className="dashboard-page-wrapper">
         <div className="access-denied-container">
-          <h2>Access Denied</h2>
-          <p>This dashboard is only accessible to doctors.</p>
-          <button onClick={() => window.location.href = '/'} className="go-home-btn">
+          <div className="access-denied-icon">
+            <i className="fas fa-user-shield"></i>
+          </div>
+          <span>Doctor workspace</span>
+          <h2>Dashboard access is reserved for doctors.</h2>
+          <p>Your patient profile is ready, but clinical tools live inside verified doctor accounts.</p>
+          <Link to="/" className="go-home-btn">
+            <i className="fas fa-home"></i>
             Go Home
-          </button>
+          </Link>
         </div>
       </div>
     );
@@ -191,15 +222,58 @@ const Dashboard = () => {
 
   return (
     <div className="dashboard-page-wrapper">
-      {/* Header */}
-      <div className="dashboard-main-header">
-        <div className="dashboard-header-content">
-          <h1>Doctor Dashboard</h1>
-          <p>Welcome, Dr. {currentUser?.name}! Manage your patient appointments and view analytics.</p>
+      <section className="dashboard-hero">
+        <div className="dashboard-hero__content">
+          <span className="dashboard-eyebrow">
+            <i className="fas fa-stethoscope"></i>
+            Doctor Command Center
+          </span>
+          <h1>Welcome back, Dr. {currentUser?.name}</h1>
+          <p>Track appointments, keep consultations moving, and review patient flow from one structured workspace.</p>
+          <div className="dashboard-hero__actions">
+            <Link to="/appointments" className="dashboard-primary-action">
+              <i className="fas fa-calendar-check"></i>
+              View Schedule
+            </Link>
+            <Link to="/messages" className="dashboard-secondary-action">
+              <i className="fas fa-comment-medical"></i>
+              Open Messages
+            </Link>
+          </div>
         </div>
-      </div>
+        <div className="dashboard-live-panel">
+          <div className="dashboard-live-card">
+            <span>Next patient</span>
+            <strong>{nextAppointment?.patientName || 'No active queue'}</strong>
+            <p>
+              {nextAppointment
+                ? `${formatCompactDate(nextAppointment.appointmentDate)} · ${formatSlot(nextAppointment)}`
+                : 'New appointments will appear here.'}
+            </p>
+          </div>
+          <div className="dashboard-mini-grid">
+            <div>
+              <strong>{todayAppointments}</strong>
+              <span>Today</span>
+            </div>
+            <div>
+              <strong>{activeAppointments}</strong>
+              <span>Active</span>
+            </div>
+            <div>
+              <strong>{completionRate}%</strong>
+              <span>Complete</span>
+            </div>
+          </div>
+          {appointmentsLoading && (
+            <div className="dashboard-sync">
+              <i className="fas fa-circle-notch fa-spin"></i>
+              Syncing dashboard
+            </div>
+          )}
+        </div>
+      </section>
 
-      {/* Error Message */}
       {error && (
         <div className="dashboard-error-alert">
           <i className="fas fa-exclamation-triangle"></i>
@@ -210,43 +284,43 @@ const Dashboard = () => {
         </div>
       )}
 
-      {/* Tab Navigation */}
       <div className="dashboard-tabs">
         <button 
           className={`dashboard-tab ${activeTab === 'patients' ? 'active' : ''}`}
           onClick={() => setActiveTab('patients')}
         >
           <i className="fas fa-users"></i>
-          Patients
+          Patient Queue
         </button>
         <button 
           className={`dashboard-tab ${activeTab === 'analytics' ? 'active' : ''}`}
           onClick={() => setActiveTab('analytics')}
         >
           <i className="fas fa-chart-bar"></i>
-          Analytics
+          Analytics Studio
         </button>
       </div>
 
-      {/* Tab Content */}
-      {activeTab === 'patients' && (
-        <DashboardPatients
-          appointments={appointments}
-          stats={stats}
-          filter={filter}
-          setFilter={setFilter}
-          cancellingId={cancellingId}
-          handleCancelAppointment={handleCancelAppointment}
-          handleUpdateStatus={handleUpdateStatus}
-        />
-      )}
+      <section className="dashboard-content-shell">
+        {activeTab === 'patients' && (
+          <DashboardPatients
+            appointments={appointments}
+            stats={stats}
+            filter={filter}
+            setFilter={setFilter}
+            cancellingId={cancellingId}
+            handleCancelAppointment={handleCancelAppointment}
+            handleUpdateStatus={handleUpdateStatus}
+          />
+        )}
 
-      {activeTab === 'analytics' && (
-        <DashboardAnalytics
-          appointments={appointments}
-          stats={stats}
-        />
-      )}
+        {activeTab === 'analytics' && (
+          <DashboardAnalytics
+            appointments={appointments}
+            stats={stats}
+          />
+        )}
+      </section>
     </div>
   );
 };

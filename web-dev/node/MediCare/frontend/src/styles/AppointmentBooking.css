@@ -346,6 +346,32 @@
   margin-bottom: 30px;
 }
 
+.slots-section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.slots-section-heading .form-label {
+  margin-bottom: 0;
+}
+
+.slots-section-heading span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  padding: 0 12px;
+  border: 1px solid rgba(20, 184, 166, 0.18);
+  border-radius: 999px;
+  background: rgba(20, 184, 166, 0.1);
+  color: #087a74;
+  font-size: 0.82rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
 .availability-loading {
   text-align: center;
   padding: 40px;
@@ -419,6 +445,7 @@
 }
 
 .location-address,
+.slot-date,
 .time-slot {
   display: flex;
   align-items: center;
@@ -429,9 +456,15 @@
 }
 
 .location-address i,
+.slot-date i,
 .time-slot i {
   color: #667eea;
   font-size: 14px;
+}
+
+.slot-date {
+  color: #213345;
+  font-weight: 800;
 }
 
 .slot-details {
@@ -652,6 +685,11 @@
 }
 
 @media (max-width: 768px) {
+  .slots-section-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
   .doctor-info-content {
     flex-direction: column;
     text-align: center;

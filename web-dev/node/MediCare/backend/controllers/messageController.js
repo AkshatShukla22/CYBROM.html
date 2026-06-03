@@ -58,7 +58,7 @@ const getConversations = async (req, res) => {
             senderId: message.senderId._id.toString(),
             isRead: message.isRead
           },
-          unreadCount: 0 // We'll calculate this separately
+          unreadCount: 0
         });
       }
     });
@@ -83,10 +83,6 @@ const getConversations = async (req, res) => {
 
     console.log('Returning conversations:', conversations.length);
     
-    res.json({
-      success: true,
-      conversations
-    });
     
   } catch (error) {
     console.error('Get conversations error:', error);

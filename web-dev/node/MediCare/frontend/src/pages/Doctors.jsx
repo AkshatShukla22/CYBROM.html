@@ -11,6 +11,7 @@ const Doctors = () => {
   const location = useLocation();
   const [doctors, setDoctors] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [hasLoadedDoctors, setHasLoadedDoctors] = useState(false);
   const [error, setError] = useState(null);
   const [userLocation, setUserLocation] = useState(null);
   const [currentUser, setCurrentUser] = useState(null);
@@ -182,9 +183,9 @@ const Doctors = () => {
   }, [currentUser, userLocation, userLocationLoaded, filters, location.search]);
 
   // Fetch doctors data
-  const fetchDoctors = async (page = 1, isLoadMore = false) => {
+  const fetchDoctors = async (page = 1) => {
     try {
-      setLoading(!isLoadMore);
+      setLoading(true);
       
       // Build query parameters
       const queryParams = new URLSearchParams({
@@ -214,16 +215,12 @@ const Doctors = () => {
       console.log('API Response:', data);
 
       if (data.success) {
-        if (isLoadMore) {
-          setDoctors(prev => [...prev, ...data.data.doctors]);
-        } else {
-          setDoctors(data.data.doctors);
-          setFilterOptions(data.data.filters);
-        }
+        setDoctors(data.data.doctors);
+        setFilterOptions(data.data.filters);
         setPagination(data.data.pagination);
         
         // Group doctors by specialization
-        groupDoctorsBySpecialization(isLoadMore ? [...doctors, ...data.data.doctors] : data.data.doctors);
+        groupDoctorsBySpecialization(data.data.doctors);
       } else {
         setError(data.message);
       }
@@ -232,6 +229,7 @@ const Doctors = () => {
       console.error('Fetch doctors error:', err);
     } finally {
       setLoading(false);
+      setHasLoadedDoctors(true);
     }
   };
 
@@ -321,11 +319,35 @@ const Doctors = () => {
     }));
   };
 
-  // Load more doctors (pagination)
-  const loadMoreDoctors = () => {
-    if (pagination.hasNextPage) {
-      fetchDoctors(pagination.currentPage + 1, true);
+  const goToPage = (page) => {
+    if (page < 1 || page > pagination.totalPages || page === pagination.currentPage || loading) {
+      return;
     }
+
+    setPagination(prev => ({ ...prev, currentPage: page }));
+    fetchDoctors(page);
+  };
+
+  const getPaginationPages = () => {
+    const total = pagination.totalPages;
+    const current = pagination.currentPage;
+    const pages = [];
+
+    if (total <= 7) {
+      for (let page = 1; page <= total; page += 1) pages.push(page);
+      return pages;
+    }
+
+    pages.push(1);
+    if (current > 4) pages.push('start-ellipsis');
+
+    const start = Math.max(2, current - 1);
+    const end = Math.min(total - 1, current + 1);
+    for (let page = start; page <= end; page += 1) pages.push(page);
+
+    if (current < total - 3) pages.push('end-ellipsis');
+    pages.push(total);
+    return pages;
   };
 
   // Navigate to doctor profile
@@ -340,16 +362,6 @@ const Doctors = () => {
       element.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   };
-
-  // Check if we should scroll to a specific specialization after loading
-  useEffect(() => {
-    if (!loading && filters.specialization && doctors.length > 0) {
-      // Delay scroll to ensure DOM is updated
-      setTimeout(() => {
-        scrollToSpecialization(filters.specialization);
-      }, 100);
-    }
-  }, [loading, filters.specialization, doctors]);
 
   // FIXED: Initial load - wait for user location to be loaded before fetching
   useEffect(() => {
@@ -383,7 +395,7 @@ const Doctors = () => {
   };
 
   // Show loading spinner only if user location is not loaded yet or doctors are loading for the first time
-  if (!userLocationLoaded || (loading && doctors.length === 0)) {
+  if (!userLocationLoaded || (!hasLoadedDoctors && loading)) {
     return <LoadingSpinner />;
   }
 
@@ -391,19 +403,40 @@ const Doctors = () => {
     <div className="doctors-page">
       <div className="container">
         {/* Header */}
-        <div className="page-header">
-          <h1>Find the Right Doctor for You</h1>
-          <p>Browse through our network of qualified healthcare professionals</p>
+        <div className="page-header doctors-hero">
+          <div className="doctors-hero__content">
+            <span className="doctors-hero__eyebrow">
+              <i className="fas fa-stethoscope"></i>
+              MediCare Network
+            </span>
+            <h1>Find the Right Doctor for You</h1>
+            <p>Search by specialty, city, rating, experience, and consultation fee.</p>
+            <div className="doctors-hero__actions">
+              <button className="doctors-hero__button doctors-hero__button--primary" onClick={() => navigate('/doctors')}>
+                <i className="fas fa-user-md"></i>
+                Explore Doctors
+              </button>
+              <button className="doctors-hero__button doctors-hero__button--ghost" onClick={clearFilters}>
+                <i className="fas fa-sliders"></i>
+                Reset Filters
+              </button>
+            </div>
+          </div>
+
+          <div className="doctors-hero__visual" aria-hidden="true">
+            <div className="hero-orbit hero-orbit--one"></div>
+            <div className="hero-orbit hero-orbit--two"></div>
+            <div className="hero-pulse-card">
+              <i className="fas fa-heartbeat"></i>
+              <span>Live Care</span>
+            </div>
+            <div className="hero-floating-chip hero-floating-chip--top">Verified</div>
+            <div className="hero-floating-chip hero-floating-chip--bottom">Book Fast</div>
+          </div>
           
           {/* Search Results Info */}
           {filters.search && (
-            <div style={{ 
-              background: '#e3f2fd', 
-              padding: '10px', 
-              margin: '10px 0', 
-              borderRadius: '5px',
-              fontSize: '14px' 
-            }}>
+            <div className="doctors-context-card">
               <strong>Search Results for:</strong> "{filters.search}"
               {pagination.totalDoctors > 0 && (
                 <span> - {pagination.totalDoctors} doctors found</span>
@@ -413,46 +446,17 @@ const Doctors = () => {
           
           {/* User Location Debug Info */}
           {userLocation && userLocation.city && (
-            <div style={{ 
-              background: '#f0f8ff', 
-              padding: '10px', 
-              margin: '10px 0', 
-              borderRadius: '5px',
-              fontSize: '14px' 
-            }}>
+            <div className="doctors-context-card">
               <strong>Your Location:</strong> {userLocation.city}, {userLocation.state}
             </div>
           )}
 
           {/* Show message if user has no location */}
           {userLocationLoaded && (!userLocation || !userLocation.city) && (
-            <div style={{ 
-              background: '#fff3cd', 
-              padding: '10px', 
-              margin: '10px 0', 
-              borderRadius: '5px',
-              fontSize: '14px',
-              color: '#856404'
-            }}>
+            <div className="doctors-context-card doctors-context-card--warning">
               <strong>Note:</strong> Add your city to your profile to use the "Local Doctors" filter.
             </div>
           )}
-          
-          {/* Stats */}
-          <div className="stats-bar">
-            <div className="stat">
-              <span className="number">{pagination.totalDoctors}</span>
-              <span className="label">Doctors Available</span>
-            </div>
-            <div className="stat">
-              <span className="number">{Object.keys(groupedDoctors).length}</span>
-              <span className="label">Specializations</span>
-            </div>
-            <div className="stat">
-              <span className="number">{filterOptions.cities.length}</span>
-              <span className="label">Cities</span>
-            </div>
-          </div>
         </div>
 
         <div className="page-content">
@@ -472,7 +476,13 @@ const Doctors = () => {
           </aside>
 
           {/* Main Content */}
-          <main className="main-content">
+          <main className={`main-content ${loading ? 'is-updating' : ''}`}>
+            {loading && hasLoadedDoctors && (
+              <div className="doctors-updating-indicator">
+                <i className="fas fa-spinner fa-spin"></i>
+                Updating results
+              </div>
+            )}
             {error && (
               <div className="error-message">
                 <p>{error}</p>
@@ -579,7 +589,7 @@ const Doctors = () => {
                         <span className="doctor-count">{doctorsInSpec.length} doctors</span>
                       </div>
 
-                      <div className="doctors-grid">
+                      <div className={`doctors-grid ${visibleDoctors.length === 1 ? 'doctors-grid--single' : ''}`}>
                         {visibleDoctors.map(doctor => (
                           <DoctorCard
                             key={doctor._id}
@@ -604,17 +614,44 @@ const Doctors = () => {
                   );
                 })}
 
-                {/* Load More (Global Pagination) */}
-                {pagination.hasNextPage && (
-                  <div className="load-more-container">
+                {pagination.totalPages > 1 && (
+                  <nav className="doctors-pagination" aria-label="Doctors pagination">
                     <button
-                      className="load-more-btn"
-                      onClick={loadMoreDoctors}
-                      disabled={loading}
+                      className="pagination-btn pagination-btn--nav"
+                      onClick={() => goToPage(pagination.currentPage - 1)}
+                      disabled={!pagination.hasPrevPage || loading}
                     >
-                      {loading ? 'Loading...' : 'Load More Doctors'}
+                      <i className="fas fa-chevron-left"></i>
+                      Previous
                     </button>
-                  </div>
+
+                    <div className="pagination-pages">
+                      {getPaginationPages().map((page) => (
+                        typeof page === 'number' ? (
+                          <button
+                            key={page}
+                            className={`pagination-btn pagination-btn--page ${page === pagination.currentPage ? 'active' : ''}`}
+                            onClick={() => goToPage(page)}
+                            disabled={loading}
+                            aria-current={page === pagination.currentPage ? 'page' : undefined}
+                          >
+                            {page}
+                          </button>
+                        ) : (
+                          <span key={page} className="pagination-ellipsis">...</span>
+                        )
+                      ))}
+                    </div>
+
+                    <button
+                      className="pagination-btn pagination-btn--nav"
+                      onClick={() => goToPage(pagination.currentPage + 1)}
+                      disabled={!pagination.hasNextPage || loading}
+                    >
+                      Next
+                      <i className="fas fa-chevron-right"></i>
+                    </button>
+                  </nav>
                 )}
               </>
             )}

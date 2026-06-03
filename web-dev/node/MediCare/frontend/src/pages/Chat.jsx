@@ -3,6 +3,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useSocket } from '../contexts/SocketContext';
 import backendUrl from '../utils/BackendURL';
+import LoadingSpinner from '../components/LoadingSpinner';
 import '../styles/Chat.css';
 
 const Chat = () => {
@@ -20,6 +21,7 @@ const Chat = () => {
   const [error, setError] = useState('');
   
   const messagesEndRef = useRef(null);
+  const messagesContainerRef = useRef(null);
   const typingTimeoutRef = useRef(null);
 
   // Helper function to check if URL is a Cloudinary URL
@@ -279,7 +281,13 @@ const Chat = () => {
   };
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    const container = messagesContainerRef.current;
+    if (container) {
+      container.scrollTo({
+        top: container.scrollHeight,
+        behavior: 'smooth'
+      });
+    }
   };
 
   const formatTime = (timestamp) => {
@@ -310,12 +318,7 @@ const Chat = () => {
 
   if (loading) {
     return (
-      <div className="chat-container">
-        <div className="chat-loading">
-          <i className="fas fa-spinner fa-spin"></i>
-          <span>Loading conversation...</span>
-        </div>
-      </div>
+      <LoadingSpinner message="Loading conversation..." />
     );
   }
 
@@ -336,8 +339,10 @@ const Chat = () => {
 
   return (
     <div className="chat-container">
+      <div className="chat-shell">
       {/* Chat Header */}
       <div className="chat-header">
+        <div className="chat-header-main">
         <button 
           className="back-button"
           onClick={() => navigate('/messages')}
@@ -370,11 +375,13 @@ const Chat = () => {
           </div>
           
           <div className="chat-user-details">
+            <span className="chat-user-kicker">Conversation</span>
             <div className="chat-user-name">{otherUser?.name}</div>
             <div className="chat-user-status">
-              {onlineUsers.has(userId) ? 'Online' : 'Offline'} • {formatUserType(otherUser?.userType, otherUser?.specialization)}
+              {onlineUsers.has(userId) ? 'Online' : 'Offline'} | {formatUserType(otherUser?.userType, otherUser?.specialization)}
             </div>
           </div>
+        </div>
         </div>
         
         {otherUser?.userType === 'doctor' && (
@@ -389,7 +396,7 @@ const Chat = () => {
       </div>
 
       {/* Messages Area */}
-      <div className="chat-messages">
+      <div className="chat-messages" ref={messagesContainerRef}>
         {messages.length === 0 ? (
           <div className="no-messages">
             <i className="fas fa-comments"></i>
@@ -531,6 +538,7 @@ const Chat = () => {
         <div className="message-length-counter">
           {messageText.length}/1000
         </div>
+      </div>
       </div>
     </div>
   );

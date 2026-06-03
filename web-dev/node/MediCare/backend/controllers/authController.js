@@ -3,6 +3,53 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const User = require('../models/User');
 const { uploadProfile, uploadBackground, deleteImage, extractPublicId } = require('../config/cloudinary');
+const { OAuth2Client } = require('google-auth-library');
+const crypto = require('crypto');
+const nodemailer = require('nodemailer');
+
+const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+
+const getFrontendUrl = () => {
+  return process.env.FRONTEND_URL || process.env.CLIENT_URL || 'http://localhost:5173';
+};
+
+const sendPasswordResetEmail = async ({ email, name, resetUrl }) => {
+  const hasSmtpConfig = process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS;
+
+  if (!hasSmtpConfig) {
+    console.log(`Password reset link for ${email}: ${resetUrl}`);
+    return;
+  }
+
+  const transporter = nodemailer.createTransport({
+    host: process.env.SMTP_HOST,
+    port: Number(process.env.SMTP_PORT || 587),
+    secure: process.env.SMTP_SECURE === 'true',
+    auth: {
+      user: process.env.SMTP_USER,
+      pass: process.env.SMTP_PASS
+    }
+  });
+
+  await transporter.sendMail({
+    from: process.env.SMTP_FROM || `"MediCare" <${process.env.SMTP_USER}>`,
+    to: email,
+    subject: 'Reset your MediCare password',
+    html: `
+      <div style="font-family:Arial,sans-serif;line-height:1.6;color:#213345;max-width:560px;margin:auto">
+        <h2 style="color:#0d766f">Reset your password</h2>
+        <p>Hello ${name || 'there'},</p>
+        <p>We received a request to reset your MediCare password. This link is valid for 30 minutes.</p>
+        <p>
+          <a href="${resetUrl}" style="display:inline-block;background:#14b8a6;color:white;padding:12px 18px;border-radius:999px;text-decoration:none;font-weight:700">
+            Reset Password
+          </a>
+        </p>
+        <p>If you did not request this, you can safely ignore this email.</p>
+      </div>
+    `
+  });
+};
 
 // Generate JWT Token
 const generateToken = (userId) => {
@@ -740,6 +787,125 @@ const changePassword = async (req, res) => {
   }
 };
 
+// @desc    Request password reset
+// @access  Public
+const forgotPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    if (!email) {
+      return res.status(400).json({
+        success: false,
+        message: 'Please provide your email address'
+      });
+    }
+
+    const user = await User.findOne({ email: email.toLowerCase().trim() });
+    const genericMessage = 'If an account exists for that email, a reset link has been sent.';
+
+    if (!user || !user.isActive) {
+      return res.json({
+        success: true,
+        message: genericMessage
+      });
+    }
+
+    const resetToken = crypto.randomBytes(32).toString('hex');
+    const hashedToken = crypto.createHash('sha256').update(resetToken).digest('hex');
+
+    user.passwordResetToken = hashedToken;
+    user.passwordResetExpires = Date.now() + 30 * 60 * 1000;
+    await user.save({ validateBeforeSave: false });
+
+    const resetUrl = `${getFrontendUrl()}/reset-password/${resetToken}`;
+    await sendPasswordResetEmail({
+      email: user.email,
+      name: user.name,
+      resetUrl
+    });
+
+    res.json({
+      success: true,
+      message: genericMessage,
+      resetUrl: process.env.NODE_ENV === 'development' ? resetUrl : undefined
+    });
+  } catch (error) {
+    console.error('Forgot password error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error while requesting password reset',
+      error: process.env.NODE_ENV === 'development' ? error.message : 'Internal server error'
+    });
+  }
+};
+
+// @desc    Reset password with token
+// @access  Public
+const resetPassword = async (req, res) => {
+  try {
+    const { token } = req.params;
+    const { password, confirmPassword } = req.body;
+
+    if (!token) {
+      return res.status(400).json({
+        success: false,
+        message: 'Reset token is required'
+      });
+    }
+
+    if (!password || !confirmPassword) {
+      return res.status(400).json({
+        success: false,
+        message: 'Please provide and confirm your new password'
+      });
+    }
+
+    if (password !== confirmPassword) {
+      return res.status(400).json({
+        success: false,
+        message: 'Passwords do not match'
+      });
+    }
+
+    if (password.length < 6) {
+      return res.status(400).json({
+        success: false,
+        message: 'Password must be at least 6 characters long'
+      });
+    }
+
+    const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
+    const user = await User.findOne({
+      passwordResetToken: hashedToken,
+      passwordResetExpires: { $gt: Date.now() }
+    });
+
+    if (!user) {
+      return res.status(400).json({
+        success: false,
+        message: 'Reset link is invalid or has expired'
+      });
+    }
+
+    user.password = password;
+    user.passwordResetToken = null;
+    user.passwordResetExpires = null;
+    await user.save();
+
+    res.json({
+      success: true,
+      message: 'Password reset successfully'
+    });
+  } catch (error) {
+    console.error('Reset password error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error while resetting password',
+      error: process.env.NODE_ENV === 'development' ? error.message : 'Internal server error'
+    });
+  }
+};
+
 // @desc    Logout user
 // @access  Private
 const logoutUser = (req, res) => {
@@ -749,16 +915,78 @@ const logoutUser = (req, res) => {
   });
 };
 
+// @desc    Google OAuth Sign-In
+// @access  Public
+const googleAuth = async (req, res) => {
+  try {
+    const { idToken } = req.body;
+    if (!idToken) {
+      return res.status(400).json({ success: false, message: 'idToken is required' });
+    }
+
+    const ticket = await googleClient.verifyIdToken({ idToken, audience: process.env.GOOGLE_CLIENT_ID });
+    const payload = ticket.getPayload();
+    const email = payload.email && payload.email.toLowerCase();
+    const name = payload.name || '';
+    const picture = payload.picture || null;
+    const emailVerified = payload.email_verified || false;
+
+    if (!email) {
+      return res.status(400).json({ success: false, message: 'Google account does not have an email' });
+    }
+
+    let user = await User.findOne({ email });
+    if (!user) {
+      // create user with a random password and empty phone (schema requires them)
+      const randomPassword = crypto.randomBytes(16).toString('hex');
+      user = new User({
+        name: name.trim() || 'Google User',
+        email,
+        password: randomPassword,
+        phone: '',
+        isVerified: emailVerified,
+        profileImage: picture
+      });
+      await user.save();
+    }
+
+    if (!user.isActive) {
+      return res.status(403).json({ success: false, message: 'Account deactivated' });
+    }
+
+    const token = generateToken(user._id);
+
+    res.json({
+      success: true,
+      message: 'Sign-in successful',
+      token,
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        userType: user.userType,
+        profileImage: user.profileImage
+      }
+    });
+  } catch (error) {
+    console.error('Google auth error:', error);
+    res.status(500).json({ success: false, message: 'Google sign-in failed', error: process.env.NODE_ENV === 'development' ? error.message : 'Internal server error' });
+  }
+};
+
 module.exports = {
   registerUser,
   loginUser,
   getCurrentUser,
   updateProfile,
   changePassword,
+  forgotPassword,
+  resetPassword,
   logoutUser,
   uploadProfileImage,
   uploadBackgroundImage,
   addPracticeLocation,
   updatePracticeLocation,
-  removePracticeLocation
+  removePracticeLocation,
+  googleAuth
 };

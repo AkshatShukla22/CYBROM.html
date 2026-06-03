@@ -4,6 +4,8 @@ import Home from './pages/Home'
 import NotFound from './pages/NotFound'
 import Login from './pages/Login'
 import Register from './pages/Register'
+import ForgotPassword from './pages/ForgotPassword'
+import ResetPassword from './pages/ResetPassword'
 import Profile from './pages/Profile'
 import Doctors from './pages/Doctors'
 import Messages from './pages/Messages'
@@ -12,11 +14,14 @@ import AppointmentBooking from './pages/AppointmentBooking'
 import AppointmentsList from './pages/AppointmentsList'
 import Dashboard from './pages/Dashboard'
 import Chat from './pages/Chat'
+import Settings from './pages/Settings'
+import ScrollToTop from './components/ScrollToTop'
 
 function App() {
   return (
     <>
       <BrowserRouter>
+        <ScrollToTop />
         <Routes>
           <Route path="/" element={<Layout />}>
             <Route index element={<Home />} />
@@ -29,10 +34,13 @@ function App() {
             <Route path='/book-appointment/:doctorId' element={<AppointmentBooking />} />
             <Route path='/appointments' element={<AppointmentsList />} />
             <Route path='/dashboard' element={<Dashboard />} />
+            <Route path='/settings' element={<Settings />} />
           </Route>
 
           <Route path="/login" element={<Login />} />
           <Route path='/register' element={<Register />} />
+          <Route path='/forgot-password' element={<ForgotPassword />} />
+          <Route path='/reset-password/:token' element={<ResetPassword />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

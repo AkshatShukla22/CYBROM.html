@@ -1,0 +1,166 @@
+/* Site-wide performance layer
+   Keeps the visual language but removes expensive repaint work from pages. */
+
+body::before,
+body::after {
+  animation: none !important;
+  opacity: 0.22 !important;
+}
+
+*,
+*::before,
+*::after {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.service-card,
+.step-content,
+.feature-item,
+.testimonial-card,
+.doctor-card,
+.appointment-item-card,
+.patients-appointment-card,
+.patients-stat-card,
+.analytics-chart-card,
+.profile-info-card,
+.profile-section,
+.practice-location-card,
+.location-display-card,
+.messages-header,
+.messages-search-section,
+.conversation-item,
+.chat-header,
+.chat-input-container,
+.booking-form-card,
+.booking-summary,
+.doctor-info-card,
+.slot-card,
+.auth-card,
+.settings-panel,
+.settings-nav,
+.settings-hero,
+.settings-user-card,
+.footer__top {
+  animation: none !important;
+  box-shadow: 0 10px 28px rgba(40, 89, 106, 0.08) !important;
+  transition: transform 0.16s ease, border-color 0.16s ease, background-color 0.16s ease !important;
+}
+
+.doctor-card:hover,
+.appointment-item-card:hover,
+.patients-appointment-card:hover,
+.patients-stat-card:hover,
+.analytics-chart-card:hover,
+.profile-info-card:hover,
+.conversation-item:hover,
+.slot-card:hover,
+.service-card:hover,
+.step-content:hover,
+.feature-item:hover,
+.testimonial-card:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 12px 30px rgba(40, 89, 106, 0.1) !important;
+}
+
+.doctors-page::before,
+.doctors-page::after,
+.doctors-hero::before,
+.doctors-hero::after,
+.messages-panel::before,
+.messages-panel::after,
+.chat-shell::before,
+.chat-shell::after,
+.appointments-page-wrapper::before,
+.appointments-page-wrapper::after,
+.profile-page-container::before,
+.profile-page-container::after,
+.auth-showcase::after,
+.auth-visual-card::after,
+.footer::after {
+  display: none !important;
+}
+
+.logo__icon,
+.service-icon,
+.step-icon,
+.stat-icon,
+.emergency-icon,
+.profile-avatar,
+.doctor-icon-placeholder,
+.doctor-avatar-placeholder,
+.auth-logo,
+.online-indicator,
+.notification-badge,
+.nav-dot,
+.slide-text-content,
+.slide-cta-button::after,
+.auth-button::after,
+.confirm-booking-btn::before,
+.patients-action-btn::before,
+.appointment-action-btn::after {
+  animation: none !important;
+  filter: none !important;
+}
+
+.header,
+.header--scrolled,
+.filter-sidebar,
+.profile-menu,
+.search-suggestions,
+.city-dropdown {
+  box-shadow: 0 10px 30px rgba(3, 10, 13, 0.14) !important;
+}
+
+.doctor-card::before,
+.appointment-item-card::before,
+.patients-appointment-card::before,
+.patients-stat-card::before,
+.analytics-chart-card::before,
+.specialization-section::before,
+.section-title::after,
+.section-header::after {
+  animation: none !important;
+}
+
+.doctor-card *,
+.appointment-item-card *,
+.patients-appointment-card *,
+.conversation-item *,
+.message-bubble,
+.rating-review-card *,
+.slot-card * {
+  filter: none !important;
+}
+
+.chat-messages,
+.messages-list,
+.patients-appointments-list,
+.doctors-grid,
+.analytics-charts-grid,
+.appointments-list {
+  content-visibility: auto;
+  contain-intrinsic-size: 900px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .btn-primary,
+  .book-btn,
+  .profile-button,
+  .settings-action-btn,
+  .footer__primary-action,
+  .footer__secondary-action,
+  .confirm-booking-btn {
+    transition: transform 0.16s ease, background-color 0.16s ease !important;
+  }
+}
+
+@media (max-width: 900px) {
+  .doctor-card,
+  .appointment-item-card,
+  .patients-appointment-card,
+  .conversation-item,
+  .slot-card {
+    box-shadow: 0 6px 18px rgba(40, 89, 106, 0.08) !important;
+  }
+}

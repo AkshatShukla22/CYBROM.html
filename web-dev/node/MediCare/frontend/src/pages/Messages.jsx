@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSocket } from '../contexts/SocketContext';
 import backendUrl from '../utils/BackendURL';
+import LoadingSpinner from '../components/LoadingSpinner';
 import '../styles/Messages.css';
 
 const Messages = () => {
@@ -248,182 +249,193 @@ const Messages = () => {
 
   if (loading) {
     return (
-      <div className="messages-container">
-        <div className="messages-header">
-          <h1>Messages</h1>
-        </div>
-        <div className="messages-loading">
-          <i className="fas fa-spinner fa-spin"></i>
-          <span>Loading conversations...</span>
-        </div>
-      </div>
+      <LoadingSpinner message="Loading conversations..." />
     );
   }
 
   return (
     <div className="messages-container">
       <div className="messages-header">
-        <h1>Messages</h1>
-        <button 
-          className="new-message-btn"
-          onClick={() => setShowSearch(!showSearch)}
-        >
-          <i className="fas fa-plus"></i>
-          New Message
-        </button>
+        <div className="messages-header-content">
+          <span className="messages-eyebrow">Care inbox</span>
+          <h1>Messages</h1>
+          <p>Talk with doctors and patients in one focused space.</p>
+        </div>
+        <div className="messages-header-actions">
+          <span className="messages-presence-pill">
+            <i className="fas fa-circle"></i>
+            {onlineUsers.size} online
+          </span>
+          <button 
+            className={`new-message-btn ${showSearch ? 'is-active' : ''}`}
+            onClick={() => setShowSearch(!showSearch)}
+          >
+            <i className={`fas ${showSearch ? 'fa-times' : 'fa-plus'}`}></i>
+            {showSearch ? 'Close Search' : 'New Message'}
+          </button>
+        </div>
       </div>
 
-      {/* Search Section */}
-      {showSearch && (
-        <div className="messages-search-section">
-          <div className="search-input-container">
-            <i className="fas fa-search search-icon"></i>
-            <input
-              type="text"
-              placeholder="Search for doctors or patients..."
-              value={searchQuery}
-              onChange={handleSearchInputChange}
-              className="messages-search-input"
-            />
-            {searchQuery && (
-              <button 
-                className="clear-search-btn"
-                onClick={() => {
-                  setSearchQuery('');
-                  setSearchResults([]);
-                }}
-              >
-                <i className="fas fa-times"></i>
-              </button>
+      <div className="messages-panel">
+        {/* Search Section */}
+        {showSearch && (
+          <div className="messages-search-section">
+            <div className="messages-panel-heading">
+              <span>Find People</span>
+              <i className="fas fa-user-plus"></i>
+            </div>
+            <div className="search-input-container">
+              <i className="fas fa-search search-icon"></i>
+              <input
+                type="text"
+                placeholder="Search doctors or patients"
+                value={searchQuery}
+                onChange={handleSearchInputChange}
+                className="messages-search-input"
+              />
+              {searchQuery && (
+                <button 
+                  className="clear-search-btn"
+                  onClick={() => {
+                    setSearchQuery('');
+                    setSearchResults([]);
+                  }}
+                >
+                  <i className="fas fa-times"></i>
+                </button>
+              )}
+            </div>
+            
+            {searching && (
+              <div className="search-loading">
+                <i className="fas fa-spinner fa-spin"></i>
+                <span>Searching...</span>
+              </div>
+            )}
+            
+            {searchResults.length > 0 && (
+              <div className="search-results">
+                <h3>Search Results</h3>
+                {searchResults.map(user => (
+                  <div 
+                    key={user.id} 
+                    className="search-result-item"
+                    onClick={() => startConversation(user)}
+                  >
+                    <div className="search-result-avatar">
+                      {user.profileImage ? (
+                        <img 
+                          src={getImageUrl(user.profileImage)} 
+                          alt={user.name} 
+                          onError={(e) => {
+                            e.target.style.display = 'none';
+                            e.target.parentElement.querySelector('.avatar-placeholder').style.display = 'flex';
+                          }}
+                        />
+                      ) : null}
+                      <div 
+                        className="avatar-placeholder"
+                        style={{ display: user.profileImage ? 'none' : 'flex' }}
+                      >
+                        <i className={`fas ${user.userType === 'doctor' ? 'fa-user-md' : 'fa-user'}`}></i>
+                      </div>
+                      {onlineUsers.has(user.id) && (
+                        <div className="online-indicator"></div>
+                      )}
+                    </div>
+                    <div className="search-result-info">
+                      <div className="search-result-name">{user.name}</div>
+                      <div className="search-result-type">
+                        {formatUserType(user.userType, user.specialization)}
+                      </div>
+                    </div>
+                    <div className="search-result-action">
+                      <i className="fas fa-comment"></i>
+                    </div>
+                  </div>
+                ))}
+              </div>
             )}
           </div>
-          
-          {searching && (
-            <div className="search-loading">
-              <i className="fas fa-spinner fa-spin"></i>
-              <span>Searching...</span>
-            </div>
-          )}
-          
-          {searchResults.length > 0 && (
-            <div className="search-results">
-              <h3>Search Results</h3>
-              {searchResults.map(user => (
-                <div 
-                  key={user.id} 
-                  className="search-result-item"
-                  onClick={() => startConversation(user)}
-                >
-                  <div className="search-result-avatar">
-                    {user.profileImage ? (
-                      <img 
-                        src={getImageUrl(user.profileImage)} 
-                        alt={user.name} 
-                        onError={(e) => {
-                          // Fallback to placeholder if image fails to load
-                          e.target.style.display = 'none';
-                          e.target.parentElement.querySelector('.avatar-placeholder').style.display = 'flex';
-                        }}
-                      />
-                    ) : null}
-                    <div 
-                      className="avatar-placeholder"
-                      style={{ display: user.profileImage ? 'none' : 'flex' }}
-                    >
-                      <i className={`fas ${user.userType === 'doctor' ? 'fa-user-md' : 'fa-user'}`}></i>
-                    </div>
-                    {onlineUsers.has(user.id) && (
-                      <div className="online-indicator"></div>
-                    )}
-                  </div>
-                  <div className="search-result-info">
-                    <div className="search-result-name">{user.name}</div>
-                    <div className="search-result-type">
-                      {formatUserType(user.userType, user.specialization)}
-                    </div>
-                  </div>
-                  <div className="search-result-action">
-                    <i className="fas fa-comment"></i>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      )}
+        )}
 
-      {/* Conversations List */}
-      <div className="conversations-list">
-        {conversations.length === 0 ? (
-          <div className="no-conversations">
-            <i className="fas fa-comments"></i>
-            <h3>No conversations yet</h3>
-            <p>Start a conversation by searching for doctors or patients above.</p>
+        {/* Conversations List */}
+        <div className="conversations-list">
+          <div className="messages-panel-heading">
+            <span>Recent Conversations</span>
+            <small>{conversations.length} total</small>
           </div>
-        ) : (
-          conversations.map(conversation => (
-            <div 
-              key={conversation.userId} 
-              className="conversation-item"
-              onClick={() => openConversation(conversation)}
-            >
-              <div className="conversation-avatar">
-                {conversation.profileImage ? (
-                  <img 
-                    src={getImageUrl(conversation.profileImage)} 
-                    alt={conversation.name} 
-                    onError={(e) => {
-                      // Fallback to placeholder if image fails to load
-                      e.target.style.display = 'none';
-                      e.target.parentElement.querySelector('.avatar-placeholder').style.display = 'flex';
-                    }}
-                  />
-                ) : null}
-                <div 
-                  className="avatar-placeholder"
-                  style={{ display: conversation.profileImage ? 'none' : 'flex' }}
-                >
-                  <i className={`fas ${conversation.userType === 'doctor' ? 'fa-user-md' : 'fa-user'}`}></i>
-                </div>
-                {onlineUsers.has(conversation.userId) && (
-                  <div className="online-indicator"></div>
-                )}
-              </div>
-              
-              <div className="conversation-info">
-                <div className="conversation-header">
-                  <div className="conversation-name">{conversation.name}</div>
-                  <div className="conversation-time">
-                    {formatTime(conversation.lastMessage.timestamp)}
+          {conversations.length === 0 ? (
+            <div className="no-conversations">
+              <i className="fas fa-comments"></i>
+              <h3>No conversations yet</h3>
+              <p>Start a conversation by searching for doctors or patients above.</p>
+            </div>
+          ) : (
+            conversations.map(conversation => (
+              <div 
+                key={conversation.userId} 
+                className="conversation-item"
+                onClick={() => openConversation(conversation)}
+              >
+                <div className="conversation-avatar">
+                  {conversation.profileImage ? (
+                    <img 
+                      src={getImageUrl(conversation.profileImage)} 
+                      alt={conversation.name} 
+                      onError={(e) => {
+                        e.target.style.display = 'none';
+                        e.target.parentElement.querySelector('.avatar-placeholder').style.display = 'flex';
+                      }}
+                    />
+                  ) : null}
+                  <div 
+                    className="avatar-placeholder"
+                    style={{ display: conversation.profileImage ? 'none' : 'flex' }}
+                  >
+                    <i className={`fas ${conversation.userType === 'doctor' ? 'fa-user-md' : 'fa-user'}`}></i>
                   </div>
-                </div>
-                
-                <div className="conversation-preview">
-                  <div className="last-message">
-                    {conversation.lastMessage.senderId === currentUser?.id && (
-                      <span className="you-indicator">You: </span>
-                    )}
-                    {conversation.lastMessage.content.length > 50 
-                      ? `${conversation.lastMessage.content.substring(0, 50)}...`
-                      : conversation.lastMessage.content
-                    }
-                  </div>
-                  {conversation.unreadCount > 0 && (
-                    <div className="unread-badge">
-                      {conversation.unreadCount > 99 ? '99+' : conversation.unreadCount}
-                    </div>
+                  {onlineUsers.has(conversation.userId) && (
+                    <div className="online-indicator"></div>
                   )}
                 </div>
                 
-                <div className="conversation-meta">
-                  <span className="user-type">
-                    {formatUserType(conversation.userType, conversation.specialization)}
-                  </span>
+                <div className="conversation-info">
+                  <div className="conversation-header">
+                    <div className="conversation-name">{conversation.name}</div>
+                    <div className="conversation-time">
+                      {formatTime(conversation.lastMessage.timestamp)}
+                    </div>
+                  </div>
+                  
+                  <div className="conversation-preview">
+                    <div className="last-message">
+                      {conversation.lastMessage.senderId === currentUser?.id && (
+                        <span className="you-indicator">You: </span>
+                      )}
+                      {conversation.lastMessage.content.length > 50 
+                        ? `${conversation.lastMessage.content.substring(0, 50)}...`
+                        : conversation.lastMessage.content
+                      }
+                    </div>
+                    {conversation.unreadCount > 0 && (
+                      <div className="unread-badge">
+                        {conversation.unreadCount > 99 ? '99+' : conversation.unreadCount}
+                      </div>
+                    )}
+                  </div>
+                  
+                  <div className="conversation-meta">
+                    <span className="user-type">
+                      {formatUserType(conversation.userType, conversation.specialization)}
+                    </span>
+                  </div>
                 </div>
+                <i className="fas fa-chevron-right conversation-open-icon"></i>
               </div>
-            </div>
-          ))
-        )}
+            ))
+          )}
+        </div>
       </div>
     </div>
   );

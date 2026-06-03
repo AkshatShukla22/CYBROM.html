@@ -204,6 +204,14 @@ const userSchema = new mongoose.Schema({
   totalAppointments: {
     type: Number,
     default: 0
+  },
+  passwordResetToken: {
+    type: String,
+    default: null
+  },
+  passwordResetExpires: {
+    type: Date,
+    default: null
   }
 }, {
   timestamps: true

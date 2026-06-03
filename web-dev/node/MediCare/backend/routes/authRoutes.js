@@ -13,7 +13,10 @@ const {
   uploadBackgroundImage,
   addPracticeLocation,
   updatePracticeLocation,
-  removePracticeLocation
+  removePracticeLocation,
+  googleAuth,
+  forgotPassword,
+  resetPassword
 } = require('../controllers/authController');
 
 const router = express.Router();
@@ -21,6 +24,8 @@ const router = express.Router();
 // Authentication routes
 router.post('/register', registerUser);
 router.post('/login', loginUser);
+router.post('/forgot-password', forgotPassword);
+router.post('/reset-password/:token', resetPassword);
 router.get('/me', auth, getCurrentUser);
 router.put('/profile', auth, updateProfile);
 router.post('/change-password', auth, changePassword);
@@ -37,5 +42,8 @@ router.post('/upload-image', auth, uploadProfile.single('image'), uploadProfileI
 router.post('/practice-locations', auth, addPracticeLocation);
 router.put('/practice-locations/:locationId', auth, updatePracticeLocation);
 router.delete('/practice-locations/:locationId', auth, removePracticeLocation);
+
+// Google OAuth sign-in (frontend should send idToken)
+router.post('/google', googleAuth);
 
 module.exports = router;

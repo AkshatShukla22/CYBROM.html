@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import backendUrl from '../utils/BackendURL';
+import LoadingSpinner from '../components/LoadingSpinner';
 import '../styles/AppointmentsList.css';
 
 const AppointmentsList = () => {
@@ -162,16 +163,42 @@ const AppointmentsList = () => {
     return appointment.status === 'scheduled' && hoursUntilAppointment > 2;
   };
 
+  const appointmentStats = useMemo(() => {
+    const counts = appointments.reduce((acc, appointment) => {
+      acc[appointment.status] = (acc[appointment.status] || 0) + 1;
+      return acc;
+    }, {});
+
+    const upcoming = appointments
+      .filter((appointment) => ['scheduled', 'confirmed', 'in-progress'].includes(appointment.status))
+      .sort((a, b) => new Date(a.appointmentDate) - new Date(b.appointmentDate))[0];
+
+    const totalFees = appointments.reduce((sum, appointment) => {
+      return sum + Number(appointment.consultationFee || 0);
+    }, 0);
+
+    return {
+      total: appointments.length,
+      scheduled: counts.scheduled || 0,
+      confirmed: counts.confirmed || 0,
+      completed: counts.completed || 0,
+      cancelled: counts.cancelled || 0,
+      upcoming,
+      totalFees
+    };
+  }, [appointments]);
+
+  const filterTabs = [
+    { value: 'all', label: 'All', icon: 'fas fa-layer-group', count: appointmentStats.total },
+    { value: 'scheduled', label: 'Scheduled', icon: 'fas fa-calendar-alt', count: appointmentStats.scheduled },
+    { value: 'confirmed', label: 'Confirmed', icon: 'fas fa-check-circle', count: appointmentStats.confirmed },
+    { value: 'completed', label: 'Completed', icon: 'fas fa-check-double', count: appointmentStats.completed },
+    { value: 'cancelled', label: 'Cancelled', icon: 'fas fa-times-circle', count: appointmentStats.cancelled }
+  ];
+
   if (loading) {
     return (
-      <div className="appointments-page-wrapper">
-        <div className="appointments-loading-container">
-          <div className="appointments-loading-spinner">
-            <i className="fas fa-spinner"></i>
-            <span>Loading appointments...</span>
-          </div>
-        </div>
-      </div>
+      <LoadingSpinner message="Loading appointments..." />
     );
   }
 
@@ -181,6 +208,7 @@ const AppointmentsList = () => {
       <div className="appointments-page-wrapper">
         <div className="appointments-main-header">
           <div className="appointments-header-content">
+            <span className="appointments-eyebrow">Doctor portal</span>
             <h1>My Appointments</h1>
             <p>Manage your appointments and consultations</p>
           </div>
@@ -212,8 +240,43 @@ const AppointmentsList = () => {
       {/* Header */}
       <div className="appointments-main-header">
         <div className="appointments-header-content">
+          <span className="appointments-eyebrow">Care schedule</span>
           <h1>My Appointments</h1>
           <p>Manage your appointments and consultations</p>
+        </div>
+        <div className="appointments-hero-card">
+          <div>
+            <span>Next Visit</span>
+            <strong>
+              {appointmentStats.upcoming
+                ? formatDate(appointmentStats.upcoming.appointmentDate)
+                : 'No upcoming visit'}
+            </strong>
+          </div>
+          <i className="fas fa-calendar-check"></i>
+        </div>
+      </div>
+
+      <div className="appointments-summary-grid">
+        <div className="appointment-summary-card">
+          <i className="fas fa-calendar-day"></i>
+          <span>Total</span>
+          <strong>{appointmentStats.total}</strong>
+        </div>
+        <div className="appointment-summary-card">
+          <i className="fas fa-clock"></i>
+          <span>Scheduled</span>
+          <strong>{appointmentStats.scheduled}</strong>
+        </div>
+        <div className="appointment-summary-card">
+          <i className="fas fa-check-double"></i>
+          <span>Completed</span>
+          <strong>{appointmentStats.completed}</strong>
+        </div>
+        <div className="appointment-summary-card">
+          <i className="fas fa-rupee-sign"></i>
+          <span>Total Fees</span>
+          <strong>₹{appointmentStats.totalFees}</strong>
         </div>
       </div>
 
@@ -231,36 +294,17 @@ const AppointmentsList = () => {
       {/* Filter Tabs */}
       <div className="appointments-filter-section">
         <div className="appointments-filter-tabs">
-          <button 
-            className={`appointments-filter-tab ${filter === 'all' ? 'active' : ''}`}
-            onClick={() => setFilter('all')}
-          >
-            All
-          </button>
-          <button 
-            className={`appointments-filter-tab ${filter === 'scheduled' ? 'active' : ''}`}
-            onClick={() => setFilter('scheduled')}
-          >
-            Scheduled
-          </button>
-          <button 
-            className={`appointments-filter-tab ${filter === 'confirmed' ? 'active' : ''}`}
-            onClick={() => setFilter('confirmed')}
-          >
-            Confirmed
-          </button>
-          <button 
-            className={`appointments-filter-tab ${filter === 'completed' ? 'active' : ''}`}
-            onClick={() => setFilter('completed')}
-          >
-            Completed
-          </button>
-          <button 
-            className={`appointments-filter-tab ${filter === 'cancelled' ? 'active' : ''}`}
-            onClick={() => setFilter('cancelled')}
-          >
-            Cancelled
-          </button>
+          {filterTabs.map((tab) => (
+            <button 
+              key={tab.value}
+              className={`appointments-filter-tab ${filter === tab.value ? 'active' : ''}`}
+              onClick={() => setFilter(tab.value)}
+            >
+              <i className={tab.icon}></i>
+              <span>{tab.label}</span>
+              <small>{tab.count}</small>
+            </button>
+          ))}
         </div>
       </div>
 
@@ -269,6 +313,9 @@ const AppointmentsList = () => {
         {appointments.length > 0 ? (
           appointments.map((appointment) => (
             <div key={appointment._id} className="appointment-item-card">
+              <div className="appointment-timeline-marker">
+                <i className={getStatusIcon(appointment.status)}></i>
+              </div>
               <div className="appointment-card-header">
                 <div className="appointment-main-info">
                   <h3>Dr. {appointment.doctorName}</h3>

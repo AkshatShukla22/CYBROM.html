@@ -8,7 +8,9 @@ const Layout = () => {
     <>
       <Header />
 
-      <Outlet />
+      <main className="app-shell">
+        <Outlet />
+      </main>
       
       <Footer />
     </>

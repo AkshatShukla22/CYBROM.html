@@ -12,7 +12,7 @@ const FilterSidebar = ({
   sortOrder,
   backendUrl
 }) => {
-  const [isCollapsed, setIsCollapsed] = useState(true);
+  const [isCollapsed, setIsCollapsed] = useState(false);
   const [minFee, setMinFee] = useState('');
   const [maxFee, setMaxFee] = useState('');
   const [citySearch, setCitySearch] = useState('');

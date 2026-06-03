@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import backendUrl from '../utils/BackendURL';
 import '../styles/DoctorCard.css';
 
 const DoctorCard = ({ doctor, onClick }) => {
+  const [imageError, setImageError] = useState(false);
   // Helper function to check if URL is a Cloudinary URL
   const isCloudinaryUrl = (url) => {
     return url && (url.startsWith('https://res.cloudinary.com') || url.startsWith('http://res.cloudinary.com'));
@@ -22,7 +23,7 @@ const DoctorCard = ({ doctor, onClick }) => {
   };
 
   // Check if doctor has profile image
-  const hasProfileImage = doctor.profileImage && doctor.profileImage.trim() !== '';
+  const hasProfileImage = doctor.profileImage && doctor.profileImage.trim() !== '' && !imageError;
   
   // Format specialization
   const formatSpecialization = (spec) => {
@@ -71,6 +72,13 @@ const DoctorCard = ({ doctor, onClick }) => {
     }
   };
 
+  const getConsultationFee = () => {
+    if (doctor.consultationFee) return doctor.consultationFee;
+
+    const activeLocation = doctor.practiceLocations?.find(location => location.isActive !== false);
+    return activeLocation?.consultationFee || null;
+  };
+
   // Generate rating stars
   const renderRatingStars = (rating) => {
     const stars = [];
@@ -92,30 +100,30 @@ const DoctorCard = ({ doctor, onClick }) => {
 
   return (
     <div className="doctor-card" onClick={onClick}>
-      {/* Doctor Image - FIXED */}
-      <div className="doctor-image">
+      <div className="doctor-card__glow" />
+
+      <div className="doctor-card__top">
+        <div className="doctor-image">
         {hasProfileImage ? (
           <img 
             src={getImageUrl(doctor.profileImage)}
             alt={doctor.name}
-            onError={(e) => {
-              e.target.style.display = 'none';
-              e.target.parentElement.classList.add('no-image');
-            }}
+            onError={() => setImageError(true)}
           />
         ) : (
-          <div className="doctor-icon-placeholder">
-            <i className="fas fa-user-md"></i>
-          </div>
-        )}
+            <div className="doctor-icon-placeholder">
+              <i className="fas fa-user-md"></i>
+            </div>
+          )}
+        </div>
+
+        <div className="doctor-card__headline">
+          <h3 className="doctor-name">Dr. {doctor.name}</h3>
+          <p className="specialization">{formatSpecialization(doctor.specialization)}</p>
+        </div>
       </div>
       
-      {/* Doctor Information */}
       <div className="doctor-info">
-        <h3 className="doctor-name">Dr. {doctor.name}</h3>
-        <p className="specialization">{formatSpecialization(doctor.specialization)}</p>
-        
-        {/* Rating */}
         <div className="rating">
           <div className="stars">
             {renderRatingStars(doctor.ratings?.average || 0)}
@@ -125,19 +133,32 @@ const DoctorCard = ({ doctor, onClick }) => {
           </span>
         </div>
 
-        {/* Doctor Details */}
         <div className="doctor-details">
-          {/* Experience */}
           <div className="detail-item">
             <i className="fas fa-graduation-cap detail-icon"></i>
-            <span>Experience: {doctor.experience || 'N/A'} years</span>
+            <span>{doctor.experience || 'N/A'} years exp.</span>
           </div>
 
-          {/* Location - Fixed to handle multiple practice locations */}
           <div className="detail-item">
             <i className="fas fa-map-marker-alt detail-icon"></i>
-            <span>City: {getCities()}</span>
+            <span>{getCities()}</span>
           </div>
+
+          <div className="detail-item">
+            <i className="fas fa-rupee-sign detail-icon"></i>
+            <span>{getConsultationFee() ? `${getConsultationFee()} consultation` : 'Fee on request'}</span>
+          </div>
+        </div>
+
+        <div className="doctor-card__footer">
+          <span className="doctor-card__status">
+            <i className="fas fa-circle"></i>
+            Available
+          </span>
+          <span className="doctor-card__cta">
+            View Profile
+            <i className="fas fa-arrow-right"></i>
+          </span>
         </div>
       </div>
     </div>

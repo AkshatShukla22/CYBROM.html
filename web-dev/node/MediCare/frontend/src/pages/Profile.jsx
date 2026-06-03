@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import backendUrl from '../utils/BackendURL';
+import LoadingSpinner from '../components/LoadingSpinner';
 import '../styles/Profile.css';
 
 const Profile = () => {
@@ -422,12 +423,7 @@ const Profile = () => {
 
   if (loading) {
     return (
-      <div className="profile-page-container">
-        <div className="profile-loading-spinner">
-          <i className="fas fa-spinner fa-spin"></i>
-          <span>Loading profile...</span>
-        </div>
-      </div>
+      <LoadingSpinner message="Loading profile..." />
     );
   }
 
